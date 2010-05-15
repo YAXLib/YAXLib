@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{40A6C570-2CC0-44BF-8A2A-FD41CE598C41}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DemoApplication</RootNamespace>
+    <AssemblyName>DemoApplication</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ClassInfoListItem.cs" />
+    <Compile Include="SampleClasses\AnotherArraySample.cs" />
+    <Compile Include="FormMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormMain.Designer.cs">
+      <DependentUpon>FormMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GeneralToString.cs" />
+    <Compile Include="SampleClasses\GenericCollectionsSample.cs" />
+    <Compile Include="SampleClasses\InterfaceMatchingSample.cs" />
+    <Compile Include="SampleClasses\FreeSample.cs" />
+    <Compile Include="SampleClasses\MultipleCommentsTest.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FormMain.resx">
+      <DependentUpon>FormMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="SampleClasses\AudioSample.cs" />
+    <Compile Include="SampleClasses\CollectionOfInterfacesSample.cs" />
+    <Compile Include="SampleClasses\EnumsSample.cs" />
+    <Compile Include="SampleClasses\MultiDimArraySample.cs" />
+    <Compile Include="SampleClasses\NonGenericCollectionsSample.cs" />
+    <Compile Include="SampleClasses\NullableSample2.cs" />
+    <Compile Include="SampleClasses\SerializationOptionsSample.cs" />
+    <Compile Include="SampleClasses\WarehouseWithComments.cs" />
+    <Compile Include="SampleClasses\MoreComplexBook3.cs" />
+    <Compile Include="SampleClasses\MoreComplexBook2.cs" />
+    <Compile Include="SampleClasses\FieldSerializationExample.cs" />
+    <Compile Include="SampleClasses\GUIDTest.cs" />
+    <Compile Include="SampleClasses\ListHolderClass.cs" />
+    <Compile Include="SampleClasses\MoreComplexBook.cs" />
+    <Compile Include="SampleClasses\NamesExample.cs" />
+    <Compile Include="SampleClasses\NestedDicSample.cs" />
+    <Compile Include="SampleClasses\NestingExample.cs" />
+    <Compile Include="SampleClasses\NullableClass.cs" />
+    <Compile Include="SampleClasses\PathsExample.cs" />
+    <Compile Include="SampleClasses\FormattingExample.cs" />
+    <Compile Include="SampleClasses\MoreComplexExample.cs" />
+    <Compile Include="SampleClasses\MultilevelClass.cs" />
+    <Compile Include="SampleClasses\ProgrammingLanguage.cs" />
+    <Compile Include="SampleClasses\SimpleBookClass.cs" />
+    <Compile Include="SampleClasses\SimpleBookStruct.cs" />
+    <Compile Include="SampleClasses\TimeSpanSample.cs" />
+    <Compile Include="SampleClasses\WarehouseNestedObjectExample.cs" />
+    <Compile Include="SampleClasses\ColorExample.cs" />
+    <Compile Include="SampleClasses\WarehouseStructured.cs" />
+    <Compile Include="SampleClasses\WarehouseSimple.cs" />
+    <Compile Include="SampleClasses\WarehouseWithArray.cs" />
+    <Compile Include="SampleClasses\WarehouseWithDictionary.cs" />
+    <Compile Include="SampleClasses\WarehouseWithDictionaryNoContainer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\YAXLib\YAXLib.csproj">
+      <Project>{F1C4D174-C948-4D18-A125-F6855EF55683}</Project>
+      <Name>YAXLib</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
