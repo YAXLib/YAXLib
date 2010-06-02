@@ -60,6 +60,7 @@
     <Compile Include="SampleClasses\GenericCollectionsSample.cs" />
     <Compile Include="SampleClasses\InterfaceMatchingSample.cs" />
     <Compile Include="SampleClasses\FreeSample.cs" />
+    <Compile Include="SampleClasses\IssuesSample.cs" />
     <Compile Include="SampleClasses\MultipleCommentsTest.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

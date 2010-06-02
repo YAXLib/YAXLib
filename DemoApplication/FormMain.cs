@@ -101,6 +101,7 @@ namespace DemoApplication
             lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(SerializationOptionsSample), SerializationOptionsSample.GetSampleInstance()));
 
             //lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(FreeSample), FreeSample.GetSampleInstance()));
+            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(IssuesSample), IssuesSample.GetSampleInstance()));
         }
 
         private void btnSerialize_Click(object sender, EventArgs e)
