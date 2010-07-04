@@ -1,3 +1,10 @@
+[2.1] July 5, 2010
+   * Adding support for srializing fields as a value for another element. This
+     is done through YAXValueFor attribute.
+   * Added YAXElementValueAlreadyExistsException, and YAXElementValueMissingException
+     exception classes to handle related exceptions.
+   * Added BookClassTesgingSerializeAsValue sample class to demonstrate the new feature.
+
 [2.0] April 15, 2010
    * YAXLib
    * Adding support for serialization and deserialization for all known generic

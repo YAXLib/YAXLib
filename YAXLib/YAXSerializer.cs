@@ -519,6 +519,35 @@ namespace YAXLib
                         throw new YAXAttributeAlreadyExistsException(member.Alias);
                     }
                 }
+                else if (member.IsSerializedAsValue && areOfSameType)
+                {
+                    // find the parent element from its location
+                    XElement parElem = XMLUtils.FindLocation(m_baseElement, member.SerializationLocation);
+                    if (parElem == null) // if the parent element does not exist
+                    {
+                        // see if the location can be created
+                        if (!XMLUtils.CanCreateLocation(m_baseElement, member.SerializationLocation))
+                            throw new YAXBadLocationException(member.SerializationLocation);
+                        // try to create the location
+                        parElem = XMLUtils.CreateLocation(m_baseElement, member.SerializationLocation);
+                        if (parElem == null)
+                            throw new YAXBadLocationException(member.SerializationLocation);
+                    }
+
+                    // if control is moved here, it means that the parent 
+                    // element has been found/created successfully
+
+                    if (parElem.Nodes().OfType<XText>().Count() > 0)
+                    {
+                        throw new YAXElementValueAlreadyExistsException(member.SerializationLocation);
+                    }
+                    else
+                    {
+                        parElem.Add(new XText((elementValue ?? String.Empty).ToString()));
+                        //parElem.SetValue(elementValue ?? String.Empty);
+                    }
+
+                }
                 else // if the data is going to be serialized as an element
                 {
                     // find the parent element from its location
@@ -1057,6 +1086,40 @@ namespace YAXLib
                     {
                         foundAnyOfMembers = true;
                         elemValue = attr.Value;
+                    }
+                }
+                else if (member.IsSerializedAsValue)
+                {
+                    XElement elem = XMLUtils.FindLocation(baseElement, member.SerializationLocation);
+                    if (elem == null) // such element is not found
+                    {
+                        this.OnExceptionOccurred(new YAXElementMissingException(
+                                member.SerializationLocation),
+                                (!member.MemberType.IsValueType && m_udtWrapper.IsNotAllowdNullObjectSerialization) ? YAXExceptionTypes.Ignore : member.TreatErrorsAs);
+                    }
+                    else
+                    {
+                        XText[] values = elem.Nodes().OfType<XText>().ToArray();
+                        if(values.Length <= 0)
+                        {
+                            // loook for an element with the same name AND a yaxlib:realtype attribute
+                            XElement innerelem = XMLUtils.FindElement(baseElement, member.SerializationLocation, member.Alias);
+                            if (innerelem != null && innerelem.Attribute(s_namespaceURI + s_trueTypeAttrName) != null)
+                            {
+                                elemValue = innerelem.Value;
+                                xelemValue = innerelem;
+                            }
+                            else
+                            {
+                                this.OnExceptionOccurred(new YAXElementValueMissingException(member.SerializationLocation),
+                                    (!member.MemberType.IsValueType && m_udtWrapper.IsNotAllowdNullObjectSerialization) ? YAXExceptionTypes.Ignore : member.TreatErrorsAs);
+                            }
+                        }
+                        else
+                        {
+                            foundAnyOfMembers = true;
+                            elemValue = values[0].Value;
+                        }
                     }
                 }
                 else

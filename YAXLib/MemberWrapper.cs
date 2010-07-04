@@ -70,6 +70,18 @@ namespace YAXLib
         /// </summary>
         private string m_alias = "";
 
+        /// <summary>
+        /// specifies whether this member is going to be serialized as an attribute
+        /// </summary>
+        private bool m_isSerializedAsAttribute = false;
+
+        /// <summary>
+        /// specifies whether this member is going to be serialized as a value for another element
+        /// </summary>
+        private bool m_isSerializedAsValue = false;
+
+
+
 		#endregion Fields
 
 		#region Constructors 
@@ -255,7 +267,48 @@ namespace YAXLib
         /// <value>
         /// <c>true</c> if this instance is serialized as an XML attribute; otherwise, <c>false</c>.
         /// </value>
-        public bool IsSerializedAsAttribute { get; private set; }
+        public bool IsSerializedAsAttribute 
+        {
+            get
+            {
+                return m_isSerializedAsAttribute;
+            }
+
+            private set
+            {
+                m_isSerializedAsAttribute = value;
+                if (value)
+                {
+                    // a field cannot be both serialized as an attribute and a value
+                    m_isSerializedAsValue = false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is serialized as a value for an element.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this instance is serialized as a value for an element; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsSerializedAsValue
+        {
+            get
+            {
+                return m_isSerializedAsValue;
+            }
+
+            private set
+            {
+                m_isSerializedAsValue = value;
+                if (value)
+                {
+                    // a field cannot be both serialized as an attribute and a value
+                    m_isSerializedAsAttribute = false;
+                }
+            }
+        }
+
 
         /// <summary>
         /// Gets a value indicating whether this instance is serialized as an XML element.
@@ -267,7 +320,16 @@ namespace YAXLib
         {
             get
             {
-                return !this.IsSerializedAsAttribute;
+                return !this.IsSerializedAsAttribute && !this.IsSerializedAsValue;
+            }
+
+            private set
+            {
+                if (value)
+                {
+                    m_isSerializedAsAttribute = false;
+                    m_isSerializedAsValue = false;
+                }
             }
         }
 
@@ -493,6 +555,7 @@ namespace YAXLib
             this.IsAttributedAsDontSerialize = false;
             this.IsAttributedAsNotCollection = false;
             this.IsSerializedAsAttribute = false;
+            this.IsSerializedAsValue = false;
             this.SerializationLocation = ".";
             this.Format = null;
             InitDefaultValue();
@@ -549,41 +612,49 @@ namespace YAXLib
                     this.SerializationLocation = (attr as YAXAttributeForAttribute).Parent;
                 }
             }
-            else if (attr is YAXDontSerializeAttribute) 
+            else if (attr is YAXValueForAttribute)
+            {
+                if (ReflectionUtils.IsBasicType(this.MemberType))
+                {
+                    this.IsSerializedAsValue = true;
+                    this.SerializationLocation = (attr as YAXValueForAttribute).Parent;
+                }
+            }
+            else if (attr is YAXDontSerializeAttribute)
             {
                 this.IsAttributedAsDontSerialize = true;
             }
-            else if (attr is YAXSerializeAsAttribute) 
+            else if (attr is YAXSerializeAsAttribute)
             {
                 this.Alias = (attr as YAXSerializeAsAttribute).SerializeAs;
             }
-            else if (attr is YAXElementForAttribute) 
+            else if (attr is YAXElementForAttribute)
             {
-                this.IsSerializedAsAttribute = false;
+                this.IsSerializedAsElement = true;
                 this.SerializationLocation = (attr as YAXElementForAttribute).Parent;
             }
-            else if (attr is YAXCollectionAttribute) 
+            else if (attr is YAXCollectionAttribute)
             {
                 m_collectionAttributeInstance = attr as YAXCollectionAttribute;
             }
-            else if (attr is YAXDictionaryAttribute) 
-            { 
+            else if (attr is YAXDictionaryAttribute)
+            {
                 m_dictionaryAttributeInstance = attr as YAXDictionaryAttribute;
             }
-            else if (attr is YAXErrorIfMissedAttribute) 
+            else if (attr is YAXErrorIfMissedAttribute)
             {
                 YAXErrorIfMissedAttribute temp = attr as YAXErrorIfMissedAttribute;
                 this.DefaultValue = temp.DefaultValue;
                 this.TreatErrorsAs = temp.TreatAs;
             }
-            else if (attr is YAXFormatAttribute) 
-            { 
+            else if (attr is YAXFormatAttribute)
+            {
                 this.Format = (attr as YAXFormatAttribute).Format;
             }
-            else if (attr is YAXNotCollectionAttribute) 
+            else if (attr is YAXNotCollectionAttribute)
             {
                 // arrays are always treated as collections
-                if(!ReflectionUtils.IsArray(this.MemberType))
+                if (!ReflectionUtils.IsArray(this.MemberType))
                     this.IsAttributedAsNotCollection = true;
             }
             else if (attr is YAXSerializableTypeAttribute)

@@ -102,6 +102,9 @@ namespace DemoApplication
 
             //lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(FreeSample), FreeSample.GetSampleInstance()));
             lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(IssuesSample), IssuesSample.GetSampleInstance()));
+
+            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(BookClassTesgingSerializeAsValue), BookClassTesgingSerializeAsValue.GetSampleInstance()));
+            
         }
 
         private void btnSerialize_Click(object sender, EventArgs e)
