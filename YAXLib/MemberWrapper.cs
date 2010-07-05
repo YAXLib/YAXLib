@@ -612,6 +612,14 @@ namespace YAXLib
                     this.SerializationLocation = (attr as YAXAttributeForAttribute).Parent;
                 }
             }
+            else if (attr is YAXValueForClassAttribute)
+            {
+                if (ReflectionUtils.IsBasicType(this.MemberType))
+                {
+                    this.IsSerializedAsValue = true;
+                    this.SerializationLocation = ".";
+                }
+            }
             else if (attr is YAXValueForAttribute)
             {
                 if (ReflectionUtils.IsBasicType(this.MemberType))

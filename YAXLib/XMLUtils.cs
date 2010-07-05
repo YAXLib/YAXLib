@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using System.Diagnostics;
+using System.Xml;
 
 namespace YAXLib
 {
@@ -22,7 +23,7 @@ namespace YAXLib
     /// There are four methods for each unit. UnitExists, FindUnit, CanCreateUnit, CreateUnit
     /// Units are: Location, Element, and Attribute
     /// </summary>
-    internal class XMLUtils
+    internal static class XMLUtils
     {
         /// <summary>
         /// Determines whether the location specified exists in the given XML element.
@@ -351,6 +352,49 @@ namespace YAXLib
         public static bool IsElementCompletelyEmpty(XElement elem)
         {
             return !elem.HasAttributes && !elem.HasElements && elem.IsEmpty;
+        }
+
+        /// <summary>
+        /// Returns a string representation for the content of the XML element including its child element if any
+        /// </summary>
+        /// <param name="elem">The elemenet</param>
+        /// <returns></returns>
+        public static string GetElementContent(this XElement elem)
+        {
+            string value = elem.Value;
+
+            if (String.IsNullOrEmpty(value) || String.IsNullOrEmpty(value.ToString()) || !elem.HasElements)
+                return elem.Value;
+
+            string content = elem.ToString();
+            //string name = elem.Name.ToString();
+
+            int closingBracketIndex = content.IndexOf('>');
+            if (closingBracketIndex >= content.Length - 1)
+                return value;
+
+            int lastOpeneingBracket = content.LastIndexOf('<');
+            if (lastOpeneingBracket <= 0)
+                return value;
+
+            string retValue = content.Substring(closingBracketIndex + 1, lastOpeneingBracket - closingBracketIndex - 1);
+            return DecodeXMLString(retValue);
+        }
+
+        /// <summary>
+        /// Decodes the XML escape sequences into normal string
+        /// </summary>
+        /// <param name="str">The string to decode.</param>
+        /// <returns></returns>
+        public static string DecodeXMLString(string str)
+        {
+            if (str.IndexOf('&') >= 0)
+            {
+                return str.Replace("&lt;", "<").Replace("&gt;", ">").Replace("&quot;", "\"").Replace("&apos;", "'").Replace("&amp;", "&");
+                // Make sure that &amp; is the final replace so that sequences such as &amp;gt; do not get corrupted
+            }
+
+            return str;
         }
     }
 }

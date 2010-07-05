@@ -537,15 +537,16 @@ namespace YAXLib
                     // if control is moved here, it means that the parent 
                     // element has been found/created successfully
 
-                    if (parElem.Nodes().OfType<XText>().Count() > 0)
-                    {
-                        throw new YAXElementValueAlreadyExistsException(member.SerializationLocation);
-                    }
-                    else
-                    {
-                        parElem.Add(new XText((elementValue ?? String.Empty).ToString()));
-                        //parElem.SetValue(elementValue ?? String.Empty);
-                    }
+                    parElem.Add(new XText((elementValue ?? String.Empty).ToString()));
+
+                    //if (parElem.Nodes().OfType<XText>().Count() > 0)
+                    //{
+                    //    throw new YAXElementValueAlreadyExistsException(member.SerializationLocation);
+                    //}
+                    //else
+                    //{
+                    //    parElem.Add(new XText((elementValue ?? String.Empty).ToString()));
+                    //}
 
                 }
                 else // if the data is going to be serialized as an element
@@ -1072,7 +1073,8 @@ namespace YAXLib
                         XElement elem = XMLUtils.FindElement(baseElement, member.SerializationLocation, member.Alias);
                         if (elem != null && elem.Attribute(s_namespaceURI + s_trueTypeAttrName) != null)
                         {
-                            elemValue = elem.Value;
+                            elemValue = elem.GetElementContent();
+                            //elemValue = elem.Value;
                             xelemValue = elem;
                         }
                         else
@@ -1106,7 +1108,8 @@ namespace YAXLib
                             XElement innerelem = XMLUtils.FindElement(baseElement, member.SerializationLocation, member.Alias);
                             if (innerelem != null && innerelem.Attribute(s_namespaceURI + s_trueTypeAttrName) != null)
                             {
-                                elemValue = innerelem.Value;
+                                elemValue = innerelem.GetElementContent();
+                                //elemValue = innerelem.Value;
                                 xelemValue = innerelem;
                             }
                             else
@@ -1119,6 +1122,7 @@ namespace YAXLib
                         {
                             foundAnyOfMembers = true;
                             elemValue = values[0].Value;
+                            values[0].Remove();
                         }
                     }
                 }
@@ -1155,7 +1159,8 @@ namespace YAXLib
                                     canContinue = true;
                                     foundAnyOfMembers = true;
                                     elem = fakeElem;
-                                    elemValue = elem.Value;
+                                    elemValue = elem.GetElementContent();
+                                    //elemValue = elem.Value;
                                 }
                             }
                         }
@@ -1170,7 +1175,8 @@ namespace YAXLib
                     else
                     {
                         foundAnyOfMembers = true;
-                        elemValue = elem.Value;
+                        elemValue = elem.GetElementContent();
+                        //elemValue = elem.Value;
                     }
 
                     xelemValue = elem;
@@ -1551,11 +1557,11 @@ namespace YAXLib
                     {
                         try
                         {
-                            lst.Add(ReflectionUtils.ConvertBasicType(childElem.Value, curElementType));
+                            lst.Add(ReflectionUtils.ConvertBasicType(childElem.GetElementContent(), curElementType));
                         }
                         catch
                         {
-                            this.OnExceptionOccurred(new YAXBadlyFormedInput(childElem.Name.ToString(), childElem.Value), this.m_defaultExceptionType);
+                            this.OnExceptionOccurred(new YAXBadlyFormedInput(childElem.Name.ToString(), childElem.GetElementContent()), this.m_defaultExceptionType);
                         }
                     }
                     else

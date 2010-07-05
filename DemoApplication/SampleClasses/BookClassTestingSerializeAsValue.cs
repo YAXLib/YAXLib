@@ -6,22 +6,28 @@ using YAXLib;
 
 namespace DemoApplication.SampleClasses
 {
+    [YAXSerializableType(Options= YAXSerializationOptions.DontSerializeNullObjects)]
+    public class SomeCollectionItem
+    {
+        public string Value { get; set; }
+
+        public string SomeElement { get; set; }
+    }
+
     public class BookClassTesgingSerializeAsValue
     {
-        public string Title { get; set; }
+        [YAXValueFor(".")]
+        public double Price { get; set; }
 
-        public string Author { get; set; }
         public int PublishYear { get; set; }
-
-        [YAXValueFor("./somthing")]
-        public double? Price { get; set; }
 
         [YAXValueFor(".")]
         public string Comments { get; set; }
 
-        [YAXValueFor("SomeOtherThing")]
-        public string SomethingElse { get; set; }
+        public string Author { get; set; }
 
+        [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement)]
+        public List<SomeCollectionItem> TheCollection { get; set; }
 
         public override string ToString()
         {
@@ -30,14 +36,19 @@ namespace DemoApplication.SampleClasses
 
         public static BookClassTesgingSerializeAsValue GetSampleInstance()
         {
+            List<SomeCollectionItem> theCollection = new List<SomeCollectionItem>();
+
+            theCollection.Add(new SomeCollectionItem() { Value = "value1", SomeElement = "elem1" });
+            theCollection.Add(new SomeCollectionItem() { Value = "value2", SomeElement = "elem2" });
+            theCollection.Add(new SomeCollectionItem() { Value = "value3", SomeElement = "elem3" });
+
             return new BookClassTesgingSerializeAsValue()
             {
-                Title = "Inside C#",
                 Author = "Tom Archer & Andrew Whitechapel",
                 PublishYear = 2002,
                 Price = 30.5,
-                Comments = " Line1 " + Environment.NewLine + "\tLine2\t" + Environment.NewLine + "    Line3  " + Environment.NewLine + "   Line4  " + Environment.NewLine,
-                SomethingElse = "Something Else"
+                Comments = "SomeComment",
+                TheCollection = theCollection
             };
         }
     }

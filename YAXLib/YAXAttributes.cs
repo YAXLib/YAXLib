@@ -212,6 +212,27 @@ namespace YAXLib
         #endregion
     }
 
+    /// <summary>
+    /// Makes a field or property to appear as a value for its parent element, if possible.
+    /// This attribute is applicable to fields and properties.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public class YAXValueForClassAttribute : YAXBaseAttribute
+    {
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="YAXValueForClassAttribute"/> class.
+        /// </summary>
+        public YAXValueForClassAttribute()
+        {
+        }
+
+        #endregion
+
+    }
+
+
 
     /// <summary>
     /// Prevents serialization of some field or property.
