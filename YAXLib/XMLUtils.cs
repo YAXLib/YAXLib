@@ -336,7 +336,7 @@ namespace YAXLib
                 dst.Add(attr);
             }
 
-            foreach (XElement elem in src.Elements())
+            foreach (XNode elem in src.Nodes())
             {
                 dst.Add(elem);
             }
@@ -354,32 +354,32 @@ namespace YAXLib
             return !elem.HasAttributes && !elem.HasElements && elem.IsEmpty;
         }
 
-        /// <summary>
-        /// Returns a string representation for the content of the XML element including its child element if any
-        /// </summary>
-        /// <param name="elem">The elemenet</param>
-        /// <returns></returns>
-        public static string GetElementContent(this XElement elem)
-        {
-            string value = elem.Value;
+        ///// <summary>
+        ///// Returns a string representation for the content of the XML element including its child element if any
+        ///// </summary>
+        ///// <param name="elem">The elemenet</param>
+        ///// <returns></returns>
+        //public static string GetElementContent(this XElement elem)
+        //{
+        //    string value = elem.Value;
 
-            if (String.IsNullOrEmpty(value) || String.IsNullOrEmpty(value.ToString()) || !elem.HasElements)
-                return elem.Value;
+        //    if (String.IsNullOrEmpty(value) || String.IsNullOrEmpty(value.ToString()) || !elem.HasElements)
+        //        return elem.Value;
 
-            string content = elem.ToString();
-            //string name = elem.Name.ToString();
+        //    string content = elem.ToString();
+        //    //string name = elem.Name.ToString();
 
-            int closingBracketIndex = content.IndexOf('>');
-            if (closingBracketIndex >= content.Length - 1)
-                return value;
+        //    int closingBracketIndex = content.IndexOf('>');
+        //    if (closingBracketIndex >= content.Length - 1)
+        //        return value;
 
-            int lastOpeneingBracket = content.LastIndexOf('<');
-            if (lastOpeneingBracket <= 0)
-                return value;
+        //    int lastOpeneingBracket = content.LastIndexOf('<');
+        //    if (lastOpeneingBracket <= 0)
+        //        return value;
 
-            string retValue = content.Substring(closingBracketIndex + 1, lastOpeneingBracket - closingBracketIndex - 1);
-            return DecodeXMLString(retValue);
-        }
+        //    string retValue = content.Substring(closingBracketIndex + 1, lastOpeneingBracket - closingBracketIndex - 1);
+        //    return DecodeXMLString(retValue);
+        //}
 
         /// <summary>
         /// Decodes the XML escape sequences into normal string

@@ -473,146 +473,194 @@ namespace YAXLib
                     m_mainDocument.Add(new XComment(comment));
             }
 
-            // iterate through public properties
-            foreach (var member in GetFieldsToBeSerialized())
+            // check if the main class/type has defined custom serializers
+            if (m_udtWrapper.HasCustomSerializer)
             {
-                object elementValue = null;
-
-                if (!member.CanRead)
-                    continue;
-
-                if (member.MemberType == this.m_type)
+                InvokeCustomSerializerToElement(m_udtWrapper.CustomSerializerType, obj, m_baseElement);
+            }
+            else // if it has no custom serializers
+            {
+                // iterate through public properties
+                foreach (var member in GetFieldsToBeSerialized())
                 {
-                    throw new YAXCannotSerializeSelfReferentialTypes(this.m_type);
-                }
+                    object elementValue = null;
 
-                // ignore this member if it is attributed as dont serialize
-                if (member.IsAttributedAsDontSerialize)
-                    continue;
+                    if (!member.CanRead)
+                        continue;
 
-                elementValue = member.GetValue(obj);
+                    // ignore this member if it is attributed as dont serialize
+                    if (member.IsAttributedAsDontSerialize)
+                        continue;
 
-                // ignore this member if it is null and we are not about to serialize null objects
-                if (elementValue == null &&
-                    m_udtWrapper.IsNotAllowdNullObjectSerialization)
-                {
-                    continue;
-                }
-
-                bool areOfSameType = true; // are element value and the member declared type the same?
-                object originalValue = member.GetOriginalValue(obj, null);
-                if (elementValue != null && member.MemberType != originalValue.GetType())
-                {
-                    areOfSameType = false;
-                }
-
-                // it gets true only for basic data types
-                if (member.IsSerializedAsAttribute && areOfSameType)
-                {
-                    if (!XMLUtils.AttributeExists(m_baseElement, member.SerializationLocation, member.Alias))
+                    if (member.MemberType == this.m_type)
                     {
-                        if (XMLUtils.CreateAttribute(m_baseElement, member.SerializationLocation, member.Alias, elementValue) == null)
-                            throw new YAXBadLocationException(member.SerializationLocation);
-                    }
-                    else
-                    {
-                        throw new YAXAttributeAlreadyExistsException(member.Alias);
-                    }
-                }
-                else if (member.IsSerializedAsValue && areOfSameType)
-                {
-                    // find the parent element from its location
-                    XElement parElem = XMLUtils.FindLocation(m_baseElement, member.SerializationLocation);
-                    if (parElem == null) // if the parent element does not exist
-                    {
-                        // see if the location can be created
-                        if (!XMLUtils.CanCreateLocation(m_baseElement, member.SerializationLocation))
-                            throw new YAXBadLocationException(member.SerializationLocation);
-                        // try to create the location
-                        parElem = XMLUtils.CreateLocation(m_baseElement, member.SerializationLocation);
-                        if (parElem == null)
-                            throw new YAXBadLocationException(member.SerializationLocation);
+                        throw new YAXCannotSerializeSelfReferentialTypes(this.m_type);
                     }
 
-                    // if control is moved here, it means that the parent 
-                    // element has been found/created successfully
+                    elementValue = member.GetValue(obj);
 
-                    parElem.Add(new XText((elementValue ?? String.Empty).ToString()));
-
-                    //if (parElem.Nodes().OfType<XText>().Count() > 0)
-                    //{
-                    //    throw new YAXElementValueAlreadyExistsException(member.SerializationLocation);
-                    //}
-                    //else
-                    //{
-                    //    parElem.Add(new XText((elementValue ?? String.Empty).ToString()));
-                    //}
-
-                }
-                else // if the data is going to be serialized as an element
-                {
-                    // find the parent element from its location
-                    XElement parElem = XMLUtils.FindLocation(m_baseElement, member.SerializationLocation);
-                    if (parElem == null) // if the parent element does not exist
+                    // ignore this member if it is null and we are not about to serialize null objects
+                    if (elementValue == null &&
+                        m_udtWrapper.IsNotAllowdNullObjectSerialization)
                     {
-                        // see if the location can be created
-                        if (!XMLUtils.CanCreateLocation(m_baseElement, member.SerializationLocation))
-                            throw new YAXBadLocationException(member.SerializationLocation);
-                        // try to create the location
-                        parElem = XMLUtils.CreateLocation(m_baseElement, member.SerializationLocation);
-                        if (parElem == null)
-                            throw new YAXBadLocationException(member.SerializationLocation);
+                        continue;
                     }
 
-                    // if control is moved here, it means that the parent 
-                    // element has been found/created successfully
 
-                    if (member.HasComment)
+                    bool areOfSameType = true; // are element value and the member declared type the same?
+                    object originalValue = member.GetOriginalValue(obj, null);
+                    if (elementValue != null && member.MemberType != originalValue.GetType())
                     {
-                        foreach (string comment in member.Comment)
-                            parElem.Add(new XComment(comment));
+                        areOfSameType = false;
                     }
 
-                    // make an element with the provided data
-                    bool moveDescOnly = false;
-                    bool alreadyAdded = false;
-                    XElement elemToAdd = MakeElement(parElem, member, elementValue, out moveDescOnly, out alreadyAdded);
-                    if (!areOfSameType)
-                    {
-                        elemToAdd.Add(new XAttribute(s_namespaceURI + s_trueTypeAttrName, elementValue.GetType().FullName));
-                        this.m_needsNamespaceAddition = true;
-                    }
+                    bool hasCustomSerializer = member.HasCustomSerializer || member.MemberTypeWrapper.HasCustomSerializer;
 
-                    if (!alreadyAdded)
+                    // it gets true only for basic data types
+                    if (member.IsSerializedAsAttribute && (areOfSameType || hasCustomSerializer))
                     {
-                        if (moveDescOnly) // if only the descendants of the resulting element are going to be added ...
+                        if (!XMLUtils.AttributeExists(m_baseElement, member.SerializationLocation, member.Alias))
                         {
-                            XMLUtils.MoveDescendants(elemToAdd, parElem);
+                            XAttribute attrToCreate = XMLUtils.CreateAttribute(m_baseElement, member.SerializationLocation, member.Alias, hasCustomSerializer ? "" : elementValue);
+                            if (attrToCreate == null)
+                            {
+                                throw new YAXBadLocationException(member.SerializationLocation);
+                            }
+                            else
+                            {
+                                if (member.HasCustomSerializer)
+                                {
+                                    InvokeCustomSerializerToAttribute(member.CustomSerializerType, elementValue, attrToCreate);
+                                }
+                                else if (member.MemberTypeWrapper.HasCustomSerializer)
+                                {
+                                    InvokeCustomSerializerToAttribute(member.MemberTypeWrapper.CustomSerializerType, elementValue, attrToCreate);
+                                }
+
+                                // if member does not have any typewrappers then it has been already populated with the CreateAttribute method
+                            }
                         }
                         else
                         {
-                            // see if such element already exists
-                            XElement existingElem = parElem.Element(member.Alias);
-                            if (existingElem == null)
+                            throw new YAXAttributeAlreadyExistsException(member.Alias);
+                        }
+                    }
+                    else if (member.IsSerializedAsValue && (areOfSameType || hasCustomSerializer))
+                    {
+                        // find the parent element from its location
+                        XElement parElem = XMLUtils.FindLocation(m_baseElement, member.SerializationLocation);
+                        if (parElem == null) // if the parent element does not exist
+                        {
+                            // see if the location can be created
+                            if (!XMLUtils.CanCreateLocation(m_baseElement, member.SerializationLocation))
+                                throw new YAXBadLocationException(member.SerializationLocation);
+                            // try to create the location
+                            parElem = XMLUtils.CreateLocation(m_baseElement, member.SerializationLocation);
+                            if (parElem == null)
+                                throw new YAXBadLocationException(member.SerializationLocation);
+                        }
+
+                        // if control is moved here, it means that the parent 
+                        // element has been found/created successfully
+
+
+                        string valueToSet;
+                        if (member.HasCustomSerializer)
+                        {
+                            valueToSet = InvokeCustomSerializerToValue(member.CustomSerializerType, elementValue);
+                        }
+                        else if (member.MemberTypeWrapper.HasCustomSerializer)
+                        {
+                            valueToSet = InvokeCustomSerializerToValue(member.MemberTypeWrapper.CustomSerializerType, elementValue);
+                        }
+                        else
+                        {
+                            valueToSet = (elementValue ?? String.Empty).ToString();
+                        }
+
+                        parElem.Add(new XText(valueToSet));
+                    }
+                    else // if the data is going to be serialized as an element
+                    {
+                        // find the parent element from its location
+                        XElement parElem = XMLUtils.FindLocation(m_baseElement, member.SerializationLocation);
+                        if (parElem == null) // if the parent element does not exist
+                        {
+                            // see if the location can be created
+                            if (!XMLUtils.CanCreateLocation(m_baseElement, member.SerializationLocation))
+                                throw new YAXBadLocationException(member.SerializationLocation);
+                            // try to create the location
+                            parElem = XMLUtils.CreateLocation(m_baseElement, member.SerializationLocation);
+                            if (parElem == null)
+                                throw new YAXBadLocationException(member.SerializationLocation);
+                        }
+
+                        // if control is moved here, it means that the parent 
+                        // element has been found/created successfully
+
+                        if (member.HasComment)
+                        {
+                            foreach (string comment in member.Comment)
+                                parElem.Add(new XComment(comment));
+                        }
+
+                        if (hasCustomSerializer)
+                        {
+                            XElement elemToFill = new XElement(member.Alias);
+                            parElem.Add(elemToFill);
+                            if (member.HasCustomSerializer)
                             {
-                                // if not add the new element gracefully
-                                parElem.Add(elemToAdd);
+                                InvokeCustomSerializerToElement(member.CustomSerializerType, elementValue, elemToFill);
                             }
-                            else // if an element with our desired name already exists
+                            else if (member.MemberTypeWrapper.HasCustomSerializer)
                             {
-                                if (ReflectionUtils.IsBasicType(member.MemberType))
+                                InvokeCustomSerializerToElement(member.MemberTypeWrapper.CustomSerializerType, elementValue, elemToFill);
+                            }
+                        }
+                        else
+                        {
+                            // make an element with the provided data
+                            bool moveDescOnly = false;
+                            bool alreadyAdded = false;
+                            XElement elemToAdd = MakeElement(parElem, member, elementValue, out moveDescOnly, out alreadyAdded);
+                            if (!areOfSameType)
+                            {
+                                elemToAdd.Add(new XAttribute(s_namespaceURI + s_trueTypeAttrName, elementValue.GetType().FullName));
+                                this.m_needsNamespaceAddition = true;
+                            }
+
+                            if (!alreadyAdded)
+                            {
+                                if (moveDescOnly) // if only the descendants of the resulting element are going to be added ...
                                 {
-                                    existingElem.SetValue(elementValue);
+                                    XMLUtils.MoveDescendants(elemToAdd, parElem);
                                 }
                                 else
                                 {
-                                    XMLUtils.MoveDescendants(elemToAdd, existingElem);
+                                    // see if such element already exists
+                                    XElement existingElem = parElem.Element(member.Alias);
+                                    if (existingElem == null)
+                                    {
+                                        // if not add the new element gracefully
+                                        parElem.Add(elemToAdd);
+                                    }
+                                    else // if an element with our desired name already exists
+                                    {
+                                        if (ReflectionUtils.IsBasicType(member.MemberType))
+                                        {
+                                            existingElem.SetValue(elementValue);
+                                        }
+                                        else
+                                        {
+                                            XMLUtils.MoveDescendants(elemToAdd, existingElem);
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
-                }
-            }
+                } // end of foreach var member
+            } // end of else if it has no custom serializers
 
             if (m_baseElement.Parent == null && m_needsNamespaceAddition)
             {
@@ -1009,6 +1057,11 @@ namespace YAXLib
                 return m_desObject;
             }
 
+            if (m_udtWrapper.HasCustomDeserializer)
+            {
+                return InvokeCustomDeserializerFromElement(m_udtWrapper.CustomDeserializerType, baseElement);
+            }
+
             XAttribute realTypeAttr = baseElement.Attribute(s_namespaceURI + s_trueTypeAttrName);
             if (realTypeAttr != null)
             {
@@ -1058,8 +1111,9 @@ namespace YAXLib
                 // reset handled exceptions status
                 m_exceptionOccurredDuringMemberDeserialization = false;
 
-                string elemValue = string.Empty;
-                XElement xelemValue = null;
+                string elemValue = string.Empty; // the element value gathered at the first phase
+                XElement xelemValue = null; // the XElement instance gathered at the first phase
+                XAttribute xattrValue = null; // the XAttribute instance gathered at the first phase
 
                 // first evaluate elemValue
                 bool createdFakeElement = false;
@@ -1073,8 +1127,7 @@ namespace YAXLib
                         XElement elem = XMLUtils.FindElement(baseElement, member.SerializationLocation, member.Alias);
                         if (elem != null && elem.Attribute(s_namespaceURI + s_trueTypeAttrName) != null)
                         {
-                            elemValue = elem.GetElementContent();
-                            //elemValue = elem.Value;
+                            elemValue = elem.Value;
                             xelemValue = elem;
                         }
                         else
@@ -1088,6 +1141,7 @@ namespace YAXLib
                     {
                         foundAnyOfMembers = true;
                         elemValue = attr.Value;
+                        xattrValue = attr;
                     }
                 }
                 else if (member.IsSerializedAsValue)
@@ -1108,8 +1162,7 @@ namespace YAXLib
                             XElement innerelem = XMLUtils.FindElement(baseElement, member.SerializationLocation, member.Alias);
                             if (innerelem != null && innerelem.Attribute(s_namespaceURI + s_trueTypeAttrName) != null)
                             {
-                                elemValue = innerelem.GetElementContent();
-                                //elemValue = innerelem.Value;
+                                elemValue = innerelem.Value;
                                 xelemValue = innerelem;
                             }
                             else
@@ -1126,7 +1179,7 @@ namespace YAXLib
                         }
                     }
                 }
-                else
+                else // if member is serialized as an xml element
                 {
                     bool canContinue = false;
                     XElement elem = XMLUtils.FindElement(baseElement, member.SerializationLocation, member.Alias);
@@ -1159,8 +1212,7 @@ namespace YAXLib
                                     canContinue = true;
                                     foundAnyOfMembers = true;
                                     elem = fakeElem;
-                                    elemValue = elem.GetElementContent();
-                                    //elemValue = elem.Value;
+                                    elemValue = elem.Value;
                                 }
                             }
                         }
@@ -1175,14 +1227,13 @@ namespace YAXLib
                     else
                     {
                         foundAnyOfMembers = true;
-                        elemValue = elem.GetElementContent();
-                        //elemValue = elem.Value;
+                        elemValue = elem.Value;
                     }
 
                     xelemValue = elem;
                 }
 
-                // Now try to retrieve elemValue's value.
+                // Phase2: Now try to retrieve elemValue's value, based on values gathered in xelemValue, xattrValue, and elemValue
                 if (m_exceptionOccurredDuringMemberDeserialization)
                 {
                     if (m_desObject == null) // i.e. if it was NOT resuming deserialization, set default value, otherwise existing value for the member is kept
@@ -1220,6 +1271,39 @@ namespace YAXLib
                                 member.SetValue(o, null /*the value to be assigned */);
                             }
                         }
+                    }
+                }
+                else if (member.HasCustomDeserializer || member.MemberTypeWrapper.HasCustomDeserializer)
+                {
+                    Type deserType = member.HasCustomDeserializer ?
+                        member.CustomDeserializerType :
+                        member.MemberTypeWrapper.CustomDeserializerType;
+
+                    object desObj;
+                    if (member.IsSerializedAsAttribute)
+                    {
+                        desObj = InvokeCustomDeserializerFromAttribute(deserType, xattrValue);
+                    }
+                    else if (member.IsSerializedAsElement)
+                    {
+                        desObj = InvokeCustomDeserializerFromElement(deserType, xelemValue);
+                    }
+                    else if (member.IsSerializedAsValue)
+                    {
+                        desObj = InvokeCustomDeserializerFromValue(deserType, elemValue);
+                    }
+                    else
+                    {
+                        throw new Exception("unknown situation");
+                    }
+
+                    try
+                    {
+                        member.SetValue(o, desObj);
+                    }
+                    catch
+                    {
+                        this.OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias), this.m_defaultExceptionType);
                     }
                 }
                 else if (elemValue != null)
@@ -1557,11 +1641,11 @@ namespace YAXLib
                     {
                         try
                         {
-                            lst.Add(ReflectionUtils.ConvertBasicType(childElem.GetElementContent(), curElementType));
+                            lst.Add(ReflectionUtils.ConvertBasicType(childElem.Value, curElementType));
                         }
                         catch
                         {
-                            this.OnExceptionOccurred(new YAXBadlyFormedInput(childElem.Name.ToString(), childElem.GetElementContent()), this.m_defaultExceptionType);
+                            this.OnExceptionOccurred(new YAXBadlyFormedInput(childElem.Name.ToString(), childElem.Value), this.m_defaultExceptionType);
                         }
                     }
                     else
@@ -2083,6 +2167,44 @@ namespace YAXLib
         #endregion
 
         #region Utilities
+
+        private static object InvokeCustomDeserializerFromElement(Type customDeserType, XElement elemToDeser)
+        {
+            object customDeserializer = customDeserType.InvokeMember(string.Empty, System.Reflection.BindingFlags.CreateInstance, null, null, new object[0]);
+            return customDeserType.InvokeMember("DeserializeFromElement", BindingFlags.InvokeMethod, null, customDeserializer, new object[] { elemToDeser });
+        }
+
+        private static object InvokeCustomDeserializerFromAttribute(Type customDeserType, XAttribute attrToDeser)
+        {
+            object customDeserializer = customDeserType.InvokeMember(string.Empty, System.Reflection.BindingFlags.CreateInstance, null, null, new object[0]);
+            return customDeserType.InvokeMember("DeserializeFromAttribute", BindingFlags.InvokeMethod, null, customDeserializer, new object[] { attrToDeser });
+        }
+
+        private static object InvokeCustomDeserializerFromValue(Type customDeserType, string valueToDeser)
+        {
+            object customDeserializer = customDeserType.InvokeMember(string.Empty, System.Reflection.BindingFlags.CreateInstance, null, null, new object[0]);
+            return customDeserType.InvokeMember("DeserializeFromValue", BindingFlags.InvokeMethod, null, customDeserializer, new object[] { valueToDeser });
+        }
+
+        private static void InvokeCustomSerializerToElement(Type customSerType, object objToSerialize, XElement elemToFill)
+        {
+            object customSerializer = customSerType.InvokeMember(string.Empty, System.Reflection.BindingFlags.CreateInstance, null, null, new object[0]);
+            customSerType.InvokeMember("SerializeToElement", BindingFlags.InvokeMethod, null, customSerializer, new object[] { objToSerialize, elemToFill });
+        }
+
+        private static void InvokeCustomSerializerToAttribute(Type customSerType, object objToSerialize, XAttribute attrToFill)
+        {
+            object customSerializer = customSerType.InvokeMember(string.Empty, System.Reflection.BindingFlags.CreateInstance, null, null, new object[0]);
+            customSerType.InvokeMember("SerializeToAttribute", BindingFlags.InvokeMethod, null, customSerializer, new object[] { objToSerialize, attrToFill });
+        }
+
+        private static string InvokeCustomSerializerToValue(Type customSerType, object objToSerialize)
+        {
+            object customSerializer = customSerType.InvokeMember(string.Empty, System.Reflection.BindingFlags.CreateInstance, null, null, new object[0]);
+            return (string) customSerType.InvokeMember("SerializeToValue", BindingFlags.InvokeMethod, null, customSerializer, new object[] { objToSerialize });
+        }
+
+
 
         /// <summary>
         /// Gets the sequence of fields to be serialized for the specified type. This sequence is retreived according to 

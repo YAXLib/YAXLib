@@ -49,6 +49,8 @@
   <ItemGroup>
     <Compile Include="Enums.cs" />
     <Compile Include="EnumWrapper.cs" />
+    <Compile Include="ICustomDeserializer.cs" />
+    <Compile Include="ICustomSerializer.cs" />
     <Compile Include="KnownDotNetTypesDeserializers.cs" />
     <Compile Include="MemberWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

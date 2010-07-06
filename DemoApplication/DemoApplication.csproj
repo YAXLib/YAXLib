@@ -58,6 +58,7 @@
     </Compile>
     <Compile Include="GeneralToString.cs" />
     <Compile Include="SampleClasses\BookClassTestingSerializeAsValue.cs" />
+    <Compile Include="SampleClasses\CustomSerializationTests.cs" />
     <Compile Include="SampleClasses\GenericCollectionsSample.cs" />
     <Compile Include="SampleClasses\InterfaceMatchingSample.cs" />
     <Compile Include="SampleClasses\FreeSample.cs" />

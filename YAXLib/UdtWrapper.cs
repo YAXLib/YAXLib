@@ -244,6 +244,47 @@ namespace YAXLib
             }
         }
 
+        /// <summary>
+        /// Gets or sets the type of the custom serializer.
+        /// </summary>
+        /// <value>The type of the custom serializer.</value>
+        public Type CustomSerializerType { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the type of the custom deserializer.
+        /// </summary>
+        /// <value>The type of the custom deserializer.</value>
+        public Type CustomDeserializerType { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance has custom serializer.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance has custom serializer; otherwise, <c>false</c>.
+        /// </value>
+        public bool HasCustomSerializer
+        {
+            get
+            {
+                return CustomSerializerType != null;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance has custom deserializer.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance has custom deserializer; otherwise, <c>false</c>.
+        /// </value>
+        public bool HasCustomDeserializer
+        {
+            get
+            {
+                return CustomDeserializerType != null;
+            }
+        }
+
+
         #endregion
 
         #region Public Methods
@@ -352,6 +393,46 @@ namespace YAXLib
             {
                 if(!ReflectionUtils.IsArray(m_udtType))
                     this.IsAttributedAsNotCollection = true;
+            }
+            else if (attr is YAXCustomSerializerAttribute)
+            {
+                Type serType = (attr as YAXCustomSerializerAttribute).CustomSerializerType;
+
+                Type genTypeArg;
+                bool isDesiredInterface = ReflectionUtils.IsDerivedFromGenericInterfaceType(serType, typeof(ICustomSerializer<>), out genTypeArg);
+
+                if (!isDesiredInterface)
+                {
+                    throw new YAXException("The provided custom serialization type is not derived from the proper interface");
+                }
+                else if (genTypeArg != this.UnderlyingType)
+                {
+                    throw new YAXException("The generic argument of the class and the type of the class do not match");
+                }
+                else
+                {
+                    this.CustomSerializerType = serType;
+                }
+            }
+            else if (attr is YAXCustomDeserializerAttribute)
+            {
+                Type deserType = (attr as YAXCustomDeserializerAttribute).CustomDeserializerType;
+
+                Type genTypeArg;
+                bool isDesiredInterface = ReflectionUtils.IsDerivedFromGenericInterfaceType(deserType, typeof(ICustomDeserializer<>), out genTypeArg);
+
+                if (!isDesiredInterface)
+                {
+                    throw new YAXException("The provided custom deserialization type is not derived from the proper interface");
+                }
+                else if (genTypeArg != this.UnderlyingType)
+                {
+                    throw new YAXException("The generic argument of the class and the underlying type do not match");
+                }
+                else
+                {
+                    this.CustomDeserializerType = deserType;
+                }
             }
             else
             {

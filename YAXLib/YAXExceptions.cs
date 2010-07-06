@@ -184,7 +184,7 @@ namespace YAXLib
         /// <summary>
         /// Initializes a new instance of the <see cref="YAXAttributeMissingException"/> class.
         /// </summary>
-        /// <param name="attrName">Name of the attribute.</param>
+        /// <param name="elementName">Name of the element.</param>
         public YAXElementValueMissingException(string elementName)
         {
             this.ElementName = elementName;
@@ -229,7 +229,7 @@ namespace YAXLib
         /// <summary>
         /// Initializes a new instance of the <see cref="YAXAttributeMissingException"/> class.
         /// </summary>
-        /// <param name="attrName">Name of the attribute.</param>
+        /// <param name="elementName">Name of the element.</param>
         public YAXElementValueAlreadyExistsException(string elementName)
         {
             this.ElementName = elementName;

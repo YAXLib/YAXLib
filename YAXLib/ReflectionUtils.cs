@@ -208,6 +208,29 @@ namespace YAXLib
             return IsIEnumerable(type, out seqType);
         }
 
+        public static bool IsDerivedFromGenericInterfaceType(Type givenType, Type genericInterfaceType, out Type genericType)
+        {
+            genericType = null;
+            if ((givenType.IsClass || givenType.IsValueType) && !givenType.IsAbstract)
+            {
+                foreach (Type interfaceType in givenType.GetInterfaces())
+                {
+                    if (interfaceType.IsGenericType &&
+                        interfaceType.GetGenericTypeDefinition() == genericInterfaceType)
+                    {
+                        Type[] genArgs = interfaceType.GetGenericArguments();
+                        if (genArgs.Length != 1)
+                            return false;
+
+                        genericType = genArgs[0];
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+
         /// <summary>
         /// Determines whether the specified type has implemented or is an <c>IEnumerable</c> or <c>IEnumerable&lt;&gt;</c> .
         /// </summary>
