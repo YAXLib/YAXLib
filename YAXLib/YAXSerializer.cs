@@ -233,6 +233,17 @@ namespace YAXLib
         }
 
         /// <summary>
+        /// Serializes the specified object and returns an instance of <c>XDocument</c> containing the result.
+        /// </summary>
+        /// <param name="obj">The object to serialize.</param>
+        /// <returns>An instance of <c>XDocument</c> containing the resulting XML</returns>
+        public XDocument SerializeToXDocument(object obj)
+        {
+            return SerializeXDocument(obj);
+        }
+
+
+        /// <summary>
         /// Serializes the specified object into a <c>TextWriter</c> instance.
         /// </summary>
         /// <param name="obj">The object to serialize.</param>
@@ -327,6 +338,26 @@ namespace YAXLib
                 XDocument xdoc = XDocument.Load(textReader);
                 XElement baseElement = xdoc.Root;
                 return this.DeserializeBase(baseElement);
+            }
+            catch (XmlException ex)
+            {
+                this.OnExceptionOccurred(new YAXBadlyFormedXML(ex), this.m_defaultExceptionType);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Deserializes an object while reading from an instance of <c>XElement</c>
+        /// </summary>
+        /// <param name="element">The <c>XElement</c> instance to read from.</param>
+        /// <returns>The deserialized object</returns>
+        public object Deserialize(XElement element)
+        {
+            try
+            {
+                XDocument xdoc = new XDocument();
+                xdoc.Add(element);
+                return this.DeserializeBase(element);
             }
             catch (XmlException ex)
             {
