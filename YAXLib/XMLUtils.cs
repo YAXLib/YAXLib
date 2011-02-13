@@ -238,7 +238,7 @@ namespace YAXLib
             if (newLoc.Attribute(attrName) != null) // i.e., the attribute already exists 
                 return null; // we cannot create another one with the same name
 
-            XAttribute newAttr = new XAttribute(attrName, attrValue ?? String.Empty);
+            XAttribute newAttr = new XAttribute(attrName, (attrValue ?? String.Empty).ToString());
             newLoc.Add(newAttr);
             return newAttr;
         }

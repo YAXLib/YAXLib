@@ -845,7 +845,7 @@ namespace YAXLib
 
                 if (isKeyAttrib && areKeyOfSameType)
                 {
-                    elemChild.Add(new XAttribute(keyAlias, keyObj ?? string.Empty));
+                    elemChild.Add(new XAttribute(keyAlias, (keyObj ?? string.Empty).ToString()));
                 }
                 else
                 {
@@ -859,7 +859,7 @@ namespace YAXLib
 
                 if (isValueAttrib && areValueOfSameType)
                 {
-                    elemChild.Add(new XAttribute(valueAlias, valueObj ?? string.Empty));
+                    elemChild.Add(new XAttribute(valueAlias, (valueObj ?? string.Empty).ToString()));
                 }
                 else
                 {
@@ -1050,6 +1050,9 @@ namespace YAXLib
             alreadyAdded = false;
             if (value == null || ReflectionUtils.IsBasicType(value.GetType()))
             {
+                if (value != null)
+                    value = value.ToString();
+
                 return new XElement(name, value);
             }
             else if (ReflectionUtils.IsStringConvertibleIFormattable(value.GetType()))

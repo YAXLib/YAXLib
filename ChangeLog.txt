@@ -1,3 +1,9 @@
+[2.4] February 13, 2011
+   * Fixing issue #14150. Now the serialized data follow the active culture 
+     of the serializing thread. The limitation is that the culture of the 
+	 deserializer's thread must be the same, otherwise it is possible that 
+	 some parsing exception occur.
+
 [2.3] February 13, 2011
    * Fixing a threading bug by making the type-wrappers pool thread safe.
 

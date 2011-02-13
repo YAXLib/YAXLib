@@ -182,7 +182,7 @@ namespace YAXLibTests
 @"<!-- This example is used in the article to show YAXLib exception handling policies -->
 <ProgrammingLanguage>
   <LanguageName>C#</LanguageName>
-  <IsCaseSensitive>true</IsCaseSensitive>
+  <IsCaseSensitive>True</IsCaseSensitive>
 </ProgrammingLanguage>";
             YAXSerializer serializer = new YAXSerializer(typeof(ProgrammingLanguage), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(ProgrammingLanguage.GetSampleInstance());
@@ -573,10 +573,10 @@ namespace YAXLibTests
     <Milliseconds>300</Milliseconds>
     <Minutes>45</Minutes>
     <Seconds>2</Seconds>
-    <TotalDays>2.1562766203703703</TotalDays>
-    <TotalHours>51.750638888888886</TotalHours>
+    <TotalDays>2.15627662037037</TotalDays>
+    <TotalHours>51.7506388888889</TotalHours>
     <TotalMilliseconds>186302300</TotalMilliseconds>
-    <TotalMinutes>3105.0383333333334</TotalMinutes>
+    <TotalMinutes>3105.03833333333</TotalMinutes>
     <TotalSeconds>186302.3</TotalSeconds>
   </TheTimeSpan>
   <AnotherTimeSpan>
@@ -586,10 +586,10 @@ namespace YAXLibTests
     <Milliseconds>300</Milliseconds>
     <Minutes>45</Minutes>
     <Seconds>2</Seconds>
-    <TotalDays>2.1562766203703703</TotalDays>
-    <TotalHours>51.750638888888886</TotalHours>
+    <TotalDays>2.15627662037037</TotalDays>
+    <TotalHours>51.7506388888889</TotalHours>
     <TotalMilliseconds>186302300</TotalMilliseconds>
-    <TotalMinutes>3105.0383333333334</TotalMinutes>
+    <TotalMinutes>3105.03833333333</TotalMinutes>
     <TotalSeconds>186302.3</TotalSeconds>
   </AnotherTimeSpan>
   <DicTimeSpans>
@@ -601,10 +601,10 @@ namespace YAXLibTests
         <Milliseconds>300</Milliseconds>
         <Minutes>45</Minutes>
         <Seconds>2</Seconds>
-        <TotalDays>2.1562766203703703</TotalDays>
-        <TotalHours>51.750638888888886</TotalHours>
+        <TotalDays>2.15627662037037</TotalDays>
+        <TotalHours>51.7506388888889</TotalHours>
         <TotalMilliseconds>186302300</TotalMilliseconds>
-        <TotalMinutes>3105.0383333333334</TotalMinutes>
+        <TotalMinutes>3105.03833333333</TotalMinutes>
         <TotalSeconds>186302.3</TotalSeconds>
       </Key>
       <Value>1</Value>
@@ -617,7 +617,7 @@ namespace YAXLibTests
         <Milliseconds>200</Milliseconds>
         <Minutes>40</Minutes>
         <Seconds>1</Seconds>
-        <TotalDays>3.0694583333333334</TotalDays>
+        <TotalDays>3.06945833333333</TotalDays>
         <TotalHours>73.667</TotalHours>
         <TotalMilliseconds>265201200</TotalMilliseconds>
         <TotalMinutes>4420.02</TotalMinutes>
@@ -841,19 +841,19 @@ namespace YAXLibTests
   </IntArray>
   <DoubleArray yaxlib:dims=""2,3,3"">
     <Double>2</Double>
-    <Double>0.66666666666666663</Double>
+    <Double>0.666666666666667</Double>
     <Double>0.4</Double>
     <Double>2</Double>
-    <Double>0.66666666666666663</Double>
+    <Double>0.666666666666667</Double>
     <Double>0.4</Double>
     <Double>2</Double>
-    <Double>0.66666666666666663</Double>
+    <Double>0.666666666666667</Double>
     <Double>0.4</Double>
     <Double>2</Double>
-    <Double>0.66666666666666663</Double>
+    <Double>0.666666666666667</Double>
     <Double>0.4</Double>
     <Double>4</Double>
-    <Double>1.3333333333333333</Double>
+    <Double>1.33333333333333</Double>
     <Double>0.8</Double>
     <Double>6</Double>
     <Double>2</Double>
@@ -1090,7 +1090,7 @@ namespace YAXLibTests
     <Object yaxlib:realtype=""System.Int32"">1</Object>
     <Object yaxlib:realtype=""System.Double"">3</Object>
     <Object yaxlib:realtype=""System.String"">Hello</Object>
-    <Object yaxlib:realtype=""System.DateTime"">2010-03-04T00:00:00</Object>
+    <Object yaxlib:realtype=""System.DateTime"">3/4/2010 12:00:00 AM</Object>
     <Something>
       <Or>
         <Another>
@@ -1115,7 +1115,7 @@ namespace YAXLibTests
   </TheArrayList>
   <TheHashtable>
     <Object yaxlib:realtype=""System.Collections.DictionaryEntry"">
-      <Key yaxlib:realtype=""System.DateTime"">2009-02-01T00:00:00</Key>
+      <Key yaxlib:realtype=""System.DateTime"">2/1/2009 12:00:00 AM</Key>
       <Value yaxlib:realtype=""System.Int32"">7</Value>
     </Object>
     <Object yaxlib:realtype=""System.Collections.DictionaryEntry"">
@@ -1152,16 +1152,16 @@ namespace YAXLibTests
     </Object>
   </TheSortedList>
   <TheBitArray>
-    <Object yaxlib:realtype=""System.Boolean"">false</Object>
-    <Object yaxlib:realtype=""System.Boolean"">true</Object>
-    <Object yaxlib:realtype=""System.Boolean"">false</Object>
-    <Object yaxlib:realtype=""System.Boolean"">false</Object>
-    <Object yaxlib:realtype=""System.Boolean"">false</Object>
-    <Object yaxlib:realtype=""System.Boolean"">false</Object>
-    <Object yaxlib:realtype=""System.Boolean"">true</Object>
-    <Object yaxlib:realtype=""System.Boolean"">false</Object>
-    <Object yaxlib:realtype=""System.Boolean"">false</Object>
-    <Object yaxlib:realtype=""System.Boolean"">false</Object>
+    <Object yaxlib:realtype=""System.Boolean"">False</Object>
+    <Object yaxlib:realtype=""System.Boolean"">True</Object>
+    <Object yaxlib:realtype=""System.Boolean"">False</Object>
+    <Object yaxlib:realtype=""System.Boolean"">False</Object>
+    <Object yaxlib:realtype=""System.Boolean"">False</Object>
+    <Object yaxlib:realtype=""System.Boolean"">False</Object>
+    <Object yaxlib:realtype=""System.Boolean"">True</Object>
+    <Object yaxlib:realtype=""System.Boolean"">False</Object>
+    <Object yaxlib:realtype=""System.Boolean"">False</Object>
+    <Object yaxlib:realtype=""System.Boolean"">False</Object>
   </TheBitArray>
 </NonGenericCollectionsSample>";
             YAXSerializer serializer = new YAXSerializer(typeof(NonGenericCollectionsSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
