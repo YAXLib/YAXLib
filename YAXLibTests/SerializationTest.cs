@@ -15,6 +15,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using YAXLib;
 using DemoApplication.SampleClasses;
+using System.Threading;
 
 namespace YAXLibTests
 {
@@ -36,6 +37,33 @@ namespace YAXLibTests
             string got = serializer.Serialize(Book.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
+
+        [TestMethod]
+        public void ThreadingTest()
+        {
+            try
+            {
+                for (int i = 0; i < 100; i++)
+                {
+                    Thread th = new Thread(() =>
+                        {
+                            YAXSerializer serializer = new YAXSerializer(typeof(Book), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+                            string got = serializer.Serialize(Book.GetSampleInstance());
+                            YAXSerializer deserializer = new YAXSerializer(typeof(Book), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+                            Book book = deserializer.Deserialize(got) as Book;
+                        }
+                    );
+
+                    th.Start();
+                }
+            }
+            catch
+            {
+                Assert.Fail("Exception fired in threading method");
+            }
+
+        }
+
 
         [TestMethod]
         public void BookStructTest()

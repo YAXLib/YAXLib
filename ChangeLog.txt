@@ -1,3 +1,6 @@
+[2.3] February 13, 2011
+   * Fixing a threading bug by making the type-wrappers pool thread safe.
+
 [2.2] July 7, 2010
    * Adding support for definition of custom serializer and deserializers. 
      This is done through the YAXCustomSerializerAttribute, and 

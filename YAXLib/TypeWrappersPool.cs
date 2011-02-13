@@ -27,9 +27,14 @@ namespace YAXLib
         private static TypeWrappersPool s_instance = null;
 
         /// <summary>
-        /// A dictionary from types tp their corresponding wrappers
+        /// A dictionary from types to their corresponding wrappers
         /// </summary>
         private Dictionary<Type, UdtWrapper> m_dicTypes = new Dictionary<Type, UdtWrapper>();
+
+        /// <summary>
+        /// An object to lock type-wrapper dictionary to make it thread-safe
+        /// </summary>
+        private object m_lockDic = new object();
 
         /// <summary>
         /// Prevents a default instance of the <c>TypeWrappersPool</c> class from being created, from
@@ -74,18 +79,21 @@ namespace YAXLib
         /// <returns>the type wrapper corresponding to the specified type</returns>
         public UdtWrapper GetTypeWrapper(Type t, YAXSerializer caller)
         {
-            UdtWrapper result;
-            if (!m_dicTypes.TryGetValue(t, out result))
+            lock (m_lockDic)
             {
-                result = new UdtWrapper(t, caller);
-                m_dicTypes.Add(t, result);
-            }
-            else
-            {
-                result.SetYAXSerializerOptions(caller);
-            }
+                UdtWrapper result;
+                if (!m_dicTypes.TryGetValue(t, out result))
+                {
+                    result = new UdtWrapper(t, caller);
+                    m_dicTypes.Add(t, result);
+                }
+                else
+                {
+                    result.SetYAXSerializerOptions(caller);
+                }
 
-            return result;
+                return result;
+            }
         }
     }
 }

@@ -105,7 +105,6 @@ namespace DemoApplication
 
             lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(BookClassTesgingSerializeAsValue), BookClassTesgingSerializeAsValue.GetSampleInstance()));
             lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(CustomSerializationTests), CustomSerializationTests.GetSampleInstance()));
-            
         }
 
         private void btnSerialize_Click(object sender, EventArgs e)
