@@ -100,11 +100,13 @@ namespace DemoApplication
 
             lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(SerializationOptionsSample), SerializationOptionsSample.GetSampleInstance()));
 
-            //lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(FreeSample), FreeSample.GetSampleInstance()));
             //lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(IssuesSample), IssuesSample.GetSampleInstance()));
 
             lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(BookClassTesgingSerializeAsValue), BookClassTesgingSerializeAsValue.GetSampleInstance()));
             lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(CustomSerializationTests), CustomSerializationTests.GetSampleInstance()));
+
+            //lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(FreeSample), FreeSample.GetSampleInstance()));
+            //lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(CultureSample), CultureSample.GetSampleInstance()));
         }
 
         private void btnSerialize_Click(object sender, EventArgs e)

@@ -33,7 +33,7 @@ namespace YAXLib
         /// </returns>
         public static bool IsBasicType(Type t)
         {
-            if (t == typeof(string) || t.IsPrimitive || t.IsEnum || t == typeof(DateTime))
+            if (t == typeof(string) || t.IsPrimitive || t.IsEnum || t == typeof(DateTime) || t == typeof(decimal))
             {
                 return true;
             }
@@ -623,6 +623,11 @@ namespace YAXLib
                 UdtWrapper typeWrapper = TypeWrappersPool.Pool.GetTypeWrapper(dstType, null);
                 convertedObj = typeWrapper.EnumWrapper.ParseAlias(value.ToString());
             }
+            else if (dstType == typeof(decimal))
+            {
+                // to fix the asymetry of used locales for this type between serialization and deseralization
+                convertedObj = Convert.ChangeType(value, dstType, CultureInfo.InvariantCulture);
+            }
             else if (dstType == typeof(bool))
             {
                 string strValue = value.ToString().Trim().ToLower();
@@ -647,7 +652,8 @@ namespace YAXLib
                     return ConvertBasicType(value, nullableType);
                 }
 
-                convertedObj = Convert.ChangeType(value, dstType);
+                IFormatProvider ifProvider = CultureInfo.InvariantCulture;
+                convertedObj = Convert.ChangeType(value, dstType, ifProvider);
             }
 
             return convertedObj;

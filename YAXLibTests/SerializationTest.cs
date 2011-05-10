@@ -9,13 +9,11 @@
 //-----------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using YAXLib;
 using DemoApplication.SampleClasses;
 using System.Threading;
+using System.Globalization;
 
 namespace YAXLibTests
 {
@@ -64,6 +62,65 @@ namespace YAXLibTests
 
         }
 
+        [TestMethod]
+        public void BookWithDecimalPriceTest()
+        {
+            string result =
+@"<!-- This example demonstrates serailizing a very simple class -->
+<SimpleBookClassWithDecimalPrice>
+  <Title>Inside C#</Title>
+  <Author>Tom Archer &amp; Andrew Whitechapel</Author>
+  <PublishYear>2002</PublishYear>
+  <Price>32.20</Price>
+</SimpleBookClassWithDecimalPrice>";
+            YAXSerializer serializer = new YAXSerializer(typeof(SimpleBookClassWithDecimalPrice), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string got = serializer.Serialize(SimpleBookClassWithDecimalPrice.GetSampleInstance());
+            Assert.AreEqual(result, got);
+        }
+
+        [TestMethod]
+        public void CultureChangeTest()
+        {
+            var curCulture = CultureInfo.CurrentCulture;
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("fr-FR");
+            var serializer = new YAXSerializer(typeof(CultureSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string frResult = serializer.Serialize(CultureSample.GetSampleInstance());
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("fa-IR");
+            serializer = new YAXSerializer(typeof(CultureSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string faResult = serializer.Serialize(CultureSample.GetSampleInstance());
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("de-DE");
+            serializer = new YAXSerializer(typeof(CultureSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string deResult = serializer.Serialize(CultureSample.GetSampleInstance());
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+            serializer = new YAXSerializer(typeof(CultureSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string usResult = serializer.Serialize(CultureSample.GetSampleInstance());
+
+            Thread.CurrentThread.CurrentCulture = curCulture;
+
+            Assert.AreEqual(frResult, faResult, "Comparing FR and FA");
+            Assert.AreEqual(faResult, deResult, "Comparing FA and DE");
+            Assert.AreEqual(deResult, usResult, "Comparing DE and US");
+
+            string expected =
+@"<!-- This class contains fields that are vulnerable to culture changes! -->
+<CultureSample Number2=""32243.67676"" Dec2=""19232389.18391912318232131"" Date2=""09/20/2011 04:10:30"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
+  <Number1>123123.1233</Number1>
+  <Number3 yaxlib:realtype=""System.Double"">21313.123123</Number3>
+  <Numbers>
+    <Double>23213.2132</Double>
+    <Double>123.213</Double>
+    <Double>1.2323E+34</Double>
+  </Numbers>
+  <Dec1>192389183919123.18232131</Dec1>
+  <Date1>10/11/2010 18:20:30</Date1>
+</CultureSample>";
+
+            Assert.AreEqual(usResult, expected, "Checking US is as expected!");
+        }
 
         [TestMethod]
         public void BookStructTest()
@@ -1090,7 +1147,7 @@ namespace YAXLibTests
     <Object yaxlib:realtype=""System.Int32"">1</Object>
     <Object yaxlib:realtype=""System.Double"">3</Object>
     <Object yaxlib:realtype=""System.String"">Hello</Object>
-    <Object yaxlib:realtype=""System.DateTime"">3/4/2010 12:00:00 AM</Object>
+    <Object yaxlib:realtype=""System.DateTime"">03/04/2010 00:00:00</Object>
     <Something>
       <Or>
         <Another>
@@ -1115,7 +1172,7 @@ namespace YAXLibTests
   </TheArrayList>
   <TheHashtable>
     <Object yaxlib:realtype=""System.Collections.DictionaryEntry"">
-      <Key yaxlib:realtype=""System.DateTime"">2/1/2009 12:00:00 AM</Key>
+      <Key yaxlib:realtype=""System.DateTime"">02/01/2009 00:00:00</Key>
       <Value yaxlib:realtype=""System.Int32"">7</Value>
     </Object>
     <Object yaxlib:realtype=""System.Collections.DictionaryEntry"">

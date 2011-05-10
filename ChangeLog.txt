@@ -1,3 +1,10 @@
+[2.5] May 10, 2011
+   * Fixing the bug that serialization and deserialization of decimal 
+     values were not supported. Thanks go to Janko D, for submitting reporting
+	 the bug and submitting the patches (#9334 and #9335).
+   * Forcing YAXLib to serialize values in the invariant culture. This neutralizes
+     the changes made in version 2.4, and fixes the issue #14150 in another way.
+
 [2.4] February 13, 2011
    * Fixing issue #14150. Now the serialized data follow the active culture 
      of the serializing thread. The limitation is that the culture of the 

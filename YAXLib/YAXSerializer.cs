@@ -1051,7 +1051,7 @@ namespace YAXLib
             if (value == null || ReflectionUtils.IsBasicType(value.GetType()))
             {
                 if (value != null)
-                    value = value.ToString();
+                    value = Convert.ToString(value, CultureInfo.InvariantCulture);
 
                 return new XElement(name, value);
             }

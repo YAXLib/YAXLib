@@ -485,7 +485,7 @@ namespace DemoApplication
         /// <param name="t">The type</param>
         private static bool IsBasicType(Type t)
         {
-            if (t == typeof(string) || t.IsPrimitive || t.IsEnum || t == typeof(DateTime))
+            if (t == typeof(string) || t.IsPrimitive || t.IsEnum || t == typeof(DateTime) || t == typeof(decimal))
                 return true;
             else
                 return false;

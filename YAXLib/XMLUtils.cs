@@ -15,6 +15,7 @@ using System.Text;
 using System.Xml.Linq;
 using System.Diagnostics;
 using System.Xml;
+using System.Globalization;
 
 namespace YAXLib
 {
@@ -238,7 +239,7 @@ namespace YAXLib
             if (newLoc.Attribute(attrName) != null) // i.e., the attribute already exists 
                 return null; // we cannot create another one with the same name
 
-            XAttribute newAttr = new XAttribute(attrName, (attrValue ?? String.Empty).ToString());
+            var newAttr = new XAttribute(attrName, Convert.ToString((attrValue ?? String.Empty), CultureInfo.InvariantCulture));
             newLoc.Add(newAttr);
             return newAttr;
         }

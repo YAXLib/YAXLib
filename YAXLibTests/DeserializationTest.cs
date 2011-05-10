@@ -49,6 +49,12 @@ namespace YAXLibTests
         }
 
         [TestMethod]
+        public void DesBookWithDecimalTest()
+        {
+            PerformTest(SimpleBookClassWithDecimalPrice.GetSampleInstance());
+        }
+
+        [TestMethod]
         public void DesBookStructTest()
         {
             object obj = BookStruct.GetSampleInstance();
