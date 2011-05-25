@@ -1015,19 +1015,19 @@ namespace YAXLibTests
     <StringInClass2>SingleRef</StringInClass2>
   </SingleRef>
   <ListOfSamples>
-    <ISample yaxlib:realtype=""DemoApplication.SampleClasses.Class1"">
+    <Class1 yaxlib:realtype=""DemoApplication.SampleClasses.Class1"">
       <IntInInterface>1</IntInInterface>
       <DoubleInClass1>1</DoubleInClass1>
-    </ISample>
-    <ISample yaxlib:realtype=""DemoApplication.SampleClasses.Class2"">
+    </Class1>
+    <Class2 yaxlib:realtype=""DemoApplication.SampleClasses.Class2"">
       <IntInInterface>2</IntInInterface>
       <StringInClass2>Class2</StringInClass2>
-    </ISample>
-    <ISample yaxlib:realtype=""DemoApplication.SampleClasses.Class3_1"">
+    </Class2>
+    <Class3_1 yaxlib:realtype=""DemoApplication.SampleClasses.Class3_1"">
       <StringInClass3_1>Class3_1</StringInClass3_1>
       <IntInInterface>3</IntInInterface>
       <DoubleInClass1>3</DoubleInClass1>
-    </ISample>
+    </Class3_1>
   </ListOfSamples>
   <DictSample2Int>
     <KeyValuePairOfISampleInt32>
@@ -1144,10 +1144,10 @@ namespace YAXLibTests
 @"<!-- This sample demonstrates serialization of non-generic collection classes -->
 <NonGenericCollectionsSample xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
   <ObjList Author_s_Name=""Charles"">
-    <Object yaxlib:realtype=""System.Int32"">1</Object>
-    <Object yaxlib:realtype=""System.Double"">3</Object>
-    <Object yaxlib:realtype=""System.String"">Hello</Object>
-    <Object yaxlib:realtype=""System.DateTime"">03/04/2010 00:00:00</Object>
+    <Int32 yaxlib:realtype=""System.Int32"">1</Int32>
+    <Double yaxlib:realtype=""System.Double"">3</Double>
+    <String yaxlib:realtype=""System.String"">Hello</String>
+    <DateTime yaxlib:realtype=""System.DateTime"">03/04/2010 00:00:00</DateTime>
     <Something>
       <Or>
         <Another>
@@ -1155,12 +1155,12 @@ namespace YAXLibTests
         </Another>
       </Or>
     </Something>
-    <Object yaxlib:realtype=""DemoApplication.SampleClasses.Author"" />
+    <Author yaxlib:realtype=""DemoApplication.SampleClasses.Author"" />
   </ObjList>
   <TheArrayList Author_s_Name=""Steve"">
-    <Object yaxlib:realtype=""System.Int32"">2</Object>
-    <Object yaxlib:realtype=""System.Double"">8.5</Object>
-    <Object yaxlib:realtype=""System.String"">Hi</Object>
+    <Int32 yaxlib:realtype=""System.Int32"">2</Int32>
+    <Double yaxlib:realtype=""System.Double"">8.5</Double>
+    <String yaxlib:realtype=""System.String"">Hi</String>
     <Something>
       <Or>
         <Another>
@@ -1168,59 +1168,60 @@ namespace YAXLibTests
         </Another>
       </Or>
     </Something>
-    <Object yaxlib:realtype=""DemoApplication.SampleClasses.Author"" />
+    <Author yaxlib:realtype=""DemoApplication.SampleClasses.Author"" />
   </TheArrayList>
   <TheHashtable>
-    <Object yaxlib:realtype=""System.Collections.DictionaryEntry"">
+    <DictionaryEntry yaxlib:realtype=""System.Collections.DictionaryEntry"">
       <Key yaxlib:realtype=""System.DateTime"">02/01/2009 00:00:00</Key>
       <Value yaxlib:realtype=""System.Int32"">7</Value>
-    </Object>
-    <Object yaxlib:realtype=""System.Collections.DictionaryEntry"">
+    </DictionaryEntry>
+    <DictionaryEntry yaxlib:realtype=""System.Collections.DictionaryEntry"">
       <Key yaxlib:realtype=""System.String"">Tom</Key>
       <Value yaxlib:realtype=""System.String"">Sam</Value>
-    </Object>
-    <Object yaxlib:realtype=""System.Collections.DictionaryEntry"">
+    </DictionaryEntry>
+    <DictionaryEntry yaxlib:realtype=""System.Collections.DictionaryEntry"">
       <Key yaxlib:realtype=""System.Double"">1</Key>
       <Value yaxlib:realtype=""System.String"">Tim</Value>
-    </Object>
+    </DictionaryEntry>
   </TheHashtable>
   <TheQueue>
-    <Object yaxlib:realtype=""System.Int32"">10</Object>
-    <Object yaxlib:realtype=""System.Int32"">20</Object>
-    <Object yaxlib:realtype=""System.Int32"">30</Object>
+    <Int32 yaxlib:realtype=""System.Int32"">10</Int32>
+    <Int32 yaxlib:realtype=""System.Int32"">20</Int32>
+    <Int32 yaxlib:realtype=""System.Int32"">30</Int32>
   </TheQueue>
   <TheStack>
-    <Object yaxlib:realtype=""System.Int32"">300</Object>
-    <Object yaxlib:realtype=""System.Int32"">200</Object>
-    <Object yaxlib:realtype=""System.Int32"">100</Object>
+    <Int32 yaxlib:realtype=""System.Int32"">300</Int32>
+    <Int32 yaxlib:realtype=""System.Int32"">200</Int32>
+    <Int32 yaxlib:realtype=""System.Int32"">100</Int32>
   </TheStack>
   <TheSortedList>
-    <Object yaxlib:realtype=""System.Collections.DictionaryEntry"">
+    <DictionaryEntry yaxlib:realtype=""System.Collections.DictionaryEntry"">
       <Key yaxlib:realtype=""System.Int32"">1</Key>
       <Value yaxlib:realtype=""System.Int32"">2</Value>
-    </Object>
-    <Object yaxlib:realtype=""System.Collections.DictionaryEntry"">
+    </DictionaryEntry>
+    <DictionaryEntry yaxlib:realtype=""System.Collections.DictionaryEntry"">
       <Key yaxlib:realtype=""System.Int32"">5</Key>
       <Value yaxlib:realtype=""System.Int32"">7</Value>
-    </Object>
-    <Object yaxlib:realtype=""System.Collections.DictionaryEntry"">
+    </DictionaryEntry>
+    <DictionaryEntry yaxlib:realtype=""System.Collections.DictionaryEntry"">
       <Key yaxlib:realtype=""System.Int32"">8</Key>
       <Value yaxlib:realtype=""System.Int32"">2</Value>
-    </Object>
+    </DictionaryEntry>
   </TheSortedList>
   <TheBitArray>
-    <Object yaxlib:realtype=""System.Boolean"">False</Object>
-    <Object yaxlib:realtype=""System.Boolean"">True</Object>
-    <Object yaxlib:realtype=""System.Boolean"">False</Object>
-    <Object yaxlib:realtype=""System.Boolean"">False</Object>
-    <Object yaxlib:realtype=""System.Boolean"">False</Object>
-    <Object yaxlib:realtype=""System.Boolean"">False</Object>
-    <Object yaxlib:realtype=""System.Boolean"">True</Object>
-    <Object yaxlib:realtype=""System.Boolean"">False</Object>
-    <Object yaxlib:realtype=""System.Boolean"">False</Object>
-    <Object yaxlib:realtype=""System.Boolean"">False</Object>
+    <Boolean yaxlib:realtype=""System.Boolean"">False</Boolean>
+    <Boolean yaxlib:realtype=""System.Boolean"">True</Boolean>
+    <Boolean yaxlib:realtype=""System.Boolean"">False</Boolean>
+    <Boolean yaxlib:realtype=""System.Boolean"">False</Boolean>
+    <Boolean yaxlib:realtype=""System.Boolean"">False</Boolean>
+    <Boolean yaxlib:realtype=""System.Boolean"">False</Boolean>
+    <Boolean yaxlib:realtype=""System.Boolean"">True</Boolean>
+    <Boolean yaxlib:realtype=""System.Boolean"">False</Boolean>
+    <Boolean yaxlib:realtype=""System.Boolean"">False</Boolean>
+    <Boolean yaxlib:realtype=""System.Boolean"">False</Boolean>
   </TheBitArray>
 </NonGenericCollectionsSample>";
+
             YAXSerializer serializer = new YAXSerializer(typeof(NonGenericCollectionsSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(NonGenericCollectionsSample.GetSampleInstance());
             Assert.AreEqual(result, got);

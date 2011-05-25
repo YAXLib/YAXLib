@@ -443,22 +443,84 @@ namespace YAXLib
         /// </returns>
         public static bool IsTypeEqualOrInheritedFromType(Type type, Type baseType)
         {
+            if (type == baseType)
+                return true;
+
+            bool isTypeGenDef = type.IsGenericTypeDefinition;
+            bool isBaseGenDef = baseType.IsGenericTypeDefinition;
+            Type[] typeGenArgs = null;
+            Type[] baseGenArgs = null;
+
             if (type.IsGenericType)
-                type = type.GetGenericTypeDefinition();
+            {
+                if (isBaseGenDef)
+                {
+                    if (!isTypeGenDef)
+                    {
+                        type = type.GetGenericTypeDefinition();
+                        isTypeGenDef = true;
+                    }
+                }
+                else
+                {
+                    typeGenArgs = type.GetGenericArguments();
+                }
+            }
+
+            if (baseType.IsGenericType)
+            {
+                if (isTypeGenDef)
+                {
+                    if (!isBaseGenDef)
+                    {
+                        baseType = baseType.GetGenericTypeDefinition();
+                        isBaseGenDef = true;
+                    }
+                }
+                else
+                {
+                    baseGenArgs = baseType.GetGenericArguments();
+                }
+            }
 
             if (type == baseType)
                 return true;
 
-            Type curBaseType = type.BaseType;
-            while (curBaseType != null)
+            if(typeGenArgs != null && baseGenArgs != null)
             {
-                if (curBaseType == baseType)
-                    return true;
+                if(typeGenArgs.Length != baseGenArgs.Length)
+                    return false;
 
-                curBaseType = curBaseType.BaseType;
+                for(int i = 0; i < typeGenArgs.Length; i++)
+                {
+                    // TODO: check if I should call this method for type args recersively
+                    if (typeGenArgs[i] != baseGenArgs[i])
+                        return false;
+                }
             }
 
-            return false;
+            if (baseType.IsInterface)
+            {
+                foreach (var iface in type.GetInterfaces())
+                {
+                    if (iface.Name == baseType.Name)
+                        return true;
+                }
+                return false;
+            }
+            else
+            {
+                Type curBaseType = type.BaseType;
+                while (curBaseType != null)
+                {
+                    if (curBaseType.Name == baseType.Name)
+                        return true;
+
+                    curBaseType = curBaseType.BaseType;
+                }
+
+                return false;
+            }
         }
 
         /// <summary>

@@ -888,6 +888,10 @@ namespace YAXLib
         private XElement AddObjectToElement(XElement elem, string alias, object obj)
         {
             UdtWrapper udt = TypeWrappersPool.Pool.GetTypeWrapper(obj.GetType(), this);
+
+            if (alias == null)
+                alias = udt.Alias;
+
             XElement elemToAdd = null;
 
             if (udt.IsTreatedAsDictionary)
@@ -959,10 +963,6 @@ namespace YAXLib
             }
 
             Type colItemType = ReflectionUtils.GetCollectionItemType(elementValue.GetType());
-            if (eachElementName == null)
-            {
-                eachElementName = ReflectionUtils.GetTypeFriendlyName(colItemType);
-            }
 
             if (serType == YAXCollectionSerializationTypes.Serially && !ReflectionUtils.IsBasicType(colItemType))
                 serType = YAXCollectionSerializationTypes.Recursive;
@@ -972,7 +972,7 @@ namespace YAXLib
             XElement elemToAdd = null; // will hold the resulting element
             if (serType == YAXCollectionSerializationTypes.Serially)
             {
-                StringBuilder sb = new StringBuilder();
+                var sb = new StringBuilder();
 
                 bool isFirst = true;
                 object objToAdd = null;
@@ -992,7 +992,7 @@ namespace YAXLib
                     }
                     else
                     {
-                        sb.AppendFormat(CultureInfo.InvariantCulture, "{0}{1}", seperator, objToAdd.ToString());
+                        sb.AppendFormat(CultureInfo.InvariantCulture, "{0}{1}", seperator, objToAdd);
                     }
                 }
 
@@ -1009,11 +1009,19 @@ namespace YAXLib
                 foreach (object obj in collectionInst)
                 {
                     objToAdd = (format == null) ? obj : ReflectionUtils.TryFormatObject(obj, format);
-                    XElement itemElem = this.AddObjectToElement(elem, eachElementName, objToAdd);
+                    var curElemName = eachElementName;
+                    
+                    if(curElemName == null)
+                    {
+                        UdtWrapper udt = TypeWrappersPool.Pool.GetTypeWrapper(obj.GetType(), this);
+                        curElemName = udt.Alias;
+                    }
+
+                    XElement itemElem = this.AddObjectToElement(elem, curElemName, objToAdd);
                     if (obj.GetType() != colItemType)
                     {
                         itemElem.Add(new XAttribute(s_namespaceURI + s_trueTypeAttrName, obj.GetType().FullName));
-                        if (itemElem.Parent == null) // i.e. it has been removed, e.g. because all its members have been serialized outside the element
+                        if (itemElem.Parent == null) // i.e., it has been removed, e.g., because all its members have been serialized outside the element
                             elem.Add(itemElem); // return it back, or undelete this item
 
                         m_needsNamespaceAddition = true;
@@ -1649,13 +1657,15 @@ namespace YAXLib
                     isPrimitive = true;
                 }
 
-                string eachElemName = ReflectionUtils.GetTypeFriendlyName(itemType);
+                string eachElemName = null;// = ReflectionUtils.GetTypeFriendlyName(itemType);
                 if (colAttrInstance != null && colAttrInstance.EachElementName != null)
                 {
                     eachElemName = colAttrInstance.EachElementName;
                 }
 
-                foreach (XElement childElem in xelemValue.Elements(eachElemName))
+                var elemsToSearch = eachElemName == null ? xelemValue.Elements() : xelemValue.Elements(eachElemName);
+
+                foreach (XElement childElem in elemsToSearch)
                 {
                     Type curElementType = itemType;
                     bool curElementIsPrimitive = isPrimitive;
@@ -1671,6 +1681,10 @@ namespace YAXLib
                         }
                     }
 
+                    // TODO: check if curElementType is derived or is the same is itemType, for speed concerns perform this check only when elementName is null
+                    if (eachElemName == null && (curElementType == typeof(object) || !ReflectionUtils.IsTypeEqualOrInheritedFromType(curElementType, itemType)))
+                        continue;
+
                     if (curElementIsPrimitive)
                     {
                         try
@@ -1679,14 +1693,14 @@ namespace YAXLib
                         }
                         catch
                         {
-                            this.OnExceptionOccurred(new YAXBadlyFormedInput(childElem.Name.ToString(), childElem.Value), this.m_defaultExceptionType);
+                            this.OnExceptionOccurred(new YAXBadlyFormedInput(childElem.Name.ToString(), childElem.Value), m_defaultExceptionType);
                         }
                     }
                     else
                     {
-                        YAXSerializer ser = new YAXSerializer(curElementType, this.m_exceptionPolicy, this.m_defaultExceptionType, this.m_serializationOption);
+                        var ser = new YAXSerializer(curElementType, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
                         lst.Add(ser.DeserializeBase(childElem));
-                        this.m_parsingErrors.AddRange(ser.ParsingErrors);
+                        m_parsingErrors.AddRange(ser.ParsingErrors);
                     }
                 }
             } // end of else if 

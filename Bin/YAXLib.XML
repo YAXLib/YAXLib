@@ -1,0 +1,2596 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>YAXLib</name>
+    </assembly>
+    <members>
+        <member name="T:YAXLib.YAXException">
+            <summary>
+            The base for all exception classes of YAXLib
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXException"/> class.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="T:YAXLib.YAXBadLocationException">
+            <summary>
+            Raised when the location of serialization specified cannot be
+            created or cannot be read from.
+            This exception is raised during serialization and deserialization
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXBadLocationException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXBadLocationException"/> class.
+            </summary>
+            <param name="location">The location.</param>
+        </member>
+        <member name="P:YAXLib.YAXBadLocationException.Location">
+            <summary>
+            Gets or sets the bad location which caused the exception
+            </summary>
+            <value>The location.</value>
+        </member>
+        <member name="P:YAXLib.YAXBadLocationException.Message">
+            <summary>
+            Gets a message that describes the current exception.
+            </summary>
+            <value></value>
+            <returns>
+            The error message that explains the reason for the exception, or an empty string("").
+            </returns>
+        </member>
+        <member name="T:YAXLib.YAXAttributeAlreadyExistsException">
+            <summary>
+            Raised when trying to serialize an attribute where 
+            another attribute with the same name already exists.
+            This exception is raised during serialization.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXAttributeAlreadyExistsException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXAttributeAlreadyExistsException"/> class.
+            </summary>
+            <param name="attrName">Name of the attribute.</param>
+        </member>
+        <member name="P:YAXLib.YAXAttributeAlreadyExistsException.AttrName">
+            <summary>
+            Gets the name of the attribute.
+            </summary>
+            <value>The name of the attribute.</value>
+        </member>
+        <member name="P:YAXLib.YAXAttributeAlreadyExistsException.Message">
+            <summary>
+            Gets a message that describes the current exception.
+            </summary>
+            <value></value>
+            <returns>
+            The error message that explains the reason for the exception, or an empty string("").
+            </returns>
+        </member>
+        <member name="T:YAXLib.YAXAttributeMissingException">
+            <summary>
+            Raised when the attribute corresponding to some property is not present in the given XML file, when deserializing.
+            This exception is raised during deserialization.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXAttributeMissingException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXAttributeMissingException"/> class.
+            </summary>
+            <param name="attrName">Name of the attribute.</param>
+        </member>
+        <member name="P:YAXLib.YAXAttributeMissingException.AttributeName">
+            <summary>
+            Gets the name of the attribute.
+            </summary>
+            <value>The name of the attribute.</value>
+        </member>
+        <member name="P:YAXLib.YAXAttributeMissingException.Message">
+            <summary>
+            Gets a message that describes the current exception.
+            </summary>
+            <value></value>
+            <returns>
+            The error message that explains the reason for the exception, or an empty string("").
+            </returns>
+        </member>
+        <member name="T:YAXLib.YAXElementValueMissingException">
+            <summary>
+            Raised when the element value corresponding to some property is not present in the given XML file, when deserializing.
+            This exception is raised during deserialization.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXElementValueMissingException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXAttributeMissingException"/> class.
+            </summary>
+            <param name="elementName">Name of the element.</param>
+        </member>
+        <member name="P:YAXLib.YAXElementValueMissingException.ElementName">
+            <summary>
+            Gets the name of the attribute.
+            </summary>
+            <value>The name of the attribute.</value>
+        </member>
+        <member name="P:YAXLib.YAXElementValueMissingException.Message">
+            <summary>
+            Gets a message that describes the current exception.
+            </summary>
+            <value></value>
+            <returns>
+            The error message that explains the reason for the exception, or an empty string("").
+            </returns>
+        </member>
+        <member name="T:YAXLib.YAXElementValueAlreadyExistsException">
+            <summary>
+            Raised when the element value corresponding to some property is not present in the given XML file, when deserializing.
+            This exception is raised during deserialization.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXElementValueAlreadyExistsException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXAttributeMissingException"/> class.
+            </summary>
+            <param name="elementName">Name of the element.</param>
+        </member>
+        <member name="P:YAXLib.YAXElementValueAlreadyExistsException.ElementName">
+            <summary>
+            Gets the name of the attribute.
+            </summary>
+            <value>The name of the attribute.</value>
+        </member>
+        <member name="P:YAXLib.YAXElementValueAlreadyExistsException.Message">
+            <summary>
+            Gets a message that describes the current exception.
+            </summary>
+            <value></value>
+            <returns>
+            The error message that explains the reason for the exception, or an empty string("").
+            </returns>
+        </member>
+        <member name="T:YAXLib.YAXElementMissingException">
+            <summary>
+            Raised when the element corresponding to some property is not present in the given XML file, when deserializing.
+            This exception is raised during deserialization.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXElementMissingException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXElementMissingException"/> class.
+            </summary>
+            <param name="elemName">Name of the element.</param>
+        </member>
+        <member name="P:YAXLib.YAXElementMissingException.ElementName">
+            <summary>
+            Gets or the name of the element.
+            </summary>
+            <value>The name of the element.</value>
+        </member>
+        <member name="P:YAXLib.YAXElementMissingException.Message">
+            <summary>
+            Gets a message that describes the current exception.
+            </summary>
+            <value></value>
+            <returns>
+            The error message that explains the reason for the exception, or an empty string("").
+            </returns>
+        </member>
+        <member name="T:YAXLib.YAXBadlyFormedInput">
+            <summary>
+            Raised when the value provided for some property in the XML input, cannot be 
+            converted to the type of the property.
+            This exception is raised during deserialization.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXBadlyFormedInput.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXBadlyFormedInput"/> class.
+            </summary>
+            <param name="elemName">Name of the element.</param>
+            <param name="badInput">The value of the input which could not be converted to the type of the property.</param>
+        </member>
+        <member name="P:YAXLib.YAXBadlyFormedInput.ElementName">
+            <summary>
+            Gets the name of the element.
+            </summary>
+            <value>The name of the element.</value>
+        </member>
+        <member name="P:YAXLib.YAXBadlyFormedInput.BadInput">
+            <summary>
+            Gets the value of the input which could not be converted to the type of the property.
+            </summary>
+            <value>The value of the input which could not be converted to the type of the property.</value>
+        </member>
+        <member name="P:YAXLib.YAXBadlyFormedInput.Message">
+            <summary>
+            Gets a message that describes the current exception.
+            </summary>
+            <value></value>
+            <returns>
+            The error message that explains the reason for the exception, or an empty string("").
+            </returns>
+        </member>
+        <member name="T:YAXLib.YAXPropertyCannotBeAssignedTo">
+            <summary>
+            Raised when the value provided for some property in the XML input, cannot be 
+            assigned to the property.
+            This exception is raised during deserialization.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXPropertyCannotBeAssignedTo.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXPropertyCannotBeAssignedTo"/> class.
+            </summary>
+            <param name="propName">Name of the property.</param>
+        </member>
+        <member name="P:YAXLib.YAXPropertyCannotBeAssignedTo.PropertyName">
+            <summary>
+            Gets the name of the property.
+            </summary>
+            <value>The name of the property.</value>
+        </member>
+        <member name="P:YAXLib.YAXPropertyCannotBeAssignedTo.Message">
+            <summary>
+            Gets a message that describes the current exception.
+            </summary>
+            <value></value>
+            <returns>
+            The error message that explains the reason for the exception, or an empty string("").
+            </returns>
+        </member>
+        <member name="T:YAXLib.YAXCannotAddObjectToCollection">
+            <summary>
+            Raised when some member of the collection in the input XML, cannot be added to the collection object.
+            This exception is raised during deserialization.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXCannotAddObjectToCollection.#ctor(System.String,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXCannotAddObjectToCollection"/> class.
+            </summary>
+            <param name="propName">Name of the property.</param>
+            <param name="obj">The object that could not be added to the collection.</param>
+        </member>
+        <member name="P:YAXLib.YAXCannotAddObjectToCollection.PropertyName">
+            <summary>
+            Gets the name of the property.
+            </summary>
+            <value>The name of the property.</value>
+        </member>
+        <member name="P:YAXLib.YAXCannotAddObjectToCollection.ObjectToAdd">
+            <summary>
+            Gets the object that could not be added to the collection.
+            </summary>
+            <value>the object that could not be added to the collection.</value>
+        </member>
+        <member name="P:YAXLib.YAXCannotAddObjectToCollection.Message">
+            <summary>
+            Gets a message that describes the current exception.
+            </summary>
+            <value></value>
+            <returns>
+            The error message that explains the reason for the exception, or an empty string("").
+            </returns>
+        </member>
+        <member name="T:YAXLib.YAXDefaultValueCannotBeAssigned">
+            <summary>
+            Raised when the default value specified by the <c>YAXErrorIfMissedAttribute</c> could not be assigned to the property.
+            This exception is raised during deserialization.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXDefaultValueCannotBeAssigned.#ctor(System.String,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXDefaultValueCannotBeAssigned"/> class.
+            </summary>
+            <param name="propName">Name of the property.</param>
+            <param name="defaultValue">The default value which caused the problem.</param>
+        </member>
+        <member name="P:YAXLib.YAXDefaultValueCannotBeAssigned.PropertyName">
+            <summary>
+            Gets the name of the property.
+            </summary>
+            <value>The name of the property.</value>
+        </member>
+        <member name="P:YAXLib.YAXDefaultValueCannotBeAssigned.TheDefaultValue">
+            <summary>
+            Gets the default value which caused the problem.
+            </summary>
+            <value>The default value which caused the problem.</value>
+        </member>
+        <member name="P:YAXLib.YAXDefaultValueCannotBeAssigned.Message">
+            <summary>
+            Gets a message that describes the current exception.
+            </summary>
+            <value></value>
+            <returns>
+            The error message that explains the reason for the exception, or an empty string("").
+            </returns>
+        </member>
+        <member name="T:YAXLib.YAXBadlyFormedXML">
+            <summary>
+            Raised when the XML input does not follow standard XML formatting rules.
+            This exception is raised during deserialization.
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXBadlyFormedXML.innerException">
+            <summary>
+            The inner exception.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXBadlyFormedXML.#ctor(System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXBadlyFormedXML"/> class.
+            </summary>
+            <param name="innerException">The inner exception.</param>
+        </member>
+        <member name="M:YAXLib.YAXBadlyFormedXML.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXBadlyFormedXML"/> class.
+            </summary>
+        </member>
+        <member name="P:YAXLib.YAXBadlyFormedXML.Message">
+            <summary>
+            Gets a message that describes the current exception.
+            </summary>
+            <value></value>
+            <returns>
+            The error message that explains the reason for the exception, or an empty string("").
+            </returns>
+        </member>
+        <member name="T:YAXLib.YAXInvalidFormatProvided">
+            <summary>
+            Raised when an object cannot be formatted with the format string provided.
+            This exception is raised during serialization.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXInvalidFormatProvided.#ctor(System.Type,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXInvalidFormatProvided"/> class.
+            </summary>
+            <param name="objectType">Type of the fiedl to serialize.</param>
+            <param name="format">The format string.</param>
+        </member>
+        <member name="P:YAXLib.YAXInvalidFormatProvided.ObjectType">
+            <summary>
+            Gets the type of the field to serialize
+            </summary>
+            <value>The type of the field to serialize.</value>
+        </member>
+        <member name="P:YAXLib.YAXInvalidFormatProvided.Format">
+            <summary>
+            Gets the format string.
+            </summary>
+            <value>The format string.</value>
+        </member>
+        <member name="P:YAXLib.YAXInvalidFormatProvided.Message">
+            <summary>
+            Gets a message that describes the current exception.
+            </summary>
+            <returns>
+            The error message that explains the reason for the exception, or an empty string("").
+            </returns>
+        </member>
+        <member name="T:YAXLib.YAXCannotSerializeSelfReferentialTypes">
+            <summary>
+            Raised when trying to serialize self-referential types. This exception cannot be turned off.
+            This exception is raised during deserialization.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXCannotSerializeSelfReferentialTypes.#ctor(System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXCannotSerializeSelfReferentialTypes"/> class.
+            </summary>
+            <param name="type">The the self-referential type that caused the problem.</param>
+        </member>
+        <member name="P:YAXLib.YAXCannotSerializeSelfReferentialTypes.SelfReferentialType">
+            <summary>
+            Gets the self-referential type that caused the problem.
+            </summary>
+            <value>The type of the self-referential type that caused the problem.</value>
+        </member>
+        <member name="P:YAXLib.YAXCannotSerializeSelfReferentialTypes.Message">
+            <summary>
+            Gets a message that describes the current exception.
+            </summary>
+            <returns>
+            The error message that explains the reason for the exception, or an empty string("").
+            </returns>
+        </member>
+        <member name="T:YAXLib.YAXObjectTypeMismatch">
+            <summary>
+            Raised when the object provided for serialization is not of the type provided for the serializer. This exception cannot be turned off.
+            This exception is raised during serialization.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXObjectTypeMismatch.#ctor(System.Type,System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXObjectTypeMismatch"/> class.
+            </summary>
+            <param name="expectedType">The expected type.</param>
+            <param name="receivedType">The type of the object which did not match the expected type.</param>
+        </member>
+        <member name="P:YAXLib.YAXObjectTypeMismatch.ExpectedType">
+            <summary>
+            Gets the expected type.
+            </summary>
+            <value>The expected type.</value>
+        </member>
+        <member name="P:YAXLib.YAXObjectTypeMismatch.ReceivedType">
+            <summary>
+            Gets the type of the object which did not match the expected type.
+            </summary>
+            <value>The type of the object which did not match the expected type.</value>
+        </member>
+        <member name="P:YAXLib.YAXObjectTypeMismatch.Message">
+            <summary>
+            Gets a message that describes the current exception.
+            </summary>
+            <returns>
+            The error message that explains the reason for the exception, or an empty string("").
+            </returns>
+        </member>
+        <member name="T:YAXLib.UdtWrapper">
+            <summary>
+            a wrapper class around user-defined types, for quick acess to their YAXLib related attributes
+            </summary>
+        </member>
+        <member name="F:YAXLib.UdtWrapper.m_udtType">
+            <summary>
+            the underlying type for this instance of <c>TypeWrapper</c>
+            </summary>
+        </member>
+        <member name="F:YAXLib.UdtWrapper.m_isTypeCollection">
+            <summary>
+            boolean value indicating whether this instance is a wrapper around a collection type
+            </summary>
+        </member>
+        <member name="F:YAXLib.UdtWrapper.m_isTypeDictionary">
+            <summary>
+            boolean value indicating whether this instance is a wrapper around a dictionary type
+            </summary>
+        </member>
+        <member name="F:YAXLib.UdtWrapper.m_enumWrapper">
+            <summary>
+            reference to an instance of <c>EnumWrapper</c> in case that the current instance is an enum.
+            </summary>
+        </member>
+        <member name="F:YAXLib.UdtWrapper.m_isSerializationOptionSetByAttribute">
+            <summary>
+            value indicating whether the serialization options has been explicitly adjusted
+            using attributes for the class
+            </summary>
+        </member>
+        <member name="M:YAXLib.UdtWrapper.#ctor(System.Type,YAXLib.YAXSerializer)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.UdtWrapper"/> class.
+            </summary>
+            <param name="udtType">The underlying type to create the wrapper around.</param>
+            <param name="callerSerializer">reference to the serializer 
+            instance which is building this instance.</param>
+        </member>
+        <member name="M:YAXLib.UdtWrapper.SetYAXSerializerOptions(YAXLib.YAXSerializer)">
+            <summary>
+            Sets the serializer options.
+            </summary>
+            <param name="caller">The caller serializer.</param>
+        </member>
+        <member name="M:YAXLib.UdtWrapper.ToString">
+            <summary>
+            Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+            </summary>
+            <returns>
+            A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+            </returns>
+        </member>
+        <member name="M:YAXLib.UdtWrapper.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with the current <see cref="T:System.Object"/>.</param>
+            <returns>
+            true if the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>; otherwise, false.
+            </returns>
+            <exception cref="T:System.NullReferenceException">
+            The <paramref name="obj"/> parameter is null.
+            </exception>
+        </member>
+        <member name="M:YAXLib.UdtWrapper.GetHashCode">
+            <summary>
+            Serves as a hash function for a particular type.
+            </summary>
+            <returns>
+            A hash code for the current <see cref="T:System.Object"/>.
+            </returns>
+        </member>
+        <member name="M:YAXLib.UdtWrapper.ProcessYAXAttribute(System.Object)">
+            <summary>
+            Processes the specified attribute.
+            </summary>
+            <param name="attr">The attribute to process.</param>
+        </member>
+        <member name="P:YAXLib.UdtWrapper.Alias">
+            <summary>
+            Gets the alias of the type.
+            </summary>
+            <value>The alias of the type.</value>
+        </member>
+        <member name="P:YAXLib.UdtWrapper.Comment">
+            <summary>
+            Gets an array of comments for the underlying type.
+            </summary>
+            <value>The array of comments for the underlying type.</value>
+        </member>
+        <member name="P:YAXLib.UdtWrapper.FieldsToSerialize">
+            <summary>
+            Gets the fields to be serialized.
+            </summary>
+            <value>The fields to be serialized.</value>
+        </member>
+        <member name="P:YAXLib.UdtWrapper.SerializationOption">
+            <summary>
+            Gets the serialization options.
+            </summary>
+            <value>The serialization options.</value>
+        </member>
+        <member name="P:YAXLib.UdtWrapper.IsAttributedAsNotCollection">
+            <summary>
+            Gets a value indicating whether this instance is attributed as not collection.
+            </summary>
+            <value>
+            <c>true</c> if this instance is attributed as not collection; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:YAXLib.UdtWrapper.HasComment">
+            <summary>
+            Gets a value indicating whether this instance has comment.
+            </summary>
+            <value>
+            <c>true</c> if this instance has comment; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:YAXLib.UdtWrapper.UnderlyingType">
+            <summary>
+            Gets the underlying type corresponding to this wrapper.
+            </summary>
+            <value>The underlying type corresponding to this wrapper.</value>
+        </member>
+        <member name="P:YAXLib.UdtWrapper.IsEnum">
+            <summary>
+            Gets a value indicating whether this instance wraps around an enum.
+            </summary>
+            <value><c>true</c> if this instance wraps around an enum; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:YAXLib.UdtWrapper.EnumWrapper">
+            <summary>
+            Gets the enum wrapper, provided that this instance wraps around an enum.
+            </summary>
+            <value>The enum wrapper, provided that this instance wraps around an enum.</value>
+        </member>
+        <member name="P:YAXLib.UdtWrapper.IsNotAllowdNullObjectSerialization">
+            <summary>
+            Determines whether serialization of null objects is not allowd.
+            </summary>
+            <returns>
+            <c>true</c> if serialization of null objects is not allowd; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="P:YAXLib.UdtWrapper.IsCollectionType">
+            <summary>
+            Gets a value indicating whether this instance wraps around a collection type.
+            </summary>
+            <value>
+            <c>true</c> if this instance wraps around a collection type; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:YAXLib.UdtWrapper.IsDictionaryType">
+            <summary>
+            Gets a value indicating whether this instance wraps around a dictionary type.
+            </summary>
+            <value>
+            <c>true</c> if this instance wraps around a dictionary type; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:YAXLib.UdtWrapper.IsTreatedAsCollection">
+            <summary>
+            Gets a value indicating whether this instance is treated as collection.
+            </summary>
+            <value>
+            <c>true</c> if this instance is treated as collection; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:YAXLib.UdtWrapper.IsTreatedAsDictionary">
+            <summary>
+            Gets a value indicating whether this instance is treated as dictionary.
+            </summary>
+            <value>
+            <c>true</c> if this instance is treated as dictionary; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:YAXLib.UdtWrapper.CustomSerializerType">
+            <summary>
+            Gets or sets the type of the custom serializer.
+            </summary>
+            <value>The type of the custom serializer.</value>
+        </member>
+        <member name="P:YAXLib.UdtWrapper.CustomDeserializerType">
+            <summary>
+            Gets or sets the type of the custom deserializer.
+            </summary>
+            <value>The type of the custom deserializer.</value>
+        </member>
+        <member name="P:YAXLib.UdtWrapper.HasCustomSerializer">
+            <summary>
+            Gets a value indicating whether this instance has custom serializer.
+            </summary>
+            <value>
+            	<c>true</c> if this instance has custom serializer; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:YAXLib.UdtWrapper.HasCustomDeserializer">
+            <summary>
+            Gets a value indicating whether this instance has custom deserializer.
+            </summary>
+            <value>
+            	<c>true</c> if this instance has custom deserializer; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="T:YAXLib.YAXExceptionHandlingPolicies">
+            <summary>
+            Enumerates different kinds of exception handling policies as used by YAX Library.
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXExceptionHandlingPolicies.ThrowWarningsAndErrors">
+            <summary>
+            Throws Both Warnings And Errors
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXExceptionHandlingPolicies.ThrowErrorsOnly">
+            <summary>
+            Throws Errors only (default)
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXExceptionHandlingPolicies.DoNotThrow">
+            <summary>
+            Does not throw exceptions, the errors can be accessed via the YAXParsingErrors instance
+            </summary>
+        </member>
+        <member name="T:YAXLib.YAXExceptionTypes">
+            <summary>
+            Enumerates different possible behaviours of the library toward exceptions
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXExceptionTypes.Ignore">
+            <summary>
+            Ignore non-fatal exceptions; neither throw them, nor log them.
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXExceptionTypes.Warning">
+            <summary>
+            Treat exception as a warning
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXExceptionTypes.Error">
+            <summary>
+            Treat exception as an error
+            </summary>
+        </member>
+        <member name="T:YAXLib.YAXSerializationOptions">
+            <summary>
+            Enumerates different serialization options which could be set at construction time.
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXSerializationOptions.DontSerializeNullObjects">
+            <summary>
+            Prevents serialization of null objects.
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXSerializationOptions.SerializeNullObjects">
+            <summary>
+            Serializes null objects also (the default)
+            </summary>
+        </member>
+        <member name="T:YAXLib.YAXCollectionSerializationTypes">
+            <summary>
+            Enumerates the possible ways of serializing collection classes
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXCollectionSerializationTypes.Recursive">
+            <summary>
+            Serializes each member of the collection, as a separate element, all enclosed in an element regarding the collection itself
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXCollectionSerializationTypes.RecursiveWithNoContainingElement">
+            <summary>
+            Serializes each member of the collection, as a separate element, with no enclosing element for the collection
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXCollectionSerializationTypes.Serially">
+            <summary>
+            Serializes all members of the collection in one element separated by some delimiter, if possible.
+            </summary>
+        </member>
+        <member name="T:YAXLib.YAXNodeTypes">
+            <summary>
+            Enumerates possible XML node types upon which a property can be serialized.
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXNodeTypes.Attribute">
+            <summary>
+            Serialize data as an attribute for the base element
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXNodeTypes.Element">
+            <summary>
+            Serialize data as an element
+            </summary>
+        </member>
+        <member name="T:YAXLib.YAXSerializationFields">
+            <summary>
+            Enumerates possible options for a serializable type
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXSerializationFields.PublicPropertiesOnly">
+            <summary>
+            Serializes only the public properties (the default behaviour)
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXSerializationFields.AllFields">
+            <summary>
+            Serializes all fields (properties or member variables) which are public, or non-public.
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXSerializationFields.AttributedFieldsOnly">
+            <summary>
+            Serializes all fields (properties or member variables) which are public, or non-public, if attributed as <c>YAXSerializableField</c>
+            </summary>
+        </member>
+        <member name="T:YAXLib.StringUtils">
+            <summary>
+            Provides string utility methods
+            </summary>
+        </member>
+        <member name="M:YAXLib.StringUtils.RefineLocationString(System.String)">
+            <summary>
+            Refines the location string. Trims it, and replaces invlalid characters with underscore.
+            </summary>
+            <param name="elemAddr">The element address to refine.</param>
+            <returns>the refined location string</returns>
+        </member>
+        <member name="M:YAXLib.StringUtils.RefineSingleElement(System.String)">
+            <summary>
+            Refines a single element name. Refines the location string. Trims it, and replaces invlalid characters with underscore.
+            </summary>
+            <param name="elemName">Name of the element.</param>
+            <returns>the refined element name</returns>
+        </member>
+        <member name="M:YAXLib.StringUtils.CombineLocationAndElementName(System.String,System.String)">
+            <summary>
+            Combines a location string and an element name to form a bigger location string.
+            </summary>
+            <param name="location">The location string.</param>
+            <param name="elemName">Name of the element.</param>
+            <returns>a bigger location string formed by combining a location string and an element name.</returns>
+        </member>
+        <member name="M:YAXLib.StringUtils.DivideLocationOneStep(System.String,System.String@,System.String@)">
+            <summary>
+            Divides the location string one step, to form a shorter location string.
+            </summary>
+            <param name="location">The location string to divide.</param>
+            <param name="newLocation">The new location string which is one level shorter.</param>
+            <param name="newElem">The element name removed from the end of location string.</param>
+            <returns></returns>
+        </member>
+        <member name="M:YAXLib.StringUtils.IsLocationAllGeneric(System.String)">
+            <summary>
+            Determines whether the specified location is composed of levels 
+            which are themselves either "." or "..".
+            </summary>
+            <param name="location">The location string to check.</param>
+            <returns>
+            <c>true</c> if the specified location string is all composed of "." or ".." levels; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:YAXLib.StringUtils.IsSingleLocationGeneric(System.String)">
+            <summary>
+            Determines whether the specified location string is either "." or "..".
+            </summary>
+            <param name="location">The location string to check.</param>
+            <returns>
+            <c>true</c> if the specified location string is either "." or ".."; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:YAXLib.StringUtils.GetArrayDimsString(System.Int32[])">
+            <summary>
+            Gets the string corresponidng to the given array dimensions.
+            </summary>
+            <param name="dims">The array dimensions.</param>
+            <returns>the string corresponidng to the given array dimensions</returns>
+        </member>
+        <member name="M:YAXLib.StringUtils.ParseArrayDimsString(System.String)">
+            <summary>
+            Parses the array dimensions string, and returns the corresponding dimensions array.
+            </summary>
+            <param name="str">The string to parse.</param>
+            <returns>the dimensions array corresponiding to the given string</returns>
+        </member>
+        <member name="T:YAXLib.MemberWrapper">
+            <summary>
+            A wrapper class for members which only can be properties or member variables
+            </summary>
+        </member>
+        <member name="F:YAXLib.MemberWrapper.m_memberInfo">
+            <summary>
+            reference to the underlying <c>MemberInfo</c> from which this instance is built
+            </summary>
+        </member>
+        <member name="F:YAXLib.MemberWrapper.m_memberType">
+            <summary>
+            the member type of the underlying member
+            </summary>
+        </member>
+        <member name="F:YAXLib.MemberWrapper.m_memberTypeWrapper">
+            <summary>
+            a type wrapper around the underlying member type
+            </summary>
+        </member>
+        <member name="F:YAXLib.MemberWrapper.m_propertyInfoInstance">
+            <summary>
+            the <c>PropertyInfo</c> instance, if this member corrsponds to a property, <c>null</c> otherwise
+            </summary>
+        </member>
+        <member name="F:YAXLib.MemberWrapper.m_fieldInfoInstance">
+            <summary>
+            the <c>FieldInfo</c> instance, if this member corrsponds to a field, <c>null</c> otherwise
+            </summary>
+        </member>
+        <member name="F:YAXLib.MemberWrapper.m_collectionAttributeInstance">
+            <summary>
+            The collection attribute instance
+            </summary>
+        </member>
+        <member name="F:YAXLib.MemberWrapper.m_dictionaryAttributeInstance">
+            <summary>
+            the dictionary attribute instance
+            </summary>
+        </member>
+        <member name="F:YAXLib.MemberWrapper.m_isProperty">
+            <summary>
+            <c>true</c> if this instance corresponds to a property, <c>false</c> 
+            if it corrsponds to a field (i.e., a member variable)
+            </summary>
+        </member>
+        <member name="F:YAXLib.MemberWrapper.m_serializationLocation">
+            <summary>
+            The location of the serialization
+            </summary>
+        </member>
+        <member name="F:YAXLib.MemberWrapper.m_alias">
+            <summary>
+            The alias specified by the user
+            </summary>
+        </member>
+        <member name="F:YAXLib.MemberWrapper.m_isSerializedAsAttribute">
+            <summary>
+            specifies whether this member is going to be serialized as an attribute
+            </summary>
+        </member>
+        <member name="F:YAXLib.MemberWrapper.m_isSerializedAsValue">
+            <summary>
+            specifies whether this member is going to be serialized as a value for another element
+            </summary>
+        </member>
+        <member name="M:YAXLib.MemberWrapper.#ctor(System.Reflection.MemberInfo,YAXLib.YAXSerializer)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.MemberWrapper"/> class.
+            </summary>
+            <param name="memberInfo">The member-info to build this instance from.</param>
+            <param name="callerSerializer">The caller serializer.</param>
+        </member>
+        <member name="M:YAXLib.MemberWrapper.GetOriginalValue(System.Object,System.Object[])">
+            <summary>
+            Gets the original value of this member in the specified object
+            </summary>
+            <param name="obj">The object whose value corresponding to this instance, must be retreived.</param>
+            <param name="index">The array of indeces (usually <c>null</c>).</param>
+            <returns>the original value of this member in the specified object</returns>
+        </member>
+        <member name="M:YAXLib.MemberWrapper.GetValue(System.Object)">
+            <summary>
+            Gets the processed value of this member in the specified object
+            </summary>
+            <param name="obj">The object whose value corresponding to this instance, must be retreived.</param>
+            <returns>the processed value of this member in the specified object</returns>
+        </member>
+        <member name="M:YAXLib.MemberWrapper.SetValue(System.Object,System.Object)">
+            <summary>
+            Sets the value of this member in the specified object
+            </summary>
+            <param name="obj">The object whose member corresponding to this instance, must be given value.</param>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:YAXLib.MemberWrapper.IsAllowedToBeSerialized(YAXLib.YAXSerializationFields)">
+            <summary>
+            Determines whether this instance of <c>MemberWrapper</c> can be serialized.
+            </summary>
+            <param name="serializationFields">The serialization fields.</param>
+            <returns>
+            <c>true</c> if this instance of <c>MemberWrapper</c> can be serialized; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:YAXLib.MemberWrapper.ToString">
+            <summary>
+            Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+            </summary>
+            <returns>
+            A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+            </returns>
+        </member>
+        <member name="M:YAXLib.MemberWrapper.InitInstance">
+            <summary>
+            Initializes this instance of <c>MemberWrapper</c>.
+            </summary>
+        </member>
+        <member name="M:YAXLib.MemberWrapper.InitDefaultValue">
+            <summary>
+            Initializes the default value for this instance of <c>MemberWrapper</c>.
+            </summary>
+        </member>
+        <member name="M:YAXLib.MemberWrapper.ProcessYAXAttribute(System.Object)">
+            <summary>
+            Processes the specified attribute which is an instance of <c>YAXAttribute</c>.
+            </summary>
+            <param name="attr">The attribute to process.</param>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.Alias">
+            <summary>
+            Gets the alias specified for this member.
+            </summary>
+            <value>The alias specified for this member.</value>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.CanRead">
+            <summary>
+            Gets a value indicating whether the member corrsponding to this instance can be read from.
+            </summary>
+            <value><c>true</c> if the member corrsponding to this instance can be read from; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.CanWrite">
+            <summary>
+            Gets a value indicating whether the member corrsponding to this instance can be written to.
+            </summary>
+            <value><c>true</c> if the member corrsponding to this instance can be written to; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.Comment">
+            <summary>
+            Gets an array of comment lines.
+            </summary>
+            <value>The comment lines.</value>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.DefaultValue">
+            <summary>
+            Gets the default value for this instance.
+            </summary>
+            <value>The default value for this instance.</value>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.Format">
+            <summary>
+            Gets the format specified for this value; <c>null</c> if no format is specified.
+            </summary>
+            <value>the format specified for this value; <c>null</c> if no format is specified.</value>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.HasComment">
+            <summary>
+            Gets a value indicating whether this instance has comments.
+            </summary>
+            <value>
+            	<c>true</c> if this instance has comments; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.HasFormat">
+            <summary>
+            Gets a value indicating whether this instance has format values specified
+            </summary>
+            <value>
+            <c>true</c> if this instance has format values specified; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.IsAttributedAsDontSerialize">
+            <summary>
+            Gets a value indicating whether this instance is attributed as dont serialize.
+            </summary>
+            <value>
+            	<c>true</c> if this instance is attributed as dont serialize; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.IsAttributedAsNotCollection">
+            <summary>
+            Gets a value indicating whether this instance is attributed as not-collection.
+            </summary>
+            <value>
+            	<c>true</c> if this instance is attributed as not-collection; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.IsAttributedAsSerializable">
+            <summary>
+            Gets a value indicating whether this instance is attributed as serializable.
+            </summary>
+            <value>
+            	<c>true</c> if this instance is attributed as serializable; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.IsSerializedAsAttribute">
+            <summary>
+            Gets a value indicating whether this instance is serialized as an XML attribute.
+            </summary>
+            <value>
+            <c>true</c> if this instance is serialized as an XML attribute; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.IsSerializedAsValue">
+            <summary>
+            Gets a value indicating whether this instance is serialized as a value for an element.
+            </summary>
+            <value>
+            <c>true</c> if this instance is serialized as a value for an element; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.IsSerializedAsElement">
+            <summary>
+            Gets a value indicating whether this instance is serialized as an XML element.
+            </summary>
+            <value>
+            <c>true</c> if this instance is serialized as an XML element; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.MemberType">
+            <summary>
+            Gets the type of the member.
+            </summary>
+            <value>The type of the member.</value>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.MemberTypeWrapper">
+            <summary>
+            Gets the type wrapper instance corrsponding to the member-type of this instance.
+            </summary>
+            <value>The type wrapper instance corrsponding to the member-type of this instance.</value>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.OriginalName">
+            <summary>
+            Gets the original of this member (as opposed to its alias).
+            </summary>
+            <value>The original of this member .</value>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.SerializationLocation">
+            <summary>
+            Gets the serialization location.
+            </summary>
+            <value>The serialization location.</value>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.TreatErrorsAs">
+            <summary>
+            Gets the exception type for this instance in case of encountering missing values
+            </summary>
+            <value>The exception type for this instance in case of encountering missing values</value>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.CollectionAttributeInstance">
+            <summary>
+            Gets the collection attribute instance.
+            </summary>
+            <value>The collection attribute instance.</value>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.DictionaryAttributeInstance">
+            <summary>
+            Gets the dictionary attribute instance.
+            </summary>
+            <value>The dictionary attribute instance.</value>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.IsTreatedAsCollection">
+            <summary>
+            Gets a value indicating whether this instance is treated as a collection.
+            </summary>
+            <value>
+            	<c>true</c> if this instance is treated as a collection; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.IsTreatedAsDictionary">
+            <summary>
+            Gets a value indicating whether this instance is treated as a dictionary.
+            </summary>
+            <value>
+            <c>true</c> if this instance is treated as a dictionary; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.CustomSerializerType">
+            <summary>
+            Gets or sets the type of the custom serializer.
+            </summary>
+            <value>The type of the custom serializer.</value>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.CustomDeserializerType">
+            <summary>
+            Gets or sets the type of the custom deserializer.
+            </summary>
+            <value>The type of the custom deserializer.</value>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.HasCustomSerializer">
+            <summary>
+            Gets a value indicating whether this instance has custom serializer.
+            </summary>
+            <value>
+            	<c>true</c> if this instance has custom serializer; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:YAXLib.MemberWrapper.HasCustomDeserializer">
+            <summary>
+            Gets a value indicating whether this instance has custom deserializer.
+            </summary>
+            <value>
+            	<c>true</c> if this instance has custom deserializer; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="T:YAXLib.ICustomDeserializer`1">
+            <summary>
+            Defines the interface to all custom deserializers used with YAXLib.
+            Note that normally you don't need to implement all the methods.
+            </summary>
+            <typeparam name="T">The type of field, property, class, or struct for which custom deserializer
+            is provided</typeparam>
+        </member>
+        <member name="M:YAXLib.ICustomDeserializer`1.DeserializeFromAttribute(System.Xml.Linq.XAttribute)">
+            <summary>
+            Deserializes from an xml attribute, and returns the retreived value.
+            You will normally need to use XAttribute.Value property only.
+            </summary>
+            <param name="attrib">The attribute to deserialize.</param>
+            <returns></returns>
+        </member>
+        <member name="M:YAXLib.ICustomDeserializer`1.DeserializeFromElement(System.Xml.Linq.XElement)">
+            <summary>
+            Deserializes from an xml element, and returns the retreived value.
+            You might need to use XElement.Value, XElement.Nodes(), 
+            XElement.Attributes(), and XElement.Elements() only.
+            </summary>
+            <param name="element">The element to deserialize.</param>
+            <returns></returns>
+        </member>
+        <member name="M:YAXLib.ICustomDeserializer`1.DeserializeFromValue(System.String)">
+            <summary>
+            Deserializes from a string value which has been serialized as the content of an element
+            </summary>
+            <param name="value">The string value to deserialize.</param>
+            <returns></returns>
+        </member>
+        <member name="T:YAXLib.XMLUtils">
+            <summary>
+            Provides utility methods for manipulating XML.
+            There are four methods for each unit. UnitExists, FindUnit, CanCreateUnit, CreateUnit
+            Units are: Location, Element, and Attribute
+            </summary>
+        </member>
+        <member name="M:YAXLib.XMLUtils.LocationExists(System.Xml.Linq.XElement,System.String)">
+            <summary>
+            Determines whether the location specified exists in the given XML element.
+            </summary>
+            <param name="baseElement">The XML element.</param>
+            <param name="location">The location string.</param>
+            <returns>a value indicating whether the location specified exists in the given XML element</returns>
+        </member>
+        <member name="M:YAXLib.XMLUtils.FindLocation(System.Xml.Linq.XElement,System.String)">
+            <summary>
+            Finds the location specified in the given XML element specified.
+            </summary>
+            <param name="baseElement">The XML element.</param>
+            <param name="location">The location string.</param>
+            <returns>the XML element corresponding to the specified location, or <c>null</c> if it is not found</returns>
+        </member>
+        <member name="M:YAXLib.XMLUtils.CanCreateLocation(System.Xml.Linq.XElement,System.String)">
+            <summary>
+            Determines whether the specified location can be created in the specified XML element.
+            </summary>
+            <param name="baseElement">The XML element.</param>
+            <param name="location">The location string.</param>
+            <returns>
+            <c>true</c> if the specified location can be created in the specified XML element; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:YAXLib.XMLUtils.CreateLocation(System.Xml.Linq.XElement,System.String)">
+            <summary>
+            Creates and returns XML element corresponding to the sepcified location in the given XML element.
+            </summary>
+            <param name="baseElement">The XML element.</param>
+            <param name="location">The location string.</param>
+            <returns>XML element corresponding to the sepcified location created in the given XML element</returns>
+        </member>
+        <member name="M:YAXLib.XMLUtils.AttributeExists(System.Xml.Linq.XElement,System.String,System.String)">
+            <summary>
+            Determines whether the attribute with the given name located in the given location string exists in the given XML element.
+            </summary>
+            <param name="baseElement">The XML element.</param>
+            <param name="location">The location string.</param>
+            <param name="attrName">Name of the attribute.</param>
+            <returns>
+            a value indicating whether the attribute with the given name located in the given location string exists in the given XML element.
+            </returns>
+        </member>
+        <member name="M:YAXLib.XMLUtils.FindAttribute(System.Xml.Linq.XElement,System.String,System.String)">
+            <summary>
+            Finds the attribute with the given name located in the given location string in the given XML element.
+            </summary>
+            <param name="baseElement">The XML element.</param>
+            <param name="location">The location string.</param>
+            <param name="attrName">Name of the attribute.</param>
+            <returns>a value indicating whether the attribute with the given name located in 
+            the given location string in the given XML element has been found.</returns>
+        </member>
+        <member name="M:YAXLib.XMLUtils.CanCreateAttribute(System.Xml.Linq.XElement,System.String,System.String)">
+            <summary>
+            Determines whether the attribute with the given name can be created in the location 
+            specified by the given location string in the given XML element.
+            </summary>
+            <param name="baseElement">The XML element.</param>
+            <param name="location">The location string.</param>
+            <param name="attrName">Name of the attribute.</param>
+            <returns>
+            <c>true</c> if the attribute with the given name can be created in the location 
+            specified by the given location string in the given XML element; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:YAXLib.XMLUtils.CreateAttribute(System.Xml.Linq.XElement,System.String,System.String,System.Object)">
+            <summary>
+            Creates and returns the attribute with the given name in the location 
+            specified by the given location string in the given XML element.
+            </summary>
+            <param name="baseElement">The XML element.</param>
+            <param name="location">The location string.</param>
+            <param name="attrName">Name of the attribute.</param>
+            <param name="attrValue">The value to be assigned to the attribute.</param>
+            <returns>returns the attribute with the given name in the location 
+            specified by the given location string in the given XML element.</returns>
+        </member>
+        <member name="M:YAXLib.XMLUtils.FindElement(System.Xml.Linq.XElement,System.String,System.String)">
+            <summary>
+            Finds the element with the given name located in the given location string in the given XML element.
+            </summary>
+            <param name="baseElement">The XML element.</param>
+            <param name="location">The location string.</param>
+            <param name="elemName">Name of the element.</param>
+            <returns>a value indicating whether the element with the given name located in 
+            the given location string in the given XML element has been found</returns>
+        </member>
+        <member name="M:YAXLib.XMLUtils.ElementExists(System.Xml.Linq.XElement,System.String,System.String)">
+            <summary>
+            Determines whether the XML element with the given name located in the 
+            given location string in the given XML element exists.
+            </summary>
+            <param name="baseElement">The XML element.</param>
+            <param name="location">The location string.</param>
+            <param name="elemName">Name of the element.</param>
+            <returns>a value indicating whether the XML element with the given name located in the 
+            given location string in the given XML element exists</returns>
+        </member>
+        <member name="M:YAXLib.XMLUtils.CanCreateElement(System.Xml.Linq.XElement,System.String,System.String)">
+            <summary>
+            Determines whether the XML element with the given name located in the 
+            given location string in the given XML element can be created
+            </summary>
+            <param name="baseElement">The XML element.</param>
+            <param name="location">The location string.</param>
+            <param name="elemName">Name of the element.</param>
+            <returns>
+            <c>true</c> if the XML element with the given name located in the given 
+            location string in the given XML element can be created; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:YAXLib.XMLUtils.CreateElement(System.Xml.Linq.XElement,System.String,System.String)">
+            <summary>
+            Creates and returns the XML element with the given name located in the 
+            given location string in the given XML element.
+            </summary>
+            <param name="baseElement">The parent XML element.</param>
+            <param name="location">The location string.</param>
+            <param name="elemName">Name of the element to create.</param>
+            <returns>returns the XML element with the given name located in the 
+            given location string in the given XML element</returns>
+        </member>
+        <member name="M:YAXLib.XMLUtils.CreateElement(System.Xml.Linq.XElement,System.String,System.String,System.Object)">
+            <summary>
+            Creates and returns the XML element with the given name located in the 
+            given location string in the given XML element.
+            </summary>
+            <param name="baseElement">The parent XML element.</param>
+            <param name="location">The location string.</param>
+            <param name="elemName">Name of the element to create.</param>
+            <param name="elemValue">The element value to be assigned to the created element.</param>
+            <returns>returns the XML element with the given name located in the 
+            given location string in the given XML element.</returns>
+        </member>
+        <member name="M:YAXLib.XMLUtils.MoveDescendants(System.Xml.Linq.XElement,System.Xml.Linq.XElement)">
+            <summary>
+            Moves all the children of src (including all its elements and attributes) to the 
+            destination element, dst.
+            </summary>
+            <param name="src">The source element.</param>
+            <param name="dst">The destination element.</param>
+        </member>
+        <member name="M:YAXLib.XMLUtils.IsElementCompletelyEmpty(System.Xml.Linq.XElement)">
+            <summary>
+            Determines whether the specified element has neither any child attributes nor any child elements.
+            </summary>
+            <param name="elem">The element.</param>
+            <returns>
+            <c>true</c> if the specified element has neither any child attributes nor any child elements; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:YAXLib.XMLUtils.DecodeXMLString(System.String)">
+            <summary>
+            Decodes the XML escape sequences into normal string
+            </summary>
+            <param name="str">The string to decode.</param>
+            <returns></returns>
+        </member>
+        <member name="T:YAXLib.YAXBaseAttribute">
+            <summary>
+            The base class for all attributes defined in YAXLib.
+            </summary>
+        </member>
+        <member name="T:YAXLib.YAXCommentAttribute">
+            <summary>
+            Creates a comment node per each line of the comment string provided.
+            This attribute is applicable to classes, structures, fields, and properties.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXCommentAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXCommentAttribute"/> class.
+            </summary>
+            <param name="comment">The comment.</param>
+        </member>
+        <member name="P:YAXLib.YAXCommentAttribute.Comment">
+            <summary>
+            Gets or sets the comment.
+            </summary>
+            <value>The comment.</value>
+        </member>
+        <member name="T:YAXLib.YAXSerializableTypeAttribute">
+            <summary>
+            Add this attribute to types, structs or classes which you want to override
+            their default serialization behaviour. This attribute is optional.
+            This attribute is applicable to classes and structures.
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXSerializableTypeAttribute.m_isOptionSet">
+            <summary>
+            determines whether the serialization options property has been explicitly
+            set by the user.
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXSerializableTypeAttribute.m_serializationOptions">
+            <summary>
+            Private variable to hold the serialization options
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXSerializableTypeAttribute.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXSerializableTypeAttribute"/> class.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXSerializableTypeAttribute.IsSerializationOptionSet">
+            <summary>
+            Determines whether the serialization options property has been explicitly
+            set by the user.
+            </summary>
+            <returns>
+            	<c>true</c> if the serialization options property has been explicitly
+            set by the user; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="P:YAXLib.YAXSerializableTypeAttribute.FieldsToSerialize">
+            <summary>
+            Gets or sets the fields which YAXLib selects for serialization
+            </summary>
+            <value>The fields to serialize.</value>
+        </member>
+        <member name="P:YAXLib.YAXSerializableTypeAttribute.Options">
+            <summary>
+            Gets or sets the serialization options.
+            </summary>
+            <value>The options.</value>
+        </member>
+        <member name="T:YAXLib.YAXSerializableFieldAttribute">
+            <summary>
+            Add this attribute to properties or fields which you wish to be serialized, when 
+            the enclosing class uses the <c>YAXSerializableType</c> attribute in which <c>FieldsToSerialize</c>
+            has been set to <c>AttributedFieldsOnly</c>.
+            This attribute is applicable to fields and properties.
+            </summary>
+        </member>
+        <member name="T:YAXLib.YAXAttributeForClassAttribute">
+            <summary>
+            Makes a property to appear as an attribute for the enclosing class (i.e. the parent element) if possible.
+            This attribute is applicable to fields and properties only.
+            </summary>
+        </member>
+        <member name="T:YAXLib.YAXAttributeForAttribute">
+            <summary>
+            Makes a field or property to appear as an attribute for another element, if possible.
+            This attribute is applicable to fields and properties.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXAttributeForAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXAttributeForAttribute"/> class.
+            </summary>
+            <param name="parent">The element of which the property becomes an attribute.</param>
+        </member>
+        <member name="P:YAXLib.YAXAttributeForAttribute.Parent">
+            <summary>
+            Gets or sets the element of which the property becomes an attribute.
+            </summary>
+        </member>
+        <member name="T:YAXLib.YAXValueForAttribute">
+            <summary>
+            Makes a field or property to appear as a value for another element, if possible.
+            This attribute is applicable to fields and properties.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXValueForAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXAttributeForAttribute"/> class.
+            </summary>
+            <param name="parent">The element of which the property becomes an attribute.</param>
+        </member>
+        <member name="P:YAXLib.YAXValueForAttribute.Parent">
+            <summary>
+            Gets or sets the element for which the property becomes a value.
+            </summary>
+        </member>
+        <member name="T:YAXLib.YAXValueForClassAttribute">
+            <summary>
+            Makes a field or property to appear as a value for its parent element, if possible.
+            This attribute is applicable to fields and properties.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXValueForClassAttribute.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXValueForClassAttribute"/> class.
+            </summary>
+        </member>
+        <member name="T:YAXLib.YAXDontSerializeAttribute">
+            <summary>
+            Prevents serialization of some field or property.
+            This attribute is applicable to fields and properties.
+            </summary>
+        </member>
+        <member name="T:YAXLib.YAXSerializeAsAttribute">
+            <summary>
+            Defines an alias for the field, property, class, or struct under 
+            which it will be serialized. This attribute is applicable to fields, 
+            properties, classes, and structs.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXSerializeAsAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXSerializeAsAttribute"/> class.
+            </summary>
+            <param name="serializeAs">the alias for the property under which the property will be serialized.</param>
+        </member>
+        <member name="P:YAXLib.YAXSerializeAsAttribute.SerializeAs">
+            <summary>
+            Gets or sets the alias for the property under which the property will be serialized.
+            </summary>
+        </member>
+        <member name="T:YAXLib.YAXElementForAttribute">
+            <summary>
+            Makes a property or field to appear as a child element 
+            for another element. This attribute is applicable to fields and properties.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXElementForAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXElementForAttribute"/> class.
+            </summary>
+            <param name="parent">The element of which the property becomes a child element.</param>
+        </member>
+        <member name="P:YAXLib.YAXElementForAttribute.Parent">
+            <summary>
+            Gets or sets the element of which the property becomes a child element.
+            </summary>
+            <value>The element of which the property becomes a child element.</value>
+        </member>
+        <member name="T:YAXLib.YAXCollectionAttribute">
+            <summary>
+            Controls the serialization of collection instances.
+            This attribute is applicable to fields and properties.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXCollectionAttribute.#ctor(YAXLib.YAXCollectionSerializationTypes)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXCollectionAttribute"/> class.
+            </summary>
+            <param name="serType">type of the serialization of the collection.</param>
+        </member>
+        <member name="P:YAXLib.YAXCollectionAttribute.SerializationType">
+            <summary>
+            Gets or sets the type of the serialization of the collection.
+            </summary>
+            <value>The type of the serialization of the collection.</value>
+        </member>
+        <member name="P:YAXLib.YAXCollectionAttribute.SeparateBy">
+            <summary>
+            Gets or sets the string to separate collection items, if the Serialization type is set to <c>Serially</c>.
+            </summary>
+            <value>the string to separate collection items, if the Serialization Type is set to <c>Serially</c>.</value>
+        </member>
+        <member name="P:YAXLib.YAXCollectionAttribute.EachElementName">
+            <summary>
+            Gets or sets the name of each child element corresponding to the collection members, if the Serialization type is set to <c>Recursive</c>.
+            </summary>
+            <value>The name of each child element corresponding to the collection members, if the Serialization type is set to <c>Recursive</c>.</value>
+        </member>
+        <member name="P:YAXLib.YAXCollectionAttribute.IsWhiteSpaceSeparator">
+            <summary>
+            Gets or sets a value indicating whether white space characters are to be
+            treated as sparators or not.
+            </summary>
+            <value>
+            <c>true</c> if white space separator characters are to be
+            treated as sparators; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="T:YAXLib.YAXDictionaryAttribute">
+            <summary>
+            Controls the serialization of generic Dictionary instances.
+            This attribute is applicable to fields and properties.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXDictionaryAttribute.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXDictionaryAttribute"/> class.
+            </summary>
+        </member>
+        <member name="P:YAXLib.YAXDictionaryAttribute.KeyName">
+            <summary>
+            Gets or sets the alias for the key part of the dicitonary.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:YAXLib.YAXDictionaryAttribute.ValueName">
+            <summary>
+            Gets or sets alias for the value part of the dicitonary.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:YAXLib.YAXDictionaryAttribute.EachPairName">
+            <summary>
+            Gets or sets alias for the element containing the Key-Value pair.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:YAXLib.YAXDictionaryAttribute.SerializeKeyAs">
+            <summary>
+            Gets or sets the node type according to which the key part of the dictionary is serialized.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:YAXLib.YAXDictionaryAttribute.SerializeValueAs">
+            <summary>
+            Gets or sets the node type according to which the value part of the dictionary is serialized.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:YAXLib.YAXDictionaryAttribute.KeyFormatString">
+            <summary>
+            Gets or sets the key format string.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:YAXLib.YAXDictionaryAttribute.ValueFormatString">
+            <summary>
+            Gets or sets the value format string.
+            </summary>
+            <value></value>
+        </member>
+        <member name="T:YAXLib.YAXErrorIfMissedAttribute">
+            <summary>
+            Specifies the behavior of the deserialization method, if the element/attribute corresponding to this property is missed in the XML input.
+            This attribute is applicable to fields and properties.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXErrorIfMissedAttribute.#ctor(YAXLib.YAXExceptionTypes)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXErrorIfMissedAttribute"/> class.
+            </summary>
+            <param name="treatAs">The value indicating this situation is going to be treated as Error or Warning.</param>
+        </member>
+        <member name="P:YAXLib.YAXErrorIfMissedAttribute.TreatAs">
+            <summary>
+            Gets or sets the value indicating this situation is going to be treated as Error or Warning.
+            </summary>
+            <value>The value indicating this situation is going to be treated as Error or Warning.</value>
+        </member>
+        <member name="P:YAXLib.YAXErrorIfMissedAttribute.DefaultValue">
+            <summary>
+            Gets or sets the default value for the property if the element/attribute corresponding to this property is missed in the XML input.
+            Setting <c>null</c> means do nothing.
+            </summary>
+            <value>The default value.</value>
+        </member>
+        <member name="T:YAXLib.YAXFormatAttribute">
+            <summary>
+            Specifies the format string provided for serializing data. The format string is the parameter 
+            passed to the <c>ToString</c> method.
+            If this attribute is applied to collection classes, the format, therefore, is applied to 
+            the collection members.
+            This attribute is applicable to fields and properties.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXFormatAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXFormatAttribute"/> class.
+            </summary>
+            <param name="format">The format string.</param>
+        </member>
+        <member name="P:YAXLib.YAXFormatAttribute.Format">
+            <summary>
+            Gets or sets the format string needed to serialize data. The format string is the parameter 
+            passed to the <c>ToString</c> method.
+            </summary>
+            <value></value>
+        </member>
+        <member name="T:YAXLib.YAXNotCollectionAttribute">
+            <summary>
+            Specifies that a particular class, or a particular property or variable type, that is 
+            driven from <c>IEnumerable</c> should not be treated as a collection class/object.
+            This attribute is applicable to fields, properties, classes, and structs.
+            </summary>
+        </member>
+        <member name="T:YAXLib.YAXEnumAttribute">
+            <summary>
+            Specifies an alias for an enum member.
+            This attribute is applicable to enum members.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXEnumAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXEnumAttribute"/> class.
+            </summary>
+            <param name="alias">The alias.</param>
+        </member>
+        <member name="P:YAXLib.YAXEnumAttribute.Alias">
+            <summary>
+            Gets the alias for the enum member.
+            </summary>
+            <value>The alias for the enum member.</value>
+        </member>
+        <member name="T:YAXLib.YAXCustomSerializerAttribute">
+            <summary>
+            Specifies a custom serializer class for a field, property, class, or struct. YAXLib will instantiate an object
+            from the specified type in this attribute, and calls appropriate methods while serializing.
+            This attribute is applicable to fields, properties, classes, and structs.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXCustomSerializerAttribute.#ctor(System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXCustomSerializerAttribute"/> class.
+            </summary>
+            <param name="customSerializerType">Type of the custom serializer.</param>
+        </member>
+        <member name="P:YAXLib.YAXCustomSerializerAttribute.CustomSerializerType">
+            <summary>
+            Gets or sets the type of the custom serializer.
+            </summary>
+            <value>The type of the custom serializer.</value>
+        </member>
+        <member name="T:YAXLib.YAXCustomDeserializerAttribute">
+            <summary>
+            Specifies a custom deserializer class for a field, property, class, or struct. YAXLib will instantiate an object
+            from the specified type in this attribute, and calls appropriate methods while deserializing.
+            This attribute is applicable to fields, properties, classes, and structs.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXCustomDeserializerAttribute.#ctor(System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXCustomDeserializerAttribute"/> class.
+            </summary>
+            <param name="customDeserializerType">Type of the custom deserializer.</param>
+        </member>
+        <member name="P:YAXLib.YAXCustomDeserializerAttribute.CustomDeserializerType">
+            <summary>
+            Gets or sets the type of the custom deserializer.
+            </summary>
+            <value>The type of the custom deserializer.</value>
+        </member>
+        <member name="T:YAXLib.EnumWrapper">
+            <summary>
+            Provides a wrapper arount enum types, in order to provide alias definition capabilities for enums
+            </summary>
+        </member>
+        <member name="F:YAXLib.EnumWrapper.m_enumType">
+            <summary>
+            The enum underlying type
+            </summary>
+        </member>
+        <member name="F:YAXLib.EnumWrapper.m_enumMembers">
+            <summary>
+            maps real enum names to their corresponding user defined aliases 
+            </summary>
+        </member>
+        <member name="M:YAXLib.EnumWrapper.#ctor(System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.EnumWrapper"/> class.
+            </summary>
+            <param name="t">The enum type.</param>
+        </member>
+        <member name="M:YAXLib.EnumWrapper.ParseAlias(System.String)">
+            <summary>
+            Parses the alias and returns the correct enum value. Throws an exception if the alias cannot be matched.
+            </summary>
+            <param name="alias">The alias.</param>
+            <returns>the enum member corresponding to the specified alias</returns>
+        </member>
+        <member name="M:YAXLib.EnumWrapper.GetAlias(System.Object)">
+            <summary>
+            Gets the alias for the specified enum value.
+            </summary>
+            <param name="enumMember">The enum member.</param>
+            <returns>the alias corresponding to the specified enum member</returns>
+        </member>
+        <member name="M:YAXLib.EnumWrapper.FindRealNameFromAlias(System.String)">
+            <summary>
+            Finds the real name from alias.
+            </summary>
+            <param name="alias">The alias.</param>
+            <returns>the real name of the enum member</returns>
+        </member>
+        <member name="T:YAXLib.KnownDotNetTypesDeserializers">
+            <summary>
+            Provides deserializer methods for some known .NET built-in types.
+            </summary>
+        </member>
+        <member name="M:YAXLib.KnownDotNetTypesDeserializers.DeserializeTimeSpan(System.Xml.Linq.XElement)">
+            <summary>
+            Deserializes an object of type <c>TimeSpan</c>.
+            </summary>
+            <param name="baseElement">The XML element containing serialized <c>TimeSpan</c>.</param>
+            <returns>deserialized <c>TimeSpan</c> object.</returns>
+        </member>
+        <member name="M:YAXLib.KnownDotNetTypesDeserializers.DeserializeGuid(System.Xml.Linq.XElement)">
+            <summary>
+            Deserializes an object of type <c>GUID</c>.
+            </summary>
+            <param name="baseElement">The XML element containing serialized <c>GUID</c>.</param>
+            <returns>deserialized <c>GUID</c> object</returns>
+        </member>
+        <member name="T:YAXLib.YAXSerializer">
+            <summary>
+            An XML serialization class which lets developers design the XML file structure and select the exception handling policy.
+            This class also supports serializing most of the collection classes such as the Dictionary generic class.
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXSerializer.s_namespaceInits">
+            <summary>
+            The initials used for the xml namespace
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXSerializer.s_dimsAttrName">
+            <summary>
+            the attribute name used to deserialize meta-data for multi-dimensional arrays.
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXSerializer.s_trueTypeAttrName">
+            <summary>
+            the attribute name used to deserialize meta-data for real types of objects serialized through
+            a reference to their base class or interface.
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXSerializer.m_type">
+            <summary>
+            The class or structure that is to be serialized/deserialized.
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXSerializer.m_exceptionPolicy">
+            <summary>
+            The handling policy enumeration to be used by the YAX library.
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXSerializer.m_parsingErrors">
+            <summary>
+            The list of all errors that have occured.
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXSerializer.m_defaultExceptionType">
+            <summary>
+            The exception error behaviour enumeration to be used by the YAX library.
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXSerializer.m_exceptionOccurredDuringMemberDeserialization">
+            <summary>
+            Specifies whether an exception is occurred during the deserialization of the current member
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXSerializer.m_serializationOption">
+            <summary>
+            The serialization option enumeration which can be set during initialization.
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXSerializer.m_udtWrapper">
+            <summary>
+            The type wrapper for the underlying type used in the serializer
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXSerializer.m_mainDocument">
+            <summary>
+            XML document object which will hold the resulting serialization
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXSerializer.m_baseElement">
+            <summary>
+            a reference to the base xml element used during serialization.
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXSerializer.m_desObject">
+            <summary>
+            reference to a pre assigned deserialization base object
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXSerializer.m_needsNamespaceAddition">
+            <summary>
+            if <c>true</c> an xmlns:yaxlib attribute will be added to the top level serialized element.
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXSerializer.s_namespaceURI">
+            <summary>
+            The URI address which holds the xmlns:yaxlib definition.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.#ctor(System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXSerializer"/> class.
+            </summary>
+            <param name="type">The type of the object being serialized/deserialized.</param>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.#ctor(System.Type,YAXLib.YAXExceptionHandlingPolicies)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXSerializer"/> class.
+            </summary>
+            <param name="type">The type of the object being serialized/deserialized.</param>
+            <param name="exceptionPolicy">The exception handling policy.</param>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.#ctor(System.Type,YAXLib.YAXExceptionHandlingPolicies,YAXLib.YAXExceptionTypes)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXSerializer"/> class.
+            </summary>
+            <param name="type">The type of the object being serialized/deserialized.</param>
+            <param name="exceptionPolicy">The exception handling policy.</param>
+            <param name="defaultExType">The exceptions are treated as the value specified, unless otherwise specified.</param>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.#ctor(System.Type,YAXLib.YAXExceptionHandlingPolicies,YAXLib.YAXExceptionTypes,YAXLib.YAXSerializationOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:YAXLib.YAXSerializer"/> class.
+            </summary>
+            <param name="t">The type of the object being serialized/deserialized.</param>
+            <param name="exceptionPolicy">The exception handling policy.</param>
+            <param name="defaultExType">The exceptions are treated as the value specified, unless otherwise specified.</param>
+            <param name="option">The serialization option.</param>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.Serialize(System.Object)">
+            <summary>
+            Serializes the specified object and returns a string containing the XML.
+            </summary>
+            <param name="obj">The object to serialize.</param>
+            <returns>A <code>System.String</code> containing the XML</returns>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.SerializeToXDocument(System.Object)">
+            <summary>
+            Serializes the specified object and returns an instance of <c>XDocument</c> containing the result.
+            </summary>
+            <param name="obj">The object to serialize.</param>
+            <returns>An instance of <c>XDocument</c> containing the resulting XML</returns>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.Serialize(System.Object,System.IO.TextWriter)">
+            <summary>
+            Serializes the specified object into a <c>TextWriter</c> instance.
+            </summary>
+            <param name="obj">The object to serialize.</param>
+            <param name="textWriter">The <c>TextWriter</c> instance.</param>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.Serialize(System.Object,System.Xml.XmlWriter)">
+            <summary>
+            Serializes the specified object into a <c>XmlWriter</c> instance.
+            </summary>
+            <param name="obj">The object to serialize.</param>
+            <param name="xmlWriter">The <c>XmlWriter</c> instance.</param>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.SerializeToFile(System.Object,System.String)">
+            <summary>
+            Serializes the specified object to file.
+            </summary>
+            <param name="obj">The object to serialize.</param>
+            <param name="fileName">Path to the file.</param>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.Deserialize(System.String)">
+            <summary>
+            Deserializes the specified string containing the XML serialization and returns an object.
+            </summary>
+            <param name="input">The input string containing the XML serialization.</param>
+            <returns>The deserialized object.</returns>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.Deserialize(System.Xml.XmlReader)">
+            <summary>
+            Deserializes an object while reading input from an instance of <c>XmlReader</c>.
+            </summary>
+            <param name="xmlReader">The <c>XmlReader</c> instance to read input from.</param>
+            <returns>The deserialized object.</returns>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.Deserialize(System.IO.TextReader)">
+            <summary>
+            Deserializes an object while reading input from an instance of <c>TextReader</c>.
+            </summary>
+            <param name="textReader">The <c>TextReader</c> instance to read input from.</param>
+            <returns>The deserialized object.</returns>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.Deserialize(System.Xml.Linq.XElement)">
+            <summary>
+            Deserializes an object while reading from an instance of <c>XElement</c>
+            </summary>
+            <param name="element">The <c>XElement</c> instance to read from.</param>
+            <returns>The deserialized object</returns>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.DeserializeFromFile(System.String)">
+            <summary>
+            Deserializes an object from the specified file which contains the XML serialization of the object.
+            </summary>
+            <param name="fileName">Path to the file.</param>
+            <returns>The deserialized object.</returns>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.SetDeserializationBaseObject(System.Object)">
+            <summary>
+            Sets the object used as the base object in the next stage of deserialization.
+            This method enables multi-stage deserialization for YAXLib.
+            </summary>
+            <param name="obj">The object used as the base object in the next stage of deserialization.</param>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.CleanUpAuxiliaryMemory">
+            <summary>
+            Cleans up auxiliary memory used by YAXLib during different sessions of serialization.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.SerializeXDocument(System.Object)">
+            <summary>
+            Serializes the object into an <c>XDocument</c> object.
+            </summary>
+            <param name="obj">The object to serialize.</param>
+            <returns></returns>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.SerializeBase(System.Object)">
+            <summary>
+            One of the base methods that perform the whole job of serialization.
+            </summary>
+            <param name="obj">The object to be serialized</param>
+            <returns>an instance of <c>XElement</c> which contains the result of 
+            serialization of the specified object</returns>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.SetBaseElement(System.Xml.Linq.XElement)">
+            <summary>
+            Sets the base XML element. This method is used when an <c>XMLSerializer</c>
+            instantiates another <c>XMLSerializer</c> to serialize nested objects.
+            Through this method the child objects have access to the already serialized elements of 
+            their parent.
+            </summary>
+            <param name="baseElement">The base XML element.</param>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.SerializeBase(System.Object,System.String)">
+            <summary>
+            The base method that performs the whole job of serialization. 
+            Other serialization methods call this method to have their job done.
+            </summary>
+            <param name="obj">The object to be serialized</param>
+            <param name="className">Name of the element that contains the serialized object.</param>
+            <returns>an instance of <c>XElement</c> which contains the result of 
+            serialization of the specified object</returns>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.MakeElement(System.Xml.Linq.XElement,YAXLib.MemberWrapper,System.Object,System.Boolean@,System.Boolean@)">
+            <summary>
+            Makes the element corresponding to the member specified.
+            </summary>
+            <param name="insertionLocation">The insertion location.</param>
+            <param name="member">The member to serialize.</param>
+            <param name="elementValue">The element value.</param>
+            <param name="moveDescOnly">if set to <c>true</c> specifies that only the descendants of the resulting element should be added to the parent.</param>
+            <param name="alreadyAdded">if set to <c>true</c> specifies the element returned is 
+            already added to the parent element and should not be added once more.</param>
+            <returns></returns>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.MakeDictionaryElement(System.Xml.Linq.XElement,System.String,System.Object,YAXLib.YAXDictionaryAttribute,YAXLib.YAXCollectionAttribute)">
+            <summary>
+            Creates a dictionary element according to the specified options, as described
+            by the attribute instances.
+            </summary>
+            <param name="insertionLocation">The insertion location.</param>
+            <param name="elementName">Name of the element.</param>
+            <param name="elementValue">The element value, corresponding to a dictionary object.</param>
+            <param name="dicAttrInst">reference to the dictionary attribute instance.</param>
+            <param name="collectionAttrInst">reference to collection attribute instance.</param>
+            <returns>
+            an instance of <c>XElement</c> which contains the dictionary object
+            serialized properly
+            </returns>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.AddObjectToElement(System.Xml.Linq.XElement,System.String,System.Object)">
+            <summary>
+            Adds an element contatining data related to the specified object, to an existing xml element.
+            </summary>
+            <param name="elem">The parent element.</param>
+            <param name="alias">The name for the element to be added.</param>
+            <param name="obj">The object corresponding to which an element is going to be added to
+            an existing parent element.</param>
+            <returns>the enclosing XML element.</returns>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.MakeCollectionElement(System.Xml.Linq.XElement,System.String,System.Object,YAXLib.YAXCollectionAttribute,System.String)">
+            <summary>
+            Serializes a collection object.
+            </summary>
+            <param name="insertionLocation">The insertion location.</param>
+            <param name="elementName">Name of the element.</param>
+            <param name="elementValue">The object to be serailized.</param>
+            <param name="collectionAttrInst">The collection attribute instance.</param>
+            <param name="format">formatting string, which is going to be applied to all members of the collection.</param>
+            <returns>
+            an instance of <c>XElement</c> which will contain the serailized collection
+            </returns>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.MakeBaseElement(System.Xml.Linq.XElement,System.String,System.Object,System.Boolean@)">
+            <summary>
+            Makes an XML element with the specified name, corresponding to the object specified.
+            </summary>
+            <param name="insertionLocation">The insertion location.</param>
+            <param name="name">The name of the element.</param>
+            <param name="value">The object to be serialized in an XML element.</param>
+            <param name="alreadyAdded">if set to <c>true</c> specifies the element returned is 
+            already added to the parent element and should not be added once more.</param>
+            <returns>
+            an instance of <c>XElement</c> which will contain the serialized object,
+            or <c>null</c> if the serialized object is already added to the base element
+            </returns>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.DeserializeBase(System.Xml.Linq.XElement)">
+            <summary>
+            The basic method which performs the whole job of deserialization.
+            </summary>
+            <param name="baseElement">The element to be deserialized.</param>
+            <returns>object containing the deserialized data</returns>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.AtLeastOneOfCollectionMembersExists(System.Xml.Linq.XElement,YAXLib.MemberWrapper)">
+            <summary>
+            Checks whether at least one of the collection memebers of 
+            the specified collection exists.
+            </summary>
+            <param name="elem">The XML element to check its content.</param>
+            <param name="member">The class-member corresponding to the collection for
+            which we intend to check existence of its members.</param>
+            <returns></returns>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.AtLeastOneOfMembersExists(System.Xml.Linq.XElement,System.Type)">
+            <summary>
+            Checks whether at least one of the memebers (property or field) of 
+            the specified object exists.
+            </summary>
+            <param name="elem">The XML element to check its content.</param>
+            <param name="type">The class-member corresponding to the object for
+            which we intend to check existence of its members.</param>
+            <returns></returns>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.RetreiveElementValue(System.Object,YAXLib.MemberWrapper,System.String,System.Xml.Linq.XElement)">
+            <summary>
+            Retreives the value of the element from the specified XML element or attribute.
+            </summary>
+            <param name="o">The object to store the retrieved value at.</param>
+            <param name="member">The member of the specified object whose value we intent to retreive.</param>
+            <param name="elemValue">The value of the element stored as string.</param>
+            <param name="xelemValue">The XML element value to be retreived. If the value to be retreived
+            has been stored in an XML attribute, this reference is <c>null</c>.</param>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.DeserializeCollectionValue(System.Type,System.Xml.Linq.XElement,System.String,YAXLib.YAXCollectionAttribute)">
+            <summary>
+            Retreives the collection value.
+            </summary>
+            <param name="colType">Type of the collection to be retrieved.</param>
+            <param name="xelemValue">The value of xml element.</param>
+            <param name="memberAlias">The member's alias, used only in exception titles.</param>
+            <param name="colAttrInstance">The collection attribute instance.</param>
+            <returns></returns>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.DeserializeCollectionMember(System.Object,YAXLib.MemberWrapper,System.Type,System.String,System.Xml.Linq.XElement)">
+            <summary>
+            Deserializes the collection member.
+            </summary>
+            <param name="o">The object to store the retrieved value at.</param>
+            <param name="member">The member of the specified object whose value we intent to retreive.</param>
+            <param name="colType">Type of the collection to be retrieved.</param>
+            <param name="elemValue">The value of the element stored as string.</param>
+            <param name="xelemValue">The XML element value to be retreived. If the value to be retreived
+            has been stored in an XML attribute, this reference is <c>null</c>.</param>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.GetArrayDimentionalIndex(System.Int64,System.Int32[])">
+            <summary>
+            Gets the dimensional index for an element of a multi-dimensional array from a
+            linear index specified. 
+            </summary>
+            <param name="linInd">The linear index.</param>
+            <param name="dims">The dimensions of the array.</param>
+            <returns></returns>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.DeserializeTaggedDictionaryMember(System.Object,YAXLib.MemberWrapper,System.Type,System.Xml.Linq.XElement)">
+            <summary>
+            Deserializes a dictionary member which also benefits from a YAXDictionary attribute
+            </summary>
+            <param name="o">The object to hold the deserialized value.</param>
+            <param name="member">The member corresponding to the dictionary member.</param>
+            <param name="memberType">Type of the dictionary member.</param>
+            <param name="xelemValue">The XML element value.</param>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.VerifyDictionaryPairElements(System.Type@,System.Boolean@,System.String,System.Xml.Linq.XElement)">
+            <summary>
+            Verifies the existence of dictionary pair <c>Key</c> and <c>Value</c> elements.
+            </summary>
+            <param name="keyType">Type of the key.</param>
+            <param name="isKeyAttrib">if set to <c>true</c> means that key has been serialize as an attribute.</param>
+            <param name="keyAlias">The alias for <c>Key</c>.</param>
+            <param name="childElem">The child XML elemenet to search <c>Key</c> and <c>Value</c> elements in.</param>
+            <returns></returns>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.DeserializeKeyValuePair(System.Xml.Linq.XElement)">
+            <summary>
+            Deserializes the XML reperesentation of a key-value pair, as specified, and returns 
+            a <c>KeyValuePair</c> instance containing the deserialized data.
+            </summary>
+            <param name="baseElement">The element contating the XML reperesentation of a key-value pair.</param>
+            <returns>a <c>KeyValuePair</c> instance containing the deserialized data</returns>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.DeserializeKnownDotNetBuiltInType(System.Xml.Linq.XElement,System.Type)">
+            <summary>
+            Deserializes XML for some known .NET built in type.
+            </summary>
+            <param name="baseElement">The XML element to deserialize.</param>
+            <param name="type">The type of the desired object.</param>
+            <returns>deserialized object of some known .NET built-in type</returns>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.IsKnownDotNetBuiltInType(System.Type)">
+            <summary>
+            Determines whether the specified type is a known .NET built-in type.
+            </summary>
+            <param name="type">The type to check.</param>
+            <returns>
+            	<c>true</c> if the specified type is a known .NET built-in type; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.GetFieldsToBeSerialized(YAXLib.UdtWrapper)">
+            <summary>
+            Gets the sequence of fields to be serialized for the specified type. This sequence is retreived according to 
+            the field-types specified by the user.
+            </summary>
+            <param name="typeWrapper">The type wrapper for the type whose serializable 
+            fields is going to be retreived.</param>
+            <returns>the sequence of fields to be serialized for the specified type</returns>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.GetFieldsToBeSerialized">
+            <summary>
+            Gets the sequence of fields to be serialized for the serializer's underlying type. 
+            This sequence is retreived according to the field-types specified by the user.
+            </summary>
+            <returns>the sequence of fields to be serialized for the serializer's underlying type.</returns>
+        </member>
+        <member name="M:YAXLib.YAXSerializer.OnExceptionOccurred(YAXLib.YAXException,YAXLib.YAXExceptionTypes)">
+            <summary>
+            Called when an exception occurs inside the library. It applies the exception handling policies.
+            </summary>
+            <param name="ex">The exception that has occurred.</param>
+            <param name="exceptionType">Type of the exception.</param>
+        </member>
+        <member name="P:YAXLib.YAXSerializer.DefaultExceptionType">
+            <summary>
+            Gets the default type of the exception.
+            </summary>
+            <value>The default type of the exception.</value>
+        </member>
+        <member name="P:YAXLib.YAXSerializer.SerializationOption">
+            <summary>
+            Gets the serialization option.
+            </summary>
+            <value>The serialization option.</value>
+        </member>
+        <member name="P:YAXLib.YAXSerializer.ExceptionHandlingPolicy">
+            <summary>
+            Gets the exception handling policy.
+            </summary>
+            <value>The exception handling policy.</value>
+        </member>
+        <member name="P:YAXLib.YAXSerializer.ParsingErrors">
+            <summary>
+            Gets the parsing errors.
+            </summary>
+            <value>The parsing errors.</value>
+        </member>
+        <member name="P:YAXLib.YAXSerializer.IsCraetedToDeserializeANonCollectionMember">
+            <summary>
+            Gets or sets a value indicating whether this instance is craeted to deserialize a non collection member of another object.
+            </summary>
+            <value>
+            <c>true</c> if this instance is craeted to deserialize a non collection member of another object; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="T:YAXLib.YAXParsingErrors">
+            <summary>
+            Holds list of exception occured during serialization/deserialization.
+            </summary>
+        </member>
+        <member name="F:YAXLib.YAXParsingErrors.listExceptions">
+            <summary>
+            The list of exception occured during serialization/deserialization.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXParsingErrors.AddException(YAXLib.YAXException,YAXLib.YAXExceptionTypes)">
+            <summary>
+            Adds an exception with the corresponding type.
+            </summary>
+            <param name="exception">The exception to add.</param>
+            <param name="exceptionType">Type of the exception added.</param>
+        </member>
+        <member name="M:YAXLib.YAXParsingErrors.ClearErrors">
+            <summary>
+            Clears the list of errors.
+            </summary>
+        </member>
+        <member name="M:YAXLib.YAXParsingErrors.AddRange(YAXLib.YAXParsingErrors)">
+            <summary>
+            Adds the list of errors within another instance of <c>YAXParsingErrors</c>.
+            </summary>
+            <param name="parsingErrors">The parsing errors to add its content.</param>
+        </member>
+        <member name="M:YAXLib.YAXParsingErrors.ToString">
+            <summary>
+            Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+            </summary>
+            <returns>
+            A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+            </returns>
+        </member>
+        <member name="P:YAXLib.YAXParsingErrors.ContainsAnyError">
+            <summary>
+            Gets a value indicating whether the list of errors is empty or not.
+            </summary>
+            <value><c>true</c> if the list is not empty; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:YAXLib.YAXParsingErrors.Count">
+            <summary>
+            Gets the number of errors within the list of errors.
+            </summary>
+            <value>the number of errors within the list of errors.</value>
+        </member>
+        <member name="P:YAXLib.YAXParsingErrors.Item(System.Int32)">
+            <summary>
+            Gets the the pair of Exception and its corresponding exception-type with the specified n.
+            </summary>
+            <param name="n">The index of the exception/exception type pair in the error list to return.</param>
+            <value></value>
+        </member>
+        <member name="T:YAXLib.TypeWrappersPool">
+            <summary>
+            Implements a singleton pool of type-wrappers to prevent excessive creation of 
+            repetetive type wrappers
+            </summary>
+        </member>
+        <member name="F:YAXLib.TypeWrappersPool.s_instance">
+            <summary>
+            The instance to the pool, to implement the singleton
+            </summary>
+        </member>
+        <member name="F:YAXLib.TypeWrappersPool.m_dicTypes">
+            <summary>
+            A dictionary from types to their corresponding wrappers
+            </summary>
+        </member>
+        <member name="F:YAXLib.TypeWrappersPool.m_lockDic">
+            <summary>
+            An object to lock type-wrapper dictionary to make it thread-safe
+            </summary>
+        </member>
+        <member name="M:YAXLib.TypeWrappersPool.#ctor">
+            <summary>
+            Prevents a default instance of the <c>TypeWrappersPool</c> class from being created, from
+            outside the scope of this class.
+            </summary>
+        </member>
+        <member name="M:YAXLib.TypeWrappersPool.CleanUp">
+            <summary>
+            Cleans up the pool.
+            </summary>
+        </member>
+        <member name="M:YAXLib.TypeWrappersPool.GetTypeWrapper(System.Type,YAXLib.YAXSerializer)">
+            <summary>
+            Gets the type wrapper corresponding to the specified type.
+            </summary>
+            <param name="t">The type whose wrapper is needed.</param>
+            <param name="caller">reference to the serializer instance which called this method.</param>
+            <returns>the type wrapper corresponding to the specified type</returns>
+        </member>
+        <member name="P:YAXLib.TypeWrappersPool.Pool">
+            <summary>
+            Gets the type wrappers pool.
+            </summary>
+            <value>The type wrappers pool.</value>
+        </member>
+        <member name="T:YAXLib.ICustomSerializer`1">
+            <summary>
+            Defines the interface to all custom serializers used with YAXLib.
+            Note that normally you don't need to implement all the methods.
+            </summary>
+            <typeparam name="T">The type of field, property, class, or struct for which custom serializer
+            is provided</typeparam>
+        </member>
+        <member name="M:YAXLib.ICustomSerializer`1.SerializeToAttribute(`0,System.Xml.Linq.XAttribute)">
+            <summary>
+            Serializes the given object and fills the provided reference to the
+            XML attribute appropriately. Do NOT change the name of the provided attribute.
+            </summary>
+            <param name="objectToSerialize">The object to serialize.</param>
+            <param name="attrToFill">The XML attribute to fill.</param>
+        </member>
+        <member name="M:YAXLib.ICustomSerializer`1.SerializeToElement(`0,System.Xml.Linq.XElement)">
+            <summary>
+            Serializes the given object and fills the provided reference to the
+            XML element appropriately. Do NOT change the name of the provided element.
+            </summary>
+            <param name="objectToSerialize">The object to serialize.</param>
+            <param name="elemToFill">The XML element to fill.</param>
+        </member>
+        <member name="M:YAXLib.ICustomSerializer`1.SerializeToValue(`0)">
+            <summary>
+            Serializes the given object to an string to be used as a value for an
+            XML element.
+            </summary>
+            <param name="objectToSerialize">The object to serialize.</param>
+            <returns></returns>
+        </member>
+        <member name="T:YAXLib.ReflectionUtils">
+            <summary>
+            A utility class for reflection related stuff
+            </summary>
+        </member>
+        <member name="M:YAXLib.ReflectionUtils.IsBasicType(System.Type)">
+            <summary>
+            Determines whether the specified type is basic type. A basic type is one that can be wholly expressed
+            as an XML attribute. All primitive data types and type <c>string</c> and <c>DataTime</c> are basic.
+            </summary>
+            <param name="t">The type to check.</param>
+            <returns>
+            <value><c>true</c> if the specified type is a basic type; otherwise, <c>false</c>.</value>
+            </returns>
+        </member>
+        <member name="M:YAXLib.ReflectionUtils.IsArray(System.Type,System.Type@)">
+            <summary>
+            Determines whether the specified type is array.
+            </summary>
+            <param name="type">The type to check</param>
+            <param name="elementType">Type of the containing element.</param>
+            <returns>
+            	<value><c>true</c> if the specified type is array; otherwise, <c>false</c>.</value>
+            </returns>
+        </member>
+        <member name="M:YAXLib.ReflectionUtils.IsArray(System.Type)">
+            <summary>
+            Determines whether the specified type is array.
+            </summary>
+            <param name="type">The type to check.</param>
+            <returns>
+            <c>true</c> if the specified type is array; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:YAXLib.ReflectionUtils.GetArrayDimensions(System.Object)">
+            <summary>
+            Gets the array dimensions.
+            </summary>
+            <param name="ar">The array to return its dimensions.</param>
+            <returns>the specified array's dimensions</returns>
+        </member>
+        <member name="M:YAXLib.ReflectionUtils.GetTypeFriendlyName(System.Type)">
+            <summary>
+            Gets the friendly name for the type. Recommended for generic types.
+            </summary>
+            <param name="type">The type to get its friendly name</param>
+            <returns>The friendly name for the type</returns>
+        </member>
+        <member name="M:YAXLib.ReflectionUtils.TypeContainsGenericParameters(System.Type)">
+            <summary>
+            Determines whether the type specified contains generic parameters or not.
+            </summary>
+            <param name="type">The type to check.</param>
+            <returns>
+            <value><c>true</c> if the type contains generic parameters; otherwise,<c>false</c>.</value>
+            </returns>
+        </member>
+        <member name="M:YAXLib.ReflectionUtils.IsCollectionType(System.Type)">
+            <summary>
+            Determines whether the specified type is a collection type, i.e., it implements IEnumerable.
+            Although System.String is derived from IEnumerable, it is considered as an exception.
+            </summary>
+            <param name="type">The type to check.</param>
+            <returns>
+            <value><c>true</c> if the specified type is a collection type; otherwise, <c>false</c>.</value>
+            </returns>
+        </member>
+        <member name="M:YAXLib.ReflectionUtils.IsIEnumerable(System.Type)">
+            <summary>
+            Determines whether the specified type has implemented or is an <c>IEnumerable</c> or <c>IEnumerable&lt;&gt;</c>
+            </summary>
+            <param name="type">The type to check.</param>
+            <returns>
+            	<value><c>true</c> if the specified type is enumerable; otherwise, <c>false</c>.</value>
+            </returns>
+        </member>
+        <member name="M:YAXLib.ReflectionUtils.IsIEnumerable(System.Type,System.Type@)">
+            <summary>
+            Determines whether the specified type has implemented or is an <c>IEnumerable</c> or <c>IEnumerable&lt;&gt;</c> .
+            </summary>
+            <param name="type">The type to check.</param>
+            <param name="seqType">Type of the sequence items.</param>
+            <returns>
+            <value><c>true</c> if the specified type is enumerable; otherwise, <c>false</c>.</value>
+            </returns>
+        </member>
+        <member name="M:YAXLib.ReflectionUtils.GetCollectionItemType(System.Type)">
+            <summary>
+            Gets the type of the items of a collection type.
+            </summary>
+            <param name="type">The type of the collection.</param>
+            <returns>The type of the items of a collection type.</returns>
+        </member>
+        <member name="M:YAXLib.ReflectionUtils.IsIList(System.Type)">
+            <summary>
+            Determines whether the specified type has implemented <c>IList</c>.
+            </summary>
+            <param name="type">The type to check.</param>
+            <returns>
+            <value><c>true</c> if the specified type has implemented <c>IList</c>; otherwise, <c>false</c>.</value>
+            </returns>
+        </member>
+        <member name="M:YAXLib.ReflectionUtils.IsICollection(System.Type,System.Type@)">
+            <summary>
+            Determines whether the specified type has implemented the <c>ICollection</c> interface.
+            </summary>
+            <param name="type">The type to check.</param>
+            <param name="itemType">Type of the member items.</param>
+            <returns>
+            <value><c>true</c> if the specified type has implemented the <c>ICollection</c> interface; otherwise, <c>false</c>.</value>
+            </returns>
+        </member>
+        <member name="M:YAXLib.ReflectionUtils.IsIDictionary(System.Type,System.Type@,System.Type@)">
+            <summary>
+            Determines whether the specified type is a generic dictionary.
+            </summary>
+            <param name="type">The type to check.</param>
+            <param name="keyType">Type of the key.</param>
+            <param name="valueType">Type of the value.</param>
+            <returns>
+            <value><c>true</c> if the specified type has implemented the IDictionary interface; otherwise, <c>false</c>.</value>
+            </returns>
+        </member>
+        <member name="M:YAXLib.ReflectionUtils.IsIDictionary(System.Type)">
+            <summary>
+            Determines whether the specified type is a generic dictionary.
+            </summary>
+            <param name="type">The type to check.</param>
+            <returns>
+            <value><c>true</c> if the specified type is dictionary; otherwise, <c>false</c>.</value>
+            </returns>
+        </member>
+        <member name="M:YAXLib.ReflectionUtils.IsNonGenericIDictionary(System.Type)">
+            <summary>
+            Determines whether the specified type is a non generic IDictionary, e.g., a Hashtable.
+            </summary>
+            <param name="type">The type to check.</param>
+            <returns>
+            	<c>true</c> if the specified type is a non generic IDictionary; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:YAXLib.ReflectionUtils.IsTypeEqualOrInheritedFromType(System.Type,System.Type)">
+            <summary>
+            Determines whether the specified type is equal or inherited from another specified type.
+            </summary>
+            <param name="type">The type to check.</param>
+            <param name="baseType">Another type that the specified type is checked whether it is equal or
+            has been driven from.</param>
+            <returns>
+            	<c>true</c> if the specified type is equal or inherited from another specified type; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:YAXLib.ReflectionUtils.IsNullable(System.Type,System.Type@)">
+            <summary>
+            Determines whether the specified type is nullable.
+            </summary>
+            <param name="type">The type to check.</param>
+            <param name="valueType">The value type of the corresponding nullable type.</param>
+            <returns>
+            <c>true</c> if the specified type is nullable; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:YAXLib.ReflectionUtils.IsNullable(System.Type)">
+            <summary>
+            Determines whether the specified type is nullable.
+            </summary>
+            <param name="type">The type to check.</param>
+            <returns>
+            <c>true</c> if the specified type is nullable; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:YAXLib.ReflectionUtils.IsIFormattable(System.Type)">
+            <summary>
+            Determines whether the specified type implements <c>IFormattable</c>
+            </summary>
+            <param name="type">The type to check.</param>
+            <returns>
+            	<c>true</c> if the specified type implements <c>IFormattable</c>; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:YAXLib.ReflectionUtils.IsStringConvertibleIFormattable(System.Type)">
+            <summary>
+            Determines whether the type provides the functionality 
+            to format the value of an object into a string representation.
+            </summary>
+            <param name="type">The type to check.</param>
+            <returns>
+            <value><c>true</c> if the specified type impliments the <c>IFormattable</c> interface; otherwise, <c>false</c>.</value>
+            </returns>
+        </member>
+        <member name="M:YAXLib.ReflectionUtils.HasOneReadWriteProperty(System.Type)">
+            <summary>
+            Checks to see if the specified type has readable and writable properties.
+            </summary>
+            <param name="type">The type to check for.</param>
+            <returns><value><c>true</c> if the specified type has readable and writable properties; otherwise, <c>false</c>.</value></returns>
+        </member>
+        <member name="M:YAXLib.ReflectionUtils.TryFormatObject(System.Object,System.String)">
+            <summary>
+            Tries to format the specified object using the format string provided.
+            If the formatting operation is not applicable, the source object is returned intact.
+            Note: The type of the returned object will be 'System.String' if formatting succeeds.
+            </summary>
+            <param name="src">The source object.</param>
+            <param name="format">The format string.</param>
+            <returns><code>System.String</code> if the format is successful; otherwise, the original object</returns>
+        </member>
+        <member name="M:YAXLib.ReflectionUtils.ConvertBasicType(System.Object,System.Type)">
+            <summary>
+            Converts the specified object from a basic type to another type as specified.
+            It is meant by basic types, primitive data types, strings, and enums.
+            </summary>
+            <param name="value">The object to be converted.</param>
+            <param name="dstType">the destination type of conversion.</param>
+            <returns>the converted object</returns>
+        </member>
+        <member name="M:YAXLib.ReflectionUtils.GetTypeByName(System.String)">
+            <summary>
+            Searches all loaded assemblies to find a type with a special name.
+            </summary>
+            <param name="name">The name of the type to find.</param>
+            <returns>type found using the specified name</returns>
+        </member>
+        <member name="M:YAXLib.ReflectionUtils.IsPublicProperty(System.Reflection.PropertyInfo)">
+            <summary>
+            Determines whether the specified property is public.
+            </summary>
+            <param name="pi">The property.</param>
+            <returns>
+            <c>true</c> if the specified property is public; otherwise, <c>false</c>.
+            </returns>
+        </member>
+    </members>
+</doc>

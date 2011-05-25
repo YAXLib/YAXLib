@@ -1,3 +1,9 @@
+[2.6] May 25, 2011
+   * Making YAXLib to serialize collection of objects which are stored through
+     a reference to their base class, to be serialized with their class name or
+	 user-defined alias, instead of the base class name as the xml-element name.
+	 Thanks go to Seer Tenedos and Lars Udengaard for suggesting this.
+	 
 [2.5] May 10, 2011
    * Fixing the bug that serialization and deserialization of decimal 
      values were not supported. Thanks go to Janko D, for submitting reporting

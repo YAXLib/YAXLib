@@ -60,5 +60,21 @@ namespace YAXLibTests
 
             //Assert.IsTrue(ReflectionUtils.GetCollectionItemType(typeof(IEnumerable<>)) == typeof(object));
         }
+
+        [TestMethod]
+        public void IsTypeEqualOrInheritedFromTypeTest()
+        {
+            Assert.IsTrue(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof (int), typeof (object)));
+            Assert.IsTrue(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(string), typeof(object)));
+            Assert.IsTrue(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(Array), typeof(IEnumerable)));
+            Assert.IsTrue(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(Dictionary<string,int>), typeof(Dictionary<,>)));
+            Assert.IsTrue(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(Dictionary<string, int>), typeof(ICollection)));
+            Assert.IsTrue(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(Dictionary<string, int>), typeof(IDictionary)));
+            Assert.IsTrue(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(Dictionary<string, int>), typeof(IDictionary<,>)));
+            Assert.IsTrue(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(Dictionary<string, int>), typeof(IDictionary<string, int>)));
+            Assert.IsFalse(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(Dictionary<string, int>), typeof(IDictionary<int, string>)));
+            Assert.IsFalse(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(Dictionary<string, int[]>), typeof(IDictionary<int, Array>)));
+            Assert.IsTrue(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(ICollection), typeof(IEnumerable)));
+        }
     }
 }
