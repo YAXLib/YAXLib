@@ -43,6 +43,13 @@ namespace YAXLibTests
         }
 
         [TestMethod]
+        public void DeserializeBasicTypesTest()
+        {
+            PerformTest(666);
+        }
+
+
+        [TestMethod]
         public void DesBookTest()
         {
             PerformTest(Book.GetSampleInstance());

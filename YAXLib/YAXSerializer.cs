@@ -428,7 +428,7 @@ namespace YAXLib
         private XDocument SerializeXDocument(object obj)
         {
             m_mainDocument = new XDocument();
-            m_mainDocument.Add(this.SerializeBase(obj));
+            m_mainDocument.Add(SerializeBase(obj));
             return m_mainDocument;
         }
 
@@ -440,9 +440,9 @@ namespace YAXLib
         /// serialization of the specified object</returns>
         private XElement SerializeBase(object obj)
         {
-            if (!this.m_type.IsInstanceOfType(obj))
+            if (!m_type.IsInstanceOfType(obj))
             {
-                throw new YAXObjectTypeMismatch(this.m_type, obj.GetType());
+                throw new YAXObjectTypeMismatch(m_type, obj.GetType());
             }
 
             // to serialize stand-alone collection or dictionary objects
@@ -450,20 +450,25 @@ namespace YAXLib
             {
                 if (m_udtWrapper.IsTreatedAsDictionary)
                 {
-                    return this.MakeDictionaryElement(null, m_udtWrapper.Alias, obj, null, null);
+                    return MakeDictionaryElement(null, m_udtWrapper.Alias, obj, null, null);
                 }
                 else if (m_udtWrapper.IsTreatedAsCollection)
                 {
-                    return this.MakeCollectionElement(null, m_udtWrapper.Alias, obj, null, null);
+                    return MakeCollectionElement(null, m_udtWrapper.Alias, obj, null, null);
                 }
                 else
                 {
                     throw new Exception("This should not happen!");
                 }
             }
+            else if(ReflectionUtils.IsBasicType(m_udtWrapper.UnderlyingType))
+            {
+                bool dummyAlreadyAdded = false;
+                return MakeBaseElement(null, m_udtWrapper.Alias, obj, out dummyAlreadyAdded);
+            }
             else
             {
-                return this.SerializeBase(obj, m_udtWrapper.Alias);
+                return SerializeBase(obj, m_udtWrapper.Alias);
             }
         }
 

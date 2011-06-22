@@ -1,3 +1,8 @@
+[2.7] June 22, 2011
+   * Fixing the bug that the primitive or basic types are not serialized 
+     if directly passed as an object to the serializer.
+	 Thanks go to Code Project user, FCBCoder, for reporting this bug.
+
 [2.6] May 25, 2011
    * Making YAXLib to serialize collection of objects which are stored through
      a reference to their base class, to be serialized with their class name or

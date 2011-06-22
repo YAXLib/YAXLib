@@ -14,12 +14,33 @@ using YAXLib;
 using DemoApplication.SampleClasses;
 using System.Threading;
 using System.Globalization;
+using System.Diagnostics;
 
 namespace YAXLibTests
 {
-    [TestClass()]
+    [TestClass]
     public class SerializationTest
     {
+        [TestMethod]
+        public void BasicTypeSerializationTest()
+        {
+            var objs = new object[] {123, 654.321, "SomeString", 24234L};
+            var types = new [] {typeof (int), typeof (double), typeof (string), typeof (long)};
+            var serializedResults = new[] { "<Int32>123</Int32>", "<Double>654.321</Double>", "<String>SomeString</String>", "<Int64>24234</Int64>" };
+
+            for (int i = 0; i < objs.Length; i++)
+            {
+                var serializer = new YAXSerializer(objs[i].GetType());
+                var got = serializer.Serialize(objs[i]);
+                Assert.AreEqual(serializedResults[i], got);
+
+                var deser = new YAXSerializer(types[i]);
+                var obj = deser.Deserialize(got);
+                Assert.AreEqual(obj, objs[i]);
+            }
+
+        }
+
         [TestMethod]
         public void BookTest()
         {
