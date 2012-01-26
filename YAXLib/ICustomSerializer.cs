@@ -8,16 +8,12 @@
 // LIABILITY FOR ANY DATA DAMAGE/LOSS THAT THIS PRODUCT MAY CAUSE.
 //-----------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 
 namespace YAXLib
 {
     /// <summary>
-    /// Defines the interface to all custom serializers used with YAXLib.
+    /// Defines the interface to all custom serializers and deserializers used with YAXLib.
     /// Note that normally you don't need to implement all the methods.
     /// </summary>
     /// <typeparam name="T">The type of field, property, class, or struct for which custom serializer
@@ -48,5 +44,30 @@ namespace YAXLib
         /// <param name="objectToSerialize">The object to serialize.</param>
         /// <returns></returns>
         string SerializeToValue(T objectToSerialize);
+
+        /// <summary>
+        /// Deserializes from an xml attribute, and returns the retreived value.
+        /// You will normally need to use XAttribute.Value property only.
+        /// </summary>
+        /// <param name="attrib">The attribute to deserialize.</param>
+        /// <returns></returns>
+        T DeserializeFromAttribute(XAttribute attrib);
+
+        /// <summary>
+        /// Deserializes from an xml element, and returns the retreived value.
+        /// You might need to use XElement.Value, XElement.Nodes(), 
+        /// XElement.Attributes(), and XElement.Elements() only.
+        /// </summary>
+        /// <param name="element">The element to deserialize.</param>
+        /// <returns></returns>
+        T DeserializeFromElement(XElement element);
+
+        /// <summary>
+        /// Deserializes from a string value which has been serialized as the content of an element
+        /// </summary>
+        /// <param name="value">The string value to deserialize.</param>
+        /// <returns></returns>
+        T DeserializeFromValue(string value);
+
     }
 }
