@@ -8,10 +8,6 @@
 // LIABILITY FOR ANY DATA DAMAGE/LOSS THAT THIS PRODUCT MAY CAUSE.
 //-----------------------------------------------------------------------
 
-using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using YAXLib;
 using System.Xml.Linq;
@@ -27,10 +23,15 @@ namespace YAXLibTests
         [TestMethod]
         public void CanCreateLocationTest()
         {
-            XElement elem = new XElement("Base", null);
+            var elem = new XElement("Base", null);
 
-            Assert.IsTrue(true);
-            //Assert.IsFalse(XMLUtils.CanCreateElement(elem, ".."));
+            Assert.IsTrue(XMLUtils.CanCreateLocation(elem, "level1/level2"));
+            var created = XMLUtils.CreateLocation(elem, "level1/level2");
+            Assert.AreEqual(created.Name.ToString(), "level2");
+            Assert.IsTrue(XMLUtils.LocationExists(elem, "level1/level2"));
+            created = XMLUtils.CreateLocation(elem, "level1/level3");
+            Assert.AreEqual(created.Name.ToString(), "level3");
+            Assert.IsTrue(XMLUtils.LocationExists(elem, "level1/level3"));
         }
     }
 }

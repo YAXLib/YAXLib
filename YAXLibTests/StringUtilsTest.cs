@@ -8,10 +8,6 @@
 // LIABILITY FOR ANY DATA DAMAGE/LOSS THAT THIS PRODUCT MAY CAUSE.
 //-----------------------------------------------------------------------
 
-using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using YAXLib;
 
@@ -47,6 +43,28 @@ namespace YAXLibTests
         }
 
         [TestMethod]
+        public void ExtractPathAndAliasTest()
+        {
+            TestPathAndAlias("one/two#name", "one/two", "name");
+            TestPathAndAlias("one / two # name", "one / two", "name");
+            TestPathAndAlias("one / two # name1 name2", "one / two", "name1 name2");
+            TestPathAndAlias(" one / two # name1 name2", "one / two", "name1 name2");
+            TestPathAndAlias(" one / two name1 name2 ", " one / two name1 name2 ", "");
+            TestPathAndAlias(" one / two # name1 # name2 ", "one / two", "name1 # name2");
+            TestPathAndAlias(" one / two # ", "one / two", "");
+            TestPathAndAlias(" one / two #", "one / two", "");
+            TestPathAndAlias("# one / two ", "", "one / two");
+        }
+
+        private static void TestPathAndAlias(string locationString, string expPath, string expAlias)
+        {
+            string path, alias;
+            StringUtils.ExttractPathAndAliasFromLocationString(locationString, out path, out alias);
+            Assert.AreEqual(path, expPath);
+            Assert.AreEqual(alias, expAlias);
+        }
+
+        [TestMethod]
         public void IsLocationAllGenericTest()
         {
             Assert.IsTrue(StringUtils.IsLocationAllGeneric(".."));
@@ -67,13 +85,11 @@ namespace YAXLibTests
         [TestMethod]
         public void DivideLocationOneStepTest()
         {
-            bool returnValue = false;
-            string location = "..";
-            string newLocation = "";
-            string newElement = "";
+            string newLocation;
+            string newElement;
 
-            location = "..";
-            returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
+            string location = "..";
+            bool returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
             Assert.AreEqual(newLocation, "..");
             Assert.AreEqual(newElement, null);
             Assert.AreEqual(returnValue, false);

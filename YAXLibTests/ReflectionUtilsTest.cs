@@ -16,7 +16,7 @@ using System.Collections;
 
 namespace YAXLibTests
 {
-    [TestClass()]
+    [TestClass]
     public class ReflectionUtilsTest
     {
         [TestMethod]
@@ -75,6 +75,19 @@ namespace YAXLibTests
             Assert.IsFalse(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(Dictionary<string, int>), typeof(IDictionary<int, string>)));
             Assert.IsFalse(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(Dictionary<string, int[]>), typeof(IDictionary<int, Array>)));
             Assert.IsTrue(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(ICollection), typeof(IEnumerable)));
+        }
+
+        [TestMethod]
+        public void GetTypeByNameTest()
+        {
+            var type1 = ReflectionUtils.GetTypeByName("System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]");
+            var type2 = ReflectionUtils.GetTypeByName("System.Collections.Generic.List`1[[System.Int32]]");
+            var type3 = ReflectionUtils.GetTypeByName("System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral]]");
+            Assert.IsNotNull(type1);
+            Assert.IsNotNull(type2);
+            Assert.IsNotNull(type3);
+            Assert.AreEqual(type1, type2);
+            Assert.AreEqual(type2, type3);
         }
     }
 }

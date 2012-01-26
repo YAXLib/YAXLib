@@ -25,7 +25,7 @@ namespace YAXLibTests
         private void GetTheTwoStrings(object obj, out string originalString, out string gottonString, out int errorCounts)
         {
             originalString = GeneralToStringProvider.GeneralToString(obj);
-            YAXSerializer serializer = new YAXSerializer(obj.GetType(), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(obj.GetType(), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             object gottonObject = serializer.Deserialize(serializer.Serialize(obj));
             errorCounts = serializer.ParsingErrors.Count;
             gottonString = GeneralToStringProvider.GeneralToString(gottonObject);
@@ -351,13 +351,35 @@ namespace YAXLibTests
   </ObjectWithoutOptionsSet>
 </SerializationOptionsSample>";
 
-            YAXSerializer serializer = new YAXSerializer(typeof(SerializationOptionsSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.DontSerializeNullObjects);
-            SerializationOptionsSample gottonObject = serializer.Deserialize(input1) as SerializationOptionsSample;
+            var serializer = new YAXSerializer(typeof(SerializationOptionsSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.DontSerializeNullObjects);
+            var gottonObject = serializer.Deserialize(input1) as SerializationOptionsSample;
 
             Assert.AreEqual(gottonObject.ObjectWithOptionsSet.SomeValueType, 123);
             Assert.IsNull(gottonObject.ObjectWithOptionsSet.StrNull);
             Assert.AreEqual(serializer.ParsingErrors.Count, 1);
         }
+
+        [TestMethod]
+        public void DesPathAndAliasAssignmentSampleTest()
+        {
+            object obj = PathAndAliasAssignmentSample.GetSampleInstance();
+            PerformTest(obj);
+        }
+
+        [TestMethod]
+        public void DesCollectionSeriallyAsAttributeTest()
+        {
+            object obj = CollectionSeriallyAsAttribute.GetSampleInstance();
+            PerformTest(obj);
+        }
+
+        [TestMethod]
+        public void DesDictionaryKeyValueAsInterfaceTest()
+        {
+            object obj = DictionaryKeyValueAsInterface.GetSampleInstance();
+            PerformTest(obj);
+        }
+
 
     }
 }

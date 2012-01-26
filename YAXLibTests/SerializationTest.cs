@@ -14,7 +14,6 @@ using YAXLib;
 using DemoApplication.SampleClasses;
 using System.Threading;
 using System.Globalization;
-using System.Diagnostics;
 
 namespace YAXLibTests
 {
@@ -44,7 +43,7 @@ namespace YAXLibTests
         [TestMethod]
         public void BookTest()
         {
-            string result =
+            const string result =
 @"<!-- This example demonstrates serailizing a very simple class -->
 <Book>
   <Title>Inside C#</Title>
@@ -52,7 +51,7 @@ namespace YAXLibTests
   <PublishYear>2002</PublishYear>
   <Price>30.5</Price>
 </Book>";
-            YAXSerializer serializer = new YAXSerializer(typeof(Book), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(Book), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(Book.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -64,12 +63,13 @@ namespace YAXLibTests
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    Thread th = new Thread(() =>
+                    var th = new Thread(() =>
                         {
-                            YAXSerializer serializer = new YAXSerializer(typeof(Book), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+                            var serializer = new YAXSerializer(typeof(Book), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
                             string got = serializer.Serialize(Book.GetSampleInstance());
-                            YAXSerializer deserializer = new YAXSerializer(typeof(Book), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
-                            Book book = deserializer.Deserialize(got) as Book;
+                            var deserializer = new YAXSerializer(typeof(Book), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+                            var book = deserializer.Deserialize(got) as Book;
+                            Assert.IsNotNull(book);
                         }
                     );
 
@@ -86,7 +86,7 @@ namespace YAXLibTests
         [TestMethod]
         public void BookWithDecimalPriceTest()
         {
-            string result =
+            const string result =
 @"<!-- This example demonstrates serailizing a very simple class -->
 <SimpleBookClassWithDecimalPrice>
   <Title>Inside C#</Title>
@@ -94,7 +94,7 @@ namespace YAXLibTests
   <PublishYear>2002</PublishYear>
   <Price>32.20</Price>
 </SimpleBookClassWithDecimalPrice>";
-            YAXSerializer serializer = new YAXSerializer(typeof(SimpleBookClassWithDecimalPrice), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(SimpleBookClassWithDecimalPrice), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(SimpleBookClassWithDecimalPrice.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -126,7 +126,7 @@ namespace YAXLibTests
             Assert.AreEqual(faResult, deResult, "Comparing FA and DE");
             Assert.AreEqual(deResult, usResult, "Comparing DE and US");
 
-            string expected =
+            const string expected =
 @"<!-- This class contains fields that are vulnerable to culture changes! -->
 <CultureSample Number2=""32243.67676"" Dec2=""19232389.18391912318232131"" Date2=""09/20/2011 04:10:30"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
   <Number1>123123.1233</Number1>
@@ -146,7 +146,7 @@ namespace YAXLibTests
         [TestMethod]
         public void BookStructTest()
         {
-            string result =
+            const string result =
 @"<!-- This example demonstrates serailizing a very simple struct -->
 <BookStruct>
   <Title>Reinforcement Learning an Introduction</Title>
@@ -154,7 +154,7 @@ namespace YAXLibTests
   <PublishYear>1998</PublishYear>
   <Price>38.75</Price>
 </BookStruct>";
-            YAXSerializer serializer = new YAXSerializer(typeof(BookStruct), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(BookStruct), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(BookStruct.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -162,14 +162,14 @@ namespace YAXLibTests
         [TestMethod]
         public void WarehouseSimpleTest()
         {
-            string result =
+            const string result =
 @"<!-- This example is our basic hypothetical warehouse -->
 <WarehouseSimple>
   <Name>Foo Warehousing Ltd.</Name>
   <Address>No. 10, Some Ave., Some City, Some Country</Address>
   <Area>120000.5</Area>
 </WarehouseSimple>";
-            YAXSerializer serializer = new YAXSerializer(typeof(WarehouseSimple), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(WarehouseSimple), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(WarehouseSimple.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -177,14 +177,14 @@ namespace YAXLibTests
         [TestMethod]
         public void WarehouseStructuredTest()
         {
-            string result =
+            const string result =
 @"<!-- This example shows our hypothetical warehouse, a little bit structured -->
 <WarehouseStructured Name=""Foo Warehousing Ltd."">
   <SiteInfo address=""No. 10, Some Ave., Some City, Some Country"">
     <SurfaceArea>120000.5</SurfaceArea>
   </SiteInfo>
 </WarehouseStructured>";
-            YAXSerializer serializer = new YAXSerializer(typeof(WarehouseStructured), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(WarehouseStructured), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(WarehouseStructured.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -192,7 +192,7 @@ namespace YAXLibTests
         [TestMethod]
         public void WarehouseWithArrayTest()
         {
-            string result =
+            const string result =
 @"<!-- This example shows the serialization of arrays -->
 <WarehouseWithArray Name=""Foo Warehousing Ltd."">
   <SiteInfo address=""No. 10, Some Ave., Some City, Some Country"">
@@ -200,7 +200,7 @@ namespace YAXLibTests
   </SiteInfo>
   <StoreableItems>Item3, Item6, Item9, Item12</StoreableItems>
 </WarehouseWithArray>";
-            YAXSerializer serializer = new YAXSerializer(typeof(WarehouseWithArray), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(WarehouseWithArray), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(WarehouseWithArray.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -208,7 +208,7 @@ namespace YAXLibTests
         [TestMethod]
         public void WarehouseWithDictionaryTest()
         {
-            string result =
+            const string result =
 @"<!-- This example shows the serialization of Dictionary -->
 <WarehouseWithDictionary Name=""Foo Warehousing Ltd."">
   <SiteInfo address=""No. 10, Some Ave., Some City, Some Country"">
@@ -222,7 +222,7 @@ namespace YAXLibTests
     <ItemInfo Item=""Item12"" Count=""25"" />
   </ItemQuantities>
 </WarehouseWithDictionary>";
-            YAXSerializer serializer = new YAXSerializer(typeof(WarehouseWithDictionary), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(WarehouseWithDictionary), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(WarehouseWithDictionary.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -230,7 +230,7 @@ namespace YAXLibTests
         [TestMethod]
         public void WarehouseNestedObjectTest()
         {
-            string result =
+            const string result =
 @"<!-- This example demonstrates serializing nested objects -->
 <WarehouseNestedObjectExample Name=""Foo Warehousing Ltd."">
   <SiteInfo address=""No. 10, Some Ave., Some City, Some Country"">
@@ -248,7 +248,7 @@ namespace YAXLibTests
     <Age>50</Age>
   </Owner>
 </WarehouseNestedObjectExample>";
-            YAXSerializer serializer = new YAXSerializer(typeof(WarehouseNestedObjectExample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(WarehouseNestedObjectExample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(WarehouseNestedObjectExample.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -256,13 +256,13 @@ namespace YAXLibTests
         [TestMethod]
         public void ProgrammingLanguageTest()
         {
-            string result =
+            const string result =
 @"<!-- This example is used in the article to show YAXLib exception handling policies -->
 <ProgrammingLanguage>
   <LanguageName>C#</LanguageName>
   <IsCaseSensitive>True</IsCaseSensitive>
 </ProgrammingLanguage>";
-            YAXSerializer serializer = new YAXSerializer(typeof(ProgrammingLanguage), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(ProgrammingLanguage), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(ProgrammingLanguage.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -270,12 +270,12 @@ namespace YAXLibTests
         [TestMethod]
         public void ColorExampleTest()
         {
-            string result =
+            const string result =
 @"<!-- This example shows a technique for serializing classes without a default constructor -->
 <ColorExample>
   <TheColor>#FF0000FF</TheColor>
 </ColorExample>";
-            YAXSerializer serializer = new YAXSerializer(typeof(ColorExample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(ColorExample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(ColorExample.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -283,7 +283,7 @@ namespace YAXLibTests
         [TestMethod]
         public void MultiLevelClassTest()
         {
-            string result =
+            const string result =
 @"<!-- This example shows a multi-level class, which helps to test -->
 <!-- the null references identity problem. -->
 <!-- Thanks go to Anton Levshunov for proposing this example, -->
@@ -302,7 +302,7 @@ namespace YAXLibTests
     </FirstLevelClass>
   </items>
 </MultilevelClass>";
-            YAXSerializer serializer = new YAXSerializer(typeof(MultilevelClass), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(MultilevelClass), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(MultilevelClass.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -310,7 +310,7 @@ namespace YAXLibTests
         [TestMethod]
         public void FormattingTest()
         {
-            string result =
+            const string result =
 @"<!-- This example shows how to apply format strings to a class properties -->
 <FormattingExample>
   <CreationDate>Wednesday, March 14, 2007</CreationDate>
@@ -337,7 +337,7 @@ namespace YAXLibTests
     </KeyValuePairOfDoubleDouble>
   </SomeLogarithmExample>
 </FormattingExample>";
-            YAXSerializer serializer = new YAXSerializer(typeof(FormattingExample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(FormattingExample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(FormattingExample.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -345,14 +345,14 @@ namespace YAXLibTests
         [TestMethod]
         public void PathsExampleTest()
         {
-            string result =
+            const string result =
 @"<!-- This example demonstrates how not to use -->
 <!-- white spaces as separators while serializing -->
 <!-- collection classes serially -->
 <PathsExample>
   <Paths>C:\SomeFile.txt;C:\SomeFolder\SomeFile.txt;C:\Some Folder With Space Such As\Program Files</Paths>
 </PathsExample>";
-            YAXSerializer serializer = new YAXSerializer(typeof(PathsExample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(PathsExample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(PathsExample.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -360,7 +360,7 @@ namespace YAXLibTests
         [TestMethod]
         public void MoreComplexExampleTest()
         {
-            string result =
+            const string result =
 @"<!-- This example tries to show almost all features of YAXLib which were not shown before. -->
 <!-- FamousPoints - shows a dictionary with a non-primitive value member. -->
 <!-- IntEnumerable - shows serializing properties of type IEnumerable<> -->
@@ -377,7 +377,7 @@ namespace YAXLibTests
       <ThePoint X=""-1"" Y=""1"" />
     </PointInfo>
   </FamousPoints>
-  <IntEnumerable yaxlib:realtype=""System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"">
+  <IntEnumerable yaxlib:realtype=""System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"">
     <Int32>1</Int32>
     <Int32>3</Int32>
     <Int32>5</Int32>
@@ -397,7 +397,7 @@ namespace YAXLibTests
     </Families>
   </Students>
 </MoreComplexExample>";
-            YAXSerializer serializer = new YAXSerializer(typeof(MoreComplexExample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(MoreComplexExample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(MoreComplexExample.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -405,7 +405,7 @@ namespace YAXLibTests
         [TestMethod]
         public void NestedDicSampleTest()
         {
-            string result =
+            const string result =
 @"<!-- This example demonstrates usage of recursive collection serialization -->
 <!-- and deserialization. In this case a Dictionary whose Key, or Value is -->
 <!-- another dictionary or collection has been used. -->
@@ -487,13 +487,13 @@ namespace YAXLibTests
     </KeyValuePairOfDictionaryOfDoubleDictionaryOfInt32Int32DictionaryOfDictionaryOfStringStringListOfDouble>
   </SomeDic>
 </NestedDicSample>";
-            YAXSerializer serializer = new YAXSerializer(typeof(NestedDicSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(NestedDicSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(NestedDicSample.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
 
         [TestMethod]
-        public void GUIDTestTest()
+        public void GuidDemoTest()
         {
             Guid g1 = Guid.NewGuid();
             Guid g2 = Guid.NewGuid();
@@ -519,7 +519,7 @@ namespace YAXLibTests
     </KeyValuePairOfGuidInt32>
   </SomeDic>
 </GUIDTest>", g1.ToString(), g2.ToString(), g3.ToString(), g4.ToString());
-            YAXSerializer serializer = new YAXSerializer(typeof(GUIDTest), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(GUIDTest), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(GUIDTest.GetSampleInstance(g1,g2,g3,g4));
             Assert.AreEqual(result, got);
         }
@@ -527,14 +527,14 @@ namespace YAXLibTests
         [TestMethod]
         public void NullableTest()
         {
-            string result =
+            const string result =
 @"<!-- This exmaple shows the usage of nullable fields -->
 <NullableClass>
   <Title>Inside C#</Title>
   <PublishYear>2002</PublishYear>
   <PurchaseYear />
 </NullableClass>";
-            YAXSerializer serializer = new YAXSerializer(typeof(NullableClass), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(NullableClass), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(NullableClass.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -542,13 +542,13 @@ namespace YAXLibTests
         [TestMethod]
         public void NullableSample2Test()
         {
-            string result =
+            const string result =
 @"<!-- This example shows how nullable fields -->
 <!-- may not be serialized in their expected location -->
 <NullableSample2 xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
   <Number yaxlib:realtype=""System.Int32"">10</Number>
 </NullableSample2>";
-            YAXSerializer serializer = new YAXSerializer(typeof(NullableSample2), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(NullableSample2), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(NullableSample2.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -557,14 +557,14 @@ namespace YAXLibTests
         [TestMethod]
         public void ListHolderClassTest()
         {
-            string result =
+            const string result =
 @"<ListHolderClass>
   <ListOfStrings>
     <String>Hi</String>
     <String>Hello</String>
   </ListOfStrings>
 </ListHolderClass>";
-            YAXSerializer serializer = new YAXSerializer(typeof(ListHolderClass), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(ListHolderClass), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(ListHolderClass.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -572,12 +572,12 @@ namespace YAXLibTests
         [TestMethod]
         public void StandaloneListTest()
         {
-            string result =
+            const string result =
 @"<ListOfString>
   <String>Hi</String>
   <String>Hello</String>
 </ListOfString>";
-            YAXSerializer serializer = new YAXSerializer(ListHolderClass.GetSampleInstance().ListOfStrings.GetType(), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(ListHolderClass.GetSampleInstance().ListOfStrings.GetType(), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(ListHolderClass.GetSampleInstance().ListOfStrings);
             Assert.AreEqual(result, got);
         }
@@ -585,7 +585,7 @@ namespace YAXLibTests
         [TestMethod]
         public void NamesExampleTest()
         {
-            string result =
+            const string result =
 @"<NamesExample>
   <FirstName>Li</FirstName>
   <Persons>
@@ -599,7 +599,7 @@ namespace YAXLibTests
     </PersonInfo>
   </Persons>
 </NamesExample>";
-            YAXSerializer serializer = new YAXSerializer(typeof(NamesExample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(NamesExample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(NamesExample.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -607,7 +607,7 @@ namespace YAXLibTests
         [TestMethod]
         public void RequestTest()
         {
-            string result =
+            const string result =
 @"<Pricing id=""123"">
   <version major=""1"" minor=""0"" />
   <input>
@@ -620,7 +620,7 @@ namespace YAXLibTests
     </skylab_config>
   </input>
 </Pricing>";
-            YAXSerializer serializer = new YAXSerializer(typeof(Request), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(Request), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(Request.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -628,12 +628,12 @@ namespace YAXLibTests
         [TestMethod]
         public void AudioSampleTest()
         {
-            string result =
+            const string result =
 @"<AudioSample>
   <Audio FileName=""filesname.jpg"">base64</Audio>
   <Image FileName=""filesname.jpg"">base64</Image>
 </AudioSample>";
-            YAXSerializer serializer = new YAXSerializer(typeof(AudioSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(AudioSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(AudioSample.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -641,71 +641,23 @@ namespace YAXLibTests
         [TestMethod]
         public void TimeSpanTest()
         {
-            string result =
+            const string result =
 @"<!-- This example shows serialization and deserialization of TimeSpan obejcts -->
 <TimeSpanSample>
-  <TheTimeSpan>
-    <Ticks>1863023000000</Ticks>
-    <Days>2</Days>
-    <Hours>3</Hours>
-    <Milliseconds>300</Milliseconds>
-    <Minutes>45</Minutes>
-    <Seconds>2</Seconds>
-    <TotalDays>2.15627662037037</TotalDays>
-    <TotalHours>51.7506388888889</TotalHours>
-    <TotalMilliseconds>186302300</TotalMilliseconds>
-    <TotalMinutes>3105.03833333333</TotalMinutes>
-    <TotalSeconds>186302.3</TotalSeconds>
-  </TheTimeSpan>
-  <AnotherTimeSpan>
-    <Ticks>1863023000000</Ticks>
-    <Days>2</Days>
-    <Hours>3</Hours>
-    <Milliseconds>300</Milliseconds>
-    <Minutes>45</Minutes>
-    <Seconds>2</Seconds>
-    <TotalDays>2.15627662037037</TotalDays>
-    <TotalHours>51.7506388888889</TotalHours>
-    <TotalMilliseconds>186302300</TotalMilliseconds>
-    <TotalMinutes>3105.03833333333</TotalMinutes>
-    <TotalSeconds>186302.3</TotalSeconds>
-  </AnotherTimeSpan>
+  <TheTimeSpan>2.03:45:02.3000000</TheTimeSpan>
+  <AnotherTimeSpan>2.03:45:02.3000000</AnotherTimeSpan>
   <DicTimeSpans>
     <KeyValuePairOfTimeSpanInt32>
-      <Key>
-        <Ticks>1863023000000</Ticks>
-        <Days>2</Days>
-        <Hours>3</Hours>
-        <Milliseconds>300</Milliseconds>
-        <Minutes>45</Minutes>
-        <Seconds>2</Seconds>
-        <TotalDays>2.15627662037037</TotalDays>
-        <TotalHours>51.7506388888889</TotalHours>
-        <TotalMilliseconds>186302300</TotalMilliseconds>
-        <TotalMinutes>3105.03833333333</TotalMinutes>
-        <TotalSeconds>186302.3</TotalSeconds>
-      </Key>
+      <Key>2.03:45:02.3000000</Key>
       <Value>1</Value>
     </KeyValuePairOfTimeSpanInt32>
     <KeyValuePairOfTimeSpanInt32>
-      <Key>
-        <Ticks>2652012000000</Ticks>
-        <Days>3</Days>
-        <Hours>1</Hours>
-        <Milliseconds>200</Milliseconds>
-        <Minutes>40</Minutes>
-        <Seconds>1</Seconds>
-        <TotalDays>3.06945833333333</TotalDays>
-        <TotalHours>73.667</TotalHours>
-        <TotalMilliseconds>265201200</TotalMilliseconds>
-        <TotalMinutes>4420.02</TotalMinutes>
-        <TotalSeconds>265201.2</TotalSeconds>
-      </Key>
+      <Key>3.01:40:01.2000000</Key>
       <Value>2</Value>
     </KeyValuePairOfTimeSpanInt32>
   </DicTimeSpans>
 </TimeSpanSample>";
-            YAXSerializer serializer = new YAXSerializer(typeof(TimeSpanSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(TimeSpanSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(TimeSpanSample.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -714,14 +666,14 @@ namespace YAXLibTests
         [TestMethod]
         public void FieldSerializationSampleTest()
         {
-            string result =
+            const string result =
 @"<!-- This example shows how to choose the fields to be serialized -->
 <FieldSerializationExample>
   <SomePrivateStringProperty>Hi</SomePrivateStringProperty>
   <m_someInt>8</m_someInt>
   <m_someDouble>3.14</m_someDouble>
 </FieldSerializationExample>";
-            YAXSerializer serializer = new YAXSerializer(typeof(FieldSerializationExample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(FieldSerializationExample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(FieldSerializationExample.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -729,7 +681,7 @@ namespace YAXLibTests
         [TestMethod]
         public void MoreComplexBookTest()
         {
-            string result =
+            const string result =
 @"<!-- This example shows how to provide serialization address -->
 <!-- for elements and attributes. Theses addresses resemble those used -->
 <!-- in known file-systems -->
@@ -744,7 +696,7 @@ namespace YAXLibTests
   <PublishYear>2002</PublishYear>
   <Price>30.5</Price>
 </MoreComplexBook>";
-            YAXSerializer serializer = new YAXSerializer(typeof(MoreComplexBook), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(MoreComplexBook), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(MoreComplexBook.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -752,7 +704,7 @@ namespace YAXLibTests
         [TestMethod]
         public void MoreComplexBookTwoTest()
         {
-            string result =
+            const string result =
 @"<!-- This class shows how members of nested objects -->
 <!-- can be serialized in their parents using serialization -->
 <!-- addresses including "".."" -->
@@ -768,7 +720,7 @@ namespace YAXLibTests
   <PublishYear>2002</PublishYear>
   <Price>30.5</Price>
 </MoreComplexBook2>";
-            YAXSerializer serializer = new YAXSerializer(typeof(MoreComplexBook2), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(MoreComplexBook2), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(MoreComplexBook2.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -776,7 +728,7 @@ namespace YAXLibTests
         [TestMethod]
         public void MoreComplexBookThreeTest()
         {
-            string result =
+            const string result =
 @"<!-- This example shows how to serialize collection objects while -->
 <!-- not serializing the element for their enclosing collection itself -->
 <MoreComplexBook3>
@@ -789,7 +741,7 @@ namespace YAXLibTests
   <Editor>Timothy Jones</Editor>
   <Editor>Oliver Twist</Editor>
 </MoreComplexBook3>";
-            YAXSerializer serializer = new YAXSerializer(typeof(MoreComplexBook3), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(MoreComplexBook3), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(MoreComplexBook3.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -797,7 +749,7 @@ namespace YAXLibTests
         [TestMethod]
         public void WarehouseWithDictionaryNoContainerTest()
         {
-            string result =
+            const string result =
 @"<!-- This example shows how dictionary objects can be serialized without -->
 <!-- their enclosing element -->
 <WarehouseWithDictionaryNoContainer Name=""Foo Warehousing Ltd."">
@@ -810,7 +762,7 @@ namespace YAXLibTests
   <ItemInfo Item=""Item9"" Count=""600"" />
   <ItemInfo Item=""Item12"" Count=""25"" />
 </WarehouseWithDictionaryNoContainer>";
-            YAXSerializer serializer = new YAXSerializer(typeof(WarehouseWithDictionaryNoContainer), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(WarehouseWithDictionaryNoContainer), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(WarehouseWithDictionaryNoContainer.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -818,7 +770,7 @@ namespace YAXLibTests
         [TestMethod]
         public void WarehouseWithCommentsTest()
         {
-            string result =
+            const string result =
 @"<WarehouseWithComments>
   <foo>
     <bar>
@@ -842,7 +794,7 @@ namespace YAXLibTests
   <ItemInfo Item=""Item9"" Count=""600"" />
   <ItemInfo Item=""Item12"" Count=""25"" />
 </WarehouseWithComments>";
-            YAXSerializer serializer = new YAXSerializer(typeof(WarehouseWithComments), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(WarehouseWithComments), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(WarehouseWithComments.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -850,7 +802,7 @@ namespace YAXLibTests
         [TestMethod]
         public void EnumsSampleTest()
         {
-            string result =
+            const string result =
 @"<!-- This example shows how to define aliases for enum members -->
 <EnumsSample OneInstance=""Spring, Summer"">
   <TheSeasonSerially>Spring;Summer;Autumn or fall;Winter</TheSeasonSerially>
@@ -897,7 +849,7 @@ namespace YAXLibTests
     </KeyValuePairOfInt32Seasons>
   </DicIntToSeason>
 </EnumsSample>";
-            YAXSerializer serializer = new YAXSerializer(typeof(EnumsSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(EnumsSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(EnumsSample.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -905,7 +857,7 @@ namespace YAXLibTests
         [TestMethod]
         public void MultiDimArraySampleTest()
         {
-            string result =
+            const string result =
 @"<!-- This example shows serialization of multi-dimensional, -->
 <!-- and jagged arrays -->
 <MultiDimArraySample xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
@@ -988,7 +940,7 @@ namespace YAXLibTests
     </Array1OfInt32>
   </JaggedNotSerially>
 </MultiDimArraySample>";
-            YAXSerializer serializer = new YAXSerializer(typeof(MultiDimArraySample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(MultiDimArraySample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(MultiDimArraySample.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -996,7 +948,7 @@ namespace YAXLibTests
         [TestMethod]
         public void AnotherArraySampleTest()
         {
-            string result =
+            const string result =
 @"<!-- This example shows usage of jagged multi-dimensional arrays -->
 <AnotherArraySample xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
   <Array1>
@@ -1018,7 +970,7 @@ namespace YAXLibTests
     </Array2OfInt32>
   </Array1>
 </AnotherArraySample>";
-            YAXSerializer serializer = new YAXSerializer(typeof(AnotherArraySample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(AnotherArraySample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(AnotherArraySample.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -1027,7 +979,7 @@ namespace YAXLibTests
         [TestMethod]
         public void CollectionOfInterfacesSampleTest()
         {
-            string result =
+            const string result =
 @"<!-- This example shows serialization and deserialization of -->
 <!-- objects through a reference to their base class or interface -->
 <CollectionOfInterfacesSample xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
@@ -1099,7 +1051,7 @@ namespace YAXLibTests
     </KeyValuePairOfInt32ISample>
   </DictInt2Sample>
 </CollectionOfInterfacesSample>";
-            YAXSerializer serializer = new YAXSerializer(typeof(CollectionOfInterfacesSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(CollectionOfInterfacesSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(CollectionOfInterfacesSample.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -1107,7 +1059,7 @@ namespace YAXLibTests
         [TestMethod]
         public void MultipleCommentsTestTest()
         {
-            string result =
+            const string result =
 @"<!-- How multi-line comments are serialized as multiple XML comments -->
 <MultipleCommentsTest>
   <!-- Using @ quoted style -->
@@ -1117,7 +1069,7 @@ namespace YAXLibTests
   <!-- Comment 2 for member -->
   <SomeInt>10</SomeInt>
 </MultipleCommentsTest>";
-            YAXSerializer serializer = new YAXSerializer(typeof(MultipleCommentsTest), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(MultipleCommentsTest), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(MultipleCommentsTest.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -1125,7 +1077,7 @@ namespace YAXLibTests
         [TestMethod]
         public void InterfaceMatchingSampleTest()
         {
-            string result =
+            const string result =
 @"<!-- This example shows serialization and deserialization of objects -->
 <!-- through a reference to their base class or interface while used in -->
 <!-- collection classes -->
@@ -1153,7 +1105,7 @@ namespace YAXLibTests
     <KeyValuePairOfInt32NullableOfDouble Key=""3"" Value="""" />
   </DictInt2Nullable>
 </InterfaceMatchingSample>";
-            YAXSerializer serializer = new YAXSerializer(typeof(InterfaceMatchingSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(InterfaceMatchingSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(InterfaceMatchingSample.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
@@ -1161,7 +1113,7 @@ namespace YAXLibTests
         [TestMethod]
         public void NonGenericCollectionsSampleTest()
         {
-            string result =
+            const string result =
 @"<!-- This sample demonstrates serialization of non-generic collection classes -->
 <NonGenericCollectionsSample xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
   <ObjList Author_s_Name=""Charles"">
@@ -1192,18 +1144,8 @@ namespace YAXLibTests
     <Author yaxlib:realtype=""DemoApplication.SampleClasses.Author"" />
   </TheArrayList>
   <TheHashtable>
-    <DictionaryEntry yaxlib:realtype=""System.Collections.DictionaryEntry"">
-      <Key yaxlib:realtype=""System.DateTime"">02/01/2009 00:00:00</Key>
-      <Value yaxlib:realtype=""System.Int32"">7</Value>
-    </DictionaryEntry>
-    <DictionaryEntry yaxlib:realtype=""System.Collections.DictionaryEntry"">
-      <Key yaxlib:realtype=""System.String"">Tom</Key>
-      <Value yaxlib:realtype=""System.String"">Sam</Value>
-    </DictionaryEntry>
-    <DictionaryEntry yaxlib:realtype=""System.Collections.DictionaryEntry"">
-      <Key yaxlib:realtype=""System.Double"">1</Key>
-      <Value yaxlib:realtype=""System.String"">Tim</Value>
-    </DictionaryEntry>
+{0}
+{1}
   </TheHashtable>
   <TheQueue>
     <Int32 yaxlib:realtype=""System.Int32"">10</Int32>
@@ -1243,16 +1185,37 @@ namespace YAXLibTests
   </TheBitArray>
 </NonGenericCollectionsSample>";
 
-            YAXSerializer serializer = new YAXSerializer(typeof(NonGenericCollectionsSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string part1 = @"    <DictionaryEntry yaxlib:realtype=""System.Collections.DictionaryEntry"">
+      <Key yaxlib:realtype=""System.DateTime"">02/01/2009 00:00:00</Key>
+      <Value yaxlib:realtype=""System.Int32"">7</Value>
+    </DictionaryEntry>";
+
+            string part2 = @"    <DictionaryEntry yaxlib:realtype=""System.Collections.DictionaryEntry"">
+      <Key yaxlib:realtype=""System.String"">Tom</Key>
+      <Value yaxlib:realtype=""System.String"">Sam</Value>
+    </DictionaryEntry>
+    <DictionaryEntry yaxlib:realtype=""System.Collections.DictionaryEntry"">
+      <Key yaxlib:realtype=""System.Double"">1</Key>
+      <Value yaxlib:realtype=""System.String"">Tim</Value>
+    </DictionaryEntry>";
+
+            string possibleResult1 = String.Format(result, part1, part2);
+            string possibleResult2 = String.Format(result, part2, part1);
+
+
+            var serializer = new YAXSerializer(typeof(NonGenericCollectionsSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(NonGenericCollectionsSample.GetSampleInstance());
-            Assert.AreEqual(result, got);
+            //result.ShouldEqualWithDiff(got, DiffStyle.Minimal);
+            bool result1Match = String.Equals(got, possibleResult1, StringComparison.Ordinal);
+            bool result2Match = String.Equals(got, possibleResult2, StringComparison.Ordinal);
+            Assert.IsTrue(result1Match || result2Match);
         }
 
 
         [TestMethod]
         public void GenericCollectionsSampleTest()
         {
-            string result =
+            const string result =
 @"<!-- This class provides an example of successful serialization/deserialization -->
 <!-- of collection objects in ""System.Collections.Generic"" namespaces -->
 <GenericCollectionsSample>
@@ -1289,15 +1252,50 @@ namespace YAXLibTests
   </TheLinkedList>
 </GenericCollectionsSample>";
 
-            YAXSerializer serializer = new YAXSerializer(typeof(GenericCollectionsSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(GenericCollectionsSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(GenericCollectionsSample.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
 
+        [TestMethod] 
+        public void SerializingPathAndAliasTogetherTest()
+        {
+            const string result = 
+@"<PathAndAliasAssignmentSample>
+  <Title value=""Inside C#"" />
+  <Price value=""30.5"" />
+  <Publish year=""2002"" />
+  <Notes>
+    <Comments value=""SomeComment"" />
+  </Notes>
+  <Author name=""Tom Archer &amp; Andrew Whitechapel"" />
+</PathAndAliasAssignmentSample>";
+            var serializer = new YAXSerializer(typeof(PathAndAliasAssignmentSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string got = serializer.Serialize(PathAndAliasAssignmentSample.GetSampleInstance());
+            Assert.AreEqual(result, got);
+        }
+
+        [TestMethod]
+        public void CollectionSeriallyAsAttributeTest()
+        {
+            const string result =
+@"<CollectionSeriallyAsAttribute>
+  <Info names=""John Doe,Jane,Sina,Mike,Rich"" />
+  <TheCities>Tehran,Melbourne,New York,Paris</TheCities>
+  <Location>
+    <Countries>Iran,Australia,United States of America,France</Countries>
+  </Location>
+</CollectionSeriallyAsAttribute>";
+            var serializer = new YAXSerializer(typeof(CollectionSeriallyAsAttribute), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string got = serializer.Serialize(CollectionSeriallyAsAttribute.GetSampleInstance());
+            Assert.AreEqual(result, got);
+        }
+
+
         [TestMethod]
         public void SerializationOptionsSampleTest()
         {
-            string resultWithSerializeNullRefs =
+            const string resultWithSerializeNullRefs =
 @"<SerializationOptionsSample>
   <!-- Str2Null must NOT be serialized when it is null, even -->
   <!-- if the serialization options of the serializer is changed -->
@@ -1319,11 +1317,11 @@ namespace YAXLibTests
   </ObjectWithoutOptionsSet>
 </SerializationOptionsSample>";
 
-            YAXSerializer serializer = new YAXSerializer(typeof(SerializationOptionsSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(SerializationOptionsSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(SerializationOptionsSample.GetSampleInstance());
             Assert.AreEqual(resultWithSerializeNullRefs, got);
 
-            string resultWithDontSerializeNullRefs =
+            const string resultWithDontSerializeNullRefs =
 @"<SerializationOptionsSample>
   <!-- Str2Null must NOT be serialized when it is null, even -->
   <!-- if the serialization options of the serializer is changed -->
@@ -1348,6 +1346,5 @@ namespace YAXLibTests
             got = serializer.Serialize(SerializationOptionsSample.GetSampleInstance());
             Assert.AreEqual(resultWithDontSerializeNullRefs, got);
         }
-
     }
 }
