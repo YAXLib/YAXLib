@@ -1,3 +1,26 @@
+[2.8] January 26, 2012
+   * Switching to Visual Studio 2010
+   * Adding support for specifying alias and path-like serialization addresses 
+     together, the alias is seperated from path with a # character:
+	 [YAXAttributeFor("level1/level2#alias")]
+     Here you don't need to use an extra [YAXSerializeAs("alias")].
+   * Merging custom deserialization logic with custom serialization. Therefore,
+     in order to make use of custom serialization capability one needs only to
+	 implement ICustomSerializer<>, and use the attribute YAXCustomSerializer on
+	 the desired field or type. The deserialization logic is also included in them.
+   * Fixing the bug in XMLUtils.CreateLocation method, which did not create locations
+     for which a portion a location already existed.
+   * Adding support that any field that uses YAXCustomSerializer attribute
+     can be serialized as an XML-attribute or value for another element. The 
+	 type that implements the custom serializer is responsible for creating the
+	 required attribute or value.
+   * Adding support for collections that are serialized serially, to be also
+     serialized as an attribute or value for another element.
+   * Fixed a bug resulting from serializing a collection element through 
+     a reference whose fields are serialized in other elements.
+	 Thanks go to CodePlex user: GraywizardX (http://www.codeplex.com/site/users/view/GraywizardX)
+	 Related discussion: http://yaxlib.codeplex.com/discussions/287166
+
 [2.7] June 22, 2011
    * Fixing the bug that the primitive or basic types are not serialized 
      if directly passed as an object to the serializer.
