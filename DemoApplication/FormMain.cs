@@ -1,16 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using YAXLib;
 using DemoApplication.SampleClasses;
-using System.Xml.Linq;
-using System.Collections;
-using System.Threading;
 
 namespace DemoApplication
 {
@@ -107,6 +100,13 @@ namespace DemoApplication
 
             //lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(FreeSample), FreeSample.GetSampleInstance()));
             //lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(CultureSample), CultureSample.GetSampleInstance()));
+
+            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(PathAndAliasAssignmentSample), PathAndAliasAssignmentSample.GetSampleInstance()));
+            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(Code4PublicThemesCollection), Code4PublicThemesCollection.GetSampleInstance()));
+
+            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof (CollectionSeriallyAsAttribute), CollectionSeriallyAsAttribute.GetSampleInstance()));
+            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(DictionaryKeyValueAsInterface), DictionaryKeyValueAsInterface.GetSampleInstance()));
+            
         }
 
         private void btnSerialize_Click(object sender, EventArgs e)
@@ -149,7 +149,7 @@ namespace DemoApplication
                 fileName = openFileDialog1.FileName;
             }
 
-            ClassInfoListItem info = selItem as ClassInfoListItem;
+            var info = selItem as ClassInfoListItem;
             YAXExceptionTypes defaultExType = GetSelectedDefaultExceptionType();
             YAXExceptionHandlingPolicies exPolicy = GetSelectedExceptionHandlingPolicy();
             YAXSerializationOptions serOption = GetSelectedSerializationOption();

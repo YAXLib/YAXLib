@@ -8,7 +8,6 @@ using System.Xml.Linq;
 namespace DemoApplication.SampleClasses
 {
     [YAXCustomSerializer(typeof(CustomMessageSerializer))]
-    [YAXCustomDeserializer(typeof(CustomMessageSerializer))]
     public class Message
     {
         public string MessageText { get; set; }
@@ -25,7 +24,6 @@ namespace DemoApplication.SampleClasses
     public class CustomSerializationTests
     {
         [YAXCustomSerializer(typeof(CustomTitleSerializer))]
-        [YAXCustomDeserializer(typeof(CustomTitleSerializer))]
         [YAXElementFor("SomeTitle")]
         public string Title { get; set; }
 
@@ -38,7 +36,7 @@ namespace DemoApplication.SampleClasses
 
         public static CustomSerializationTests GetSampleInstance()
         {
-            Message message = new Message
+            var message = new Message
             {
                 MessageText = "The sun is shining",
                 BoldContent = "sun",
@@ -54,7 +52,7 @@ namespace DemoApplication.SampleClasses
         }
     }
 
-    public class CustomMessageSerializer : ICustomSerializer<Message>, ICustomDeserializer<Message>
+    public class CustomMessageSerializer : ICustomSerializer<Message>
     {
         #region ICustomSerializer<Message> Members
 
@@ -132,7 +130,7 @@ namespace DemoApplication.SampleClasses
 
     }
 
-    public class CustomTitleSerializer : ICustomSerializer<string>, ICustomDeserializer<string>
+    public class CustomTitleSerializer : ICustomSerializer<string>
     {
         #region ICustomDeserializer<string> Members
 

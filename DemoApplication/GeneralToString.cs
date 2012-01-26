@@ -394,6 +394,12 @@ namespace DemoApplication
             if (type == typeof(List<>) || type == typeof(HashSet<>) || type == typeof(IEnumerable<>))
                 return true;
 
+            Type elemType;
+            if(IsIEnumerableExceptArray(type, out elemType))
+            {
+                return true;
+            }
+
             return false;
         }
 
@@ -502,6 +508,55 @@ namespace DemoApplication
         {
             return (t.BaseType == typeof(System.Array));
         }
+
+        /// <summary>
+        /// Determines whether the specified type has implemented or is an <c>IEnumerable</c> or <c>IEnumerable&lt;&gt;</c>.
+        /// This method does not detect Arrays.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <param name="seqType">Type of the sequence items.</param>
+        /// <returns>
+        /// <value><c>true</c> if the specified type is enumerable; otherwise, <c>false</c>.</value>
+        /// </returns>
+        public static bool IsIEnumerableExceptArray(Type type, out Type seqType)
+        {
+            seqType = typeof(object);
+            if (type == typeof(IEnumerable))
+                return true;
+
+            bool isNongenericEnumerable = false;
+
+            if (type.IsInterface && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            {
+                seqType = type.GetGenericArguments()[0];
+                return true;
+            }
+
+            foreach (Type interfaceType in type.GetInterfaces())
+            {
+                if (interfaceType.IsGenericType &&
+                    interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                {
+                    Type[] genArgs = interfaceType.GetGenericArguments();
+                    seqType = genArgs[0];
+                    return true;
+                }
+                else if (interfaceType == typeof(IEnumerable))
+                {
+                    isNongenericEnumerable = true;
+                }
+            }
+
+            // the second case is a direct reference to IEnumerable
+            if (isNongenericEnumerable || type == typeof(IEnumerable))
+            {
+                seqType = typeof(object);
+                return true;
+            }
+
+            return false;
+        }
+
     }
 
     public static class StringBuilderExtensions
