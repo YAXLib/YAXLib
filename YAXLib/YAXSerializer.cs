@@ -148,12 +148,12 @@ namespace YAXLib
         /// <param name="option">The serialization option.</param>
         public YAXSerializer(Type t, YAXExceptionHandlingPolicies exceptionPolicy, YAXExceptionTypes defaultExType, YAXSerializationOptions option)
         {
-            this.m_type = t;
-            this.m_exceptionPolicy = exceptionPolicy;
-            this.m_defaultExceptionType = defaultExType;
-            this.m_serializationOption = option;
+            m_type = t;
+            m_exceptionPolicy = exceptionPolicy;
+            m_defaultExceptionType = defaultExType;
+            m_serializationOption = option;
             // this must be the last call
-            this.m_udtWrapper = TypeWrappersPool.Pool.GetTypeWrapper(m_type, this);
+            m_udtWrapper = TypeWrappersPool.Pool.GetTypeWrapper(m_type, this);
         }
 
         #endregion
@@ -168,7 +168,7 @@ namespace YAXLib
         {
             get
             {
-                return this.m_defaultExceptionType;
+                return m_defaultExceptionType;
             }
         }
 
@@ -180,7 +180,7 @@ namespace YAXLib
         {
             get
             {
-                return this.m_serializationOption;
+                return m_serializationOption;
             }
         }
 
@@ -192,7 +192,7 @@ namespace YAXLib
         {
             get
             {
-                return this.m_exceptionPolicy;
+                return m_exceptionPolicy;
             }
         }
 
@@ -204,7 +204,7 @@ namespace YAXLib
         {
             get
             {
-                return this.m_parsingErrors;
+                return m_parsingErrors;
             }
         }
 
@@ -250,7 +250,7 @@ namespace YAXLib
         /// <param name="textWriter">The <c>TextWriter</c> instance.</param>
         public void Serialize(object obj, TextWriter textWriter)
         {
-            textWriter.Write(this.Serialize(obj));
+            textWriter.Write(Serialize(obj));
         }
 
         /// <summary>
@@ -294,14 +294,14 @@ namespace YAXLib
             {
                 using (TextReader tr = new StringReader(input))
                 {
-                    XDocument xdoc = XDocument.Load(tr);
-                    XElement baseElement = xdoc.Root;
-                    return this.DeserializeBase(baseElement);
+                    var xdoc = XDocument.Load(tr);
+                    var baseElement = xdoc.Root;
+                    return DeserializeBase(baseElement);
                 }
             }
             catch (XmlException ex)
             {
-                this.OnExceptionOccurred(new YAXBadlyFormedXML(ex), this.m_defaultExceptionType);
+                OnExceptionOccurred(new YAXBadlyFormedXML(ex), m_defaultExceptionType);
                 return null;
             }
         }
@@ -317,11 +317,11 @@ namespace YAXLib
             {
                 XDocument xdoc = XDocument.Load(xmlReader);
                 XElement baseElement = xdoc.Root;
-                return this.DeserializeBase(baseElement);
+                return DeserializeBase(baseElement);
             }
             catch (XmlException ex)
             {
-                this.OnExceptionOccurred(new YAXBadlyFormedXML(ex), this.m_defaultExceptionType);
+                OnExceptionOccurred(new YAXBadlyFormedXML(ex), m_defaultExceptionType);
                 return null;
             }
         }
@@ -337,11 +337,11 @@ namespace YAXLib
             {
                 XDocument xdoc = XDocument.Load(textReader);
                 XElement baseElement = xdoc.Root;
-                return this.DeserializeBase(baseElement);
+                return DeserializeBase(baseElement);
             }
             catch (XmlException ex)
             {
-                this.OnExceptionOccurred(new YAXBadlyFormedXML(ex), this.m_defaultExceptionType);
+                OnExceptionOccurred(new YAXBadlyFormedXML(ex), m_defaultExceptionType);
                 return null;
             }
         }
@@ -355,13 +355,13 @@ namespace YAXLib
         {
             try
             {
-                XDocument xdoc = new XDocument();
+                var xdoc = new XDocument();
                 xdoc.Add(element);
-                return this.DeserializeBase(element);
+                return DeserializeBase(element);
             }
             catch (XmlException ex)
             {
-                this.OnExceptionOccurred(new YAXBadlyFormedXML(ex), this.m_defaultExceptionType);
+                OnExceptionOccurred(new YAXBadlyFormedXML(ex), m_defaultExceptionType);
                 return null;
             }
         }
@@ -375,11 +375,11 @@ namespace YAXLib
         {
             try
             {
-                return this.Deserialize(File.ReadAllText(fileName));
+                return Deserialize(File.ReadAllText(fileName));
             }
             catch (XmlException ex)
             {
-                this.OnExceptionOccurred(new YAXBadlyFormedXML(ex), this.m_defaultExceptionType);
+                OnExceptionOccurred(new YAXBadlyFormedXML(ex), m_defaultExceptionType);
                 return null;
             }
         }
@@ -391,9 +391,9 @@ namespace YAXLib
         /// <param name="obj">The object used as the base object in the next stage of deserialization.</param>
         public void SetDeserializationBaseObject(object obj)
         {
-            if (obj != null && !this.m_type.IsInstanceOfType(obj))
+            if (obj != null && !m_type.IsInstanceOfType(obj))
             {
-                throw new YAXObjectTypeMismatch(this.m_type, obj.GetType());
+                throw new YAXObjectTypeMismatch(m_type, obj.GetType());
             }
 
             m_desObject = obj;
@@ -463,7 +463,7 @@ namespace YAXLib
             }
             else if(ReflectionUtils.IsBasicType(m_udtWrapper.UnderlyingType))
             {
-                bool dummyAlreadyAdded = false;
+                bool dummyAlreadyAdded;
                 return MakeBaseElement(null, m_udtWrapper.Alias, obj, out dummyAlreadyAdded);
             }
             else
@@ -498,7 +498,7 @@ namespace YAXLib
                 m_baseElement = new XElement(className, null);
             else
             {
-                XElement baseElem = new XElement(className, null);
+                var baseElem = new XElement(className, null);
                 m_baseElement.Add(baseElem);
                 m_baseElement = baseElem;
             }
@@ -514,6 +514,10 @@ namespace YAXLib
             {
                 InvokeCustomSerializerToElement(m_udtWrapper.CustomSerializerType, obj, m_baseElement);
             }
+            else if(KnownTypes.IsKnowType(m_type))
+            {
+                KnownTypes.Serialize(obj, m_baseElement);
+            }
             else // if it has no custom serializers
             {
                 // iterate through public properties
@@ -528,12 +532,12 @@ namespace YAXLib
                     if (member.IsAttributedAsDontSerialize)
                         continue;
 
-                    if (member.MemberType == this.m_type)
-                    {
-                        throw new YAXCannotSerializeSelfReferentialTypes(this.m_type);
-                    }
-
                     elementValue = member.GetValue(obj);
+
+                    if (elementValue != null && member.MemberType == m_type)
+                    {
+                        throw new YAXCannotSerializeSelfReferentialTypes(m_type);
+                    }
 
                     // ignore this member if it is null and we are not about to serialize null objects
                     if (elementValue == null &&
@@ -541,7 +545,6 @@ namespace YAXLib
                     {
                         continue;
                     }
-
 
                     bool areOfSameType = true; // are element value and the member declared type the same?
                     object originalValue = member.GetOriginalValue(obj, null);
@@ -551,37 +554,52 @@ namespace YAXLib
                     }
 
                     bool hasCustomSerializer = member.HasCustomSerializer || member.MemberTypeWrapper.HasCustomSerializer;
+                    bool isCollectionSerially = member.CollectionAttributeInstance != null &&
+                                                member.CollectionAttributeInstance.SerializationType == YAXCollectionSerializationTypes.Serially;
+                    bool isKnownType = member.IsKnownType;
 
                     // it gets true only for basic data types
-                    if (member.IsSerializedAsAttribute && (areOfSameType || hasCustomSerializer))
+                    if (member.IsSerializedAsAttribute && (areOfSameType || hasCustomSerializer || isCollectionSerially || isKnownType))
                     {
                         if (!XMLUtils.AttributeExists(m_baseElement, member.SerializationLocation, member.Alias))
                         {
-                            XAttribute attrToCreate = XMLUtils.CreateAttribute(m_baseElement, member.SerializationLocation, member.Alias, hasCustomSerializer ? "" : elementValue);
+                            XAttribute attrToCreate = XMLUtils.CreateAttribute(m_baseElement, 
+                                member.SerializationLocation, member.Alias, 
+                                (hasCustomSerializer || isCollectionSerially || isKnownType) ? "" : elementValue);
+
                             if (attrToCreate == null)
                             {
                                 throw new YAXBadLocationException(member.SerializationLocation);
                             }
-                            else
-                            {
-                                if (member.HasCustomSerializer)
-                                {
-                                    InvokeCustomSerializerToAttribute(member.CustomSerializerType, elementValue, attrToCreate);
-                                }
-                                else if (member.MemberTypeWrapper.HasCustomSerializer)
-                                {
-                                    InvokeCustomSerializerToAttribute(member.MemberTypeWrapper.CustomSerializerType, elementValue, attrToCreate);
-                                }
 
-                                // if member does not have any typewrappers then it has been already populated with the CreateAttribute method
+                            if (member.HasCustomSerializer)
+                            {
+                                InvokeCustomSerializerToAttribute(member.CustomSerializerType, elementValue, attrToCreate);
                             }
+                            else if (member.MemberTypeWrapper.HasCustomSerializer)
+                            {
+                                InvokeCustomSerializerToAttribute(member.MemberTypeWrapper.CustomSerializerType, elementValue, attrToCreate);
+                            }
+                            else if (member.IsKnownType)
+                            {
+                                // TODO: create a functionality to serialize to XAttributes
+                                //KnownTypes.Serialize(attrToCreate, member.MemberType);
+                            }
+                            else if(isCollectionSerially)
+                            {
+                                var tempLoc = new XElement("temp");
+                                var added = MakeCollectionElement(tempLoc, "name", elementValue, member.CollectionAttributeInstance, member.Format);
+                                attrToCreate.Value = added.Value;
+                            }
+
+                            // if member does not have any typewrappers then it has been already populated with the CreateAttribute method
                         }
                         else
                         {
                             throw new YAXAttributeAlreadyExistsException(member.Alias);
                         }
                     }
-                    else if (member.IsSerializedAsValue && (areOfSameType || hasCustomSerializer))
+                    else if (member.IsSerializedAsValue && (areOfSameType || hasCustomSerializer || isCollectionSerially || isKnownType))
                     {
                         // find the parent element from its location
                         XElement parElem = XMLUtils.FindLocation(m_baseElement, member.SerializationLocation);
@@ -599,7 +617,6 @@ namespace YAXLib
                         // if control is moved here, it means that the parent 
                         // element has been found/created successfully
 
-
                         string valueToSet;
                         if (member.HasCustomSerializer)
                         {
@@ -608,6 +625,18 @@ namespace YAXLib
                         else if (member.MemberTypeWrapper.HasCustomSerializer)
                         {
                             valueToSet = InvokeCustomSerializerToValue(member.MemberTypeWrapper.CustomSerializerType, elementValue);
+                        }
+                        else if(isKnownType)
+                        {
+                            var tempLoc = new XElement("temp");
+                            KnownTypes.Serialize(elementValue, tempLoc);
+                            valueToSet = tempLoc.Value;
+                        }
+                        else if (isCollectionSerially)
+                        {
+                            var tempLoc = new XElement("temp");
+                            var added = MakeCollectionElement(tempLoc, "name", elementValue, member.CollectionAttributeInstance, member.Format);
+                            valueToSet = added.Value;
                         }
                         else
                         {
@@ -642,7 +671,7 @@ namespace YAXLib
 
                         if (hasCustomSerializer)
                         {
-                            XElement elemToFill = new XElement(member.Alias);
+                            var elemToFill = new XElement(member.Alias);
                             parElem.Add(elemToFill);
                             if (member.HasCustomSerializer)
                             {
@@ -653,6 +682,12 @@ namespace YAXLib
                                 InvokeCustomSerializerToElement(member.MemberTypeWrapper.CustomSerializerType, elementValue, elemToFill);
                             }
                         }
+                        else if(isKnownType)
+                        {
+                            var elemToFill = new XElement(member.Alias);
+                            parElem.Add(elemToFill);
+                            KnownTypes.Serialize(elementValue, elemToFill);
+                        }
                         else
                         {
                             // make an element with the provided data
@@ -662,7 +697,7 @@ namespace YAXLib
                             if (!areOfSameType)
                             {
                                 elemToAdd.Add(new XAttribute(s_namespaceURI + s_trueTypeAttrName, elementValue.GetType().FullName));
-                                this.m_needsNamespaceAddition = true;
+                                m_needsNamespaceAddition = true;
                             }
 
                             if (!alreadyAdded)
@@ -727,7 +762,7 @@ namespace YAXLib
             XElement elemToAdd;
             if (member.IsTreatedAsDictionary)
             {
-                elemToAdd = this.MakeDictionaryElement(insertionLocation, member.Alias, elementValue, member.DictionaryAttributeInstance, member.CollectionAttributeInstance);
+                elemToAdd = MakeDictionaryElement(insertionLocation, member.Alias, elementValue, member.DictionaryAttributeInstance, member.CollectionAttributeInstance);
                 if (member.CollectionAttributeInstance != null &&
                     member.CollectionAttributeInstance.SerializationType == YAXCollectionSerializationTypes.RecursiveWithNoContainingElement &&
                     !elemToAdd.HasAttributes)
@@ -735,7 +770,7 @@ namespace YAXLib
             }
             else if (member.IsTreatedAsCollection)
             {
-                elemToAdd = this.MakeCollectionElement(insertionLocation, member.Alias, elementValue, member.CollectionAttributeInstance, member.Format);
+                elemToAdd = MakeCollectionElement(insertionLocation, member.Alias, elementValue, member.CollectionAttributeInstance, member.Format);
 
                 if (member.CollectionAttributeInstance != null &&
                     member.CollectionAttributeInstance.SerializationType == YAXCollectionSerializationTypes.RecursiveWithNoContainingElement &&
@@ -744,7 +779,7 @@ namespace YAXLib
             }
             else
             {
-                elemToAdd = this.MakeBaseElement(insertionLocation, member.Alias, elementValue, out alreadyAdded);
+                elemToAdd = MakeBaseElement(insertionLocation, member.Alias, elementValue, out alreadyAdded);
             }
 
             return elemToAdd;
@@ -781,8 +816,7 @@ namespace YAXLib
                 throw new ArgumentException("elementValue must be a Dictionary");
             }
 
-            IEnumerable dicInst = elementValue as IEnumerable;
-            string eachElementName;
+            var dicInst = elementValue as IEnumerable;
             bool isKeyAttrib = false;
             bool isValueAttrib = false;
             string keyFormat = null;
@@ -790,14 +824,7 @@ namespace YAXLib
             string keyAlias = "Key";
             string valueAlias = "Value";
 
-            if (collectionAttrInst != null)
-            {
-                eachElementName = collectionAttrInst.EachElementName;
-            }
-            else
-            {
-                eachElementName = null;
-            }
+            string eachElementName = collectionAttrInst != null ? collectionAttrInst.EachElementName : null;
 
             if (dicAttrInst != null)
             {
@@ -857,6 +884,13 @@ namespace YAXLib
                     XElement addedElem = AddObjectToElement(elemChild, keyAlias, keyObj);
                     if (!areKeyOfSameType)
                     {
+                        if (addedElem.Parent == null)
+                        {
+                            // sometimes empty elements are removed because its members are serialized in
+                            // other elements, therefore we need to make sure to re-add the element.
+                            elemChild.Add(addedElem);
+                        }
+
                         addedElem.Add(new XAttribute(s_namespaceURI + s_trueTypeAttrName, keyObj.GetType().FullName));
                         m_needsNamespaceAddition = true;
                     }
@@ -871,6 +905,13 @@ namespace YAXLib
                     XElement addedElem = AddObjectToElement(elemChild, valueAlias, valueObj);
                     if (!areValueOfSameType)
                     {
+                        if(addedElem.Parent == null)
+                        {
+                            // sometimes empty elements are removed because its members are serialized in
+                            // other elements, therefore we need to make sure to re-add the element.
+                            elemChild.Add(addedElem);
+                        }
+
                         addedElem.Add(new XAttribute(s_namespaceURI + s_trueTypeAttrName, valueObj.GetType().FullName));
                         m_needsNamespaceAddition = true;
                     }
@@ -901,25 +942,25 @@ namespace YAXLib
 
             if (udt.IsTreatedAsDictionary)
             {
-                elemToAdd = this.MakeDictionaryElement(elem, alias, obj, null, null);
+                elemToAdd = MakeDictionaryElement(elem, alias, obj, null, null);
                 elem.Add(elemToAdd);
             }
             else if (udt.IsTreatedAsCollection)
             {
-                elemToAdd = this.MakeCollectionElement(elem, alias, obj, null, null);
+                elemToAdd = MakeCollectionElement(elem, alias, obj, null, null);
                 elem.Add(elemToAdd);
             }
             else if (udt.IsEnum)
             {
-                bool alreadyAdded = false;
-                elemToAdd = this.MakeBaseElement(elem, alias, udt.EnumWrapper.GetAlias(obj), out alreadyAdded);
+                bool alreadyAdded;
+                elemToAdd = MakeBaseElement(elem, alias, udt.EnumWrapper.GetAlias(obj), out alreadyAdded);
                 if (!alreadyAdded)
                     elem.Add(elemToAdd);
             }
             else
             {
-                bool alreadyAdded = false;
-                elemToAdd = this.MakeBaseElement(elem, alias, obj, out alreadyAdded);
+                bool alreadyAdded;
+                elemToAdd = MakeBaseElement(elem, alias, obj, out alreadyAdded);
                 if (!alreadyAdded)
                     elem.Add(elemToAdd);
             }
@@ -939,11 +980,8 @@ namespace YAXLib
         /// an instance of <c>XElement</c> which will contain the serailized collection
         /// </returns>
         private XElement MakeCollectionElement(
-            XElement insertionLocation,
-            string elementName,
-            object elementValue,
-            YAXCollectionAttribute collectionAttrInst,
-            string format)
+            XElement insertionLocation, string elementName, object elementValue,
+            YAXCollectionAttribute collectionAttrInst, string format)
         {
             if (elementValue == null)
             {
@@ -955,7 +993,7 @@ namespace YAXLib
                 throw new ArgumentException("elementValue must be an IEnumerable");
             }
 
-            IEnumerable collectionInst = elementValue as IEnumerable;
+            var collectionInst = elementValue as IEnumerable;
             YAXCollectionSerializationTypes serType = YAXCollectionSerializationTypes.Recursive;
             string seperator = string.Empty;
             string eachElementName = null;
@@ -1008,7 +1046,7 @@ namespace YAXLib
             }
             else
             {
-                XElement elem = new XElement(elementName, null);
+                var elem = new XElement(elementName, null);
                 object objToAdd = null;
 
                 foreach (object obj in collectionInst)
@@ -1104,12 +1142,12 @@ namespace YAXLib
                 return m_desObject;
             }
 
-            if (m_udtWrapper.HasCustomDeserializer)
+            if (m_udtWrapper.HasCustomSerializer)
             {
-                return InvokeCustomDeserializerFromElement(m_udtWrapper.CustomDeserializerType, baseElement);
+                return InvokeCustomDeserializerFromElement(m_udtWrapper.CustomSerializerType, baseElement);
             }
 
-            XAttribute realTypeAttr = baseElement.Attribute(s_namespaceURI + s_trueTypeAttrName);
+            var realTypeAttr = baseElement.Attribute(s_namespaceURI + s_trueTypeAttrName);
             if (realTypeAttr != null)
             {
                 Type theRealType = ReflectionUtils.GetTypeByName(realTypeAttr.Value);
@@ -1120,19 +1158,19 @@ namespace YAXLib
                 }
             }
 
-            if (this.m_type.IsGenericType && this.m_type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
+            if (m_type.IsGenericType && m_type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
             {
-                return this.DeserializeKeyValuePair(baseElement);
+                return DeserializeKeyValuePair(baseElement);
             }
 
-            if (IsKnownDotNetBuiltInType(this.m_type))
+            if (KnownTypes.IsKnowType(m_type))
             {
-                return DeserializeKnownDotNetBuiltInType(baseElement, this.m_type);
+                return KnownTypes.Deserialize(baseElement, m_type);
             }
 
             if ((m_udtWrapper.IsTreatedAsCollection || m_udtWrapper.IsTreatedAsDictionary) && !IsCraetedToDeserializeANonCollectionMember)
             {
-                return DeserializeCollectionValue(this.m_type, baseElement, ReflectionUtils.GetTypeFriendlyName(m_type), null);
+                return DeserializeCollectionValue(m_type, baseElement, ReflectionUtils.GetTypeFriendlyName(m_type), null);
             }
 
             if (ReflectionUtils.IsBasicType(m_type))
@@ -1144,7 +1182,7 @@ namespace YAXLib
             if (m_desObject != null)
                 o = m_desObject;
             else
-                o = this.m_type.InvokeMember(string.Empty, System.Reflection.BindingFlags.CreateInstance, null, null, new object[0]);
+                o = m_type.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0]);
 
             bool foundAnyOfMembers = false;
             foreach (var member in GetFieldsToBeSerialized())
@@ -1293,9 +1331,9 @@ namespace YAXLib
                             }
                             catch
                             {
-                                this.OnExceptionOccurred(
+                                OnExceptionOccurred(
                                     new YAXDefaultValueCannotBeAssigned(member.Alias, member.DefaultValue),
-                                    this.m_defaultExceptionType);
+                                    m_defaultExceptionType);
                             }
                         }
                         else if (member.DefaultValue != null)
@@ -1306,9 +1344,9 @@ namespace YAXLib
                             }
                             catch
                             {
-                                this.OnExceptionOccurred(
+                                OnExceptionOccurred(
                                     new YAXDefaultValueCannotBeAssigned(member.Alias, member.DefaultValue),
-                                    this.m_defaultExceptionType);
+                                    m_defaultExceptionType);
                             }
                         }
                         else
@@ -1320,11 +1358,11 @@ namespace YAXLib
                         }
                     }
                 }
-                else if (member.HasCustomDeserializer || member.MemberTypeWrapper.HasCustomDeserializer)
+                else if (member.HasCustomSerializer || member.MemberTypeWrapper.HasCustomSerializer)
                 {
-                    Type deserType = member.HasCustomDeserializer ?
-                        member.CustomDeserializerType :
-                        member.MemberTypeWrapper.CustomDeserializerType;
+                    Type deserType = member.HasCustomSerializer ?
+                        member.CustomSerializerType :
+                        member.MemberTypeWrapper.CustomSerializerType;
 
                     object desObj;
                     if (member.IsSerializedAsAttribute)
@@ -1350,7 +1388,7 @@ namespace YAXLib
                     }
                     catch
                     {
-                        this.OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias), this.m_defaultExceptionType);
+                        OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias), m_defaultExceptionType);
                     }
                 }
                 else if (elemValue != null)
@@ -1516,7 +1554,7 @@ namespace YAXLib
                 }
                 catch
                 {
-                    this.OnExceptionOccurred(new YAXDefaultValueCannotBeAssigned(member.Alias, member.DefaultValue), member.TreatErrorsAs);
+                    OnExceptionOccurred(new YAXDefaultValueCannotBeAssigned(member.Alias, member.DefaultValue), member.TreatErrorsAs);
                 }
             }
             else if (memberType == typeof(string))
@@ -1591,7 +1629,7 @@ namespace YAXLib
             }
             else
             {
-                YAXSerializer ser = new YAXSerializer(memberType, this.m_exceptionPolicy, this.m_defaultExceptionType, this.m_serializationOption);
+                var ser = new YAXSerializer(memberType, this.m_exceptionPolicy, this.m_defaultExceptionType, this.m_serializationOption);
                 ser.IsCraetedToDeserializeANonCollectionMember = !(member.IsTreatedAsDictionary || member.IsTreatedAsCollection);
 
                 if (m_desObject != null) // i.e. it is in resuming mode
@@ -1623,7 +1661,7 @@ namespace YAXLib
         /// <returns></returns>
         private object DeserializeCollectionValue(Type colType, XElement xelemValue, string memberAlias, YAXCollectionAttribute colAttrInstance)
         {
-            List<object> lst = new List<object>(); // this will hold the actual data items
+            var lst = new List<object>(); // this will hold the actual data items
             Type itemType = ReflectionUtils.GetCollectionItemType(colType);
 
             if (ReflectionUtils.IsBasicType(itemType) && colAttrInstance != null && colAttrInstance.SerializationType == YAXCollectionSerializationTypes.Serially)
@@ -1634,7 +1672,7 @@ namespace YAXLib
                 // can white space characters be added to the separators?
                 if (colAttrInstance == null || colAttrInstance.IsWhiteSpaceSeparator)
                 {
-                    seps = seps.Union(new char[] { ' ', '\t', '\r', '\n' }).ToArray();
+                    seps = seps.Union(new [] { ' ', '\t', '\r', '\n' }).ToArray();
                 }
 
                 string elemValue = xelemValue.Value;
@@ -1772,11 +1810,10 @@ namespace YAXLib
                 //The collection is a Dictionary
                 object dic = colType.InvokeMember(string.Empty, System.Reflection.BindingFlags.CreateInstance, null, null, new object[0]);
 
-                object key, value;
                 foreach (var lstItem in lst)
                 {
-                    key = itemType.GetProperty("Key").GetValue(lstItem, null);
-                    value = itemType.GetProperty("Value").GetValue(lstItem, null);
+                    object key = itemType.GetProperty("Key").GetValue(lstItem, null);
+                    object value = itemType.GetProperty("Value").GetValue(lstItem, null);
                     try
                     {
                         colType.InvokeMember("Add", BindingFlags.InvokeMethod, null, dic, new object[] { key, value });
@@ -1811,7 +1848,7 @@ namespace YAXLib
             }
             else if (ReflectionUtils.IsTypeEqualOrInheritedFromType(colType, typeof(BitArray)))
             {
-                bool[] bArray = new bool[lst.Count];
+                var bArray = new bool[lst.Count];
                 for (int i = 0; i < bArray.Length; i++)
                 {
                     try
@@ -1832,7 +1869,7 @@ namespace YAXLib
             {
                 object col = colType.InvokeMember(string.Empty, System.Reflection.BindingFlags.CreateInstance, null, null, new object[0]);
 
-                string additionMethodName = "Push";
+                const string additionMethodName = "Push";
 
                 for (int i = lst.Count - 1; i >= 0; i--) // the loop must be from end to front
                 {
@@ -1901,7 +1938,17 @@ namespace YAXLib
         /// has been stored in an XML attribute, this reference is <c>null</c>.</param>
         private void DeserializeCollectionMember(object o, MemberWrapper member, Type colType, string elemValue, XElement xelemValue)
         {
-            object colObject = DeserializeCollectionValue(colType, xelemValue, member.Alias, member.CollectionAttributeInstance);
+            object colObject;
+
+            if (member.CollectionAttributeInstance != null && member.CollectionAttributeInstance.SerializationType == YAXCollectionSerializationTypes.Serially &&
+                (member.IsSerializedAsAttribute || member.IsSerializedAsValue))
+            {
+                colObject = DeserializeCollectionValue(colType, new XElement("temp", elemValue), "temp", member.CollectionAttributeInstance);
+            }
+            else
+            {
+                colObject = DeserializeCollectionValue(colType, xelemValue, member.Alias, member.CollectionAttributeInstance);
+            }
 
             try
             {
@@ -1909,7 +1956,7 @@ namespace YAXLib
             }
             catch
             {
-                this.OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias), this.m_defaultExceptionType);
+                OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias), m_defaultExceptionType);
             }
         }
 
@@ -1922,7 +1969,7 @@ namespace YAXLib
         /// <returns></returns>
         private static int[] GetArrayDimentionalIndex(long linInd, int[] dims)
         {
-            int[] result = new int[dims.Length];
+            var result = new int[dims.Length];
 
             int d = (int)linInd;
 
@@ -2035,7 +2082,7 @@ namespace YAXLib
                         }
 
                         value = valueSer.DeserializeBase(childElem.Element(valueAlias));
-                        this.m_parsingErrors.AddRange(valueSer.ParsingErrors);
+                        m_parsingErrors.AddRange(valueSer.ParsingErrors);
                     }
                 }
 
@@ -2125,7 +2172,7 @@ namespace YAXLib
         /// <returns>a <c>KeyValuePair</c> instance containing the deserialized data</returns>
         private object DeserializeKeyValuePair(XElement baseElement)
         {
-            Type[] genArgs = this.m_type.GetGenericArguments();
+            Type[] genArgs = m_type.GetGenericArguments();
             Type keyType = genArgs[0];
             Type valueType = genArgs[1];
 
@@ -2151,7 +2198,7 @@ namespace YAXLib
             }
             else
             {
-                YAXSerializer ser = new YAXSerializer(keyType, this.m_exceptionPolicy, this.m_defaultExceptionType, this.m_serializationOption);
+                var ser = new YAXSerializer(keyType, this.m_exceptionPolicy, this.m_defaultExceptionType, this.m_serializationOption);
                 keyValue = ser.DeserializeBase(baseElement.Element("Key"));
                 this.m_parsingErrors.AddRange(ser.ParsingErrors);
             }
@@ -2177,7 +2224,7 @@ namespace YAXLib
             }
             else
             {
-                YAXSerializer ser = new YAXSerializer(valueType, this.m_exceptionPolicy, this.m_defaultExceptionType, this.m_serializationOption);
+                var ser = new YAXSerializer(valueType, this.m_exceptionPolicy, this.m_defaultExceptionType, this.m_serializationOption);
                 valueValue = ser.DeserializeBase(baseElement.Element("Value"));
                 this.m_parsingErrors.AddRange(ser.ParsingErrors);
             }
@@ -2185,36 +2232,6 @@ namespace YAXLib
             object pair = this.m_type.InvokeMember(string.Empty, System.Reflection.BindingFlags.CreateInstance, null, null, new object[] { keyValue, valueValue });
 
             return pair;
-        }
-
-        /// <summary>
-        /// Deserializes XML for some known .NET built in type.
-        /// </summary>
-        /// <param name="baseElement">The XML element to deserialize.</param>
-        /// <param name="type">The type of the desired object.</param>
-        /// <returns>deserialized object of some known .NET built-in type</returns>
-        private object DeserializeKnownDotNetBuiltInType(XElement baseElement, Type type)
-        {
-            if (type == typeof(TimeSpan))
-                return KnownDotNetTypesDeserializers.DeserializeTimeSpan(baseElement);
-            else if (type == typeof(Guid))
-                return KnownDotNetTypesDeserializers.DeserializeGuid(baseElement);
-            return null;
-        }
-
-        /// <summary>
-        /// Determines whether the specified type is a known .NET built-in type.
-        /// </summary>
-        /// <param name="type">The type to check.</param>
-        /// <returns>
-        /// 	<c>true</c> if the specified type is a known .NET built-in type; otherwise, <c>false</c>.
-        /// </returns>
-        private bool IsKnownDotNetBuiltInType(Type type)
-        {
-            // add other cases here
-            if (type == typeof(TimeSpan) || type == typeof(Guid))
-                return true;
-            return false;
         }
 
         #endregion

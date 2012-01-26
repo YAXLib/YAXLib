@@ -572,27 +572,27 @@ namespace YAXLib
         public Type CustomSerializerType { get; private set; }
     }
 
-    /// <summary>
-    /// Specifies a custom deserializer class for a field, property, class, or struct. YAXLib will instantiate an object
-    /// from the specified type in this attribute, and calls appropriate methods while deserializing.
-    /// This attribute is applicable to fields, properties, classes, and structs.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class | AttributeTargets.Struct)]
-    public class YAXCustomDeserializerAttribute : YAXBaseAttribute
-    {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="YAXCustomDeserializerAttribute"/> class.
-        /// </summary>
-        /// <param name="customDeserializerType">Type of the custom deserializer.</param>
-        public YAXCustomDeserializerAttribute(Type customDeserializerType)
-        {
-            this.CustomDeserializerType = customDeserializerType;
-        }
+    ///// <summary>
+    ///// Specifies a custom deserializer class for a field, property, class, or struct. YAXLib will instantiate an object
+    ///// from the specified type in this attribute, and calls appropriate methods while deserializing.
+    ///// This attribute is applicable to fields, properties, classes, and structs.
+    ///// </summary>
+    //[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class | AttributeTargets.Struct)]
+    //public class YAXCustomDeserializerAttribute : YAXBaseAttribute
+    //{
+    //    /// <summary>
+    //    /// Initializes a new instance of the <see cref="YAXCustomDeserializerAttribute"/> class.
+    //    /// </summary>
+    //    /// <param name="customDeserializerType">Type of the custom deserializer.</param>
+    //    public YAXCustomDeserializerAttribute(Type customDeserializerType)
+    //    {
+    //        this.CustomDeserializerType = customDeserializerType;
+    //    }
 
-        /// <summary>
-        /// Gets or sets the type of the custom deserializer.
-        /// </summary>
-        /// <value>The type of the custom deserializer.</value>
-        public Type CustomDeserializerType { get; private set; }
-    }
+    //    /// <summary>
+    //    /// Gets or sets the type of the custom deserializer.
+    //    /// </summary>
+    //    /// <value>The type of the custom deserializer.</value>
+    //    public Type CustomDeserializerType { get; private set; }
+    //}
 }

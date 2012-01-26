@@ -9,9 +9,6 @@
 //-----------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace YAXLib
 {
@@ -25,28 +22,28 @@ namespace YAXLib
         /// <summary>
         /// the underlying type for this instance of <c>TypeWrapper</c>
         /// </summary>
-        private Type m_udtType = typeof(object);
+        private readonly Type m_udtType = typeof(object);
 
         /// <summary>
         /// boolean value indicating whether this instance is a wrapper around a collection type
         /// </summary>
-        private bool m_isTypeCollection = false;
+        private readonly bool m_isTypeCollection;
 
         /// <summary>
         /// boolean value indicating whether this instance is a wrapper around a dictionary type
         /// </summary>
-        private bool m_isTypeDictionary = false;
+        private readonly bool m_isTypeDictionary;
 
         /// <summary>
         /// reference to an instance of <c>EnumWrapper</c> in case that the current instance is an enum.
         /// </summary>
-        private EnumWrapper m_enumWrapper = null;
+        private EnumWrapper m_enumWrapper;
 
         /// <summary>
         /// value indicating whether the serialization options has been explicitly adjusted
         /// using attributes for the class
         /// </summary>
-        private bool m_isSerializationOptionSetByAttribute = false;
+        private bool m_isSerializationOptionSetByAttribute;
 
         #endregion
 
@@ -60,14 +57,15 @@ namespace YAXLib
         /// instance which is building this instance.</param>
         public UdtWrapper(Type udtType, YAXSerializer callerSerializer)
         {
-            this.m_udtType = udtType;
-            this.m_isTypeCollection = ReflectionUtils.IsCollectionType(m_udtType);
-            this.m_isTypeDictionary = ReflectionUtils.IsIDictionary(m_udtType);
+            m_isTypeDictionary = false;
+            m_udtType = udtType;
+            m_isTypeCollection = ReflectionUtils.IsCollectionType(m_udtType);
+            m_isTypeDictionary = ReflectionUtils.IsIDictionary(m_udtType);
 
-            this.Alias = ReflectionUtils.GetTypeFriendlyName(m_udtType);
-            this.Comment = null;
-            this.FieldsToSerialize = YAXSerializationFields.PublicPropertiesOnly;
-            this.IsAttributedAsNotCollection = false;
+            Alias = ReflectionUtils.GetTypeFriendlyName(m_udtType);
+            Comment = null;
+            FieldsToSerialize = YAXSerializationFields.PublicPropertiesOnly;
+            IsAttributedAsNotCollection = false;
 
             SetYAXSerializerOptions(callerSerializer);
 
@@ -141,6 +139,14 @@ namespace YAXLib
         }
 
         /// <summary>
+        /// Gets a value indicating whether the underlying type is a known-type
+        /// </summary>
+        public bool IsKnownType
+        {
+            get { return KnownTypes.IsKnowType(m_udtType); }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether this instance wraps around an enum.
         /// </summary>
         /// <value><c>true</c> if this instance wraps around an enum; otherwise, <c>false</c>.</value>
@@ -167,10 +173,8 @@ namespace YAXLib
 
                     return m_enumWrapper;
                 }
-                else
-                {
-                    return null;
-                }
+
+                return null;
             }
         }
 
@@ -250,11 +254,11 @@ namespace YAXLib
         /// <value>The type of the custom serializer.</value>
         public Type CustomSerializerType { get; private set; }
 
-        /// <summary>
-        /// Gets or sets the type of the custom deserializer.
-        /// </summary>
-        /// <value>The type of the custom deserializer.</value>
-        public Type CustomDeserializerType { get; private set; }
+        ///// <summary>
+        ///// Gets or sets the type of the custom deserializer.
+        ///// </summary>
+        ///// <value>The type of the custom deserializer.</value>
+        //public Type CustomDeserializerType { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether this instance has custom serializer.
@@ -270,19 +274,19 @@ namespace YAXLib
             }
         }
 
-        /// <summary>
-        /// Gets a value indicating whether this instance has custom deserializer.
-        /// </summary>
-        /// <value>
-        /// 	<c>true</c> if this instance has custom deserializer; otherwise, <c>false</c>.
-        /// </value>
-        public bool HasCustomDeserializer
-        {
-            get
-            {
-                return CustomDeserializerType != null;
-            }
-        }
+        ///// <summary>
+        ///// Gets a value indicating whether this instance has custom deserializer.
+        ///// </summary>
+        ///// <value>
+        ///// 	<c>true</c> if this instance has custom deserializer; otherwise, <c>false</c>.
+        ///// </value>
+        //public bool HasCustomDeserializer
+        //{
+        //    get
+        //    {
+        //        return CustomDeserializerType != null;
+        //    }
+        //}
 
 
         #endregion
@@ -297,14 +301,7 @@ namespace YAXLib
         {
             if (!m_isSerializationOptionSetByAttribute)
             {
-                if (caller != null)
-                {
-                    this.SerializationOption = caller.SerializationOption;
-                }
-                else
-                {
-                    this.SerializationOption = YAXSerializationOptions.SerializeNullObjects;
-                }
+                SerializationOption = caller != null ? caller.SerializationOption : YAXSerializationOptions.SerializeNullObjects;
             }
         }
 
@@ -333,7 +330,7 @@ namespace YAXLib
         {
             if (obj is UdtWrapper)
             {
-                UdtWrapper other = obj as UdtWrapper;
+                var other = obj as UdtWrapper;
                 return this.m_udtType == other.m_udtType;
             }
 
@@ -366,7 +363,7 @@ namespace YAXLib
                 string comment = (attr as YAXCommentAttribute).Comment;
                 if(!String.IsNullOrEmpty(comment))
                 {
-                    string[] comments = comment.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                    string[] comments = comment.Split(new [] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
                     for(int i = 0; i < comments.Length; i++)
                     {
                         comments[i] = String.Format(" {0} ", comments[i].Trim());
@@ -377,22 +374,22 @@ namespace YAXLib
             }
             else if (attr is YAXSerializableTypeAttribute)
             {
-                YAXSerializableTypeAttribute theAttr = attr as YAXSerializableTypeAttribute;
+                var theAttr = attr as YAXSerializableTypeAttribute;
                 this.FieldsToSerialize = theAttr.FieldsToSerialize;
                 if (theAttr.IsSerializationOptionSet())
                 {
-                    this.SerializationOption = theAttr.Options;
+                    SerializationOption = theAttr.Options;
                     m_isSerializationOptionSetByAttribute = true;
                 }
             }
             else if (attr is YAXSerializeAsAttribute)
             {
-                this.Alias = (attr as YAXSerializeAsAttribute).SerializeAs;
+                Alias = (attr as YAXSerializeAsAttribute).SerializeAs;
             }
             else if (attr is YAXNotCollectionAttribute)
             {
                 if(!ReflectionUtils.IsArray(m_udtType))
-                    this.IsAttributedAsNotCollection = true;
+                    IsAttributedAsNotCollection = true;
             }
             else if (attr is YAXCustomSerializerAttribute)
             {
@@ -405,35 +402,34 @@ namespace YAXLib
                 {
                     throw new YAXException("The provided custom serialization type is not derived from the proper interface");
                 }
-                else if (genTypeArg != this.UnderlyingType)
+
+                if (genTypeArg != this.UnderlyingType)
                 {
                     throw new YAXException("The generic argument of the class and the type of the class do not match");
                 }
-                else
-                {
-                    this.CustomSerializerType = serType;
-                }
+                
+                this.CustomSerializerType = serType;
             }
-            else if (attr is YAXCustomDeserializerAttribute)
-            {
-                Type deserType = (attr as YAXCustomDeserializerAttribute).CustomDeserializerType;
+            //else if (attr is YAXCustomSerializerAttribute)
+            //{
+            //    Type deserType = (attr as YAXCustomDeserializerAttribute).CustomDeserializerType;
 
-                Type genTypeArg;
-                bool isDesiredInterface = ReflectionUtils.IsDerivedFromGenericInterfaceType(deserType, typeof(ICustomDeserializer<>), out genTypeArg);
+            //    Type genTypeArg;
+            //    bool isDesiredInterface = ReflectionUtils.IsDerivedFromGenericInterfaceType(deserType, typeof(ICustomSerializer<>), out genTypeArg);
 
-                if (!isDesiredInterface)
-                {
-                    throw new YAXException("The provided custom deserialization type is not derived from the proper interface");
-                }
-                else if (genTypeArg != this.UnderlyingType)
-                {
-                    throw new YAXException("The generic argument of the class and the underlying type do not match");
-                }
-                else
-                {
-                    this.CustomDeserializerType = deserType;
-                }
-            }
+            //    if (!isDesiredInterface)
+            //    {
+            //        throw new YAXException("The provided custom deserialization type is not derived from the proper interface");
+            //    }
+            //    else if (genTypeArg != this.UnderlyingType)
+            //    {
+            //        throw new YAXException("The generic argument of the class and the underlying type do not match");
+            //    }
+            //    else
+            //    {
+            //        CustomDeserializerType = deserType;
+            //    }
+            //}
             else
             {
                 throw new Exception("Attribute not applicable to types!");

@@ -34,8 +34,8 @@ namespace YAXLib
             // replace all back-slaches to slash
             elemAddr = elemAddr.Replace('\\', '/');
 
-            StringBuilder sb = new StringBuilder();
-            string[] steps = elemAddr.Split(new char[] {'/'}, StringSplitOptions.RemoveEmptyEntries);
+            var sb = new StringBuilder();
+            string[] steps = elemAddr.Split(new [] {'/'}, StringSplitOptions.RemoveEmptyEntries);
             for(int i = 0; i < steps.Length; i++)
             {
                 if (i == 0)
@@ -61,7 +61,7 @@ namespace YAXLib
             }
             else
             {
-                StringBuilder sb = new StringBuilder();
+                var sb = new StringBuilder();
 
                 // invalid chars are all punctunations except underline
                 foreach (char c in elemName)
@@ -75,6 +75,38 @@ namespace YAXLib
                 return sb.ToString();
             }
         }
+
+        /// <summary>
+        /// Exttracts the path and alias from location string.
+        /// A pure path location string: level1/level2
+        /// A location string augmented with alias: level1/level2#somename
+        /// Here path is "level1/level2" and alias is "somename".
+        /// </summary>
+        /// <param name="locationString">The location string.</param>
+        /// <param name="path">The path to be extracted.</param>
+        /// <param name="alias">The alias to be extracted.</param>
+        public static void ExttractPathAndAliasFromLocationString(string locationString, out string path, out string alias)
+        {
+            int poundIndex = locationString.IndexOf('#');
+            if(poundIndex >= 0)
+            {
+                if (poundIndex == 0)
+                    path = "";
+                else
+                    path = locationString.Substring(0, poundIndex).Trim();
+
+                if (poundIndex == locationString.Length - 1)
+                    alias = "";
+                else
+                    alias = locationString.Substring(poundIndex + 1).Trim();
+            }
+            else
+            {
+                path = locationString;
+                alias = "";
+            }
+        }
+
 
         /// <summary>
         /// Combines a location string and an element name to form a bigger location string.

@@ -1,4 +1,4 @@
-﻿// Copyright 2009 - 2010 Sina Iravanian - <sina@sinairv.com>
+﻿// Copyright 2009 Sina Iravanian - <sina@sinairv.com>
 //
 // This source file(s) may be redistributed, altered and customized
 // by any means PROVIDING the authors name and all copyright
@@ -10,6 +10,7 @@
 
 using System;
 using System.Reflection;
+using System.Collections.Generic;
 
 namespace YAXLib
 {
@@ -23,27 +24,27 @@ namespace YAXLib
         /// <summary>
         /// reference to the underlying <c>MemberInfo</c> from which this instance is built
         /// </summary>
-        private MemberInfo m_memberInfo = null;
+        private readonly MemberInfo m_memberInfo = null;
 
         /// <summary>
         /// the member type of the underlying member
         /// </summary>
-        private Type m_memberType;
+        private readonly Type m_memberType;
 
         /// <summary>
         /// a type wrapper around the underlying member type
         /// </summary>
-        private UdtWrapper m_memberTypeWrapper = null;
+        private readonly UdtWrapper m_memberTypeWrapper = null;
 
         /// <summary>
         /// the <c>PropertyInfo</c> instance, if this member corrsponds to a property, <c>null</c> otherwise
         /// </summary>
-        private PropertyInfo m_propertyInfoInstance = null;
+        private readonly PropertyInfo m_propertyInfoInstance = null;
 
         /// <summary>
         /// the <c>FieldInfo</c> instance, if this member corrsponds to a field, <c>null</c> otherwise
         /// </summary>
-        private FieldInfo m_fieldInfoInstance = null;
+        private readonly FieldInfo m_fieldInfoInstance = null;
 
         /// <summary>
         /// The collection attribute instance
@@ -59,7 +60,7 @@ namespace YAXLib
         /// <c>true</c> if this instance corresponds to a property, <c>false</c> 
         /// if it corrsponds to a field (i.e., a member variable)
         /// </summary>
-        private bool m_isProperty = false;
+        private readonly bool m_isProperty = false;
         /// <summary>
         /// The location of the serialization
         /// </summary>
@@ -99,35 +100,42 @@ namespace YAXLib
             m_memberInfo = memberInfo;
             m_isProperty = (memberInfo.MemberType == MemberTypes.Property);
 
-            this.Alias = m_memberInfo.Name;
+            Alias = m_memberInfo.Name;
 
             if (m_isProperty)
                 m_propertyInfoInstance = (PropertyInfo)memberInfo;
             else
                 m_fieldInfoInstance = (FieldInfo)memberInfo;
 
-            if (m_isProperty)
-                m_memberType = m_propertyInfoInstance.PropertyType;
-            else
-                m_memberType = m_fieldInfoInstance.FieldType;
+            m_memberType = m_isProperty ? m_propertyInfoInstance.PropertyType : m_fieldInfoInstance.FieldType;
 
-            m_memberTypeWrapper = TypeWrappersPool.Pool.GetTypeWrapper(this.MemberType, callerSerializer);
+            m_memberTypeWrapper = TypeWrappersPool.Pool.GetTypeWrapper(MemberType, callerSerializer);
 
             InitInstance();
 
-            if (callerSerializer != null)
+            TreatErrorsAs = callerSerializer != null ? callerSerializer.DefaultExceptionType : YAXExceptionTypes.Error;
+
+            // discovver YAXCustomSerializerAttributes earlier, because some other attributes depend on it
+            var attrsToProcessEarlier = new HashSet<Type> {typeof (YAXCustomSerializerAttribute), typeof (YAXCollectionAttribute)};
+            foreach (var attrType in attrsToProcessEarlier)
             {
-                this.TreatErrorsAs = callerSerializer.DefaultExceptionType;
-            }
-            else
-            {
-                this.TreatErrorsAs = YAXExceptionTypes.Error;
+                var customSerAttrs = m_memberInfo.GetCustomAttributes(attrType, true);
+                foreach (var attr in customSerAttrs)
+                {
+                    ProcessYaxAttribute(attr);
+                }
             }
 
             foreach (var attr in m_memberInfo.GetCustomAttributes(false))
             {
+                // no need to preces, it has been proccessed earlier
+                if (attrsToProcessEarlier.Contains(attr.GetType()))
+                    continue;
+                //if (attr is YAXCustomSerializerAttribute)
+                //    continue; // no need to preces, it has been proccessed earlier
+
                 if (attr is YAXBaseAttribute)
-                    ProcessYAXAttribute(attr);
+                    ProcessYaxAttribute(attr);
             }
         }
 
@@ -358,6 +366,14 @@ namespace YAXLib
         }
 
         /// <summary>
+        /// Gets a value indicating whether the underlying type is a known-type
+        /// </summary>
+        public bool IsKnownType
+        {
+            get { return m_memberTypeWrapper.IsKnownType; }
+        }
+
+        /// <summary>
         /// Gets the original of this member (as opposed to its alias).
         /// </summary>
         /// <value>The original of this member .</value>
@@ -365,7 +381,7 @@ namespace YAXLib
         {
             get
             {
-                return this.m_memberInfo.Name;
+                return m_memberInfo.Name;
             }
         }
 
@@ -451,12 +467,6 @@ namespace YAXLib
         public Type CustomSerializerType { get; private set; }
 
         /// <summary>
-        /// Gets or sets the type of the custom deserializer.
-        /// </summary>
-        /// <value>The type of the custom deserializer.</value>
-        public Type CustomDeserializerType { get; private set; }
-
-        /// <summary>
         /// Gets a value indicating whether this instance has custom serializer.
         /// </summary>
         /// <value>
@@ -470,19 +480,6 @@ namespace YAXLib
             }
         }
 
-        /// <summary>
-        /// Gets a value indicating whether this instance has custom deserializer.
-        /// </summary>
-        /// <value>
-        /// 	<c>true</c> if this instance has custom deserializer; otherwise, <c>false</c>.
-        /// </value>
-        public bool HasCustomDeserializer
-        {
-            get
-            {
-                return CustomDeserializerType != null;
-            }
-        }
 
 		#endregion Properties 
 
@@ -526,7 +523,7 @@ namespace YAXLib
             }
 
             // trying to build the element value
-            if (this.HasFormat && !this.IsTreatedAsCollection)
+            if (HasFormat && !IsTreatedAsCollection)
             {
                 // do the formatting. If formatting succeeds the type of 
                 // the elementValue will become 'System.String'
@@ -563,11 +560,11 @@ namespace YAXLib
         public bool IsAllowedToBeSerialized(YAXSerializationFields serializationFields)
         {
             if (serializationFields == YAXSerializationFields.AllFields)
-                return !this.IsAttributedAsDontSerialize;
+                return !IsAttributedAsDontSerialize;
             else if (serializationFields == YAXSerializationFields.AttributedFieldsOnly)
-                return !this.IsAttributedAsDontSerialize && this.IsAttributedAsSerializable;
+                return !IsAttributedAsDontSerialize && IsAttributedAsSerializable;
             else if (serializationFields == YAXSerializationFields.PublicPropertiesOnly)
-                return !this.IsAttributedAsDontSerialize && m_isProperty && ReflectionUtils.IsPublicProperty(m_propertyInfoInstance);
+                return !IsAttributedAsDontSerialize && m_isProperty && ReflectionUtils.IsPublicProperty(m_propertyInfoInstance);
             else
                 throw new Exception("Unknown serialization field option");
         }
@@ -590,14 +587,14 @@ namespace YAXLib
         /// </summary>
         private void InitInstance()
         {
-            this.Comment = null;
-            this.IsAttributedAsSerializable = false;
-            this.IsAttributedAsDontSerialize = false;
-            this.IsAttributedAsNotCollection = false;
-            this.IsSerializedAsAttribute = false;
-            this.IsSerializedAsValue = false;
-            this.SerializationLocation = ".";
-            this.Format = null;
+            Comment = null;
+            IsAttributedAsSerializable = false;
+            IsAttributedAsDontSerialize = false;
+            IsAttributedAsNotCollection = false;
+            IsSerializedAsAttribute = false;
+            IsSerializedAsValue = false;
+            SerializationLocation = ".";
+            Format = null;
             InitDefaultValue();
         }
 
@@ -606,24 +603,24 @@ namespace YAXLib
         /// </summary>
         private void InitDefaultValue()
         {
-            if(this.MemberType.IsValueType)
-                this.DefaultValue = this.MemberType.InvokeMember(string.Empty, System.Reflection.BindingFlags.CreateInstance, null, null, new object[0]);
+            if(MemberType.IsValueType)
+                DefaultValue = MemberType.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0]);
             else
-                this.DefaultValue = null;
+                DefaultValue = null;
         }
 
         /// <summary>
         /// Processes the specified attribute which is an instance of <c>YAXAttribute</c>.
         /// </summary>
         /// <param name="attr">The attribute to process.</param>
-        private void ProcessYAXAttribute(object attr)
+        private void ProcessYaxAttribute(object attr)
         {
             if (attr is YAXCommentAttribute) 
             {
                 string comment = (attr as YAXCommentAttribute).Comment;
                 if (!String.IsNullOrEmpty(comment))
                 {
-                    string[] comments = comment.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                    string[] comments = comment.Split(new [] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
                     for (int i = 0; i < comments.Length; i++)
                     {
                         comments[i] = String.Format(" {0} ", comments[i].Trim());
@@ -634,52 +631,77 @@ namespace YAXLib
             }
             else if (attr is YAXSerializableFieldAttribute) 
             {
-                this.IsAttributedAsSerializable = true;
+                IsAttributedAsSerializable = true;
             }
             else if (attr is YAXAttributeForClassAttribute) 
-            { 
-                if(ReflectionUtils.IsBasicType(this.MemberType))
+            {
+                // it is required that YAXCustomSerializerAttribute is processed earlier
+                if (ReflectionUtils.IsBasicType(MemberType) || CustomSerializerType != null || 
+                    (m_collectionAttributeInstance != null && m_collectionAttributeInstance.SerializationType == YAXCollectionSerializationTypes.Serially))
                 {
-                    this.IsSerializedAsAttribute = true;
-                    this.SerializationLocation = ".";
-                }
-            }
-            else if (attr is YAXAttributeForAttribute) 
-            { 
-                if(ReflectionUtils.IsBasicType(this.MemberType))
-                {
-                    this.IsSerializedAsAttribute = true;
-                    this.SerializationLocation = (attr as YAXAttributeForAttribute).Parent;
+                    IsSerializedAsAttribute = true;
+                    SerializationLocation = ".";
                 }
             }
             else if (attr is YAXValueForClassAttribute)
             {
-                if (ReflectionUtils.IsBasicType(this.MemberType))
+                // it is required that YAXCustomSerializerAttribute is processed earlier
+                if (ReflectionUtils.IsBasicType(MemberType) || CustomSerializerType != null ||
+                    (m_collectionAttributeInstance != null && m_collectionAttributeInstance.SerializationType == YAXCollectionSerializationTypes.Serially))
                 {
-                    this.IsSerializedAsValue = true;
-                    this.SerializationLocation = ".";
+                    IsSerializedAsValue = true;
+                    SerializationLocation = ".";
                 }
+            }
+            else if (attr is YAXAttributeForAttribute)
+            {
+                // it is required that YAXCustomSerializerAttribute is processed earlier
+                if (ReflectionUtils.IsBasicType(MemberType) || CustomSerializerType != null ||
+                    (m_collectionAttributeInstance != null && m_collectionAttributeInstance.SerializationType == YAXCollectionSerializationTypes.Serially))
+                {
+                    IsSerializedAsAttribute = true;
+                    string path, alias;
+                    StringUtils.ExttractPathAndAliasFromLocationString((attr as YAXAttributeForAttribute).Parent, out path, out alias);
+                    
+                    SerializationLocation = path;
+                    if (!String.IsNullOrEmpty(alias))
+                        Alias = alias;
+                }
+            }
+            else if (attr is YAXElementForAttribute)
+            {
+                IsSerializedAsElement = true;
+
+                string path, alias;
+                StringUtils.ExttractPathAndAliasFromLocationString((attr as YAXElementForAttribute).Parent, out path, out alias);
+
+                SerializationLocation = path;
+                if (!String.IsNullOrEmpty(alias))
+                    Alias = alias;
             }
             else if (attr is YAXValueForAttribute)
             {
-                if (ReflectionUtils.IsBasicType(this.MemberType))
+                // it is required that YAXCustomSerializerAttribute is processed earlier
+                if (ReflectionUtils.IsBasicType(this.MemberType) || CustomSerializerType != null ||
+                    (m_collectionAttributeInstance != null && m_collectionAttributeInstance.SerializationType == YAXCollectionSerializationTypes.Serially))
                 {
-                    this.IsSerializedAsValue = true;
-                    this.SerializationLocation = (attr as YAXValueForAttribute).Parent;
+                    IsSerializedAsValue = true;
+
+                    string path, alias;
+                    StringUtils.ExttractPathAndAliasFromLocationString((attr as YAXValueForAttribute).Parent, out path, out alias);
+
+                    SerializationLocation = path;
+                    if (!String.IsNullOrEmpty(alias))
+                        Alias = alias;
                 }
             }
             else if (attr is YAXDontSerializeAttribute)
             {
-                this.IsAttributedAsDontSerialize = true;
+                IsAttributedAsDontSerialize = true;
             }
             else if (attr is YAXSerializeAsAttribute)
             {
-                this.Alias = (attr as YAXSerializeAsAttribute).SerializeAs;
-            }
-            else if (attr is YAXElementForAttribute)
-            {
-                this.IsSerializedAsElement = true;
-                this.SerializationLocation = (attr as YAXElementForAttribute).Parent;
+                Alias = (attr as YAXSerializeAsAttribute).SerializeAs;
             }
             else if (attr is YAXCollectionAttribute)
             {
@@ -691,19 +713,19 @@ namespace YAXLib
             }
             else if (attr is YAXErrorIfMissedAttribute)
             {
-                YAXErrorIfMissedAttribute temp = attr as YAXErrorIfMissedAttribute;
-                this.DefaultValue = temp.DefaultValue;
-                this.TreatErrorsAs = temp.TreatAs;
+                var temp = attr as YAXErrorIfMissedAttribute;
+                DefaultValue = temp.DefaultValue;
+                TreatErrorsAs = temp.TreatAs;
             }
             else if (attr is YAXFormatAttribute)
             {
-                this.Format = (attr as YAXFormatAttribute).Format;
+                Format = (attr as YAXFormatAttribute).Format;
             }
             else if (attr is YAXNotCollectionAttribute)
             {
                 // arrays are always treated as collections
-                if (!ReflectionUtils.IsArray(this.MemberType))
-                    this.IsAttributedAsNotCollection = true;
+                if (!ReflectionUtils.IsArray(MemberType))
+                    IsAttributedAsNotCollection = true;
             }
             else if (attr is YAXCustomSerializerAttribute)
             {
@@ -722,29 +744,29 @@ namespace YAXLib
                 }
                 else
                 {
-                    this.CustomSerializerType = serType;
+                    CustomSerializerType = serType;
                 }
             }
-            else if (attr is YAXCustomDeserializerAttribute)
-            {
-                Type deserType = (attr as YAXCustomDeserializerAttribute).CustomDeserializerType;
+            //else if (attr is YAXCustomDeserializerAttribute)
+            //{
+            //    Type deserType = (attr as YAXCustomDeserializerAttribute).CustomDeserializerType;
 
-                Type genTypeArg;
-                bool isDesiredInterface = ReflectionUtils.IsDerivedFromGenericInterfaceType(deserType, typeof(ICustomDeserializer<>), out genTypeArg);
+            //    Type genTypeArg;
+            //    bool isDesiredInterface = ReflectionUtils.IsDerivedFromGenericInterfaceType(deserType, typeof(ICustomSerializer<>), out genTypeArg);
 
-                if (!isDesiredInterface)
-                {
-                    throw new YAXException("The provided custom deserialization type is not derived from the proper interface");
-                }
-                else if (genTypeArg != this.MemberType)
-                {
-                    throw new YAXException("The generic argument of the class and the member type do not match");
-                }
-                else
-                {
-                    this.CustomDeserializerType = deserType;
-                }
-            }
+            //    if (!isDesiredInterface)
+            //    {
+            //        throw new YAXException("The provided custom deserialization type is not derived from the proper interface");
+            //    }
+            //    else if (genTypeArg != this.MemberType)
+            //    {
+            //        throw new YAXException("The generic argument of the class and the member type do not match");
+            //    }
+            //    else
+            //    {
+            //        this.CustomDeserializerType = deserType;
+            //    }
+            //}
             else if (attr is YAXSerializableTypeAttribute)
             {
                 // this should not happen

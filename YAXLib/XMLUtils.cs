@@ -85,7 +85,7 @@ namespace YAXLib
         /// </returns>
         public static bool CanCreateLocation(XElement baseElement, string location)
         {
-            string[] locSteps = location.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] locSteps = location.Split(new [] { '/' }, StringSplitOptions.RemoveEmptyEntries);
 
             XElement currentLocation = baseElement;
             foreach (string loc in locSteps)
@@ -119,7 +119,7 @@ namespace YAXLib
         /// <returns>XML element corresponding to the sepcified location created in the given XML element</returns>
         public static XElement CreateLocation(XElement baseElement, string location)
         {
-            string[] locSteps = location.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] locSteps = location.Split(new [] { '/' }, StringSplitOptions.RemoveEmptyEntries);
 
             XElement currentLocation = baseElement;
             foreach (string loc in locSteps)
@@ -141,6 +141,10 @@ namespace YAXLib
                     {
                         newLoc = new XElement(loc);
                         currentLocation.Add(newLoc);
+                        currentLocation = newLoc;
+                    }
+                    else
+                    {
                         currentLocation = newLoc;
                     }
                 }
