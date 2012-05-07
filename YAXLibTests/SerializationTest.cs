@@ -314,8 +314,8 @@ namespace YAXLibTests
             const string result =
 @"<!-- This example shows how to apply format strings to a class properties -->
 <FormattingExample>
-  <CreationDate>Wednesday, March 14, 2007</CreationDate>
-  <ModificationDate>3/18/2007</ModificationDate>
+  <CreationDate>Wednesday, 14 March 2007</CreationDate>
+  <ModificationDate>18/03/2007</ModificationDate>
   <PI>3.14159</PI>
   <NaturalExp>
     <Double>2.718</Double>

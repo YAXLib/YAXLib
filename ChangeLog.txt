@@ -10,8 +10,6 @@
      "{namespace}elementname", which was reported and patched in
 	 this issue (http://yaxlib.codeplex.com/workitem/17661)
 	 by CodePlex user tg73.
-   
-   
 
 [2.8] January 26, 2012
    * Switching to Visual Studio 2010
