@@ -865,6 +865,13 @@
             <param name="elemAddr">The element address to refine.</param>
             <returns>the refined location string</returns>
         </member>
+        <member name="M:YAXLib.StringUtils.LooksLikeExpandedXName(System.String)">
+            <summary>
+            Heuristically determines if the supplied name conforms to the "expanded XML name" form supported by the System.Xml.Linq.XName class.
+            </summary>
+            <param name="name">The name to be examined.</param>
+            <returns><c>true</c> if the supplied name appears to be in expanded form, otherwise <c>false</c>.</returns>
+        </member>
         <member name="M:YAXLib.StringUtils.RefineSingleElement(System.String)">
             <summary>
             Refines a single element name. Refines the location string. Trims it, and replaces invlalid characters with underscore.

@@ -9,6 +9,7 @@
 //-----------------------------------------------------------------------
 
 using System;
+using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using YAXLib;
 using DemoApplication.SampleClasses;
@@ -1346,5 +1347,32 @@ namespace YAXLibTests
             got = serializer.Serialize(SerializationOptionsSample.GetSampleInstance());
             Assert.AreEqual(resultWithDontSerializeNullRefs, got);
         }
+
+        [TestMethod]
+        public void SerializeAClassContainingXElementItself()
+        {
+            var initialInstance = ClassContainingXElement.GetSampleInstance();
+            string initialInstanceString = initialInstance.ToString();
+
+            var ser = new YAXSerializer(typeof (ClassContainingXElement), YAXExceptionHandlingPolicies.DoNotThrow,
+                                        YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+
+            var initialXmlSer = ser.Serialize(initialInstance);
+
+            var initialInstDes = ser.Deserialize(initialXmlSer) as ClassContainingXElement;
+            Assert.IsNotNull(initialInstDes);
+            var initialInstDesString = initialInstDes.ToString();
+
+            Assert.AreEqual(initialInstanceString, initialInstDesString);
+
+            initialInstance.TheElement = null;
+            string nulledElementString = initialInstance.ToString();
+
+            string nulledElemXmlSer = ser.Serialize(initialInstance);
+
+            var nulledInstanceDeser = ser.Deserialize(nulledElemXmlSer);
+            Assert.AreEqual(nulledElementString, nulledInstanceDeser.ToString());
+        }
+
     }
 }

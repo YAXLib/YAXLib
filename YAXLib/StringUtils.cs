@@ -48,6 +48,32 @@ namespace YAXLib
         }
 
         /// <summary>
+        /// Heuristically determines if the supplied name conforms to the "expanded XML name" form supported by the System.Xml.Linq.XName class.
+        /// </summary>
+        /// <param name="name">The name to be examined.</param>
+        /// <returns><c>true</c> if the supplied name appears to be in expanded form, otherwise <c>false</c>.</returns>
+        public static bool LooksLikeExpandedXName(string name)
+        {
+            // XName permits strings of the form '{namespace}localname'. Detecting such cases allows
+            // YAXLib to support explicit namespace use.
+            // http://msdn.microsoft.com/en-us/library/system.xml.linq.xname.aspx
+
+            name = name.Trim();
+
+            // Needs at least 3 chars ('{}a' is, in theory, valid), must start with '{', must have a following closing '}' which must not be last char.
+            if (name.Length >= 3)
+            {
+                if (name[ 0 ] == '{')
+                {
+                    int closingBrace = name.IndexOf('}', 1);
+                    return closingBrace != -1 && closingBrace < (name.Length - 1);
+                }
+            }
+            return false;
+        }
+
+        
+        /// <summary>
         /// Refines a single element name. Refines the location string. Trims it, and replaces invlalid characters with underscore.
         /// </summary>
         /// <param name="elemName">Name of the element.</param>
@@ -58,6 +84,20 @@ namespace YAXLib
             if (IsSingleLocationGeneric(elemName))
             {
                 return elemName;
+            }
+            else if (LooksLikeExpandedXName(elemName))
+            {
+                // thanks go to CodePlex user: tg73 (http://www.codeplex.com/site/users/view/tg73)
+                // for providing the code for expanded xml name support
+
+                // XName permits strings of the form '{namespace}localname'. Detecting such cases allows
+                // YAXLib to support explicit namespace use.
+                // http://msdn.microsoft.com/en-us/library/system.xml.linq.xname.aspx
+
+                // Leave namespace part alone, refine localname part.
+                int closingBrace = elemName.IndexOf( '}' );
+                string refinedLocalname = RefineSingleElement( elemName.Substring( closingBrace + 1 ) );
+                return elemName.Substring( 0, closingBrace + 1 ) + refinedLocalname;
             }
             else
             {

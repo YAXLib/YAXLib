@@ -129,7 +129,23 @@ namespace YAXLibTests
             Assert.AreEqual(newLocation, ".");
             Assert.AreEqual(newElement, "one");
             Assert.AreEqual(returnValue, true);
-
         }
+
+        [TestMethod]
+        public void LooksLikeExpandedNameTest()
+        {
+            var falseCases = new[] {"", "    ", "{}", "{a", "{} ", " {}", " {} ", " {a} ", "{a}", "{a}    ", "something"};
+            var trueCases = new[] {"{a}b", " {a}b ", " {a}b"};
+
+            foreach (var falseCase in falseCases)
+            {
+                Assert.IsFalse(StringUtils.LooksLikeExpandedXName(falseCase));
+            }
+
+            foreach (var trueCase in trueCases)
+            {
+                Assert.IsTrue(StringUtils.LooksLikeExpandedXName(trueCase));
+            }
+        } 
     }
 }

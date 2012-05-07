@@ -80,6 +80,7 @@
     </Compile>
     <Compile Include="GeneralToString.cs" />
     <Compile Include="SampleClasses\BookClassTestingSerializeAsValue.cs" />
+    <Compile Include="SampleClasses\ClassContainingXElement.cs" />
     <Compile Include="SampleClasses\Code4PublicTheme.cs" />
     <Compile Include="SampleClasses\CollectionSeriallyAsAttribute.cs" />
     <Compile Include="SampleClasses\DictionaryKeyValueAsInterface.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="SampleClasses\MultipleCommentsTest.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SampleClasses\XmlNamespaceElementNames.cs" />
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>

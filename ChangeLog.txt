@@ -1,3 +1,18 @@
+[2.8.1] May 8, 2012
+   * Migrating from SVN to Git
+   * Fixing the issue with null known-types references, thanks go to 
+     CodePlex user tg73 (http://www.codeplex.com/site/users/view/tg73)
+	 for reporting this issue (http://yaxlib.codeplex.com/workitem/17676)
+	 and providing the patch.
+   * Added the XElementKnownType and XAttributeKnownType to the list of
+     known-types as suggested and provided by CodePlex user tg73.
+   * Added support for expanded XML names in the form of 
+     "{namespace}elementname", which was reported and patched in
+	 this issue (http://yaxlib.codeplex.com/workitem/17661)
+	 by CodePlex user tg73.
+   
+   
+
 [2.8] January 26, 2012
    * Switching to Visual Studio 2010
    * Adding support for specifying alias and path-like serialization addresses 

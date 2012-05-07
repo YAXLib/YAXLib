@@ -16,7 +16,9 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Xml.Linq;
+using System.Diagnostics;
 
 namespace YAXLib
 {
@@ -29,11 +31,13 @@ namespace YAXLib
 
         static KnownTypes()
         {
-            // NOTE: you MUST register known-types here
+            // NOTE: known-types MUST be registered here
             Add(new RectangleKnownType());
             Add(new GuidKnownType());
             Add(new TimeSpanKnownType());
             Add(new ColorKnownType());
+            Add(new XElementKnownType());
+            Add(new XAttributeKnownType());
         }
 
         public static void Add(IKnownType kt)
@@ -48,7 +52,10 @@ namespace YAXLib
 
         public static void Serialize(object obj, XElement elem)
         {
-            s_dictKnownTypes[obj.GetType()].Serialize(obj, elem);
+            if(obj != null)
+            {
+                s_dictKnownTypes[obj.GetType()].Serialize(obj, elem);
+            }
         }
 
         public static object Deserialize(XElement elem, Type type)
@@ -118,6 +125,53 @@ namespace YAXLib
         }
 
     }
+
+    #region XElement
+
+    // Thanks go to CodePlex user tg73: 
+    // http://www.codeplex.com/site/users/view/tg73
+    // for providing this implementation in the following issue:
+    // http://yaxlib.codeplex.com/workitem/17676
+
+    internal class XElementKnownType : KnownType<XElement>
+    {
+        public override void Serialize(XElement obj, XElement elem)
+        {
+            Debug.Assert(obj != null);
+            if (obj != null)
+            {
+                elem.Add(obj);
+            }
+        }
+
+        public override XElement Deserialize(XElement elem)
+        {
+            return elem.Elements().FirstOrDefault();
+        }
+    }
+
+    #endregion
+
+    #region XAttribute
+
+    internal class XAttributeKnownType : KnownType<XAttribute>
+    {
+        public override void Serialize(XAttribute obj, XElement elem)
+        {
+            Debug.Assert(obj != null);
+            if(obj != null)
+            {
+                elem.Add(obj);
+            }
+        }
+
+        public override XAttribute Deserialize(XElement elem)
+        {
+            return elem.Attributes().FirstOrDefault();
+        }
+    }
+
+    #endregion
 
     #region Rectangle
     internal class RectangleKnownType : KnownType<Rectangle>

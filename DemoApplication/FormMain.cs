@@ -106,6 +106,7 @@ namespace DemoApplication
 
             lstSampleClasses.Items.Add(new ClassInfoListItem(typeof (CollectionSeriallyAsAttribute), CollectionSeriallyAsAttribute.GetSampleInstance()));
             lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(DictionaryKeyValueAsInterface), DictionaryKeyValueAsInterface.GetSampleInstance()));
+            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(XmlNamespaceElementNames), XmlNamespaceElementNames.GetSampleInstance()));
             
         }
 

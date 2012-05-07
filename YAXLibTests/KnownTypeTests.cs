@@ -3,6 +3,7 @@ using System.Xml.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using YAXLib;
 using System;
+using DemoApplication.SampleClasses;
 
 namespace YAXLibTests
 {
@@ -82,6 +83,29 @@ namespace YAXLibTests
             const string expectedCol2 = @"<Color>ButtonFace</Color>";
 
             Assert.AreEqual(expectedCol2, colStr2);
+        }
+
+        [TestMethod]
+        public void TestSerializingNDeserializingNullKnownTypes()
+        {
+            var inst = ClassContainingXElement.GetSampleInstance();
+            inst.TheElement = null;
+            inst.TheAttribute = null;
+
+            var ser = new YAXSerializer(typeof (ClassContainingXElement), YAXExceptionHandlingPolicies.ThrowErrorsOnly,
+                                        YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+
+            try
+            {
+                var xml = ser.Serialize(inst);
+                var deseredInstance = ser.Deserialize(xml);
+                Assert.AreEqual(inst.ToString(), deseredInstance.ToString());
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("No exception should have been throwned, but received:\r\n" + ex);
+            }
+
         }
     }
 }
