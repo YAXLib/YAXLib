@@ -1,0 +1,10 @@
+*.suo
+*.user
+*.pdb
+*.vshost.exe
+*.vshost.exe.manifest
+obj/
+_ReSharper*/
+DemoApplication/bin/
+YAXLibTests/bin/
+TestResults/
