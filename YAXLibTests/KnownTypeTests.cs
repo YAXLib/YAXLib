@@ -3,7 +3,7 @@ using System.Xml.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using YAXLib;
 using System;
-using DemoApplication.SampleClasses;
+using YAXLibTests.SampleClasses;
 
 namespace YAXLibTests
 {

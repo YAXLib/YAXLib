@@ -9,13 +9,9 @@
 //-----------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using YAXLib;
-using DemoApplication.SampleClasses;
-using DemoApplication;
+using YAXLibTests.SampleClasses;
 
 namespace YAXLibTests
 {
@@ -85,42 +81,42 @@ namespace YAXLibTests
         [TestMethod]
         public void DesWarehouseWithArrayTest()
         {
-            object obj = DemoApplication.SampleClasses.WarehouseWithArray.GetSampleInstance();
+            object obj = WarehouseWithArray.GetSampleInstance();
             PerformTest(obj);
         }
 
         [TestMethod]
         public void DesWarehouseWithDictionaryTest()
         {
-            object obj = DemoApplication.SampleClasses.WarehouseWithDictionary.GetSampleInstance();
+            object obj = WarehouseWithDictionary.GetSampleInstance();
             PerformTest(obj);
         }
 
         [TestMethod]
         public void DesWarehouseNestedObjectTest()
         {
-            object obj = DemoApplication.SampleClasses.WarehouseNestedObjectExample.GetSampleInstance();
+            object obj = WarehouseNestedObjectExample.GetSampleInstance();
             PerformTest(obj);
         }
 
         [TestMethod]
         public void DesProgrammingLanguageTest()
         {
-            object obj = DemoApplication.SampleClasses.ProgrammingLanguage.GetSampleInstance();
+            object obj = ProgrammingLanguage.GetSampleInstance();
             PerformTest(obj);
         }
 
         [TestMethod]
         public void DesColorExampleTest()
         {
-            object obj = DemoApplication.SampleClasses.ColorExample.GetSampleInstance();
+            object obj = ColorExample.GetSampleInstance();
             PerformTest(obj);
         }
 
         [TestMethod]
         public void DesMultiLevelClassTest()
         {
-            object obj = DemoApplication.SampleClasses.MultilevelClass.GetSampleInstance();
+            object obj = MultilevelClass.GetSampleInstance();
             PerformTest(obj);
         }
 
@@ -128,21 +124,21 @@ namespace YAXLibTests
         [TestMethod]
         public void DesPathsExampleTest()
         {
-            object obj = DemoApplication.SampleClasses.PathsExample.GetSampleInstance();
+            object obj = PathsExample.GetSampleInstance();
             PerformTest(obj);
         }
 
         [TestMethod]
         public void DesMoreComplexExampleTest()
         {
-            object obj = DemoApplication.SampleClasses.MoreComplexExample.GetSampleInstance();
+            object obj = MoreComplexExample.GetSampleInstance();
             PerformTest(obj);
         }
 
         [TestMethod]
         public void DesNestedDicSampleTest()
         {
-            object obj = DemoApplication.SampleClasses.NestedDicSample.GetSampleInstance();
+            object obj = NestedDicSample.GetSampleInstance();
             PerformTest(obj);
 
         }
@@ -155,21 +151,21 @@ namespace YAXLibTests
             Guid g3 = Guid.NewGuid();
             Guid g4 = Guid.NewGuid();
 
-            object obj = DemoApplication.SampleClasses.GUIDTest.GetSampleInstance(g1,g2,g3,g4);
+            object obj = GUIDTest.GetSampleInstance(g1,g2,g3,g4);
             PerformTest(obj);
         }
 
         [TestMethod]
         public void DesNullableTest()
         {
-            object obj = DemoApplication.SampleClasses.NullableClass.GetSampleInstance();
+            object obj = NullableClass.GetSampleInstance();
             PerformTest(obj);
         }
 
         [TestMethod]
         public void DesNullableSample2Test()
         {
-            object obj = DemoApplication.SampleClasses.NullableSample2.GetSampleInstance();
+            object obj = NullableSample2.GetSampleInstance();
             PerformTest(obj);
         }
 
@@ -177,7 +173,7 @@ namespace YAXLibTests
         [TestMethod]
         public void DesListHolderClassTest()
         {
-            object obj = DemoApplication.SampleClasses.ListHolderClass.GetSampleInstance();
+            object obj = ListHolderClass.GetSampleInstance();
             PerformTest(obj);
         }
 
@@ -191,112 +187,112 @@ namespace YAXLibTests
         [TestMethod]
         public void DesNamesExampleTest()
         {
-            object obj = DemoApplication.SampleClasses.NamesExample.GetSampleInstance();
+            object obj = NamesExample.GetSampleInstance();
             PerformTest(obj);
         }
 
         [TestMethod]
         public void DesRequestTest()
         {
-            object obj = DemoApplication.SampleClasses.Request.GetSampleInstance();
+            object obj = Request.GetSampleInstance();
             PerformTest(obj);
         }
 
         [TestMethod]
         public void DesAudioSampleTest()
         {
-            object obj = DemoApplication.SampleClasses.AudioSample.GetSampleInstance();
+            object obj = AudioSample.GetSampleInstance();
             PerformTest(obj);
         }
 
         [TestMethod]
         public void DesTimeSpanTest()
         {
-            object obj = DemoApplication.SampleClasses.TimeSpanSample.GetSampleInstance();
+            object obj = TimeSpanSample.GetSampleInstance();
             PerformTest(obj);
         }
 
         [TestMethod]
         public void DesMoreComplexBookTest()
         {
-            object obj = DemoApplication.SampleClasses.MoreComplexBook.GetSampleInstance();
+            object obj = MoreComplexBook.GetSampleInstance();
             PerformTest(obj);
         }
 
         [TestMethod]
         public void DesMoreComplexBookTwoTest()
         {
-            object obj = DemoApplication.SampleClasses.MoreComplexBook2.GetSampleInstance();
+            object obj = MoreComplexBook2.GetSampleInstance();
             PerformTest(obj);
         }
 
         [TestMethod]
         public void DesMoreComplexBookThreeTest()
         {
-            object obj = DemoApplication.SampleClasses.MoreComplexBook3.GetSampleInstance();
+            object obj = MoreComplexBook3.GetSampleInstance();
             PerformTest(obj);
         }
 
         [TestMethod]
         public void DesWarehouseWithDictionaryNoContainerTest()
         {
-            object obj = DemoApplication.SampleClasses.WarehouseWithDictionaryNoContainer.GetSampleInstance();
+            object obj = WarehouseWithDictionaryNoContainer.GetSampleInstance();
             PerformTest(obj);
         }
 
         [TestMethod]
         public void DesWarehouseWithCommentsTest()
         {
-            object obj = DemoApplication.SampleClasses.WarehouseWithComments.GetSampleInstance();
+            object obj = WarehouseWithComments.GetSampleInstance();
             PerformTest(obj);
         }
 
         [TestMethod]
         public void DesEnumsSampleTest()
         {
-            object obj = DemoApplication.SampleClasses.EnumsSample.GetSampleInstance();
+            object obj = EnumsSample.GetSampleInstance();
             PerformTest(obj);
         }
 
         [TestMethod]
         public void DesMultiDimArraySampleTest()
         {
-            object obj = DemoApplication.SampleClasses.MultiDimArraySample.GetSampleInstance();
+            object obj = MultiDimArraySample.GetSampleInstance();
             PerformTest(obj);
         }
 
         [TestMethod]
         public void DesAnotherArraySampleTest()
         {
-            object obj = DemoApplication.SampleClasses.AnotherArraySample.GetSampleInstance();
+            object obj = AnotherArraySample.GetSampleInstance();
             PerformTest(obj);
         }
 
         [TestMethod]
         public void DesCollectionOfInterfacesSampleTest()
         {
-            object obj = DemoApplication.SampleClasses.CollectionOfInterfacesSample.GetSampleInstance();
+            object obj = CollectionOfInterfacesSample.GetSampleInstance();
             PerformTest(obj);
         }
 
         [TestMethod]
         public void DesInterfaceMatchingSampleTest()
         {
-            object obj = DemoApplication.SampleClasses.InterfaceMatchingSample.GetSampleInstance();
+            object obj = InterfaceMatchingSample.GetSampleInstance();
             PerformTest(obj);
         }
 
         [TestMethod]
         public void DesNonGenericCollectionsSampleTest()
         {
-            object obj = DemoApplication.SampleClasses.NonGenericCollectionsSample.GetSampleInstance();
+            object obj = NonGenericCollectionsSample.GetSampleInstance();
             PerformTest(obj);
         }
 
         [TestMethod]
         public void DesGenericCollectionsSampleTest()
         {
-            object obj = DemoApplication.SampleClasses.GenericCollectionsSample.GetSampleInstance();
+            object obj = GenericCollectionsSample.GetSampleInstance();
             PerformTest(obj);
         }
 
@@ -327,7 +323,7 @@ namespace YAXLibTests
         [TestMethod]
         public void DesSerializationOptionsSampleTest()
         {
-            object obj = DemoApplication.SampleClasses.SerializationOptionsSample.GetSampleInstance();
+            object obj = SerializationOptionsSample.GetSampleInstance();
             PerformTest(obj);
 
             string input1 =

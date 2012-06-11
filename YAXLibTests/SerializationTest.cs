@@ -9,12 +9,11 @@
 //-----------------------------------------------------------------------
 
 using System;
-using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using YAXLib;
-using DemoApplication.SampleClasses;
 using System.Threading;
 using System.Globalization;
+using YAXLibTests.SampleClasses;
 
 namespace YAXLibTests
 {
