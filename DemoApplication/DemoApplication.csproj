@@ -52,6 +52,13 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -71,30 +78,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClassInfoListItem.cs" />
-    <Compile Include="SampleClasses\AnotherArraySample.cs" />
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="GeneralToString.cs" />
-    <Compile Include="SampleClasses\BookClassTestingSerializeAsValue.cs" />
-    <Compile Include="SampleClasses\ClassContainingXElement.cs" />
-    <Compile Include="SampleClasses\Code4PublicTheme.cs" />
-    <Compile Include="SampleClasses\CollectionSeriallyAsAttribute.cs" />
-    <Compile Include="SampleClasses\DictionaryKeyValueAsInterface.cs" />
-    <Compile Include="SampleClasses\PathAndAliasAssignmentSample.cs" />
-    <Compile Include="SampleClasses\CultureSample.cs" />
-    <Compile Include="SampleClasses\CustomSerializationTests.cs" />
-    <Compile Include="SampleClasses\GenericCollectionsSample.cs" />
-    <Compile Include="SampleClasses\InterfaceMatchingSample.cs" />
-    <Compile Include="SampleClasses\FreeSample.cs" />
-    <Compile Include="SampleClasses\IssuesSample.cs" />
-    <Compile Include="SampleClasses\MultipleCommentsTest.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SampleClasses\XmlNamespaceElementNames.cs" />
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
@@ -117,42 +108,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="SampleClasses\AudioSample.cs" />
-    <Compile Include="SampleClasses\CollectionOfInterfacesSample.cs" />
-    <Compile Include="SampleClasses\EnumsSample.cs" />
-    <Compile Include="SampleClasses\MultiDimArraySample.cs" />
-    <Compile Include="SampleClasses\NonGenericCollectionsSample.cs" />
-    <Compile Include="SampleClasses\NullableSample2.cs" />
-    <Compile Include="SampleClasses\SerializationOptionsSample.cs" />
-    <Compile Include="SampleClasses\SimpleBookClassWithDecimalPrice.cs" />
-    <Compile Include="SampleClasses\WarehouseWithComments.cs" />
-    <Compile Include="SampleClasses\MoreComplexBook3.cs" />
-    <Compile Include="SampleClasses\MoreComplexBook2.cs" />
-    <Compile Include="SampleClasses\FieldSerializationExample.cs" />
-    <Compile Include="SampleClasses\GUIDTest.cs" />
-    <Compile Include="SampleClasses\ListHolderClass.cs" />
-    <Compile Include="SampleClasses\MoreComplexBook.cs" />
-    <Compile Include="SampleClasses\NamesExample.cs" />
-    <Compile Include="SampleClasses\NestedDicSample.cs" />
-    <Compile Include="SampleClasses\NestingExample.cs" />
-    <Compile Include="SampleClasses\NullableClass.cs" />
-    <Compile Include="SampleClasses\PathsExample.cs" />
-    <Compile Include="SampleClasses\FormattingExample.cs" />
-    <Compile Include="SampleClasses\MoreComplexExample.cs" />
-    <Compile Include="SampleClasses\MultilevelClass.cs" />
-    <Compile Include="SampleClasses\ProgrammingLanguage.cs" />
-    <Compile Include="SampleClasses\SimpleBookClass.cs" />
-    <Compile Include="SampleClasses\SimpleBookStruct.cs" />
-    <Compile Include="SampleClasses\TimeSpanSample.cs" />
-    <Compile Include="SampleClasses\WarehouseNestedObjectExample.cs" />
-    <Compile Include="SampleClasses\ColorExample.cs" />
-    <Compile Include="SampleClasses\WarehouseStructured.cs" />
-    <Compile Include="SampleClasses\WarehouseSimple.cs" />
-    <Compile Include="SampleClasses\WarehouseWithArray.cs" />
-    <Compile Include="SampleClasses\WarehouseWithDictionary.cs" />
-    <Compile Include="SampleClasses\WarehouseWithDictionaryNoContainer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\YAXLibTests\YAXLibTests.csproj">
+      <Project>{049216C5-A27E-4687-A0DB-87B9AD896DEB}</Project>
+      <Name>YAXLibTests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\YAXLib\YAXLib.csproj">
       <Project>{F1C4D174-C948-4D18-A125-F6855EF55683}</Project>
       <Name>YAXLib</Name>

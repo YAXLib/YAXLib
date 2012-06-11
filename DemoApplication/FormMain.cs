@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
 using YAXLib;
-using DemoApplication.SampleClasses;
+using YAXLibTests.SampleClasses;
 
 namespace DemoApplication
 {
