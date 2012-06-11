@@ -377,7 +377,7 @@ namespace YAXLibTests
       <ThePoint X=""-1"" Y=""1"" />
     </PointInfo>
   </FamousPoints>
-  <IntEnumerable yaxlib:realtype=""System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"">
+  <IntEnumerable yaxlib:realtype=""System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"">
     <Int32>1</Int32>
     <Int32>3</Int32>
     <Int32>5</Int32>
@@ -983,20 +983,20 @@ namespace YAXLibTests
 @"<!-- This example shows serialization and deserialization of -->
 <!-- objects through a reference to their base class or interface -->
 <CollectionOfInterfacesSample xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
-  <SingleRef yaxlib:realtype=""DemoApplication.SampleClasses.Class2"">
+  <SingleRef yaxlib:realtype=""YAXLibTests.SampleClasses.Class2"">
     <IntInInterface>22</IntInInterface>
     <StringInClass2>SingleRef</StringInClass2>
   </SingleRef>
   <ListOfSamples>
-    <Class1 yaxlib:realtype=""DemoApplication.SampleClasses.Class1"">
+    <Class1 yaxlib:realtype=""YAXLibTests.SampleClasses.Class1"">
       <IntInInterface>1</IntInInterface>
       <DoubleInClass1>1</DoubleInClass1>
     </Class1>
-    <Class2 yaxlib:realtype=""DemoApplication.SampleClasses.Class2"">
+    <Class2 yaxlib:realtype=""YAXLibTests.SampleClasses.Class2"">
       <IntInInterface>2</IntInInterface>
       <StringInClass2>Class2</StringInClass2>
     </Class2>
-    <Class3_1 yaxlib:realtype=""DemoApplication.SampleClasses.Class3_1"">
+    <Class3_1 yaxlib:realtype=""YAXLibTests.SampleClasses.Class3_1"">
       <StringInClass3_1>Class3_1</StringInClass3_1>
       <IntInInterface>3</IntInInterface>
       <DoubleInClass1>3</DoubleInClass1>
@@ -1004,21 +1004,21 @@ namespace YAXLibTests
   </ListOfSamples>
   <DictSample2Int>
     <KeyValuePairOfISampleInt32>
-      <Key yaxlib:realtype=""DemoApplication.SampleClasses.Class1"">
+      <Key yaxlib:realtype=""YAXLibTests.SampleClasses.Class1"">
         <IntInInterface>1</IntInInterface>
         <DoubleInClass1>1</DoubleInClass1>
       </Key>
       <Value>1</Value>
     </KeyValuePairOfISampleInt32>
     <KeyValuePairOfISampleInt32>
-      <Key yaxlib:realtype=""DemoApplication.SampleClasses.Class2"">
+      <Key yaxlib:realtype=""YAXLibTests.SampleClasses.Class2"">
         <IntInInterface>2</IntInInterface>
         <StringInClass2>Class2</StringInClass2>
       </Key>
       <Value>2</Value>
     </KeyValuePairOfISampleInt32>
     <KeyValuePairOfISampleInt32>
-      <Key yaxlib:realtype=""DemoApplication.SampleClasses.Class3_1"">
+      <Key yaxlib:realtype=""YAXLibTests.SampleClasses.Class3_1"">
         <StringInClass3_1>Class3_1</StringInClass3_1>
         <IntInInterface>3</IntInInterface>
         <DoubleInClass1>3</DoubleInClass1>
@@ -1029,21 +1029,21 @@ namespace YAXLibTests
   <DictInt2Sample>
     <KeyValuePairOfInt32ISample>
       <Key>1</Key>
-      <Value yaxlib:realtype=""DemoApplication.SampleClasses.Class1"">
+      <Value yaxlib:realtype=""YAXLibTests.SampleClasses.Class1"">
         <IntInInterface>1</IntInInterface>
         <DoubleInClass1>1</DoubleInClass1>
       </Value>
     </KeyValuePairOfInt32ISample>
     <KeyValuePairOfInt32ISample>
       <Key>2</Key>
-      <Value yaxlib:realtype=""DemoApplication.SampleClasses.Class2"">
+      <Value yaxlib:realtype=""YAXLibTests.SampleClasses.Class2"">
         <IntInInterface>2</IntInInterface>
         <StringInClass2>Class2</StringInClass2>
       </Value>
     </KeyValuePairOfInt32ISample>
     <KeyValuePairOfInt32ISample>
       <Key>3</Key>
-      <Value yaxlib:realtype=""DemoApplication.SampleClasses.Class3_1"">
+      <Value yaxlib:realtype=""YAXLibTests.SampleClasses.Class3_1"">
         <StringInClass3_1>Class3_1</StringInClass3_1>
         <IntInInterface>3</IntInInterface>
         <DoubleInClass1>3</DoubleInClass1>
@@ -1128,7 +1128,7 @@ namespace YAXLibTests
         </Another>
       </Or>
     </Something>
-    <Author yaxlib:realtype=""DemoApplication.SampleClasses.Author"" />
+    <Author yaxlib:realtype=""YAXLibTests.SampleClasses.Author"" />
   </ObjList>
   <TheArrayList Author_s_Name=""Steve"">
     <Int32 yaxlib:realtype=""System.Int32"">2</Int32>
@@ -1141,7 +1141,7 @@ namespace YAXLibTests
         </Another>
       </Or>
     </Something>
-    <Author yaxlib:realtype=""DemoApplication.SampleClasses.Author"" />
+    <Author yaxlib:realtype=""YAXLibTests.SampleClasses.Author"" />
   </TheArrayList>
   <TheHashtable>
 {0}
