@@ -7,8 +7,6 @@ See this article hosted on [CodeProject](http://www.codeproject.com) to see how 
 
 ## Features
 
-Features
-
 * Allowing the programmer to format the XML result as desired.
 * Support for specifying path-like serialization addresses, e.g., `elem1/elem2/elem3`, and `../elem1`, and `./elem1`.
 * Serialization and deserialization of all known generic and non-generic collection classes in `System.Collections`, and `System.Collections.Generic`.

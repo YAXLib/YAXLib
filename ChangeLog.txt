@@ -1,3 +1,12 @@
+[2.8.2] June 13, 2012
+   * YAXLib is now an strongly-named assembly (thanks go to Jonas Fischer
+     for suggesting and providing the patch for doing this)
+   * Added a key to help build the project
+   * Moved the sample classes from Demo-Application to the Test project
+   * Added the script to build the library with another key, different 
+     from that included in the project higherarchy, to sign the library 
+     with another key, specific to the developer of the library.
+
 [2.8.1] May 8, 2012
    * Migrating from SVN to Git
    * Fixing the issue with null known-types references, thanks go to 
