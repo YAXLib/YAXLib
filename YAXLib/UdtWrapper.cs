@@ -274,19 +274,7 @@ namespace YAXLib
             }
         }
 
-        ///// <summary>
-        ///// Gets a value indicating whether this instance has custom deserializer.
-        ///// </summary>
-        ///// <value>
-        ///// 	<c>true</c> if this instance has custom deserializer; otherwise, <c>false</c>.
-        ///// </value>
-        //public bool HasCustomDeserializer
-        //{
-        //    get
-        //    {
-        //        return CustomDeserializerType != null;
-        //    }
-        //}
+        public bool PreservesWhitespace { get; private set; }
 
 
         #endregion
@@ -403,33 +391,17 @@ namespace YAXLib
                     throw new YAXException("The provided custom serialization type is not derived from the proper interface");
                 }
 
-                if (genTypeArg != this.UnderlyingType)
+                if (genTypeArg != UnderlyingType)
                 {
                     throw new YAXException("The generic argument of the class and the type of the class do not match");
                 }
                 
                 this.CustomSerializerType = serType;
             }
-            //else if (attr is YAXCustomSerializerAttribute)
-            //{
-            //    Type deserType = (attr as YAXCustomDeserializerAttribute).CustomDeserializerType;
-
-            //    Type genTypeArg;
-            //    bool isDesiredInterface = ReflectionUtils.IsDerivedFromGenericInterfaceType(deserType, typeof(ICustomSerializer<>), out genTypeArg);
-
-            //    if (!isDesiredInterface)
-            //    {
-            //        throw new YAXException("The provided custom deserialization type is not derived from the proper interface");
-            //    }
-            //    else if (genTypeArg != this.UnderlyingType)
-            //    {
-            //        throw new YAXException("The generic argument of the class and the underlying type do not match");
-            //    }
-            //    else
-            //    {
-            //        CustomDeserializerType = deserType;
-            //    }
-            //}
+            else if(attr is YAXPreserveWhitespaceAttribute)
+            {
+                PreservesWhitespace = true;
+            }
             else
             {
                 throw new Exception("Attribute not applicable to types!");

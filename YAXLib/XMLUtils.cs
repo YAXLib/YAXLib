@@ -9,12 +9,7 @@
 //-----------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml.Linq;
-using System.Diagnostics;
-using System.Xml;
 using System.Globalization;
 
 namespace YAXLib
@@ -359,33 +354,6 @@ namespace YAXLib
             return !elem.HasAttributes && !elem.HasElements && elem.IsEmpty;
         }
 
-        ///// <summary>
-        ///// Returns a string representation for the content of the XML element including its child element if any
-        ///// </summary>
-        ///// <param name="elem">The elemenet</param>
-        ///// <returns></returns>
-        //public static string GetElementContent(this XElement elem)
-        //{
-        //    string value = elem.Value;
-
-        //    if (String.IsNullOrEmpty(value) || String.IsNullOrEmpty(value.ToString()) || !elem.HasElements)
-        //        return elem.Value;
-
-        //    string content = elem.ToString();
-        //    //string name = elem.Name.ToString();
-
-        //    int closingBracketIndex = content.IndexOf('>');
-        //    if (closingBracketIndex >= content.Length - 1)
-        //        return value;
-
-        //    int lastOpeneingBracket = content.LastIndexOf('<');
-        //    if (lastOpeneingBracket <= 0)
-        //        return value;
-
-        //    string retValue = content.Substring(closingBracketIndex + 1, lastOpeneingBracket - closingBracketIndex - 1);
-        //    return DecodeXMLString(retValue);
-        //}
-
         /// <summary>
         /// Decodes the XML escape sequences into normal string
         /// </summary>
@@ -400,6 +368,17 @@ namespace YAXLib
             }
 
             return str;
+        }
+
+        /// <summary>
+        /// Adds the 'xml:space="preserve"' attribute to the specified element.
+        /// </summary>
+        /// <param name="element">Element to add the 'xml:space="preserve"' attribute to</param>
+        /// <returns></returns>
+        public static XElement AddPreserveSpaceAttribute(XElement element)
+        {
+            element.Add(new XAttribute(XNamespace.Xml + "space", "preserve"));
+            return element;
         }
     }
 }

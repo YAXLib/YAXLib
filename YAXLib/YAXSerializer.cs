@@ -446,25 +446,27 @@ namespace YAXLib
             }
 
             // to serialize stand-alone collection or dictionary objects
-            if (m_udtWrapper.IsTreatedAsCollection || m_udtWrapper.IsTreatedAsDictionary)
+            if (m_udtWrapper.IsTreatedAsDictionary)
             {
-                if (m_udtWrapper.IsTreatedAsDictionary)
-                {
-                    return MakeDictionaryElement(null, m_udtWrapper.Alias, obj, null, null);
-                }
-                else if (m_udtWrapper.IsTreatedAsCollection)
-                {
-                    return MakeCollectionElement(null, m_udtWrapper.Alias, obj, null, null);
-                }
-                else
-                {
-                    throw new Exception("This should not happen!");
-                }
+                var elemResult = MakeDictionaryElement(null, m_udtWrapper.Alias, obj, null, null);
+                if (m_udtWrapper.PreservesWhitespace)
+                    XMLUtils.AddPreserveSpaceAttribute(elemResult);
+                return elemResult;
+            }
+            else if (m_udtWrapper.IsTreatedAsCollection)
+            {
+                var elemResult = MakeCollectionElement(null, m_udtWrapper.Alias, obj, null, null);
+                if (m_udtWrapper.PreservesWhitespace)
+                    XMLUtils.AddPreserveSpaceAttribute(elemResult);
+                return elemResult;
             }
             else if(ReflectionUtils.IsBasicType(m_udtWrapper.UnderlyingType))
             {
                 bool dummyAlreadyAdded;
-                return MakeBaseElement(null, m_udtWrapper.Alias, obj, out dummyAlreadyAdded);
+                var elemResult = MakeBaseElement(null, m_udtWrapper.Alias, obj, out dummyAlreadyAdded);
+                if (m_udtWrapper.PreservesWhitespace)
+                    XMLUtils.AddPreserveSpaceAttribute(elemResult);
+                return elemResult;
             }
             else
             {
@@ -507,6 +509,13 @@ namespace YAXLib
             {
                 foreach (string comment in m_udtWrapper.Comment)
                     m_mainDocument.Add(new XComment(comment));
+            }
+
+            // if the containing element is set to preserve spaces, then emit the 
+            // required attribute
+            if(m_udtWrapper.PreservesWhitespace)
+            {
+                XMLUtils.AddPreserveSpaceAttribute(m_baseElement);
             }
 
             // check if the main class/type has defined custom serializers
@@ -652,6 +661,8 @@ namespace YAXLib
                         }
 
                         parElem.Add(new XText(valueToSet));
+                        if (member.PreservesWhitespace)
+                            XMLUtils.AddPreserveSpaceAttribute(parElem);
                     }
                     else // if the data is going to be serialized as an element
                     {
@@ -689,12 +700,17 @@ namespace YAXLib
                             {
                                 InvokeCustomSerializerToElement(member.MemberTypeWrapper.CustomSerializerType, elementValue, elemToFill);
                             }
+
+                            if (member.PreservesWhitespace)
+                                XMLUtils.AddPreserveSpaceAttribute(elemToFill);
                         }
                         else if(isKnownType)
                         {
                             var elemToFill = new XElement(member.Alias);
                             parElem.Add(elemToFill);
                             KnownTypes.Serialize(elementValue, elemToFill);
+                            if (member.PreservesWhitespace)
+                                XMLUtils.AddPreserveSpaceAttribute(elemToFill);
                         }
                         else
                         {
@@ -737,7 +753,7 @@ namespace YAXLib
                                 }
                             }
                         }
-                    }
+                    } // end of if serialize data as Element
                 } // end of foreach var member
 
                 // This if statement is important. It checks if all the members of an element
@@ -799,6 +815,9 @@ namespace YAXLib
             {
                 elemToAdd = MakeBaseElement(insertionLocation, member.Alias, elementValue, out alreadyAdded);
             }
+
+            if (member.PreservesWhitespace)
+                XMLUtils.AddPreserveSpaceAttribute(elemToAdd);
 
             return elemToAdd;
         }

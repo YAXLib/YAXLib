@@ -2,9 +2,16 @@
    * Fixed the bug of removing elements corresponding to objects with
      no properties (such as DBNull, and Random). Thanks go to Robert Baron
      for reporting this bug.
+   * Added support for [YAXPreserveWhitespace] attribute.
+   * Added PreserveWhitespaceOnClassSample and PreserveWhitespaceOnFieldsSample
+     sample classes that demonstrate how this attribute works. Whenever this
+     attribute is added to a field or class, the xml:space="preserve"
+     XML attribute is added to the corresponding XML element produced to keep
+     whitespace entries upon deserialization. Thanks go to Robert Baron for
+     reporting this problem and suggesting the solution.
 
 [2.8.2] June 13, 2012
-   * YAXLib is now an strongly-named assembly (thanks go to Jonas Fischer
+   * YAXLib is now a strongly-named assembly (thanks go to Jonas Fischer
      for suggesting and providing the patch for doing this)
    * Added a key to help build the project
    * Moved the sample classes from Demo-Application to the Test project

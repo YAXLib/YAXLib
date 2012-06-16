@@ -376,5 +376,18 @@ namespace YAXLibTests
             PerformTest(obj);
         }
 
+        [TestMethod]
+        public void DesPreserveWhitespaceOnFieldsTest()
+        {
+            object obj = PreserveWhitespaceOnFieldsSample.GetSampleInstance();
+            PerformTest(obj);
+        }
+
+        [TestMethod]
+        public void DesPreserveWhitespaceOnClassTest()
+        {
+            object obj = PreserveWhitespaceOnClassSample.GetSampleInstance();
+            PerformTest(obj);
+        }
     }
 }

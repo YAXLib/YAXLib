@@ -480,6 +480,7 @@ namespace YAXLib
             }
         }
 
+        public bool PreservesWhitespace { get; private set; }
 
 		#endregion Properties 
 
@@ -747,26 +748,10 @@ namespace YAXLib
                     CustomSerializerType = serType;
                 }
             }
-            //else if (attr is YAXCustomDeserializerAttribute)
-            //{
-            //    Type deserType = (attr as YAXCustomDeserializerAttribute).CustomDeserializerType;
-
-            //    Type genTypeArg;
-            //    bool isDesiredInterface = ReflectionUtils.IsDerivedFromGenericInterfaceType(deserType, typeof(ICustomSerializer<>), out genTypeArg);
-
-            //    if (!isDesiredInterface)
-            //    {
-            //        throw new YAXException("The provided custom deserialization type is not derived from the proper interface");
-            //    }
-            //    else if (genTypeArg != this.MemberType)
-            //    {
-            //        throw new YAXException("The generic argument of the class and the member type do not match");
-            //    }
-            //    else
-            //    {
-            //        this.CustomDeserializerType = deserType;
-            //    }
-            //}
+            else if(attr is YAXPreserveWhitespaceAttribute)
+            {
+                PreservesWhitespace = true;
+            }
             else if (attr is YAXSerializableTypeAttribute)
             {
                 // this should not happen
