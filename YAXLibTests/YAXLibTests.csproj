@@ -102,6 +102,7 @@
     <Compile Include="SampleClasses\ColorExample.cs" />
     <Compile Include="SampleClasses\CultureSample.cs" />
     <Compile Include="SampleClasses\CustomSerializationTests.cs" />
+    <Compile Include="SampleClasses\PropertylessClassesSample.cs" />
     <Compile Include="SampleClasses\DictionaryKeyValueAsInterface.cs" />
     <Compile Include="SampleClasses\EnumsSample.cs" />
     <Compile Include="SampleClasses\FieldSerializationExample.cs" />

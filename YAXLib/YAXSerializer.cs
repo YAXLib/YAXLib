@@ -520,6 +520,11 @@ namespace YAXLib
             }
             else // if it has no custom serializers
             {
+                // a flag that indicates whether the object had any fields to be serialized
+                // if an object did not have any fields to serialize, then we should not remove
+                // the containing element from the resulting xml!
+                bool isAnythingFoundToSerialize = false;
+
                 // iterate through public properties
                 foreach (var member in GetFieldsToBeSerialized())
                 {
@@ -538,6 +543,9 @@ namespace YAXLib
                     {
                         throw new YAXCannotSerializeSelfReferentialTypes(m_type);
                     }
+
+                    // make this flat true, so that we know that this object was not empty of fields
+                    isAnythingFoundToSerialize = true;
 
                     // ignore this member if it is null and we are not about to serialize null objects
                     if (elementValue == null &&
@@ -731,15 +739,25 @@ namespace YAXLib
                         }
                     }
                 } // end of foreach var member
+
+                // This if statement is important. It checks if all the members of an element
+                // have been serialized somewhere else, leaving the containing member empty, then
+                // remove that element by itself. However if the element is empty, because the 
+                // corresponding object did not have any fields to serialize (e.g., DBNull, Random)
+                // then keep that element
+                if (m_baseElement.Parent != null &&
+                    XMLUtils.IsElementCompletelyEmpty(m_baseElement) &&
+                    isAnythingFoundToSerialize)
+                {
+                    m_baseElement.Remove();
+                }
+
             } // end of else if it has no custom serializers
 
             if (m_baseElement.Parent == null && m_needsNamespaceAddition)
             {
                 m_baseElement.Add(new XAttribute(XNamespace.Xmlns + s_namespaceInits, s_namespaceURI));
             }
-
-            if (m_baseElement.Parent != null && XMLUtils.IsElementCompletelyEmpty(m_baseElement))
-                m_baseElement.Remove();
 
             return m_baseElement;
         }

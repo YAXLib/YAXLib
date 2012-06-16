@@ -1,3 +1,8 @@
+[2.8.3] June 18, 2012
+   * Fixed the bug of removing elements corresponding to objects with
+     no properties (such as DBNull, and Random). Thanks go to Robert Baron
+     for reporting this bug.
+
 [2.8.2] June 13, 2012
    * YAXLib is now an strongly-named assembly (thanks go to Jonas Fischer
      for suggesting and providing the patch for doing this)

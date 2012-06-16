@@ -376,6 +376,5 @@ namespace YAXLibTests
             PerformTest(obj);
         }
 
-
     }
 }

@@ -1373,5 +1373,22 @@ namespace YAXLibTests
             Assert.AreEqual(nulledElementString, nulledInstanceDeser.ToString());
         }
 
+        public void SerializaitonOfPropertylessClasses()
+        {
+            const string result =
+@"<PropertylessClassesSample xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
+  <ValuedDbNull>DBNull</ValuedDbNull>
+  <NullDbNull />
+  <ObjValuedDbNull yaxlib:realtype=""System.DBNull"">DBNull</ObjValuedDbNull>
+  <ObjNullDbNull />
+  <ValuedRandom />
+  <NullRandom />
+  <ObjValuedRandom yaxlib:realtype=""System.Random"" />
+  <ObjNullRandom />
+</PropertylessClassesSample>";
+            var serializer = new YAXSerializer(typeof(PropertylessClassesSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string got = serializer.Serialize(PropertylessClassesSample.GetSampleInstance());
+            Assert.AreEqual(result, got);
+        }
     }
 }

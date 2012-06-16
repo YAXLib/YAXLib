@@ -38,6 +38,7 @@ namespace YAXLib
             Add(new ColorKnownType());
             Add(new XElementKnownType());
             Add(new XAttributeKnownType());
+            Add(new DbNullKnownType());
         }
 
         public static void Add(IKnownType kt)
@@ -303,6 +304,25 @@ namespace YAXLib
             string strGuidValue = elem.Value;
             var g = new Guid(strGuidValue);
             return g;
+        }
+    }
+    #endregion
+
+    #region DBNull
+    internal class DbNullKnownType : KnownType<DBNull>
+    {
+        public override void Serialize(DBNull obj, XElement elem)
+        {
+            if (obj != null)
+                elem.Value = "DBNull";
+        }
+
+        public override DBNull Deserialize(XElement elem)
+        {
+            if (String.IsNullOrEmpty(elem.Value))
+                return null;
+            else
+                return DBNull.Value;
         }
     }
     #endregion
