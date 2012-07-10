@@ -494,16 +494,23 @@ namespace YAXLib
         /// <param name="className">Name of the element that contains the serialized object.</param>
         /// <returns>an instance of <c>XElement</c> which contains the result of 
         /// serialization of the specified object</returns>
-        private XElement SerializeBase(object obj, string className)
+        private XElement SerializeBase(object obj, XName className)
         {
+            XNamespace xmlns = XNamespace.None;
+            if (m_udtWrapper.HasNamespace)
+                xmlns = m_udtWrapper.Namespace;
+
             if (m_baseElement == null)
-                m_baseElement = new XElement(className, null);
+            {
+                m_baseElement = CreateElementWithNamespace(m_udtWrapper, className);
+            }
             else
             {
                 var baseElem = new XElement(className, null);
                 m_baseElement.Add(baseElem);
                 m_baseElement = baseElem;
             }
+            
 
             if (m_udtWrapper.HasComment && m_baseElement.Parent == null && m_mainDocument != null)
             {
@@ -779,6 +786,50 @@ namespace YAXLib
         }
 
         /// <summary>
+        /// Adds the namespace applying to the object type specified in <paramref name="wrapper"/>
+        /// to the <paramref name="rootNode"/>
+        /// </summary>
+        /// <param name="wrapper">The wrapper around the object who's namespace should be added</param>
+        /// <param name="rootNode">The root node of the document to which the namespace should be written</param>
+        private XElement CreateElementWithNamespace(UdtWrapper wrapper, XName className)
+        {
+            if (!wrapper.HasNamespace)
+                return new XElement(className.LocalName, null);
+
+            XNamespace targetNs = wrapper.Namespace;
+
+            if (string.IsNullOrEmpty(wrapper.NamespacePrefix))
+                return new XElement(targetNs + className.LocalName, null);
+            else
+                return new XElement(targetNs + className.LocalName, new XAttribute(XNamespace.Xmlns + wrapper.NamespacePrefix, wrapper.Namespace));
+        }
+        
+        /// <summary>
+        /// Adds the namespace applying to the object type specified in <paramref name="wrapper"/>
+        /// to the <paramref name="rootNode"/>
+        /// </summary>
+        /// <param name="wrapper">The wrapper around the object who's namespace should be added</param>
+        /// <param name="rootNode">The root node of the document to which the namespace should be written</param>
+        private void AddNamespace(MemberWrapper wrapper, XElement rootNode)
+        {
+            if (!wrapper.HasNamespace)
+                return;
+
+            //Adds the defined namespace to the document root
+            if (!string.IsNullOrEmpty(wrapper.NamespacePrefix) && rootNode.GetNamespaceOfPrefix(wrapper.NamespacePrefix) == null)
+                rootNode.Add(new XAttribute(XNamespace.Xmlns + wrapper.NamespacePrefix, wrapper.Namespace));
+            else if (string.IsNullOrEmpty(wrapper.NamespacePrefix))
+                throw new InvalidOperationException("Fields or Properties cannot redefine the document's default namespace");
+            else
+            {
+                var existing = rootNode.GetNamespaceOfPrefix(wrapper.NamespacePrefix);
+
+                if(existing.NamespaceName != wrapper.Namespace)
+                    throw new InvalidOperationException("You cannot have two different namespaces with the same prefix");
+            }
+        }
+
+        /// <summary>
         /// Makes the element corresponding to the member specified.
         /// </summary>
         /// <param name="insertionLocation">The insertion location.</param>
@@ -793,10 +844,16 @@ namespace YAXLib
             alreadyAdded = false;
             moveDescOnly = false;
 
+            XNamespace xmlns = m_baseElement.Name.Namespace;
+            if (member.HasNamespace)
+                xmlns = member.Namespace;
+
+            AddNamespace(member, m_baseElement);
+
             XElement elemToAdd;
             if (member.IsTreatedAsDictionary)
             {
-                elemToAdd = MakeDictionaryElement(insertionLocation, member.Alias, elementValue, member.DictionaryAttributeInstance, member.CollectionAttributeInstance);
+                elemToAdd = MakeDictionaryElement(insertionLocation, xmlns + member.Alias, elementValue, member.DictionaryAttributeInstance, member.CollectionAttributeInstance);
                 if (member.CollectionAttributeInstance != null &&
                     member.CollectionAttributeInstance.SerializationType == YAXCollectionSerializationTypes.RecursiveWithNoContainingElement &&
                     !elemToAdd.HasAttributes)
@@ -804,7 +861,7 @@ namespace YAXLib
             }
             else if (member.IsTreatedAsCollection)
             {
-                elemToAdd = MakeCollectionElement(insertionLocation, member.Alias, elementValue, member.CollectionAttributeInstance, member.Format);
+                elemToAdd = MakeCollectionElement(insertionLocation, xmlns + member.Alias, elementValue, member.CollectionAttributeInstance, member.Format);
 
                 if (member.CollectionAttributeInstance != null &&
                     member.CollectionAttributeInstance.SerializationType == YAXCollectionSerializationTypes.RecursiveWithNoContainingElement &&
@@ -813,7 +870,7 @@ namespace YAXLib
             }
             else
             {
-                elemToAdd = MakeBaseElement(insertionLocation, member.Alias, elementValue, out alreadyAdded);
+                elemToAdd = MakeBaseElement(insertionLocation, xmlns + member.Alias, elementValue, out alreadyAdded);
             }
 
             if (member.PreservesWhitespace)
@@ -837,7 +894,7 @@ namespace YAXLib
         /// </returns>
         private XElement MakeDictionaryElement(
             XElement insertionLocation,
-            string elementName,
+            XName elementName,
             object elementValue,
             YAXDictionaryAttribute dicAttrInst,
             YAXCollectionAttribute collectionAttrInst)
@@ -1004,7 +1061,7 @@ namespace YAXLib
 
             return elemToAdd;
         }
-
+        
         /// <summary>
         /// Serializes a collection object.
         /// </summary>
@@ -1017,7 +1074,7 @@ namespace YAXLib
         /// an instance of <c>XElement</c> which will contain the serailized collection
         /// </returns>
         private XElement MakeCollectionElement(
-            XElement insertionLocation, string elementName, object elementValue,
+            XElement insertionLocation, XName elementName, object elementValue,
             YAXCollectionAttribute collectionAttrInst, string format)
         {
             if (elementValue == null)
@@ -1133,7 +1190,7 @@ namespace YAXLib
         /// an instance of <c>XElement</c> which will contain the serialized object,
         /// or <c>null</c> if the serialized object is already added to the base element
         /// </returns>
-        private XElement MakeBaseElement(XElement insertionLocation, string name, object value, out bool alreadyAdded)
+        private XElement MakeBaseElement(XElement insertionLocation, XName name, object value, out bool alreadyAdded)
         {
             alreadyAdded = false;
             if (value == null || ReflectionUtils.IsBasicType(value.GetType()))
