@@ -11,13 +11,14 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Linq;
 
 namespace YAXLib
 {
     /// <summary>
     /// Provides string utility methods
     /// </summary>
-    internal class StringUtils
+    internal static class StringUtils
     {
         /// <summary>
         /// Refines the location string. Trims it, and replaces invlalid characters with underscore.
@@ -153,7 +154,7 @@ namespace YAXLib
         /// <param name="location">The location string.</param>
         /// <param name="elemName">Name of the element.</param>
         /// <returns>a bigger location string formed by combining a location string and an element name.</returns>
-        public static string CombineLocationAndElementName(string location, string elemName)
+        public static string CombineLocationAndElementName(string location, XName elemName)
         {
             return String.Format("{0}/{1}", location, elemName);
         }
@@ -271,6 +272,45 @@ namespace YAXLib
             }
 
             return lst.ToArray();
+        }
+
+        /// <summary>
+        /// Splits a string at each instance of a '/' except where such slashes
+        /// are within {}.
+        /// </summary>
+        /// <param name="value">The string to split</param>
+        /// <returns>An enumerable set of strings which were seperated by '/'</returns>
+        public static IEnumerable<string> SplitPathNamespaceSafe(this string value)
+        {
+            int bracketCount = 0;
+            int lastStart = 0;
+            string temp = value;
+
+            if (value.Length <= 1)
+            {
+                yield return value;
+                yield break;
+            }
+
+            for(int i = 0; i < temp.Length; i++)
+            {
+                if (temp[i] == '{')
+                    bracketCount++;
+                else if (temp[i] == '}')
+                    bracketCount--;
+                else if (temp[i] == '/')
+                {
+                    if (bracketCount == 0)
+                    {
+                        yield return temp.Substring(lastStart, i - lastStart);
+                        lastStart = i + 1;
+                    }
+                }
+                else continue;
+            }
+
+            if (lastStart < temp.Length - 1)
+                yield return temp.Substring(lastStart);
         }
 
     }

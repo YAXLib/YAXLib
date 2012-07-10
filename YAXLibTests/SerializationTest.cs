@@ -310,11 +310,11 @@ namespace YAXLibTests
         [TestMethod]
         public void FormattingTest()
         {
-            const string result =
+            string result =
 @"<!-- This example shows how to apply format strings to a class properties -->
 <FormattingExample>
-  <CreationDate>Wednesday, 14 March 2007</CreationDate>
-  <ModificationDate>18/03/2007</ModificationDate>
+  <CreationDate>{0}</CreationDate>
+  <ModificationDate>{1}</ModificationDate>
   <PI>3.14159</PI>
   <NaturalExp>
     <Double>2.718</Double>
@@ -337,6 +337,12 @@ namespace YAXLibTests
     </KeyValuePairOfDoubleDouble>
   </SomeLogarithmExample>
 </FormattingExample>";
+
+            result = string.Format(result,
+                FormattingExample.GetSampleInstance().CreationDate.ToLongDateString(),
+                FormattingExample.GetSampleInstance().ModificationDate.ToShortDateString()
+                );
+
             var serializer = new YAXSerializer(typeof(FormattingExample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(FormattingExample.GetSampleInstance());
             Assert.AreEqual(result, got);

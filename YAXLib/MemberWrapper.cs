@@ -482,6 +482,39 @@ namespace YAXLib
 
         public bool PreservesWhitespace { get; private set; }
 
+
+        /// <summary>
+        /// Gets a value indicating whether this instance has a custom namespace
+        /// defined for it through the <see cref="YAXNamespaceAttribute"/> attribute.
+        /// </summary>
+        public bool HasNamespace { get; private set; }
+
+        /// <summary>
+        /// Gets the namespace associated with this element.
+        /// </summary>
+        /// <remarks>
+        /// If <see cref="HasNamespace"/> is <c>false</c> then this should
+        /// be inherited from any parent elements.
+        /// </remarks>
+        public string Namespace { get; private set; }
+
+        /// <summary>
+        /// Gets the namespace prefix associated with this element
+        /// </summary>
+        /// <remarks>
+        /// If <see cref="HasNamespace"/> is <c>false</c> then this should
+        /// be inherited from any parent elements.
+        /// If this is <c>null</c>, then it should be assumed that the specified
+        /// <see cref="Namespace"/> (if it is present) is the default namespace.
+        /// 
+        /// It should also be noted that if a namespace is not provided for the
+        /// entire document (default namespace) and yet a default namespace is
+        /// provided for one element that an exception should be thrown (since
+        /// setting a default namespace for that element would make it apply to
+        /// the whole document).
+        /// </remarks>
+        public string NamespacePrefix { get; private set; }
+
 		#endregion Properties 
 
 		#region Methods 
@@ -756,6 +789,15 @@ namespace YAXLib
             {
                 // this should not happen
                 throw new Exception("This attribute is not applicable to fields and properties!");
+            }
+            else if (attr is YAXNamespaceAttribute)
+            {
+                HasNamespace = true;
+                var nsAttrib = (attr as YAXNamespaceAttribute);
+                if (string.IsNullOrEmpty(nsAttrib.Prefix))
+                    throw new Exception("Cannot add a new default namespace to a field or property. Fields and properties will automaticallt inherit their parent class' default namespace if no alternative is provided.");
+                Namespace = nsAttrib.Namespace;
+                NamespacePrefix = nsAttrib.Prefix;
             }
             else
             {
