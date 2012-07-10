@@ -157,7 +157,7 @@ namespace YAXLib
         /// <returns>
         /// a value indicating whether the attribute with the given name located in the given location string exists in the given XML element.
         /// </returns>
-        public static bool AttributeExists(XElement baseElement, string location, string attrName)
+        public static bool AttributeExists(XElement baseElement, string location, XName attrName)
         {
             return FindAttribute(baseElement, location, attrName) != null;
         }
@@ -170,7 +170,7 @@ namespace YAXLib
         /// <param name="attrName">Name of the attribute.</param>
         /// <returns>a value indicating whether the attribute with the given name located in 
         /// the given location string in the given XML element has been found.</returns>
-        public static XAttribute FindAttribute(XElement baseElement, string location, string attrName)
+        public static XAttribute FindAttribute(XElement baseElement, string location, XName attrName)
         {
             XElement newLoc = FindLocation(baseElement, location);
             if (newLoc == null)
@@ -190,7 +190,7 @@ namespace YAXLib
         /// <c>true</c> if the attribute with the given name can be created in the location 
         /// specified by the given location string in the given XML element; otherwise, <c>false</c>.
         /// </returns>
-        public static bool CanCreateAttribute(XElement baseElement, string location, string attrName)
+        public static bool CanCreateAttribute(XElement baseElement, string location, XName attrName)
         {
             XElement newLoc = FindLocation(baseElement, location);
             if (newLoc == null) //if the location does not exist
@@ -220,7 +220,7 @@ namespace YAXLib
         /// <param name="attrValue">The value to be assigned to the attribute.</param>
         /// <returns>returns the attribute with the given name in the location 
         /// specified by the given location string in the given XML element.</returns>
-        public static XAttribute CreateAttribute(XElement baseElement, string location, string attrName, object attrValue)
+        public static XAttribute CreateAttribute(XElement baseElement, string location, XName attrName, object attrValue)
         {
             XElement newLoc = FindLocation(baseElement, location);
             if (newLoc == null)
@@ -251,7 +251,7 @@ namespace YAXLib
         /// <param name="elemName">Name of the element.</param>
         /// <returns>a value indicating whether the element with the given name located in 
         /// the given location string in the given XML element has been found</returns>
-        public static XElement FindElement(XElement baseElement, string location, string elemName)
+        public static XElement FindElement(XElement baseElement, string location, XName elemName)
         {
             return FindLocation(baseElement, StringUtils.CombineLocationAndElementName(location, elemName));
         }
@@ -265,7 +265,7 @@ namespace YAXLib
         /// <param name="elemName">Name of the element.</param>
         /// <returns>a value indicating whether the XML element with the given name located in the 
         /// given location string in the given XML element exists</returns>
-        public static bool ElementExists(XElement baseElement, string location, string elemName)
+        public static bool ElementExists(XElement baseElement, string location, XName elemName)
         {
             return FindElement(baseElement, location, elemName) != null;
         }
@@ -281,7 +281,7 @@ namespace YAXLib
         /// <c>true</c> if the XML element with the given name located in the given 
         /// location string in the given XML element can be created; otherwise, <c>false</c>.
         /// </returns>
-        public static bool CanCreateElement(XElement baseElement, string location, string elemName)
+        public static bool CanCreateElement(XElement baseElement, string location, XName elemName)
         {
             return CanCreateLocation(baseElement, StringUtils.CombineLocationAndElementName(location, elemName));
         }
@@ -295,7 +295,7 @@ namespace YAXLib
         /// <param name="elemName">Name of the element to create.</param>
         /// <returns>returns the XML element with the given name located in the 
         /// given location string in the given XML element</returns>
-        public static XElement CreateElement(XElement baseElement, string location, string elemName)
+        public static XElement CreateElement(XElement baseElement, string location, XName elemName)
         {
             return CreateLocation(baseElement, StringUtils.CombineLocationAndElementName(location, elemName));
         }
@@ -310,7 +310,7 @@ namespace YAXLib
         /// <param name="elemValue">The element value to be assigned to the created element.</param>
         /// <returns>returns the XML element with the given name located in the 
         /// given location string in the given XML element.</returns>
-        public static XElement CreateElement(XElement baseElement, string location, string elemName, object elemValue)
+        public static XElement CreateElement(XElement baseElement, string location, XName elemName, object elemValue)
         {
             XElement elem = CreateElement(baseElement, location, elemName);
             if (elem != null)

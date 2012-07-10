@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Linq;
 
 namespace YAXLib
 {
@@ -153,7 +154,7 @@ namespace YAXLib
         /// <param name="location">The location string.</param>
         /// <param name="elemName">Name of the element.</param>
         /// <returns>a bigger location string formed by combining a location string and an element name.</returns>
-        public static string CombineLocationAndElementName(string location, string elemName)
+        public static string CombineLocationAndElementName(string location, XName elemName)
         {
             return String.Format("{0}/{1}", location, elemName);
         }
