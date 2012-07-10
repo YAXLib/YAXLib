@@ -137,9 +137,8 @@ namespace YAXLib
                     XElement newLoc = currentLocation.Element(loc);
                     if (newLoc == null)
                     {
-                        newLoc = new XElement(loc);
-                        currentLocation.Add(newLoc);
-                        currentLocation = newLoc;
+                        currentLocation.Add(new XElement(loc));
+                        currentLocation = currentLocation.Element(loc);
                     }
                     else
                     {
@@ -241,7 +240,11 @@ namespace YAXLib
             if (newLoc.Attribute(attrName) != null) // i.e., the attribute already exists 
                 return null; // we cannot create another one with the same name
 
-            var newAttr = new XAttribute(attrName, Convert.ToString((attrValue ?? String.Empty), CultureInfo.InvariantCulture));
+            XName newAttrName = attrName;
+            if (newAttrName.NamespaceName == newLoc.Name.NamespaceName)
+                newAttrName = attrName.LocalName;
+
+            var newAttr = new XAttribute(newAttrName, Convert.ToString((attrValue ?? String.Empty), CultureInfo.InvariantCulture));
             newLoc.Add(newAttr);
             return newAttr;
         }
