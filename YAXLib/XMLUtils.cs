@@ -47,7 +47,7 @@ namespace YAXLib
             if (baseElement == null || location == null)
                 throw new ArgumentNullException();
 
-            string[] locSteps = location.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            var locSteps = location.SplitPathNamespaceSafe();
 
             XElement currentLocation = baseElement;
             foreach (string loc in locSteps)
@@ -83,7 +83,7 @@ namespace YAXLib
         /// </returns>
         public static bool CanCreateLocation(XElement baseElement, string location)
         {
-            string[] locSteps = location.Split(new [] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            var locSteps = location.SplitPathNamespaceSafe();
 
             XElement currentLocation = baseElement;
             foreach (string loc in locSteps)
@@ -117,7 +117,7 @@ namespace YAXLib
         /// <returns>XML element corresponding to the sepcified location created in the given XML element</returns>
         public static XElement CreateLocation(XElement baseElement, string location)
         {
-            string[] locSteps = location.Split(new [] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            var locSteps = location.SplitPathNamespaceSafe();
 
             XElement currentLocation = baseElement;
             foreach (string loc in locSteps)
@@ -435,11 +435,11 @@ namespace YAXLib
                             namespaceMappings.Add(ns, foundNamespace);
                         }
 
-                        sb.Append("/" + (namespaceMappings[ns] + loc).ToString());
+                        sb.Append("/" + ((XName)(namespaceMappings[ns] + loc)).ToString());
                     }
                     else
                         //We are using the default namespace
-                        sb.Append("/" + (defaultNamespace + loc).ToString());
+                        sb.Append("/" + ((XName)(defaultNamespace + loc)).ToString());
                 }
             }
 
