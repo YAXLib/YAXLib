@@ -150,7 +150,8 @@ namespace YAXLib
         /// <param name="defaultNamespace">The default namespace to use for this item</param>
         public YAXNamespaceAttribute(string defaultNamespace)
         {
-
+            Namespace = defaultNamespace;
+            Prefix = null;
         }
 
         /// <summary>
@@ -165,7 +166,8 @@ namespace YAXLib
         /// <param name="xmlNamespace">The xml namespace to use for this item</param>
         public YAXNamespaceAttribute(string namespacePrefix, string xmlNamespace)
         {
-
+            Namespace = xmlNamespace;
+            Prefix = namespacePrefix;
         }
 
         #endregion
