@@ -132,6 +132,57 @@ namespace YAXLib
     }
 
     /// <summary>
+    /// Makes an element make use of a specific XML namespace.
+    /// This attribute is applicable to classes, structs, fields, enums and properties
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Enum | AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Struct)]
+    public class YAXNamespaceAttribute : YAXBaseAttribute
+    {
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="YAXNamespaceAttribute"/> class.
+        /// </summary>
+        /// <remarks>
+        /// The element this applies to will take on the given XML namespace. In the case
+        /// of this constructor, the default one defined by xmlns="namespace"
+        /// </remarks>
+        /// <param name="defaultNamespace">The default namespace to use for this item</param>
+        public YAXNamespaceAttribute(string defaultNamespace)
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="YAXNamespaceAttribute"/> class.
+        /// </summary>
+        /// <remarks>
+        /// The element this applies to will take on the given XML namespace. The namespace
+        /// will be added to the root XML element, with the given prefix in the form: 
+        ///     xmlns:prefix="namespace"
+        /// </remarks>
+        /// <param name="namespacePrefix">The prefix to use for this element's namespace</param>
+        /// <param name="xmlNamespace">The xml namespace to use for this item</param>
+        public YAXNamespaceAttribute(string namespacePrefix, string xmlNamespace)
+        {
+
+        }
+
+        #endregion
+
+        #region Properties
+
+        public string Namespace
+        { get; private set; }
+
+        public string Prefix
+        { get; private set; }
+
+        #endregion
+
+    }
+
+    /// <summary>
     /// Add this attribute to properties or fields which you wish to be serialized, when 
     /// the enclosing class uses the <c>YAXSerializableType</c> attribute in which <c>FieldsToSerialize</c>
     /// has been set to <c>AttributedFieldsOnly</c>.
