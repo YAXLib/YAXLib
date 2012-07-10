@@ -48,5 +48,25 @@ namespace YAXLibTests
             string got = serializer.Serialize(MultipleNamespaceSample.GetInstance());
             Assert.AreEqual(result, got);
         }
+
+        [TestMethod]
+        public void SingleNamespaceDeserializationTest()
+        {            
+            var serializer = new YAXSerializer(typeof(SingleNamespaceSample), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string serialized = serializer.Serialize(SingleNamespaceSample.GetInstance());
+            var deserialized = serializer.Deserialize(serialized) as SingleNamespaceSample;
+            Assert.IsNotNull(deserialized);
+            Assert.AreEqual(0, serializer.ParsingErrors.Count);
+        }
+
+        [TestMethod]
+        public void MultipleNamespaceDeserializationTest()
+        {
+            var serializer = new YAXSerializer(typeof(MultipleNamespaceSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string serialized = serializer.Serialize(MultipleNamespaceSample.GetInstance());
+            var deserialized = serializer.Deserialize(serialized) as MultipleNamespaceSample;
+            Assert.IsNotNull(deserialized);
+            Assert.AreEqual(0, serializer.ParsingErrors.Count);
+        }
     }
 }
