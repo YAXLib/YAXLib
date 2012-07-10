@@ -11,6 +11,9 @@
 using System;
 using System.Xml.Linq;
 using System.Globalization;
+using System.Collections.Generic;
+using System.Text;
+using System.Linq;
 
 namespace YAXLib
 {
@@ -379,6 +382,68 @@ namespace YAXLib
         {
             element.Add(new XAttribute(XNamespace.Xml + "space", "preserve"));
             return element;
+        }
+        
+        /// <summary>
+        /// Converts a given location string into one where each part specifies an explicit
+        /// namespace, replacing any namespace placeholders.
+        /// </summary>
+        /// <param name="rootElement">The root document node holding any namespace declarations</param>
+        /// <param name="locationString">The location string to update</param>
+        /// <returns>The explicit location string specifying namespaces</returns>
+        public static string CreateExplicitNamespaceLocationString(XElement rootElement, string locationString)
+        {
+            XNamespace defaultNamespace = rootElement.Name.Namespace;
+
+            //We need this in case the default namespace isn't unnamed
+            string defaultNamespacePrefix = rootElement.GetPrefixOfNamespace(defaultNamespace);
+
+            //We are using a dictionary to cache namespaces here, in case we have some very large objects
+            Dictionary<string, XNamespace> namespaceMappings = new Dictionary<string, XNamespace>();
+            if(!string.IsNullOrEmpty(defaultNamespacePrefix))
+                namespaceMappings.Add(defaultNamespacePrefix, defaultNamespace);
+
+            StringBuilder sb = new StringBuilder();
+
+            var locSteps = locationString.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var loc in locSteps)
+            {
+                if (loc == ".")
+                {
+                    sb.Append("/" + loc);
+                }
+                else if (loc == "..")
+                {
+                    sb.Append("/" + loc);
+                }
+                else
+                {
+                    if (loc.Contains(':'))
+                    {
+                        //Then we have a namespace
+                        string[] parts = loc.Split(new char[] { ':' }, 2);
+                        string ns = parts[0];
+                        string alias = parts[1];
+
+                        if (!namespaceMappings.ContainsKey(ns))
+                        {
+                            var foundNamespaceDeclaration = rootElement.Attribute(XNamespace.Xmlns + ns);
+                            if (foundNamespaceDeclaration == null)
+                                throw new Exception("Could not find the namespace '" + ns + "' for element: " + loc);
+                            XNamespace foundNamespace = foundNamespaceDeclaration.Value;
+                            namespaceMappings.Add(ns, foundNamespace);
+                        }
+
+                        sb.Append("/" + (namespaceMappings[ns] + loc).ToString());
+                    }
+                    else
+                        //We are using the default namespace
+                        sb.Append("/" + (defaultNamespace + loc).ToString());
+                }
+            }
+
+            return sb.Remove(0, 1).ToString();
         }
     }
 }
