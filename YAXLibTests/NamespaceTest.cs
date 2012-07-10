@@ -50,9 +50,21 @@ namespace YAXLibTests
         }
 
         [TestMethod]
+        public void AttributeNamespaceSerializationTest()
+        {
+            const string result = "<AttributeNamespaceSample xmlns:ns=\"http://namespaces.org/ns\" xmlns=\"http://namespaces.org/default\">" + @"
+  <Attribs " + "attrib=\"value\" ns:attrib2=\"value2\"" + @" />
+</AttributeNamespaceSample>";
+
+            var serializer = new YAXSerializer(typeof(AttributeNamespaceSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string got = serializer.Serialize(AttributeNamespaceSample.GetInstance());
+            Assert.AreEqual(result, got);
+        }
+
+        [TestMethod]
         public void SingleNamespaceDeserializationTest()
         {            
-            var serializer = new YAXSerializer(typeof(SingleNamespaceSample), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(SingleNamespaceSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string serialized = serializer.Serialize(SingleNamespaceSample.GetInstance());
             var deserialized = serializer.Deserialize(serialized) as SingleNamespaceSample;
             Assert.IsNotNull(deserialized);
