@@ -94,6 +94,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SampleClasses\AnotherArraySample.cs" />
+    <Compile Include="SampleClasses\AttributeNamespaceSample.cs" />
     <Compile Include="SampleClasses\AudioSample.cs" />
     <Compile Include="SampleClasses\BookClassTestingSerializeAsValue.cs" />
     <Compile Include="SampleClasses\ClassContainingXElement.cs" />
