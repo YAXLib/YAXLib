@@ -21,11 +21,32 @@ namespace YAXLibTests
     public class NamespaceTest
     {
         [TestMethod]
-        public void BasicNamespaceSerializationTest()
+        public void SingleNamespaceSerializationTest()
         {
+            const string result = @"<!-- This example shows usage of a custom default namespace -->
+" + "<SingleNamespaceSample xmlns=\"http://namespaces.org/default\">" + @"
+  <StringItem>This is a test string</StringItem>
+  <IntItem>10</IntItem>
+</SingleNamespaceSample>";
+
             var serializer = new YAXSerializer(typeof(SingleNamespaceSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(SingleNamespaceSample.GetInstance());
-            Assert.IsNotNull(got);
+            Assert.AreEqual(result, got);
+        }
+
+        [TestMethod]
+        public void MultipleNamespaceSerializationTest()
+        {
+            const string result = @"<!-- This example shows usage of a number of custom namespaces -->
+" + "<ns1:MultipleNamespaceSample xmlns:ns1=\"http://namespaces.org/ns1\" xmlns:ns2=\"http://namespaces.org/ns2\" xmlns:ns3=\"http://namespaces.org/ns3\">" + @"
+  <ns1:BoolItem>True</ns1:BoolItem>
+  <ns2:StringItem>This is a test string</ns2:StringItem>
+  <ns3:IntItem>10</ns3:IntItem>
+</ns1:MultipleNamespaceSample>";
+
+            var serializer = new YAXSerializer(typeof(MultipleNamespaceSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string got = serializer.Serialize(MultipleNamespaceSample.GetInstance());
+            Assert.AreEqual(result, got);
         }
     }
 }
