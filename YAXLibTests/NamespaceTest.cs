@@ -80,5 +80,15 @@ namespace YAXLibTests
             Assert.IsNotNull(deserialized);
             Assert.AreEqual(0, serializer.ParsingErrors.Count);
         }
+        
+        [TestMethod]
+        public void AttributeNamespaceDeserializationTest()
+        {
+            var serializer = new YAXSerializer(typeof(AttributeNamespaceSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string got = serializer.Serialize(AttributeNamespaceSample.GetInstance());
+            var deserialized = serializer.Deserialize(got) as AttributeNamespaceSample;
+            Assert.IsNotNull(deserialized);
+            Assert.AreEqual(0, serializer.ParsingErrors.Count);
+        }
     }
 }
