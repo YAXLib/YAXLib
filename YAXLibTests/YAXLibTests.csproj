@@ -79,6 +79,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NamespaceTest.cs" />
     <Compile Include="DeserializationTest.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -100,6 +101,7 @@
     <Compile Include="SampleClasses\CollectionOfInterfacesSample.cs" />
     <Compile Include="SampleClasses\CollectionSeriallyAsAttribute.cs" />
     <Compile Include="SampleClasses\ColorExample.cs" />
+    <Compile Include="SampleClasses\MultipleNamespaceSample.cs" />
     <Compile Include="SampleClasses\PreserveWhitespaceOnFieldsSample.cs" />
     <Compile Include="SampleClasses\CultureSample.cs" />
     <Compile Include="SampleClasses\CustomSerializationTests.cs" />
@@ -135,6 +137,7 @@
     <Compile Include="SampleClasses\SimpleBookClassWithDecimalPrice.cs" />
     <Compile Include="SampleClasses\SimpleBookStruct.cs" />
     <Compile Include="SampleClasses\PreserveWhitespaceOnClassSample.cs" />
+    <Compile Include="SampleClasses\SingleNamespaceSample.cs" />
     <Compile Include="SampleClasses\TimeSpanSample.cs" />
     <Compile Include="SampleClasses\WarehouseNestedObjectExample.cs" />
     <Compile Include="SampleClasses\WarehouseSimple.cs" />
