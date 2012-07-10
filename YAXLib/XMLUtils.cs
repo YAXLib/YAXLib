@@ -178,7 +178,12 @@ namespace YAXLib
             if (newLoc == null)
                 return null;
 
-            return newLoc.Attribute(attrName);
+
+            XName newAttrName = attrName;
+            if (newAttrName.NamespaceName == newLoc.Name.NamespaceName)
+                newAttrName = attrName.LocalName;
+
+            return newLoc.Attribute(newAttrName);
         }
 
         /// <summary>
@@ -209,7 +214,12 @@ namespace YAXLib
                 }
             }
 
-            return newLoc.Attribute(attrName) == null; // i.e., check if the attribute does not exist
+
+            XName newAttrName = attrName;
+            if (newAttrName.NamespaceName == newLoc.Name.NamespaceName)
+                newAttrName = attrName.LocalName;
+
+            return newLoc.Attribute(newAttrName) == null; // i.e., check if the attribute does not exist
         }
 
         /// <summary>
