@@ -1294,16 +1294,29 @@ namespace YAXLib
                 XElement xelemValue = null; // the XElement instance gathered at the first phase
                 XAttribute xattrValue = null; // the XAttribute instance gathered at the first phase
 
+
+                //We get the default namespace for our element
+                XNamespace xmlns = baseElement.Name.Namespace;
+
+                //If our member overrides the namespace, then use that instead
+                if (member.HasNamespace)
+                    xmlns = member.Namespace;
+
                 // first evaluate elemValue
                 bool createdFakeElement = false;
+
+                //We compute a namespace-safe location string
+                var serializationLocation = XMLUtils.CreateExplicitNamespaceLocationString(baseElement, member.SerializationLocation);
+
                 if (member.IsSerializedAsAttribute)
                 {
+
                     // find the parent element from its location
-                    XAttribute attr = XMLUtils.FindAttribute(baseElement, member.SerializationLocation, member.Alias);
+                    XAttribute attr = XMLUtils.FindAttribute(baseElement, serializationLocation, xmlns + member.Alias);
                     if (attr == null) // if the parent element does not exist
                     {
                         // loook for an element with the same name AND a yaxlib:realtype attribute
-                        XElement elem = XMLUtils.FindElement(baseElement, member.SerializationLocation, member.Alias);
+                        XElement elem = XMLUtils.FindElement(baseElement, serializationLocation, xmlns + member.Alias);
                         if (elem != null && elem.Attribute(s_namespaceURI + s_trueTypeAttrName) != null)
                         {
                             elemValue = elem.Value;
@@ -1312,7 +1325,7 @@ namespace YAXLib
                         else
                         {
                             this.OnExceptionOccurred(new YAXAttributeMissingException(
-                                StringUtils.CombineLocationAndElementName(member.SerializationLocation, member.Alias)),
+                                StringUtils.CombineLocationAndElementName(serializationLocation, member.Alias)),
                                 (!member.MemberType.IsValueType && m_udtWrapper.IsNotAllowdNullObjectSerialization) ? YAXExceptionTypes.Ignore : member.TreatErrorsAs);
                         }
                     }
@@ -1325,11 +1338,11 @@ namespace YAXLib
                 }
                 else if (member.IsSerializedAsValue)
                 {
-                    XElement elem = XMLUtils.FindLocation(baseElement, member.SerializationLocation);
+                    XElement elem = XMLUtils.FindLocation(baseElement, serializationLocation);
                     if (elem == null) // such element is not found
                     {
                         this.OnExceptionOccurred(new YAXElementMissingException(
-                                member.SerializationLocation),
+                                serializationLocation),
                                 (!member.MemberType.IsValueType && m_udtWrapper.IsNotAllowdNullObjectSerialization) ? YAXExceptionTypes.Ignore : member.TreatErrorsAs);
                     }
                     else
@@ -1338,7 +1351,7 @@ namespace YAXLib
                         if(values.Length <= 0)
                         {
                             // loook for an element with the same name AND a yaxlib:realtype attribute
-                            XElement innerelem = XMLUtils.FindElement(baseElement, member.SerializationLocation, member.Alias);
+                            XElement innerelem = XMLUtils.FindElement(baseElement, serializationLocation, xmlns + member.Alias);
                             if (innerelem != null && innerelem.Attribute(s_namespaceURI + s_trueTypeAttrName) != null)
                             {
                                 elemValue = innerelem.Value;
@@ -1346,7 +1359,7 @@ namespace YAXLib
                             }
                             else
                             {
-                                this.OnExceptionOccurred(new YAXElementValueMissingException(member.SerializationLocation),
+                                this.OnExceptionOccurred(new YAXElementValueMissingException(serializationLocation),
                                     (!member.MemberType.IsValueType && m_udtWrapper.IsNotAllowdNullObjectSerialization) ? YAXExceptionTypes.Ignore : member.TreatErrorsAs);
                             }
                         }
@@ -1361,7 +1374,7 @@ namespace YAXLib
                 else // if member is serialized as an xml element
                 {
                     bool canContinue = false;
-                    XElement elem = XMLUtils.FindElement(baseElement, member.SerializationLocation, member.Alias);
+                    XElement elem = XMLUtils.FindElement(baseElement, serializationLocation, xmlns + member.Alias);
                     if (elem == null) // such element is not found
                     {
                         if ((member.IsTreatedAsCollection || member.IsTreatedAsDictionary) && member.CollectionAttributeInstance != null &&
@@ -1382,7 +1395,7 @@ namespace YAXLib
                         else if (!ReflectionUtils.IsBasicType(member.MemberType) && !member.IsTreatedAsCollection && !member.IsTreatedAsDictionary)
                         {
                             // try to fix this problem by creating a fake element, maybe all its children are placed somewhere else
-                            XElement fakeElem = XMLUtils.CreateElement(baseElement, member.SerializationLocation, member.Alias);
+                            XElement fakeElem = XMLUtils.CreateElement(baseElement, serializationLocation, xmlns + member.Alias);
                             if (fakeElem != null)
                             {
                                 createdFakeElement = true;
@@ -1399,7 +1412,7 @@ namespace YAXLib
                         if (!canContinue)
                         {
                             this.OnExceptionOccurred(new YAXElementMissingException(
-                                StringUtils.CombineLocationAndElementName(member.SerializationLocation, member.Alias)),
+                                StringUtils.CombineLocationAndElementName(serializationLocation, xmlns + member.Alias)),
                                 (!member.MemberType.IsValueType && m_udtWrapper.IsNotAllowdNullObjectSerialization) ? YAXExceptionTypes.Ignore : member.TreatErrorsAs);
                         }
                     }
