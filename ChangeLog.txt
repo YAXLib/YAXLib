@@ -1,3 +1,9 @@
+[2.9] July 15, 2012
+   * Lots of thanks go to Benjamin Pannell for bringing the support
+     for XML namespaces into the library. This is brought through the
+     [YAXNamespace] attribute.
+   * ... to be continued
+
 [2.8.3] June 18, 2012
    * Fixed the bug of removing elements corresponding to objects with
      no properties (such as DBNull, and Random). Thanks go to Robert Baron
