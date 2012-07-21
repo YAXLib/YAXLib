@@ -3,7 +3,7 @@
      for XML namespaces into the library. This is brought through the
      [YAXNamespace] attribute.
    * Support for serializing Guids as XML attributes. Thanks go to 
-     CodePlex user "jtrahan", for reporting this issue.
+     CodePlex user "jtrahan", for reporting this issue. 
 
 [2.8.3] June 18, 2012
    * Fixed the bug of removing elements corresponding to objects with
