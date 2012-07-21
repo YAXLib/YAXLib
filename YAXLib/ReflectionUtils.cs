@@ -33,7 +33,8 @@ namespace YAXLib
         /// </returns>
         public static bool IsBasicType(Type t)
         {
-            if (t == typeof(string) || t.IsPrimitive || t.IsEnum || t == typeof(DateTime) || t == typeof(decimal))
+            if (t == typeof(string) || t.IsPrimitive || t.IsEnum || t == typeof(DateTime) || t == typeof(decimal) ||
+                t == typeof(Guid))
             {
                 return true;
             }
@@ -705,6 +706,10 @@ namespace YAXLib
                     else
                         throw new Exception("The specified value is not recognized as boolean: " + strValue);
                 }
+            }
+            else if(dstType == typeof(Guid))
+            {
+                return new Guid(value.ToString());
             }
             else
             {
