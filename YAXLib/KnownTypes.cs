@@ -33,7 +33,6 @@ namespace YAXLib
         {
             // NOTE: known-types MUST be registered here
             Add(new RectangleKnownType());
-            Add(new GuidKnownType());
             Add(new TimeSpanKnownType());
             Add(new ColorKnownType());
             Add(new XElementKnownType());
@@ -287,23 +286,6 @@ namespace YAXLib
                 }
                 return new TimeSpan(ticks);
             }
-        }
-    }
-    #endregion
-
-    #region Guid
-    internal class GuidKnownType : KnownType<Guid>
-    {
-        public override void Serialize(Guid guid, XElement elem)
-        {
-            elem.Value = guid.ToString();
-        }
-
-        public override Guid Deserialize(XElement elem)
-        {
-            string strGuidValue = elem.Value;
-            var g = new Guid(strGuidValue);
-            return g;
         }
     }
     #endregion

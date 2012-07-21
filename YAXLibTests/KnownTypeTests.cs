@@ -53,7 +53,7 @@ namespace YAXLibTests
         [TestMethod]
         public void TestWrappers()
         {
-            var typeToTest = typeof (Guid);
+            var typeToTest = typeof (TimeSpan);
             var serializer = new YAXSerializer(typeToTest);
             var typeWrapper = new UdtWrapper(typeToTest, serializer);
 
