@@ -134,6 +134,7 @@
     <Compile Include="SampleClasses\PathsExample.cs" />
     <Compile Include="SampleClasses\ProgrammingLanguage.cs" />
     <Compile Include="SampleClasses\SerializationOptionsSample.cs" />
+    <Compile Include="SampleClasses\GuidAsBasicType.cs" />
     <Compile Include="SampleClasses\SimpleBookClass.cs" />
     <Compile Include="SampleClasses\SimpleBookClassWithDecimalPrice.cs" />
     <Compile Include="SampleClasses\SimpleBookStruct.cs" />

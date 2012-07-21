@@ -106,6 +106,8 @@ namespace DemoApplication
 
             lstSampleClasses.Items.Add(new ClassInfoListItem(typeof (CollectionSeriallyAsAttribute), CollectionSeriallyAsAttribute.GetSampleInstance()));
             lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(DictionaryKeyValueAsInterface), DictionaryKeyValueAsInterface.GetSampleInstance()));
+
+            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(GuidAsBasicType), GuidAsBasicType.GetSampleInstance()));
         }
 
         private void btnSerialize_Click(object sender, EventArgs e)

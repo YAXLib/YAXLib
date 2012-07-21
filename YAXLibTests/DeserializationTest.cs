@@ -389,5 +389,13 @@ namespace YAXLibTests
             object obj = PreserveWhitespaceOnClassSample.GetSampleInstance();
             PerformTest(obj);
         }
+
+        [TestMethod]
+        public void DesGuidAsBasicTypeTest()
+        {
+            object obj = GuidAsBasicType.GetSampleInstance();
+            PerformTest(obj);
+        }
+
     }
 }

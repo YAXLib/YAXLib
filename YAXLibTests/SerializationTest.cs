@@ -1378,7 +1378,7 @@ namespace YAXLibTests
             var nulledInstanceDeser = ser.Deserialize(nulledElemXmlSer);
             Assert.AreEqual(nulledElementString, nulledInstanceDeser.ToString());
         }
-
+        
         public void SerializaitonOfPropertylessClasses()
         {
             const string result =
@@ -1396,5 +1396,82 @@ namespace YAXLibTests
             string got = serializer.Serialize(PropertylessClassesSample.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
+
+        public void GuidsAsBasicTypeTest()
+        {
+            const string result =
+@"<SerializingBinaryCharacters GuidAsAttr=""fed92f33-e351-47bd-9018-69c89928329e"">
+  <GuidAsElem>042ba99c-b679-4975-ac4d-2fe563a5dc3e</GuidAsElem>
+  <GuidArray>
+    <Guid>fed92f33-e351-47bd-9018-69c89928329e</Guid>
+    <Guid>042ba99c-b679-4975-ac4d-2fe563a5dc3e</Guid>
+    <Guid>82071c51-ea20-473b-a541-1ebdf8f158d3</Guid>
+    <Guid>81a3478b-5779-451a-b2aa-fbf69bb11424</Guid>
+    <Guid>d626ba2b-a095-4a34-a376-997e5628dfb9</Guid>
+  </GuidArray>
+  <GuidArraySerially>fed92f33-e351-47bd-9018-69c89928329e 042ba99c-b679-4975-ac4d-2fe563a5dc3e 82071c51-ea20-473b-a541-1ebdf8f158d3 81a3478b-5779-451a-b2aa-fbf69bb11424 d626ba2b-a095-4a34-a376-997e5628dfb9</GuidArraySerially>
+  <GuidsList>
+    <Guid>fed92f33-e351-47bd-9018-69c89928329e</Guid>
+    <Guid>042ba99c-b679-4975-ac4d-2fe563a5dc3e</Guid>
+    <Guid>82071c51-ea20-473b-a541-1ebdf8f158d3</Guid>
+    <Guid>81a3478b-5779-451a-b2aa-fbf69bb11424</Guid>
+    <Guid>d626ba2b-a095-4a34-a376-997e5628dfb9</Guid>
+  </GuidsList>
+  <DicKeyGuid>
+    <KeyValuePairOfGuidInt32>
+      <Key>fed92f33-e351-47bd-9018-69c89928329e</Key>
+      <Value>1</Value>
+    </KeyValuePairOfGuidInt32>
+    <KeyValuePairOfGuidInt32>
+      <Key>042ba99c-b679-4975-ac4d-2fe563a5dc3e</Key>
+      <Value>2</Value>
+    </KeyValuePairOfGuidInt32>
+    <KeyValuePairOfGuidInt32>
+      <Key>82071c51-ea20-473b-a541-1ebdf8f158d3</Key>
+      <Value>3</Value>
+    </KeyValuePairOfGuidInt32>
+  </DicKeyGuid>
+  <DicKeyAttrGuid>
+    <Pair TheGuid=""fed92f33-e351-47bd-9018-69c89928329e"">
+      <Value>1</Value>
+    </Pair>
+    <Pair TheGuid=""042ba99c-b679-4975-ac4d-2fe563a5dc3e"">
+      <Value>2</Value>
+    </Pair>
+    <Pair TheGuid=""82071c51-ea20-473b-a541-1ebdf8f158d3"">
+      <Value>3</Value>
+    </Pair>
+  </DicKeyAttrGuid>
+  <DicValueGuid>
+    <KeyValuePairOfInt32Guid>
+      <Key>1</Key>
+      <Value>fed92f33-e351-47bd-9018-69c89928329e</Value>
+    </KeyValuePairOfInt32Guid>
+    <KeyValuePairOfInt32Guid>
+      <Key>2</Key>
+      <Value>82071c51-ea20-473b-a541-1ebdf8f158d3</Value>
+    </KeyValuePairOfInt32Guid>
+    <KeyValuePairOfInt32Guid>
+      <Key>3</Key>
+      <Value>d626ba2b-a095-4a34-a376-997e5628dfb9</Value>
+    </KeyValuePairOfInt32Guid>
+  </DicValueGuid>
+  <DicValueAttrGuid>
+    <Pair TheGuid=""fed92f33-e351-47bd-9018-69c89928329e"">
+      <Key>1</Key>
+    </Pair>
+    <Pair TheGuid=""82071c51-ea20-473b-a541-1ebdf8f158d3"">
+      <Key>2</Key>
+    </Pair>
+    <Pair TheGuid=""d626ba2b-a095-4a34-a376-997e5628dfb9"">
+      <Key>3</Key>
+    </Pair>
+  </DicValueAttrGuid>
+</SerializingBinaryCharacters>";
+            var serializer = new YAXSerializer(typeof(GuidAsBasicType), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string got = serializer.Serialize(GuidAsBasicType.GetSampleInstance());
+            Assert.AreEqual(result, got);
+        }
+
     }
 }
