@@ -4,6 +4,9 @@
      [YAXNamespace] attribute.
    * Support for serializing Guids as XML attributes. Thanks go to 
      CodePlex user "jtrahan", for reporting this issue. 
+   * Polymorphic serialization now works when creating a serializer 
+     of a base type and passing an object. Thanks go to 
+     Gumar Hermannsson for reporting this issue.
 
 [2.8.3] June 18, 2012
    * Fixed the bug of removing elements corresponding to objects with
