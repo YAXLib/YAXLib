@@ -468,6 +468,29 @@ namespace YAXLib
                     XMLUtils.AddPreserveSpaceAttribute(elemResult);
                 return elemResult;
             }
+            else if(m_udtWrapper.UnderlyingType != obj.GetType())
+            {
+                // this block of code runs if the serializer is instantiated with a
+                // another base value such as System.Object but is provided with an
+                // object of its child
+
+                var ser = new YAXSerializer(obj.GetType(), m_exceptionPolicy, 
+                    m_defaultExceptionType, m_serializationOption);
+                
+                //ser.SetBaseElement(insertionLocation);
+                var xdoc = ser.SerializeToXDocument(obj);
+                var elem = xdoc.Root;
+
+                //if (ser.m_needsNamespaceAddition)
+                //    this.m_needsNamespaceAddition = true;
+                m_parsingErrors.AddRange(ser.ParsingErrors);
+                elem.Name = m_udtWrapper.Alias;
+                elem.Add(new XAttribute(s_namespaceURI + s_trueTypeAttrName, obj.GetType().FullName));
+                var nsAttrName = XNamespace.Xmlns + s_namespaceInits;
+                if(elem.Attribute(nsAttrName) == null)
+                    elem.Add(new XAttribute(nsAttrName, s_namespaceURI));
+                return elem;
+            }
             else
             {
                 return SerializeBase(obj, m_udtWrapper.Alias);

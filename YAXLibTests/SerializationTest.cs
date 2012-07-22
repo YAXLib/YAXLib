@@ -9,6 +9,7 @@
 //-----------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using YAXLib;
 using System.Threading;
@@ -1378,7 +1379,8 @@ namespace YAXLibTests
             var nulledInstanceDeser = ser.Deserialize(nulledElemXmlSer);
             Assert.AreEqual(nulledElementString, nulledInstanceDeser.ToString());
         }
-        
+
+        [TestMethod]
         public void SerializaitonOfPropertylessClasses()
         {
             const string result =
@@ -1397,10 +1399,11 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
+        [TestMethod]
         public void GuidsAsBasicTypeTest()
         {
             const string result =
-@"<SerializingBinaryCharacters GuidAsAttr=""fed92f33-e351-47bd-9018-69c89928329e"">
+@"<GuidAsBasicType GuidAsAttr=""fed92f33-e351-47bd-9018-69c89928329e"">
   <GuidAsElem>042ba99c-b679-4975-ac4d-2fe563a5dc3e</GuidAsElem>
   <GuidArray>
     <Guid>fed92f33-e351-47bd-9018-69c89928329e</Guid>
@@ -1467,11 +1470,74 @@ namespace YAXLibTests
       <Key>3</Key>
     </Pair>
   </DicValueAttrGuid>
-</SerializingBinaryCharacters>";
+</GuidAsBasicType>";
             var serializer = new YAXSerializer(typeof(GuidAsBasicType), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(GuidAsBasicType.GetSampleInstance());
             Assert.AreEqual(result, got);
         }
 
+        [TestMethod]
+        public void PolymorphicSerializationThroughObjectTest()
+        {
+            object content = "this is just a simple test";
+            var ser = new YAXSerializer(typeof(object));
+            string xmlResult = ser.Serialize(content);
+
+            string expectedResult = 
+@"<Object yaxlib:realtype=""System.String"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">this is just a simple test</Object>";
+
+            Assert.AreEqual(expectedResult, xmlResult);
+            var desObj = ser.Deserialize(xmlResult);
+            string objStr = desObj.ToString();
+            Assert.AreEqual(content.ToString(), desObj.ToString());
+        }
+
+        [TestMethod]
+        public void PolymorphicSerializationThroughListTest()
+        {
+            var lst = new List<int> {1, 2, 3};
+            var ser = new YAXSerializer(typeof(object));
+            string xmlResult = ser.Serialize(lst);
+
+            string expectedResult = 
+@"<Object yaxlib:realtype=""System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
+  <Int32>1</Int32>
+  <Int32>2</Int32>
+  <Int32>3</Int32>
+</Object>";
+
+            Assert.AreEqual(expectedResult, xmlResult);
+            var desObj = ser.Deserialize(xmlResult);
+            Assert.AreEqual(lst.GetType(), desObj.GetType());
+            var desLst = desObj as List<int>;
+            Assert.AreEqual(lst.Count, desLst.Count);
+            Assert.AreEqual(lst[0], desLst[0]);
+            Assert.AreEqual(lst[1], desLst[1]);
+            Assert.AreEqual(lst[2], desLst[2]);
+        }
+
+        [TestMethod]
+        public void PolymorphicSerializationThroughListWhichMayContainYaxlibNamespaceTest()
+        {
+            var lst = new List<object> { 1, 2, 3 };
+            var ser = new YAXSerializer(typeof(object));
+            string xmlResult = ser.Serialize(lst);
+
+            string expectedResult =
+@"<Object yaxlib:realtype=""System.Collections.Generic.List`1[[System.Object, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
+  <Int32 yaxlib:realtype=""System.Int32"">1</Int32>
+  <Int32 yaxlib:realtype=""System.Int32"">2</Int32>
+  <Int32 yaxlib:realtype=""System.Int32"">3</Int32>
+</Object>";
+
+            Assert.AreEqual(expectedResult, xmlResult);
+            var desObj = ser.Deserialize(xmlResult);
+            Assert.AreEqual(lst.GetType(), desObj.GetType());
+            var desLst = desObj as List<object>;
+            Assert.AreEqual(lst.Count, desLst.Count);
+            Assert.AreEqual(lst[0], desLst[0]);
+            Assert.AreEqual(lst[1], desLst[1]);
+            Assert.AreEqual(lst[2], desLst[2]);
+        }
     }
 }
