@@ -1187,7 +1187,7 @@ namespace YAXLib
                         curElemName = udt.Alias;
                     }
 
-                    XElement itemElem = this.AddObjectToElement(elem, curElemName, objToAdd);
+                    XElement itemElem = this.AddObjectToElement(elem, elementName.Namespace + curElemName, objToAdd);
                     if (obj.GetType() != colItemType)
                     {
                         itemElem.Add(new XAttribute(s_namespaceURI + s_trueTypeAttrName, obj.GetType().FullName));
