@@ -64,7 +64,7 @@ namespace YAXLib
                 }
                 else
                 {
-                    currentLocation = currentLocation.Element(loc);
+                    currentLocation = currentLocation.Element(XName.Get(loc));
                     if (currentLocation == null)
                         break;
                 }
@@ -100,7 +100,7 @@ namespace YAXLib
                 }
                 else
                 {
-                    currentLocation = currentLocation.Element(loc);
+                    currentLocation = currentLocation.Element_NamespaceNeutral(loc);
                     if (currentLocation == null)
                         return true;
                 }
@@ -457,6 +457,16 @@ namespace YAXLib
             }
 
             return sb.Remove(0, 1).ToString();
+        }
+
+        public static XElement Element_NamespaceNeutral(this XContainer parent, string name)
+        {
+            return parent.Elements().Where(e => e.Name.LocalName == name).FirstOrDefault();
+        }
+
+        public static IEnumerable<XElement> Elements_NamespaceNeutral(this XContainer parent, string name)
+        {
+            return parent.Elements().Where(e => e.Name.LocalName == name);
         }
     }
 }

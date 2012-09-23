@@ -174,9 +174,15 @@ namespace YAXLib
 
         #region Properties
 
+        /// <summary>
+        /// The namespace path
+        /// </summary>
         public string Namespace
         { get; private set; }
 
+        /// <summary>
+        /// The xml prefix used for the namespace
+        /// </summary>
         public string Prefix
         { get; private set; }
 

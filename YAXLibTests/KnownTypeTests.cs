@@ -26,11 +26,11 @@ namespace YAXLibTests
             var colorKnownType = new ColorKnownType();
 
             var elem = new XElement("TheColor", "Red");
-            var desCl = colorKnownType.Deserialize(elem);
+            var desCl = colorKnownType.Deserialize(elem, "");
             Assert.AreEqual(Color.Red.ToArgb(), desCl.ToArgb());
 
             var serElem = new XElement("TheColor");
-            colorKnownType.Serialize(Color.Red, serElem);
+            colorKnownType.Serialize(Color.Red, serElem, "");
             Assert.AreEqual(elem.ToString(), serElem.ToString());
 
             var elemRgbForRed = new XElement("TheColor", 
@@ -38,7 +38,7 @@ namespace YAXLibTests
                 new XElement("R", 255),
                 new XElement("G", 0),
                 new XElement("B", 0));
-            var desCl2 = colorKnownType.Deserialize(elemRgbForRed);
+            var desCl2 = colorKnownType.Deserialize(elemRgbForRed, "");
             Assert.AreEqual(Color.Red.ToArgb(), desCl2.ToArgb());
 
             var elemRgbAndValueForRed = new XElement("TheColor",
@@ -46,7 +46,7 @@ namespace YAXLibTests
                 new XElement("R", 255),
                 new XElement("G", 0),
                 new XElement("B", 0));
-            var desCl3 = colorKnownType.Deserialize(elemRgbAndValueForRed);
+            var desCl3 = colorKnownType.Deserialize(elemRgbAndValueForRed, "");
             Assert.AreEqual(Color.Red.ToArgb(), desCl3.ToArgb());
         }
 

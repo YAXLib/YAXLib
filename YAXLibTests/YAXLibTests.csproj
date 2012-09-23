@@ -102,7 +102,9 @@
     <Compile Include="SampleClasses\CollectionOfInterfacesSample.cs" />
     <Compile Include="SampleClasses\CollectionSeriallyAsAttribute.cs" />
     <Compile Include="SampleClasses\ColorExample.cs" />
+    <Compile Include="SampleClasses\CsprojParser.cs" />
     <Compile Include="SampleClasses\MultipleNamespaceSample.cs" />
+    <Compile Include="SampleClasses\Namespace\CellPhone.cs" />
     <Compile Include="SampleClasses\PreserveWhitespaceOnFieldsSample.cs" />
     <Compile Include="SampleClasses\CultureSample.cs" />
     <Compile Include="SampleClasses\CustomSerializationTests.cs" />

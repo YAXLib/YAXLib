@@ -50,17 +50,17 @@ namespace YAXLib
             return s_dictKnownTypes.ContainsKey(type);
         }
 
-        public static void Serialize(object obj, XElement elem)
+        public static void Serialize(object obj, XElement elem, string overridingNamespace)
         {
             if(obj != null)
             {
-                s_dictKnownTypes[obj.GetType()].Serialize(obj, elem);
+                s_dictKnownTypes[obj.GetType()].Serialize(obj, elem, overridingNamespace);
             }
         }
 
-        public static object Deserialize(XElement elem, Type type)
+        public static object Deserialize(XElement elem, Type type, string overridingNamespace)
         {
-            return s_dictKnownTypes[type].Deserialize(elem);
+            return s_dictKnownTypes[type].Deserialize(elem, overridingNamespace);
         }
     }
 
@@ -71,14 +71,16 @@ namespace YAXLib
         /// </summary>
         /// <param name="obj">The object to serialize.</param>
         /// <param name="elem">The XML element.</param>
-        void Serialize(object obj, XElement elem);
+        /// <param name="overridingNamespace">The namespace the element belongs to.</param>
+        void Serialize(object obj, XElement elem, string overridingNamespace);
 
         /// <summary>
         /// Deserializes the specified XML element to the known type.
         /// </summary>
         /// <param name="elem">The XML element to deserialize object from.</param>
+        /// <param name="overridingNamespace">The namespace the element belongs to.</param>
         /// <returns>The deserialized object</returns>
-        object Deserialize(XElement elem);
+        object Deserialize(XElement elem, string overridingNamespace);
 
         /// <summary>
         /// Gets the underlying known type.
@@ -97,14 +99,16 @@ namespace YAXLib
         /// </summary>
         /// <param name="obj">The object to serialize.</param>
         /// <param name="elem">The XML element.</param>
-        public abstract void Serialize(T obj, XElement elem);
+        /// <param name="overridingNamespace">The namespace the element belongs to.</param>
+        public abstract void Serialize(T obj, XElement elem, string overridingNamespace);
 
         /// <summary>
         /// Deserializes the specified XML element to the known type.
         /// </summary>
         /// <param name="elem">The XML element to deserialize object from.</param>
+        /// <param name="overridingNamespace">The namespace the element belongs to.</param>
         /// <returns>The deserialized object</returns>
-        public abstract T Deserialize(XElement elem);
+        public abstract T Deserialize(XElement elem, string overridingNamespace);
 
         /// <summary>
         /// Gets the underlying known type.
@@ -114,14 +118,22 @@ namespace YAXLib
             get { return typeof (T); }
         }
 
-        void IKnownType.Serialize(object obj, XElement elem)
+        void IKnownType.Serialize(object obj, XElement elem, string overridingNamespace)
         {
-            Serialize((T)obj, elem);
+            Serialize((T)obj, elem, overridingNamespace);
         }
 
-        object IKnownType.Deserialize(XElement baseElement)
+        object IKnownType.Deserialize(XElement baseElement, string overridingNamespace)
         {
-            return Deserialize(baseElement);
+            return Deserialize(baseElement, overridingNamespace);
+        }
+
+        protected XName GetXName(string name, string overridingNamespace)
+        {
+            if (!String.IsNullOrEmpty(overridingNamespace))
+                return XName.Get(name, overridingNamespace);
+            else
+                return XName.Get(name);
         }
 
     }
@@ -135,7 +147,7 @@ namespace YAXLib
 
     internal class XElementKnownType : KnownType<XElement>
     {
-        public override void Serialize(XElement obj, XElement elem)
+        public override void Serialize(XElement obj, XElement elem, string overridingNamespace)
         {
             Debug.Assert(obj != null);
             if (obj != null)
@@ -144,7 +156,7 @@ namespace YAXLib
             }
         }
 
-        public override XElement Deserialize(XElement elem)
+        public override XElement Deserialize(XElement elem, string overridingNamespace)
         {
             return elem.Elements().FirstOrDefault();
         }
@@ -156,7 +168,7 @@ namespace YAXLib
 
     internal class XAttributeKnownType : KnownType<XAttribute>
     {
-        public override void Serialize(XAttribute obj, XElement elem)
+        public override void Serialize(XAttribute obj, XElement elem, string overridingNamespace)
         {
             Debug.Assert(obj != null);
             if(obj != null)
@@ -165,7 +177,7 @@ namespace YAXLib
             }
         }
 
-        public override XAttribute Deserialize(XElement elem)
+        public override XAttribute Deserialize(XElement elem, string overridingNamespace)
         {
             return elem.Attributes().FirstOrDefault();
         }
@@ -176,21 +188,21 @@ namespace YAXLib
     #region Rectangle
     internal class RectangleKnownType : KnownType<Rectangle>
     {
-        public override void Serialize(Rectangle rect, XElement elem)
+        public override void Serialize(Rectangle rect, XElement elem, string overridingNamespace)
         {
             elem.Add(
-                new XElement("Left", rect.Left),
-                new XElement("Top", rect.Top),
-                new XElement("Width", rect.Width),
-                new XElement("Height", rect.Height));
+                new XElement(GetXName("Left", overridingNamespace), rect.Left),
+                new XElement(GetXName("Top", overridingNamespace), rect.Top),
+                new XElement(GetXName("Width", overridingNamespace), rect.Width),
+                new XElement(GetXName("Height", overridingNamespace), rect.Height));
         }
 
-        public override Rectangle Deserialize(XElement elem)
+        public override Rectangle Deserialize(XElement elem, string overridingNamespace)
         {
-            var elemLeft = elem.Element("Left");
-            var elemTop = elem.Element("Top");
-            var elemWidth = elem.Element("Width");
-            var elemHeight = elem.Element("Height");
+            var elemLeft = elem.Element(GetXName("Left", overridingNamespace));
+            var elemTop = elem.Element(GetXName("Top", overridingNamespace));
+            var elemWidth = elem.Element(GetXName("Width", overridingNamespace));
+            var elemHeight = elem.Element(GetXName("Height", overridingNamespace));
 
             if (elemHeight == null || elemWidth == null || elemTop == null || elemLeft == null)
                 throw new YAXElementMissingException(elem.Name + ":[Left|Top|Width|Height]");
@@ -207,7 +219,7 @@ namespace YAXLib
     #region Color
     internal class ColorKnownType : KnownType<Color>
     {
-        public override void Serialize(Color color, XElement elem)
+        public override void Serialize(Color color, XElement elem, string overridingNamespace)
         {
             if (color.IsKnownColor)
             {
@@ -216,16 +228,16 @@ namespace YAXLib
             else
             {
                 elem.Add(
-                    new XElement("A", color.A),
-                    new XElement("R", color.R),
-                    new XElement("G", color.G),
-                    new XElement("B", color.B));
+                    new XElement(GetXName("A", overridingNamespace), color.A),
+                    new XElement(GetXName("R", overridingNamespace), color.R),
+                    new XElement(GetXName("G", overridingNamespace), color.G),
+                    new XElement(GetXName("B", overridingNamespace), color.B));
             }
         }
 
-        public override Color Deserialize(XElement elem)
+        public override Color Deserialize(XElement elem, string overridingNamespace)
         {
-            var elemR = elem.Element("R");
+            var elemR = elem.Element(GetXName("R", overridingNamespace));
             if (elemR == null)
             {
                 string colorName = elem.Value;
@@ -234,18 +246,18 @@ namespace YAXLib
 
             int a = 255, r, g = 0, b = 0;
 
-            var elemA = elem.Element("A");
+            var elemA = elem.Element(GetXName("A", overridingNamespace));
             if (elemA != null && !Int32.TryParse(elemA.Value, out a))
                 a = 0;
 
             if (!Int32.TryParse(elemR.Value, out r))
                 r = 0;
 
-            var elemG = elem.Element("G");
+            var elemG = elem.Element(GetXName("G", overridingNamespace));
             if (elemG != null && !Int32.TryParse(elemG.Value, out g))
                 g = 0;
 
-            var elemB = elem.Element("B");
+            var elemB = elem.Element(GetXName("B", overridingNamespace));
             if (elemB != null && !Int32.TryParse(elemB.Value, out b))
                 b = 0;
 
@@ -258,14 +270,14 @@ namespace YAXLib
     #region TimeSpan
     internal class TimeSpanKnownType : KnownType<TimeSpan>
     {
-        public override void Serialize(TimeSpan timeSpan, XElement elem)
+        public override void Serialize(TimeSpan timeSpan, XElement elem, string overridingNamespace)
         {
             elem.Value = timeSpan.ToString();
         }
 
-        public override TimeSpan Deserialize(XElement elem)
+        public override TimeSpan Deserialize(XElement elem, string overridingNamespace)
         {
-            var elemTicks = elem.Element("Ticks");
+            var elemTicks = elem.Element(GetXName("Ticks", overridingNamespace));
             if (elemTicks == null)
             {
                 string strTimeSpanString = elem.Value;
@@ -293,13 +305,13 @@ namespace YAXLib
     #region DBNull
     internal class DbNullKnownType : KnownType<DBNull>
     {
-        public override void Serialize(DBNull obj, XElement elem)
+        public override void Serialize(DBNull obj, XElement elem, string overridingNamespace)
         {
             if (obj != null)
                 elem.Value = "DBNull";
         }
 
-        public override DBNull Deserialize(XElement elem)
+        public override DBNull Deserialize(XElement elem, string overridingNamespace)
         {
             if (String.IsNullOrEmpty(elem.Value))
                 return null;

@@ -90,5 +90,76 @@ namespace YAXLibTests
             Assert.IsNotNull(deserialized);
             Assert.AreEqual(0, serializer.ParsingErrors.Count);
         }
+
+        [TestMethod]
+        public void CSProjParsingTest()
+        {
+            string csprojContent = @"<?xml version=""1.0"" encoding=""utf-8""?>
+<Project ToolsVersion=""4.0"" DefaultTargets=""Build"" xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
+	<PropertyGroup>
+		<Configuration Condition="" '$(Configuration)' == '' "">Debug</Configuration>
+		<Platform Condition="" '$(Platform)' == '' "">AnyCPU</Platform>
+		<ProductVersion>9.0.30729</ProductVersion>
+		<SchemaVersion>2.0</SchemaVersion>
+		<ProjectGuid>$guid$</ProjectGuid>
+		<OutputType>Library</OutputType>
+		<AppDesignerFolder>Properties</AppDesignerFolder>
+		<RootNamespace>$safeprojectname$</RootNamespace>
+		<AssemblyName>$safeprojectname$</AssemblyName>
+		<TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+		<FileAlignment>512</FileAlignment>
+	</PropertyGroup>
+	<PropertyGroup Condition="" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' "">
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>full</DebugType>
+		<Optimize>false</Optimize>
+		<OutputPath>bin\Debug\</OutputPath>
+		<DefineConstants>DEBUG;TRACE</DefineConstants>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+		<DocumentationFile>bin\Debug\$safeprojectname$.xml</DocumentationFile>
+	</PropertyGroup>
+	<PropertyGroup Condition="" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' "">
+		<DebugType>pdbonly</DebugType>
+		<Optimize>true</Optimize>
+		<OutputPath>bin\Release\</OutputPath>
+		<DefineConstants>TRACE</DefineConstants>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+	</PropertyGroup>
+	<ItemGroup>
+		<Reference Include=""$generatedproject$.EFDAL.Interfaces"">
+			<HintPath>..\bin\$generatedproject$.EFDAL.Interfaces.dll</HintPath>
+		</Reference>
+		<Reference Include=""System"" />
+		<Reference Include=""System.Core"">
+			<RequiredTargetFramework>3.5</RequiredTargetFramework>
+		</Reference>
+		<Reference Include=""nHydrate.EFCore, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL"">
+			<SpecificVersion>False</SpecificVersion>
+			<HintPath>..\bin\nHydrate.EFCore.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+	<ItemGroup>
+		<Reference Include=""$generatedproject$.EFDAL.Interfaces"">
+			<HintPath>..\bin\$generatedproject$.EFDAL.Interfaces.dll</HintPath>
+		</Reference>
+		<Reference Include=""System"" />
+		<Reference Include=""System.Core"">
+			<RequiredTargetFramework>3.5</RequiredTargetFramework>
+		</Reference>
+	</ItemGroup>
+	<Import Project=""$(MSBuildToolsPath)\Microsoft.CSharp.targets"" />
+</Project>
+";
+
+            var project = CsprojParser.Parse(csprojContent);
+
+            string xml2 = CsprojParser.ParseAndRegenerateXml(csprojContent);
+
+            Console.WriteLine(xml2);
+
+            Assert.AreEqual(csprojContent, xml2);
+        }
     }
 }
