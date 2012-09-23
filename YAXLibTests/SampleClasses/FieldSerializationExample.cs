@@ -6,6 +6,8 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
+    [ShowInDemoApplication]
+
     [YAXComment("This example shows how to choose the fields to be serialized")]
     [YAXSerializableType(FieldsToSerialize=YAXSerializationFields.AttributedFieldsOnly)]
     public class FieldSerializationExample

@@ -10,6 +10,8 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
+    [ShowInDemoApplication]
+
     public class DictionaryKeyValueAsInterface
     {
         [YAXComment("Values are serialized through a reference to their interface.")]

@@ -7,6 +7,8 @@ using System.Collections;
 
 namespace YAXLibTests.SampleClasses
 {
+    [ShowInDemoApplication]
+
     [YAXComment(@"This example tries to show almost all features of YAXLib which were not shown before.
       FamousPoints - shows a dictionary with a non-primitive value member.
       IntEnumerable - shows serializing properties of type IEnumerable<>

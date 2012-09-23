@@ -6,6 +6,8 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
+    [ShowInDemoApplication]
+
     [YAXComment("This example is used in the article to show YAXLib exception handling policies")]
     public class ProgrammingLanguage
     {

@@ -14,6 +14,7 @@ namespace YAXLibTests.SampleClasses
         public string SomeElement { get; set; }
     }
 
+    [ShowInDemoApplication]
     public class BookClassTesgingSerializeAsValue
     {
         [YAXValueFor(".")]

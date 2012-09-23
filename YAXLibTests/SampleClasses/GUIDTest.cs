@@ -6,6 +6,8 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
+    [ShowInDemoApplication]
+
     [YAXComment("This example shows serialization and deserialization of GUID obejcts")]
     public class GUIDTest
     {

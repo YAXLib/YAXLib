@@ -21,6 +21,7 @@ namespace YAXLibTests.SampleClasses
         }
     }
 
+    [ShowInDemoApplication]
     public class CustomSerializationTests
     {
         [YAXCustomSerializer(typeof(CustomTitleSerializer))]

@@ -1,6 +1,8 @@
 ﻿using YAXLib;
 namespace YAXLibTests.SampleClasses
 {
+    [ShowInDemoApplication]
+
     public class CollectionSeriallyAsAttribute
     {
         [YAXAttributeFor("Info#names")]

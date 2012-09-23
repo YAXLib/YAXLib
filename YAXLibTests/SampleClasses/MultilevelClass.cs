@@ -6,6 +6,8 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
+    [ShowInDemoApplication]
+
     [YAXComment(@"This example shows a multi-level class, which helps to test 
       the null references identity problem. 
       Thanks go to Anton Levshunov for proposing this example,

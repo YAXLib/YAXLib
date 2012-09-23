@@ -7,6 +7,8 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
+    [ShowInDemoApplication]
+
     [YAXComment("This sample demonstrates serialization of non-generic collection classes")]
     public class NonGenericCollectionsSample
     {

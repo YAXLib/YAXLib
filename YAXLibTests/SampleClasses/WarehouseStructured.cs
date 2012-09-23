@@ -6,6 +6,8 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
+    [ShowInDemoApplication]
+
     [YAXComment("This example shows our hypothetical warehouse, a little bit structured")]
     public class WarehouseStructured
     {

@@ -12,6 +12,7 @@ namespace YAXLibTests.SampleClasses
         Item7, Item8, Item9, Item10, Item11, Item12
     }
 
+    [ShowInDemoApplication]
     [YAXComment("This example shows the serialization of arrays")]
     public class WarehouseWithArray
     {

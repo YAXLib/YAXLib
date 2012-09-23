@@ -6,6 +6,8 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
+    [ShowInDemoApplication]
+
     [YAXComment("This example shows the serialization of Dictionary")]
     public class WarehouseWithDictionary
     {

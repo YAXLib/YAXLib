@@ -17,6 +17,7 @@ namespace YAXLibTests.SampleClasses
         public int Age { get; set; }
     }
 
+    [ShowInDemoApplication]
     [YAXComment(@"This example shows how to serialize collection objects while
             not serializing the element for their enclosing collection itself")]
     public class MoreComplexBook3

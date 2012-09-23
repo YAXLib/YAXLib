@@ -6,6 +6,7 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
+    [ShowInDemoApplication]
     public class WarehouseWithComments
     {
         [YAXComment("Comment for name")]

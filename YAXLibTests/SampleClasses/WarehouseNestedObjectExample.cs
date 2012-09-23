@@ -21,6 +21,7 @@ namespace YAXLibTests.SampleClasses
         public int Age { get; set; }
     }
 
+    [ShowInDemoApplication]
     [YAXComment("This example demonstrates serializing nested objects")]
     public class WarehouseNestedObjectExample
     {

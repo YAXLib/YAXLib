@@ -22,6 +22,7 @@ namespace YAXLibTests.SampleClasses
         Fourth = 8
     }
 
+    [ShowInDemoApplication]
     [YAXComment("This example shows how to define aliases for enum members")]
     public class EnumsSample
     {

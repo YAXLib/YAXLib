@@ -8,6 +8,8 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
+    //[ShowInDemoApplication]
+
     [YAXSerializeAs("root")]
     public class Code4PublicThemesCollection : List<Theme>
     {

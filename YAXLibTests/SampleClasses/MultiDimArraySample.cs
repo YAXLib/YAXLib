@@ -6,6 +6,7 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
+    [ShowInDemoApplication]
     [YAXComment(@"This example shows serialization of multi-dimensional, 
         and jagged arrays")]
     public class MultiDimArraySample

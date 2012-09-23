@@ -154,6 +154,7 @@
     <Compile Include="SerializationTest.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ShowInDemoApplicationAttribute.cs" />
     <Compile Include="StringUtilsTest.cs">
       <SubType>Code</SubType>
     </Compile>

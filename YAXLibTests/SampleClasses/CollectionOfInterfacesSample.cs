@@ -28,6 +28,7 @@ namespace YAXLibTests.SampleClasses
         public string StringInClass3_1 { get; set; }
     }
 
+    [ShowInDemoApplication]
     [YAXComment(@"This example shows serialization and deserialization of
         objects through a reference to their base class or interface")]
     public class CollectionOfInterfacesSample

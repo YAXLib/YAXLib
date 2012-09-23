@@ -4,6 +4,8 @@ using System.Text;
 using System.Windows.Forms;
 using YAXLib;
 using YAXLibTests.SampleClasses;
+using System.Linq;
+using YAXLibTests;
 
 namespace DemoApplication
 {
@@ -47,67 +49,25 @@ namespace DemoApplication
 
         private void InitListOfClasses()
         {
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(Book), Book.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(BookStruct), BookStruct.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(WarehouseSimple), WarehouseSimple.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(WarehouseStructured), WarehouseStructured.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(WarehouseWithArray), WarehouseWithArray.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(WarehouseWithDictionary), WarehouseWithDictionary.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(WarehouseNestedObjectExample), WarehouseNestedObjectExample.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(ProgrammingLanguage), ProgrammingLanguage.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(ColorExample), ColorExample.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(MultilevelClass), MultilevelClass.GetSampleInstance()));
+            var autoLoadTypes = typeof(Book).Assembly.GetTypes()
+                .Where(t => t.GetCustomAttributes(typeof(ShowInDemoApplicationAttribute), false).Any())
+                .OrderBy(t =>
+                {
+                    var attr = t.GetCustomAttributes(typeof(ShowInDemoApplicationAttribute), false)
+                        .FirstOrDefault()
+                        as ShowInDemoApplicationAttribute;
 
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(FormattingExample), FormattingExample.GetSampleInstance()));
+                    if (attr != null && !String.IsNullOrEmpty(attr.SortKey))
+                        return attr.SortKey;
+                    return t.Name;
+                });
 
-            
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(PathsExample), PathsExample.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(MoreComplexExample), MoreComplexExample.GetSampleInstance()));
-
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(NestedDicSample), NestedDicSample.GetSampleInstance()));
-
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(GUIDTest), GUIDTest.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(TimeSpanSample), TimeSpanSample.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(NullableClass), NullableClass.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(NullableSample2), NullableSample2.GetSampleInstance()));
-            //lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(ListHolderClass), ListHolderClass.GetSampleInstance()));
-            //lstSampleClasses.Items.Add(new ClassInfoListItem(ListHolderClass.GetSampleInstance().ListOfStrings.GetType(), ListHolderClass.GetSampleInstance().ListOfStrings));
-            //lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(NamesExample), NamesExample.GetSampleInstance()));
-            //lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(Request), Request.GetSampleInstance()));
-
-            //lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(AudioSample), AudioSample.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(FieldSerializationExample), FieldSerializationExample.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(MoreComplexBook), MoreComplexBook.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(MoreComplexBook2), MoreComplexBook2.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(MoreComplexBook3), MoreComplexBook3.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(WarehouseWithDictionaryNoContainer), WarehouseWithDictionaryNoContainer.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(WarehouseWithComments), WarehouseWithComments.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(EnumsSample), EnumsSample.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(MultiDimArraySample), MultiDimArraySample.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(AnotherArraySample), AnotherArraySample.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(CollectionOfInterfacesSample), CollectionOfInterfacesSample.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(InterfaceMatchingSample), InterfaceMatchingSample.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(MultipleCommentsTest), MultipleCommentsTest.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(NonGenericCollectionsSample), NonGenericCollectionsSample.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(GenericCollectionsSample), GenericCollectionsSample.GetSampleInstance()));
-
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(SerializationOptionsSample), SerializationOptionsSample.GetSampleInstance()));
-
-            //lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(IssuesSample), IssuesSample.GetSampleInstance()));
-
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(BookClassTesgingSerializeAsValue), BookClassTesgingSerializeAsValue.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(CustomSerializationTests), CustomSerializationTests.GetSampleInstance()));
-
-            //lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(FreeSample), FreeSample.GetSampleInstance()));
-            //lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(CultureSample), CultureSample.GetSampleInstance()));
-
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(PathAndAliasAssignmentSample), PathAndAliasAssignmentSample.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(Code4PublicThemesCollection), Code4PublicThemesCollection.GetSampleInstance()));
-
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof (CollectionSeriallyAsAttribute), CollectionSeriallyAsAttribute.GetSampleInstance()));
-            lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(DictionaryKeyValueAsInterface), DictionaryKeyValueAsInterface.GetSampleInstance()));
-
-            //lstSampleClasses.Items.Add(new ClassInfoListItem(typeof(GuidAsBasicType), GuidAsBasicType.GetSampleInstance()));
+            foreach (Type type in autoLoadTypes)
+            {
+                var method = type.GetMethod("GetSampleInstance", new Type[0]);
+                var instance = method.Invoke(null, null);
+                lstSampleClasses.Items.Add(new ClassInfoListItem(type, instance));
+            }
         }
 
         private void btnSerialize_Click(object sender, EventArgs e)

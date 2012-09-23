@@ -6,6 +6,7 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
+    [ShowInDemoApplication]
     [YAXComment(@"This example shows how dictionary objects can be serialized without
         their enclosing element")]
     public class WarehouseWithDictionaryNoContainer

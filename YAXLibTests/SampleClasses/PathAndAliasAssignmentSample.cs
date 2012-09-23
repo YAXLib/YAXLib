@@ -6,6 +6,8 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
+    [ShowInDemoApplication]
+
     public class PathAndAliasAssignmentSample
     {
         [YAXAttributeFor("Title#value")]

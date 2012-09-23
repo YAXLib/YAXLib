@@ -32,6 +32,8 @@ namespace YAXLibTests.SampleClasses
         public string StrNull { get; set; }
     }
 
+    [ShowInDemoApplication]
+
     public class SerializationOptionsSample
     {
         [YAXComment(@"Str2Null must NOT be serialized when it is null, even 

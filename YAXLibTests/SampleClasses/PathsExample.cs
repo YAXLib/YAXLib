@@ -6,6 +6,8 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
+    [ShowInDemoApplication]
+
     [YAXComment(@"This example demonstrates how not to use 
       white spaces as separators while serializing 
       collection classes serially")]

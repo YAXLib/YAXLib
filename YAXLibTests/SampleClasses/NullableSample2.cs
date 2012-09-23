@@ -6,6 +6,8 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
+    [ShowInDemoApplication]
+
     [YAXComment(@"This example shows how nullable fields 
         may not be serialized in their expected location")]
     public class NullableSample2

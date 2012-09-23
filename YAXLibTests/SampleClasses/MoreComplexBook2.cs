@@ -17,6 +17,7 @@ namespace YAXLibTests.SampleClasses
         public int Age { get; set; }
     }
 
+    [ShowInDemoApplication]
     [YAXComment(@"This class shows how members of nested objects 
         can be serialized in their parents using serialization 
         addresses including ""..""")]

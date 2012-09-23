@@ -6,6 +6,8 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
+    [ShowInDemoApplication]
+
     [YAXComment("How multi-line comments are serialized as multiple XML comments")]
     public class MultipleCommentsTest
     {
