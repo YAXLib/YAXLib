@@ -35,26 +35,24 @@ namespace YAXLibTests.SampleClasses
     [YAXSerializeAs("Project")]
     public class ProjectBuildDefinition
     {
-        //[YAXAttributeForClass]
-        //public string ToolsVersion { get; set; }
+        [YAXAttributeForClass]
+        public string ToolsVersion { get; set; }
 
-        //[YAXAttributeForClass]
-        //public string DefaultTargets { get; set; }
+        [YAXAttributeForClass]
+        public string DefaultTargets { get; set; }
 
-        //[YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement,
-        //    EachElementName = "PropertyGroup")]
-        //public List<PropertyGroup> PropertyGroups { get; set; }
+        [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement,
+            EachElementName = "PropertyGroup")]
+        public List<PropertyGroup> PropertyGroups { get; set; }
 
         [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement,
            EachElementName = "ItemGroup")]
         public List<ItemGroup> ItemGroups { get; set; }
 
-        //[YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement,
-        //   EachElementName = "Import")]
-        //public List<ImportItem> ImportItems { get; set; }
+        [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement,
+           EachElementName = "Import")]
+        public List<ImportItem> ImportItems { get; set; }
     }
-
-
 
     public class PropertyGroup
     {

@@ -795,7 +795,7 @@ namespace YAXLib
                 HasNamespace = true;
                 var nsAttrib = (attr as YAXNamespaceAttribute);
                 if (string.IsNullOrEmpty(nsAttrib.Prefix))
-                    throw new Exception("Cannot add a new default namespace to a field or property. Fields and properties will automaticallt inherit their parent class' default namespace if no alternative is provided.");
+                    throw new Exception("The document already contains a default namespace. Please specify prefix, otherwise fields and properties will automaticallty inherit their parents' default namespace if no alternative is provided.");
                 Namespace = nsAttrib.Namespace;
                 NamespacePrefix = nsAttrib.Prefix;
             }

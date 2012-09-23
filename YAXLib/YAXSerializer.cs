@@ -796,7 +796,7 @@ namespace YAXLib
                                 else
                                 {
                                     // see if such element already exists
-                                    XElement existingElem = parElem.Element(member.Alias);
+                                    XElement existingElem = parElem.Element(GetXNameForMember(member, member.Alias));
                                     if (existingElem == null)
                                     {
                                         // if not add the new element gracefully
@@ -1630,6 +1630,16 @@ namespace YAXLib
             return xname;
         }
 
+        private XName GetXNameForMember(string memberName)
+        {
+            XName xname;
+            if (this.HasTypeNamespace)
+                xname = XName.Get(memberName, this.TypeNamespace);
+            else
+                xname = XName.Get(memberName);
+            return xname;
+        }
+
         /// <summary>
         /// Creates an instance of <c>XName</c> for the given <c>memberName</c>, 
         /// getting the namespace from <c>otherMember</c> or inheriting from the type-namespace.
@@ -2215,8 +2225,8 @@ namespace YAXLib
             string eachElementName = ReflectionUtils.GetTypeFriendlyName(pairType);
             bool isKeyAttrib = false;
             bool isValueAttrib = false;
-            string keyAlias = "Key";
-            string valueAlias = "Value";
+            XName keyAlias = GetXNameForMember(member, "Key");
+            XName valueAlias = GetXNameForMember(member, "Value");
 
             if (member.CollectionAttributeInstance != null)
             {
@@ -2236,8 +2246,10 @@ namespace YAXLib
                     isValueAttrib = ReflectionUtils.IsBasicType(valueType);
                 }
 
-                keyAlias = member.DictionaryAttributeInstance.KeyName ?? keyAlias;
-                valueAlias = member.DictionaryAttributeInstance.ValueName ?? valueAlias;
+                if(member.DictionaryAttributeInstance.KeyName != null)
+                    keyAlias = GetXNameForMember(member, member.DictionaryAttributeInstance.KeyName);
+                if(member.DictionaryAttributeInstance.ValueName != null)
+                    valueAlias = GetXNameForMember(member, member.DictionaryAttributeInstance.ValueName);
             }
 
             object dic = memberType.InvokeMember(string.Empty, System.Reflection.BindingFlags.CreateInstance, null, null, new object[0]);
@@ -2291,7 +2303,7 @@ namespace YAXLib
                     {
                         if (valueSer == null)
                         {
-                            valueSer = new YAXSerializer(valueType, this.m_exceptionPolicy, this.m_defaultExceptionType, this.m_serializationOption);
+                            valueSer = new YAXSerializer(valueType, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
                             valueSer.SetNamespaceIfNeeded(this);
                         }
 
@@ -2330,7 +2342,7 @@ namespace YAXLib
         /// <param name="keyAlias">The alias for <c>Key</c>.</param>
         /// <param name="childElem">The child XML elemenet to search <c>Key</c> and <c>Value</c> elements in.</param>
         /// <returns></returns>
-        private static bool VerifyDictionaryPairElements(ref Type keyType, ref bool isKeyAttrib, string keyAlias, XElement childElem)
+        private static bool VerifyDictionaryPairElements(ref Type keyType, ref bool isKeyAttrib, XName keyAlias, XElement childElem)
         {
             bool isKeyFound = false;
             if (isKeyAttrib && childElem.Attribute(keyAlias) != null)
@@ -2390,12 +2402,16 @@ namespace YAXLib
             Type keyType = genArgs[0];
             Type valueType = genArgs[1];
 
+            XName xnameKey = GetXNameForMember("Key");
+            XName xnameValue = GetXNameForMember("Value");
+
             object keyValue, valueValue;
             if (ReflectionUtils.IsBasicType(keyType))
             {
                 try
                 {
-                    keyValue = ReflectionUtils.ConvertBasicType(baseElement.Element("Key").Value, keyType);
+                    keyValue = ReflectionUtils.ConvertBasicType(
+                        baseElement.Element(xnameKey).Value, keyType);
                 }
                 catch (NullReferenceException)
                 {
@@ -2404,17 +2420,22 @@ namespace YAXLib
             }
             else if (ReflectionUtils.IsStringConvertibleIFormattable(keyType))
             {
-                keyValue = keyType.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[] { baseElement.Element("Key").Value });
+                keyValue = keyType.InvokeMember(string.Empty, 
+                    BindingFlags.CreateInstance, 
+                    null, null, 
+                    new object[] { baseElement.Element(xnameKey).Value });
             }
             else if (ReflectionUtils.IsCollectionType(keyType))
             {
-                keyValue = DeserializeCollectionValue(keyType, baseElement.Element("Key"), "Key", null);
+                keyValue = DeserializeCollectionValue(keyType, 
+                    baseElement.Element(xnameKey), xnameKey, null);
             }
             else
             {
-                var ser = new YAXSerializer(keyType, this.m_exceptionPolicy, this.m_defaultExceptionType, this.m_serializationOption);
+                var ser = new YAXSerializer(keyType, m_exceptionPolicy, 
+                    m_defaultExceptionType, m_serializationOption);
                 ser.SetNamespaceIfNeeded(this);
-                keyValue = ser.DeserializeBase(baseElement.Element("Key"));
+                keyValue = ser.DeserializeBase(baseElement.Element(xnameKey));
                 this.m_parsingErrors.AddRange(ser.ParsingErrors);
             }
 
@@ -2422,7 +2443,8 @@ namespace YAXLib
             {
                 try
                 {
-                    valueValue = ReflectionUtils.ConvertBasicType(baseElement.Element("Value").Value, valueType);
+                    valueValue = ReflectionUtils.ConvertBasicType(
+                        baseElement.Element(xnameValue).Value, valueType);
                 }
                 catch (NullReferenceException)
                 {
@@ -2431,21 +2453,26 @@ namespace YAXLib
             }
             else if (ReflectionUtils.IsStringConvertibleIFormattable(valueType))
             {
-                valueValue = valueType.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[] { baseElement.Element("Value").Value });
+                valueValue = valueType.InvokeMember(string.Empty, BindingFlags.CreateInstance, 
+                    null, null, new object[] { baseElement.Element(xnameValue).Value });
             }
             else if (ReflectionUtils.IsCollectionType(valueType))
             {
-                valueValue = DeserializeCollectionValue(valueType, baseElement.Element("Value"), "Value", null);
+                valueValue = DeserializeCollectionValue(valueType, 
+                    baseElement.Element(xnameValue), xnameValue, null);
             }
             else
             {
-                var ser = new YAXSerializer(valueType, this.m_exceptionPolicy, this.m_defaultExceptionType, this.m_serializationOption);
+                var ser = new YAXSerializer(valueType, m_exceptionPolicy, 
+                    m_defaultExceptionType, m_serializationOption);
                 ser.SetNamespaceIfNeeded(this);
-                valueValue = ser.DeserializeBase(baseElement.Element("Value"));
+                valueValue = ser.DeserializeBase(baseElement.Element(xnameValue));
                 this.m_parsingErrors.AddRange(ser.ParsingErrors);
             }
 
-            object pair = this.m_type.InvokeMember(string.Empty, System.Reflection.BindingFlags.CreateInstance, null, null, new object[] { keyValue, valueValue });
+            object pair = m_type.InvokeMember(string.Empty, 
+                System.Reflection.BindingFlags.CreateInstance, 
+                null, null, new object[] { keyValue, valueValue });
 
             return pair;
         }
