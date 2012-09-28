@@ -1632,67 +1632,6 @@ namespace YAXLib
                 return false;
         }
 
-        // TODO: move it to a good location
-        private XName GetXNameForMember(MemberWrapper member, string memberName = null)
-        {
-            string alias = memberName == null ? member.Alias : memberName;
-            XName xname; 
-            if (member.HasNamespace)
-                xname = XName.Get(alias, member.Namespace.NamespaceName);
-            else if (this.HasTypeNamespace)
-                xname = XName.Get(alias, this.TypeNamespace.NamespaceName);
-            else
-                xname = XName.Get(alias);
-            return xname;
-        }
-
-        private XName GetXNameForMember(string memberName)
-        {
-            XName xname;
-            if (this.HasTypeNamespace)
-                xname = XName.Get(memberName, this.TypeNamespace.NamespaceName);
-            else
-                xname = XName.Get(memberName);
-            return xname;
-        }
-
-        /// <summary>
-        /// Creates an instance of <c>XName</c> for the given <c>memberName</c>, 
-        /// getting the namespace from <c>otherMember</c> or inheriting from the type-namespace.
-        /// </summary>
-        /// <param name="otherMember">An instance of <c>XName</c> to copy namespace info from.
-        /// Note: only the namespace info for this parameter is used, nothing else.</param>
-        /// <param name="memberName">The member name for which an instance of <c>XName</c> is going
-        /// to be created.</param>
-        /// <returns></returns>
-        private XName GetXNameForMember(XName otherMember, string memberName)
-        {
-            XName xname;
-
-            if (!String.IsNullOrEmpty(otherMember.NamespaceName))
-                xname = XName.Get(memberName, otherMember.NamespaceName);
-            else if (this.HasTypeNamespace)
-                xname = XName.Get(memberName, this.TypeNamespace.NamespaceName);
-            else
-                xname = XName.Get(memberName);
-
-            return xname;
-        }
-
-        private XName GetXNameForMember(UdtWrapper memberType, string memberName = null)
-        {
-            string alias = memberName == null ? memberType.Alias : memberName;
-            XName xname;
-            if (memberType.HasNamespace)
-                xname = XName.Get(alias, memberType.Namespace.NamespaceName);
-            else if (this.HasTypeNamespace)
-                xname = XName.Get(alias, this.TypeNamespace.NamespaceName);
-            else
-                xname = XName.Get(alias);
-            return xname;
-        }
-
-
         /// <summary>
         /// Checks whether at least one of the memebers (property or field) of 
         /// the specified object exists.
@@ -2562,8 +2501,6 @@ namespace YAXLib
             return (string) customSerType.InvokeMember("SerializeToValue", BindingFlags.InvokeMethod, null, customSerializer, new object[] { objToSerialize });
         }
 
-
-
         /// <summary>
         /// Gets the sequence of fields to be serialized for the specified type. This sequence is retreived according to 
         /// the field-types specified by the user.
@@ -2596,6 +2533,65 @@ namespace YAXLib
         private IEnumerable<MemberWrapper> GetFieldsToBeSerialized()
         {
             return GetFieldsToBeSerialized(m_udtWrapper);
+        }
+
+        private XName GetXNameForMember(MemberWrapper member, string memberName = null)
+        {
+            string alias = memberName == null ? member.Alias : memberName;
+            XName xname;
+            if (member.HasNamespace)
+                xname = XName.Get(alias, member.Namespace.NamespaceName);
+            else if (this.HasTypeNamespace)
+                xname = XName.Get(alias, this.TypeNamespace.NamespaceName);
+            else
+                xname = XName.Get(alias);
+            return xname;
+        }
+
+        private XName GetXNameForMember(string memberName)
+        {
+            XName xname;
+            if (this.HasTypeNamespace)
+                xname = XName.Get(memberName, this.TypeNamespace.NamespaceName);
+            else
+                xname = XName.Get(memberName);
+            return xname;
+        }
+
+        /// <summary>
+        /// Creates an instance of <c>XName</c> for the given <c>memberName</c>, 
+        /// getting the namespace from <c>otherMember</c> or inheriting from the type-namespace.
+        /// </summary>
+        /// <param name="otherMember">An instance of <c>XName</c> to copy namespace info from.
+        /// Note: only the namespace info for this parameter is used, nothing else.</param>
+        /// <param name="memberName">The member name for which an instance of <c>XName</c> is going
+        /// to be created.</param>
+        /// <returns></returns>
+        private XName GetXNameForMember(XName otherMember, string memberName)
+        {
+            XName xname;
+
+            if (!String.IsNullOrEmpty(otherMember.NamespaceName))
+                xname = XName.Get(memberName, otherMember.NamespaceName);
+            else if (this.HasTypeNamespace)
+                xname = XName.Get(memberName, this.TypeNamespace.NamespaceName);
+            else
+                xname = XName.Get(memberName);
+
+            return xname;
+        }
+
+        private XName GetXNameForMember(UdtWrapper memberType, string memberName = null)
+        {
+            string alias = memberName == null ? memberType.Alias : memberName;
+            XName xname;
+            if (memberType.HasNamespace)
+                xname = XName.Get(alias, memberType.Namespace.NamespaceName);
+            else if (this.HasTypeNamespace)
+                xname = XName.Get(alias, this.TypeNamespace.NamespaceName);
+            else
+                xname = XName.Get(alias);
+            return xname;
         }
 
         /// <summary>
