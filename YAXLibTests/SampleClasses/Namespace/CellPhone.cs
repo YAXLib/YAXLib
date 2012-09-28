@@ -17,6 +17,8 @@ namespace YAXLibTests.SampleClasses.Namespace
         [YAXNamespace("x1", "another/name/space/hah")]
         public string DeviceBrand { get; set; }
         public string OS { get; set; }
+
+        [YAXNamespace("p1", "namespace/for/prices/only")]
         public Dictionary<Color, double> Prices { get; set; }
 
         public override string ToString()

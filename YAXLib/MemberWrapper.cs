@@ -11,6 +11,7 @@
 using System;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Xml.Linq;
 
 namespace YAXLib
 {
@@ -487,7 +488,13 @@ namespace YAXLib
         /// Gets a value indicating whether this instance has a custom namespace
         /// defined for it through the <see cref="YAXNamespaceAttribute"/> attribute.
         /// </summary>
-        public bool HasNamespace { get; private set; }
+        public bool HasNamespace
+        {
+            get
+            {
+                return Namespace.HasNamespace();
+            }
+        }
 
         /// <summary>
         /// Gets the namespace associated with this element.
@@ -496,7 +503,7 @@ namespace YAXLib
         /// If <see cref="HasNamespace"/> is <c>false</c> then this should
         /// be inherited from any parent elements.
         /// </remarks>
-        public string Namespace { get; private set; }
+        public XNamespace Namespace { get; private set; }
 
         /// <summary>
         /// Gets the namespace prefix associated with this element
@@ -792,7 +799,6 @@ namespace YAXLib
             }
             else if (attr is YAXNamespaceAttribute)
             {
-                HasNamespace = true;
                 var nsAttrib = (attr as YAXNamespaceAttribute);
                 if (string.IsNullOrEmpty(nsAttrib.Prefix))
                     throw new Exception("The document already contains a default namespace. Please specify prefix, otherwise fields and properties will automaticallty inherit their parents' default namespace if no alternative is provided.");

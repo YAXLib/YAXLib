@@ -468,5 +468,18 @@ namespace YAXLib
         {
             return parent.Elements().Where(e => e.Name.LocalName == name);
         }
+
+        public static bool HasNamespace(this XNamespace self)
+        {
+            return self != null && !String.IsNullOrEmpty(self.NamespaceName.Trim());
+        }
+
+        public static XNamespace IfInvalidNext(this XNamespace self, XNamespace next)
+        {
+            return self.HasNamespace() ? self : next;
+        }
+
+
+
     }
 }
