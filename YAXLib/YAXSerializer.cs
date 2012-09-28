@@ -1684,7 +1684,7 @@ namespace YAXLib
             string alias = memberName == null ? memberType.Alias : memberName;
             XName xname;
             if (memberType.HasNamespace)
-                xname = XName.Get(alias, memberType.Namespace);
+                xname = XName.Get(alias, memberType.Namespace.NamespaceName);
             else if (this.HasTypeNamespace)
                 xname = XName.Get(alias, this.TypeNamespace.NamespaceName);
             else

@@ -9,6 +9,7 @@
 //-----------------------------------------------------------------------
 
 using System;
+using System.Xml.Linq;
 
 namespace YAXLib
 {
@@ -17,8 +18,6 @@ namespace YAXLib
     /// </summary>
     internal class UdtWrapper
     {
-        #region Private Fields
-
         /// <summary>
         /// the underlying type for this instance of <c>TypeWrapper</c>
         /// </summary>
@@ -44,10 +43,6 @@ namespace YAXLib
         /// using attributes for the class
         /// </summary>
         private bool m_isSerializationOptionSetByAttribute;
-
-        #endregion
-
-        #region Constructor
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UdtWrapper"/> class.
@@ -75,10 +70,6 @@ namespace YAXLib
                     ProcessYAXAttribute(attr);
             }
         }
-
-        #endregion
-
-        #region Public Properties
 
         /// <summary>
         /// Gets the alias of the type.
@@ -280,7 +271,13 @@ namespace YAXLib
         /// Gets a value indicating whether this instance has a custom namespace
         /// defined for it through the <see cref="YAXNamespaceAttribute"/> attribute.
         /// </summary>
-        public bool HasNamespace { get; private set; }
+        public bool HasNamespace 
+        {
+            get
+            {
+                return Namespace.HasNamespace();
+            }
+        }
 
         /// <summary>
         /// Gets the namespace associated with this element.
@@ -289,7 +286,7 @@ namespace YAXLib
         /// If <see cref="HasNamespace"/> is <c>false</c> then this should
         /// be inherited from any parent elements.
         /// </remarks>
-        public string Namespace { get; private set; }
+        public XNamespace Namespace { get; private set; }
 
         /// <summary>
         /// Gets the namespace prefix associated with this element
@@ -308,9 +305,6 @@ namespace YAXLib
         /// </remarks>
         public string NamespacePrefix { get; private set; }
 
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         /// Sets the serializer options.
@@ -366,10 +360,6 @@ namespace YAXLib
         {
             return m_udtType.GetHashCode();
         }
-
-        #endregion
-
-        #region Private Methods
 
         /// <summary>
         /// Processes the specified attribute.
@@ -435,7 +425,6 @@ namespace YAXLib
             }
             else if (attr is YAXNamespaceAttribute)
             {
-                HasNamespace = true;
                 var nsAttrib = (attr as YAXNamespaceAttribute);
                 Namespace = nsAttrib.Namespace;
                 NamespacePrefix = nsAttrib.Prefix;
@@ -445,7 +434,5 @@ namespace YAXLib
                 throw new Exception("Attribute not applicable to types!");
             }
         }
-
-        #endregion
     }
 }
