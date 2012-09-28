@@ -990,8 +990,8 @@ namespace YAXLib
 
             if (dicAttrInst != null)
             {
-                if(eachElementName != null)
-                eachElementName =  GetXNameForMember(elementName, dicAttrInst.EachPairName);
+                if (dicAttrInst.EachPairName != null)
+                    eachElementName =  GetXNameForMember(elementName, dicAttrInst.EachPairName);
 
                 if (dicAttrInst.SerializeKeyAs == YAXNodeTypes.Attribute)
                 {
