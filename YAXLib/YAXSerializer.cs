@@ -890,7 +890,7 @@ namespace YAXLib
             {
                 var existing = rootNode.GetNamespaceOfPrefix(wrapper.NamespacePrefix);
 
-                if(existing.NamespaceName != wrapper.Namespace)
+                if (existing.NamespaceName != wrapper.Namespace)
                     throw new InvalidOperationException("You cannot have two different namespaces with the same prefix");
             }
         }

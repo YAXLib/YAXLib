@@ -62,11 +62,25 @@ namespace DemoApplication
                     return t.Name;
                 });
 
+            var sb = new StringBuilder();
             foreach (Type type in autoLoadTypes)
             {
-                var method = type.GetMethod("GetSampleInstance", new Type[0]);
-                var instance = method.Invoke(null, null);
-                lstSampleClasses.Items.Add(new ClassInfoListItem(type, instance));
+                try
+                {
+                    var method = type.GetMethod("GetSampleInstance", new Type[0]);
+                    var instance = method.Invoke(null, null);
+                    lstSampleClasses.Items.Add(new ClassInfoListItem(type, instance));
+                }
+                catch
+                {
+                    sb.AppendLine(type.FullName);
+                }
+            }
+
+            if (sb.Length > 0)
+            {
+                MessageBox.Show("Please provide a parameterless public static method called \"GetSampleInstance\" for the following classes:"
+                    + Environment.NewLine + sb.ToString());
             }
         }
 

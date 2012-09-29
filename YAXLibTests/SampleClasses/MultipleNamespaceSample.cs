@@ -10,16 +10,6 @@ namespace YAXLibTests.SampleClasses
     [YAXNamespace("ns1", "http://namespaces.org/ns1")]
     public class MultipleNamespaceSample
     {
-        public static MultipleNamespaceSample GetInstance()
-        {
-            return new MultipleNamespaceSample()
-            {
-                BoolItem = true,
-                StringItem = "This is a test string",
-                IntItem = 10
-            };
-        }
-
         public bool BoolItem
         { get; set; }
 
@@ -30,5 +20,21 @@ namespace YAXLibTests.SampleClasses
         [YAXNamespace("ns3", "http://namespaces.org/ns3")]
         public int IntItem
         { get; set; }
+
+        public static MultipleNamespaceSample GetSampleInstance()
+        {
+            return new MultipleNamespaceSample()
+            {
+                BoolItem = true,
+                StringItem = "This is a test string",
+                IntItem = 10
+            };
+        }
+
+        public override string ToString()
+        {
+            return GeneralToStringProvider.GeneralToString(this);
+        }
+
     }    
 }

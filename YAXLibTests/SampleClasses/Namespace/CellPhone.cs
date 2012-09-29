@@ -18,8 +18,9 @@ namespace YAXLibTests.SampleClasses.Namespace
         public string DeviceBrand { get; set; }
         public string OS { get; set; }
 
+        //[YAXSerializeAs("{aasdasd/asdasd/asdsd}ThePs")]
         [YAXNamespace("p1", "namespace/for/prices/only")]
-        [YAXDictionary(EachPairName = "{yet/another/one}PairItem")]
+        //[YAXDictionary(EachPairName = "{yet/another/one}PairItem")]
         public Dictionary<Color, double> Prices { get; set; }
 
         public override string ToString()

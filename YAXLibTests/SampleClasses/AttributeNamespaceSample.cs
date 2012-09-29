@@ -21,13 +21,18 @@ namespace YAXLibTests.SampleClasses
         public string attrib2
         { get; private set; }
 
-        public static AttributeNamespaceSample GetInstance()
+        public static AttributeNamespaceSample GetSampleInstance()
         {
             return new AttributeNamespaceSample()
             {
                 attrib = "value",
                 attrib2 = "value2"
             };
+        }
+
+        public override string ToString()
+        {
+            return GeneralToStringProvider.GeneralToString(this);
         }
     }
 }
