@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using YAXLib;
 
-namespace YAXLibTests.SampleClasses
+namespace YAXLibTests.SampleClasses.Namespace
 {
     [YAXNamespace("http://namespaces.org/default")]
     public class AttributeNamespaceSample

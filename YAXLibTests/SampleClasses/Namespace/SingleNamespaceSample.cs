@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using YAXLib;
 
-namespace YAXLibTests.SampleClasses
+namespace YAXLibTests.SampleClasses.Namespace
 {
     [YAXComment("This example shows usage of a custom default namespace")]
     [YAXNamespace("http://namespaces.org/default")]

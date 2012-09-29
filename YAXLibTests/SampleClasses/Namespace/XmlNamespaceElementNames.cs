@@ -1,6 +1,6 @@
 ﻿using YAXLib;
 
-namespace YAXLibTests.SampleClasses
+namespace YAXLibTests.SampleClasses.Namespace
 {
     public class XmlNamespaceElementNames
     {

@@ -94,7 +94,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SampleClasses\AnotherArraySample.cs" />
-    <Compile Include="SampleClasses\AttributeNamespaceSample.cs" />
     <Compile Include="SampleClasses\AudioSample.cs" />
     <Compile Include="SampleClasses\BookClassTestingSerializeAsValue.cs" />
     <Compile Include="SampleClasses\ClassContainingXElement.cs" />
@@ -103,12 +102,15 @@
     <Compile Include="SampleClasses\CollectionSeriallyAsAttribute.cs" />
     <Compile Include="SampleClasses\ColorExample.cs" />
     <Compile Include="SampleClasses\CsprojParser.cs" />
-    <Compile Include="SampleClasses\MultipleNamespaceSample.cs" />
+    <Compile Include="SampleClasses\Namespace\AttributeNamespaceSample.cs" />
     <Compile Include="SampleClasses\Namespace\CellPhone.cs" />
     <Compile Include="SampleClasses\Namespace\CellPhone_DictionaryNamespace.cs" />
     <Compile Include="SampleClasses\Namespace\CellPhone_MemberAndClassDifferentNamespaces.cs" />
     <Compile Include="SampleClasses\Namespace\CellPhone_MemberAndClassDifferentNamespacePrefixes.cs" />
     <Compile Include="SampleClasses\Namespace\CellPhone_MultiLevelMemberAndClassDifferentNamespaces.cs" />
+    <Compile Include="SampleClasses\Namespace\MultipleNamespaceSample.cs" />
+    <Compile Include="SampleClasses\Namespace\SingleNamespaceSample.cs" />
+    <Compile Include="SampleClasses\Namespace\XmlNamespaceElementNames.cs" />
     <Compile Include="SampleClasses\PreserveWhitespaceOnFieldsSample.cs" />
     <Compile Include="SampleClasses\CultureSample.cs" />
     <Compile Include="SampleClasses\CustomSerializationTests.cs" />
@@ -145,7 +147,6 @@
     <Compile Include="SampleClasses\SimpleBookClassWithDecimalPrice.cs" />
     <Compile Include="SampleClasses\SimpleBookStruct.cs" />
     <Compile Include="SampleClasses\PreserveWhitespaceOnClassSample.cs" />
-    <Compile Include="SampleClasses\SingleNamespaceSample.cs" />
     <Compile Include="SampleClasses\TimeSpanSample.cs" />
     <Compile Include="SampleClasses\WarehouseNestedObjectExample.cs" />
     <Compile Include="SampleClasses\WarehouseSimple.cs" />
@@ -154,7 +155,6 @@
     <Compile Include="SampleClasses\WarehouseWithComments.cs" />
     <Compile Include="SampleClasses\WarehouseWithDictionary.cs" />
     <Compile Include="SampleClasses\WarehouseWithDictionaryNoContainer.cs" />
-    <Compile Include="SampleClasses\XmlNamespaceElementNames.cs" />
     <Compile Include="SerializationTest.cs">
       <SubType>Code</SubType>
     </Compile>
