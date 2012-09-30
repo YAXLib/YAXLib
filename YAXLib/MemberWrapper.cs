@@ -20,8 +20,6 @@ namespace YAXLib
     /// </summary>
     internal class MemberWrapper
     {
-		#region Fields 
-
         /// <summary>
         /// reference to the underlying <c>MemberInfo</c> from which this instance is built
         /// </summary>
@@ -70,7 +68,12 @@ namespace YAXLib
         /// <summary>
         /// The alias specified by the user
         /// </summary>
-        private string m_alias = "";
+        private XName m_alias = null;
+
+        /// <summary>
+        /// The xml-namespace this member is going to be serialized under.
+        /// </summary>
+        private XNamespace m_namespace = XNamespace.None;
 
         /// <summary>
         /// specifies whether this member is going to be serialized as an attribute
@@ -81,12 +84,6 @@ namespace YAXLib
         /// specifies whether this member is going to be serialized as a value for another element
         /// </summary>
         private bool m_isSerializedAsValue = false;
-
-
-
-		#endregion Fields
-
-		#region Constructors 
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MemberWrapper"/> class.
@@ -101,7 +98,7 @@ namespace YAXLib
             m_memberInfo = memberInfo;
             m_isProperty = (memberInfo.MemberType == MemberTypes.Property);
 
-            Alias = m_memberInfo.Name;
+            Alias = StringUtils.RefineSingleElement(m_memberInfo.Name);
 
             if (m_isProperty)
                 m_propertyInfoInstance = (PropertyInfo)memberInfo;
@@ -140,15 +137,11 @@ namespace YAXLib
             }
         }
 
-		#endregion Constructors 
-
-		#region Properties 
-
         /// <summary>
         /// Gets the alias specified for this member.
         /// </summary>
         /// <value>The alias specified for this member.</value>
-        public string Alias 
+        public XName Alias 
         {
             get
             {
@@ -157,7 +150,14 @@ namespace YAXLib
 
             private set
             {
-                m_alias = StringUtils.RefineSingleElement(value);
+                if (Namespace.HasNamespace())
+                    m_alias = Namespace + value.LocalName;
+                else
+                {
+                    m_alias = value;
+                    if (m_alias.Namespace.HasNamespace())
+                        m_namespace = m_alias.Namespace;
+                }
             }
         }
 
@@ -503,7 +503,20 @@ namespace YAXLib
         /// If <see cref="HasNamespace"/> is <c>false</c> then this should
         /// be inherited from any parent elements.
         /// </remarks>
-        public XNamespace Namespace { get; private set; }
+        public XNamespace Namespace 
+        {
+            get
+            {
+                return m_namespace;
+            }
+
+            private set
+            {
+                m_namespace = value;
+                // explicit namespace definition overrides namespace definitions in SerializeAs attributes.
+                m_alias = m_namespace + m_alias.LocalName;
+            }
+        }
 
         /// <summary>
         /// Gets the namespace prefix associated with this element
@@ -521,10 +534,6 @@ namespace YAXLib
         /// the whole document).
         /// </remarks>
         public string NamespacePrefix { get; private set; }
-
-		#endregion Properties 
-
-		#region Methods 
 
 		// Public Methods
 
@@ -706,7 +715,7 @@ namespace YAXLib
                     
                     SerializationLocation = path;
                     if (!String.IsNullOrEmpty(alias))
-                        Alias = alias;
+                        Alias = StringUtils.RefineSingleElement(alias);
                 }
             }
             else if (attr is YAXElementForAttribute)
@@ -718,7 +727,7 @@ namespace YAXLib
 
                 SerializationLocation = path;
                 if (!String.IsNullOrEmpty(alias))
-                    Alias = alias;
+                    Alias = StringUtils.RefineSingleElement(alias);
             }
             else if (attr is YAXValueForAttribute)
             {
@@ -733,7 +742,7 @@ namespace YAXLib
 
                     SerializationLocation = path;
                     if (!String.IsNullOrEmpty(alias))
-                        Alias = alias;
+                        Alias = StringUtils.RefineSingleElement(alias);
                 }
             }
             else if (attr is YAXDontSerializeAttribute)
@@ -742,7 +751,7 @@ namespace YAXLib
             }
             else if (attr is YAXSerializeAsAttribute)
             {
-                Alias = (attr as YAXSerializeAsAttribute).SerializeAs;
+                Alias = StringUtils.RefineSingleElement((attr as YAXSerializeAsAttribute).SerializeAs);
             }
             else if (attr is YAXCollectionAttribute)
             {
@@ -810,7 +819,5 @@ namespace YAXLib
                 throw new Exception("Added new attribute type to the library but not yet processed!");
             }
         }
-
-		#endregion Methods 
     }
 }

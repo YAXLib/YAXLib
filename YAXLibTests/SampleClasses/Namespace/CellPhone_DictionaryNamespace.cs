@@ -7,8 +7,6 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses.Namespace
 {
-    [ShowInDemoApplication(SortKey = "_")]
-
     [YAXNamespace("http://namespace.org/nsmain")]
     public class CellPhone_DictionaryNamespace
     {

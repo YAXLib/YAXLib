@@ -80,6 +80,9 @@ namespace YAXLib
         /// <returns>the refined element name</returns>
         public static string RefineSingleElement(string elemName)
         {
+            if (elemName == null)
+                return null;
+
             elemName = elemName.Trim(' ', '\t', '\r', '\n', '\v', '/', '\\');
             if (IsSingleLocationGeneric(elemName))
             {

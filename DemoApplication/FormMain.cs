@@ -145,9 +145,6 @@ namespace DemoApplication
                 {
                     rtbDeserializeOutput.Text = deserializedObject.ToString();
 
-                    // TODO: remove later
-                    //MessageBox.Show(serializer.Serialize(deserializedObject));
-
                     if (deserializedObject is List<string>)
                     {
                         StringBuilder sb = new StringBuilder();

@@ -80,11 +80,6 @@ namespace YAXLib
         private object m_desObject = null;
 
         /// <summary>
-        /// if <c>true</c> an xmlns:yaxlib attribute will be added to the top level serialized element.
-        /// </summary>
-        private bool m_needsYaxLibNamespaceAddition = false;
-
-        /// <summary>
         /// The URI address which holds the xmlns:yaxlib definition.
         /// </summary>
         private static readonly XNamespace s_yaxLibNamespaceUri = XNamespace.Get("http://www.sinairv.com/yaxlib/");
@@ -92,7 +87,7 @@ namespace YAXLib
         /// <summary>
         /// The initials used for the xml namespace
         /// </summary>
-        private const string s_yaxLibNamespaceInits = "yaxlib";
+        private const string s_yaxLibNamespacePrefix = "yaxlib";
 
         /// <summary>
         /// the attribute name used to deserialize meta-data for multi-dimensional arrays.
@@ -104,6 +99,11 @@ namespace YAXLib
         /// a reference to their base class or interface.
         /// </summary>
         private const string s_trueTypeAttrName = "realtype";
+
+        /// <summary>
+        /// a map of namespaces to their prefixes (if any) to be added utlimately to the xml result
+        /// </summary>
+        private Dictionary<XNamespace, string> m_namespaceToPrefix = new Dictionary<XNamespace, string>();
 
         #endregion
 
@@ -181,16 +181,6 @@ namespace YAXLib
                 this.TypeNamespace = otherNamespace;
             }
         }
-
-        //internal void SetNamespaceToOverrideDefaultNamespace(YAXSerializer other)
-        //{
-        //    // if namespace info is not already set during construction, 
-        //    // then set it from the other YAXSerializer instance
-        //    if (other.HasTypeNamespace && !this.HasTypeNamespace)
-        //    {
-        //        this.TypeNamespace = other.TypeNamespace;
-        //    }
-        //}
 
         /// <summary>
         /// Gets the default type of the exception.
@@ -508,20 +498,24 @@ namespace YAXLib
 
                 var ser = new YAXSerializer(obj.GetType(), m_exceptionPolicy, 
                     m_defaultExceptionType, m_serializationOption);
-                ser.SetNamespaceToOverrideEmptyNamespace(this.TypeNamespace);
+                ser.SetNamespaceToOverrideEmptyNamespace(TypeNamespace);
                 
                 //ser.SetBaseElement(insertionLocation);
                 var xdoc = ser.SerializeToXDocument(obj);
                 var elem = xdoc.Root;
 
-                //if (ser.m_needsNamespaceAddition)
-                //    this.m_needsNamespaceAddition = true;
+                ImportNamespaces(ser);
                 m_parsingErrors.AddRange(ser.ParsingErrors);
                 elem.Name = m_udtWrapper.Alias;
+                
                 elem.Add(new XAttribute(s_yaxLibNamespaceUri + s_trueTypeAttrName, obj.GetType().FullName));
-                var nsAttrName = XNamespace.Xmlns + s_yaxLibNamespaceInits;
-                if(elem.Attribute(nsAttrName) == null)
-                    elem.Add(new XAttribute(nsAttrName, s_yaxLibNamespaceUri));
+                RegisterYaxLibNamespace();
+
+                AddNamespacesToElement(elem);
+
+                //var nsAttrName = XNamespace.Xmlns + s_yaxLibNamespacePrefix;
+                //if(elem.Attribute(nsAttrName) == null)
+                //    elem.Add(new XAttribute(nsAttrName, s_yaxLibNamespaceUri));
                 return elem;
             }
             else
@@ -552,10 +546,6 @@ namespace YAXLib
         /// serialization of the specified object</returns>
         private XElement SerializeBase(object obj, XName className)
         {
-            XNamespace xmlns = XNamespace.None;
-            if (m_udtWrapper.HasNamespace)
-                xmlns = m_udtWrapper.Namespace;
-
             if (m_baseElement == null)
             {
                 m_baseElement = CreateElementWithNamespace(m_udtWrapper, className);
@@ -602,11 +592,9 @@ namespace YAXLib
                 {
                     object elementValue = null;
 
-                    XNamespace xmlns_local = xmlns;
                     if (member.HasNamespace)
                     {
-                        AddNamespace(member, m_baseElement);
-                        xmlns_local = member.Namespace;
+                        RegisterNamespace(member.Namespace, member.NamespacePrefix);
                     }
 
 
@@ -651,10 +639,10 @@ namespace YAXLib
                     // it gets true only for basic data types
                     if (member.IsSerializedAsAttribute && (areOfSameType || hasCustomSerializer || isCollectionSerially || isKnownType))
                     {
-                        if (!XMLUtils.AttributeExists(m_baseElement, serializationLocation, xmlns_local + member.Alias))
+                        if (!XMLUtils.AttributeExists(m_baseElement, serializationLocation, member.Alias.OverrideNsIfEmpty(TypeNamespace)))
                         {
                             XAttribute attrToCreate = XMLUtils.CreateAttribute(m_baseElement,
-                                serializationLocation, xmlns_local + member.Alias, 
+                                serializationLocation, member.Alias.OverrideNsIfEmpty(TypeNamespace), 
                                 (hasCustomSerializer || isCollectionSerially || isKnownType) ? "" : elementValue);
 
                             if (attrToCreate == null)
@@ -686,7 +674,7 @@ namespace YAXLib
                         }
                         else
                         {
-                            throw new YAXAttributeAlreadyExistsException(member.Alias);
+                            throw new YAXAttributeAlreadyExistsException(member.Alias.LocalName);
                         }
                     }
                     else if (member.IsSerializedAsValue && (areOfSameType || hasCustomSerializer || isCollectionSerially || isKnownType))
@@ -763,7 +751,7 @@ namespace YAXLib
 
                         if (hasCustomSerializer)
                         {
-                            var elemToFill = new XElement(xmlns_local + member.Alias);
+                            var elemToFill = new XElement(member.Alias.OverrideNsIfEmpty(TypeNamespace));
                             parElem.Add(elemToFill);
                             if (member.HasCustomSerializer)
                             {
@@ -779,9 +767,9 @@ namespace YAXLib
                         }
                         else if(isKnownType)
                         {
-                            var elemToFill = new XElement(xmlns_local + member.Alias);
+                            var elemToFill = new XElement(member.Alias.OverrideNsIfEmpty(TypeNamespace));
                             parElem.Add(elemToFill);
-                            KnownTypes.Serialize(elementValue, elemToFill, xmlns_local.NamespaceName);
+                            KnownTypes.Serialize(elementValue, elemToFill, member.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThen(XNamespace.None));
                             if (member.PreservesWhitespace)
                                 XMLUtils.AddPreserveSpaceAttribute(elemToFill);
                         }
@@ -794,7 +782,7 @@ namespace YAXLib
                             if (!areOfSameType)
                             {
                                 elemToAdd.Add(new XAttribute(s_yaxLibNamespaceUri + s_trueTypeAttrName, elementValue.GetType().FullName));
-                                m_needsYaxLibNamespaceAddition = true;
+                                RegisterYaxLibNamespace();
                             }
 
                             if (!alreadyAdded)
@@ -806,7 +794,7 @@ namespace YAXLib
                                 else
                                 {
                                     // see if such element already exists
-                                    XElement existingElem = parElem.Element(GetXNameForMember(member, member.Alias));
+                                    XElement existingElem = parElem.Element(member.Alias.OverrideNsIfEmpty(TypeNamespace));
                                     if (existingElem == null)
                                     {
                                         // if not add the new element gracefully
@@ -843,9 +831,9 @@ namespace YAXLib
 
             } // end of else if it has no custom serializers
 
-            if (m_baseElement.Parent == null && m_needsYaxLibNamespaceAddition)
+            if (m_baseElement.Parent == null)
             {
-                m_baseElement.Add(new XAttribute(XNamespace.Xmlns + s_yaxLibNamespaceInits, s_yaxLibNamespaceUri));
+                AddNamespacesToElement(m_baseElement);
             }
 
             return m_baseElement;
@@ -859,39 +847,93 @@ namespace YAXLib
         /// <param name="className">The root node of the document to which the namespace should be written</param>
         private XElement CreateElementWithNamespace(UdtWrapper wrapper, XName className)
         {
-            if (!wrapper.HasNamespace)
-                return new XElement(className.LocalName, null);
-
-            XNamespace targetNs = wrapper.Namespace;
-
-            if (string.IsNullOrEmpty(wrapper.NamespacePrefix))
-                return new XElement(targetNs + className.LocalName, null);
+            XName elemName = className.OverrideNsIfEmpty(wrapper.Namespace);
+            if (elemName.Namespace == wrapper.Namespace)
+                RegisterNamespace(elemName.Namespace, wrapper.NamespacePrefix);
             else
-                return new XElement(targetNs + className.LocalName, new XAttribute(XNamespace.Xmlns + wrapper.NamespacePrefix, wrapper.Namespace));
+                RegisterNamespace(elemName.Namespace, null);
+
+            return new XElement(elemName, null);
         }
-        
-        /// <summary>
-        /// Adds the namespace applying to the object type specified in <paramref name="wrapper"/>
-        /// to the <paramref name="rootNode"/>
-        /// </summary>
-        /// <param name="wrapper">The wrapper around the object who's namespace should be added</param>
-        /// <param name="rootNode">The root node of the document to which the namespace should be written</param>
-        private void AddNamespace(MemberWrapper wrapper, XElement rootNode)
+
+        private void RegisterYaxLibNamespace()
         {
-            if (!wrapper.HasNamespace)
+            RegisterNamespace(s_yaxLibNamespaceUri, s_yaxLibNamespacePrefix);
+        }
+
+        /// <summary>
+        /// Registers the namespace to be added to the root element of the serialized document.
+        /// </summary>
+        /// <param name="ns">The namespace to be added</param>
+        /// <param name="prefix">The prefix for the namespace.</param>
+        private void RegisterNamespace(XNamespace ns, string prefix)
+        {
+            if (!ns.HasNamespace())
                 return;
 
-            //Adds the defined namespace to the document root
-            if (!String.IsNullOrEmpty(wrapper.NamespacePrefix) && rootNode.GetNamespaceOfPrefix(wrapper.NamespacePrefix) == null)
-                rootNode.Add(new XAttribute(XNamespace.Xmlns + wrapper.NamespacePrefix, wrapper.Namespace));
-            else if (String.IsNullOrEmpty(wrapper.NamespacePrefix))
-                throw new InvalidOperationException("Fields or Properties cannot redefine the document's default namespace");
+            if (m_namespaceToPrefix.ContainsKey(ns))
+            {
+                string existingPrefix = m_namespaceToPrefix[ns];
+                // override the prefix only if already existing namespace has no prefix assigned
+                if (String.IsNullOrEmpty(existingPrefix))
+                    m_namespaceToPrefix[ns] = prefix;
+            }
             else
             {
-                var existing = rootNode.GetNamespaceOfPrefix(wrapper.NamespacePrefix);
+                m_namespaceToPrefix.Add(ns, prefix);
+            }
+        }
 
-                if (existing.NamespaceName != wrapper.Namespace)
-                    throw new InvalidOperationException("You cannot have two different namespaces with the same prefix");
+        private void ImportNamespaces(YAXSerializer otherSerializer)
+        {
+            foreach (var pair in otherSerializer.m_namespaceToPrefix)
+            {
+                RegisterNamespace(pair.Key, pair.Value);
+            }
+        }
+
+        private void AddNamespacesToElement(XElement rootNode)
+        {
+            var nsNoPrefix = new List<XNamespace>();
+            foreach (var ns in m_namespaceToPrefix.Keys)
+            {
+                string prefix = m_namespaceToPrefix[ns];
+                if (String.IsNullOrEmpty(prefix))
+                {
+                    nsNoPrefix.Add(ns);
+                }
+                else // if it has a prefix assigned
+                {
+                    // if no namespace with this prefix already exists
+                    if (rootNode.GetNamespaceOfPrefix(prefix) == null)
+                    {
+                        rootNode.Add(new XAttribute(XNamespace.Xmlns + prefix, ns));
+                    }
+                    else // if this prefix is already added
+                    {
+                        // check the namespace associated with this prefix
+                        var existing = rootNode.GetNamespaceOfPrefix(prefix);
+                        if (existing != ns)
+                            throw new InvalidOperationException(String.Format("You cannot have two different namespaces with the same prefix." + 
+                                Environment.NewLine + 
+                                "Prefix: {0}, Namespaces: \"{1}\", and \"{2}\"",
+                                prefix, ns, existing));
+                    }
+                }
+            }
+
+            // if the main type wrapper has a default (no prefix) namespace
+            if (m_udtWrapper.Namespace.HasNamespace() && String.IsNullOrEmpty(m_udtWrapper.NamespacePrefix))
+            {
+                // it will be added automatically
+                nsNoPrefix.Remove(m_udtWrapper.Namespace);
+                //rootNode.Add(new XAttribute("xmlns", m_udtWrapper.Namespace.NamespaceName));
+            }
+
+            // now generate namespaces for those without prefix
+            foreach (var ns in nsNoPrefix)
+            {
+                rootNode.Add(new XAttribute(XNamespace.Xmlns + rootNode.GetRandomPrefix(), ns));
             }
         }
 
@@ -910,16 +952,12 @@ namespace YAXLib
             alreadyAdded = false;
             moveDescOnly = false;
 
-            XNamespace xmlns = m_baseElement.Name.Namespace;
-            if (member.HasNamespace)
-                xmlns = member.Namespace;
-
-            AddNamespace(member, m_baseElement);
+            RegisterNamespace(member.Namespace, member.NamespacePrefix);
 
             XElement elemToAdd;
             if (member.IsTreatedAsDictionary)
             {
-                elemToAdd = MakeDictionaryElement(insertionLocation, xmlns + member.Alias, elementValue, member.DictionaryAttributeInstance, member.CollectionAttributeInstance);
+                elemToAdd = MakeDictionaryElement(insertionLocation, member.Alias.OverrideNsIfEmpty(TypeNamespace), elementValue, member.DictionaryAttributeInstance, member.CollectionAttributeInstance);
                 if (member.CollectionAttributeInstance != null &&
                     member.CollectionAttributeInstance.SerializationType == YAXCollectionSerializationTypes.RecursiveWithNoContainingElement &&
                     !elemToAdd.HasAttributes)
@@ -927,7 +965,7 @@ namespace YAXLib
             }
             else if (member.IsTreatedAsCollection)
             {
-                elemToAdd = MakeCollectionElement(insertionLocation, xmlns + member.Alias, elementValue, member.CollectionAttributeInstance, member.Format);
+                elemToAdd = MakeCollectionElement(insertionLocation, member.Alias.OverrideNsIfEmpty(TypeNamespace), elementValue, member.CollectionAttributeInstance, member.Format);
 
                 if (member.CollectionAttributeInstance != null &&
                     member.CollectionAttributeInstance.SerializationType == YAXCollectionSerializationTypes.RecursiveWithNoContainingElement &&
@@ -936,7 +974,7 @@ namespace YAXLib
             }
             else
             {
-                elemToAdd = MakeBaseElement(insertionLocation, xmlns + member.Alias, elementValue, out alreadyAdded);
+                elemToAdd = MakeBaseElement(insertionLocation, member.Alias.OverrideNsIfEmpty(TypeNamespace), elementValue, out alreadyAdded);
             }
 
             if (member.PreservesWhitespace)
@@ -981,17 +1019,27 @@ namespace YAXLib
             bool isValueAttrib = false;
             string keyFormat = null;
             string valueFormat = null;
-            XName keyAlias = GetXNameForMember(elementName, "Key");
-            XName valueAlias = GetXNameForMember(elementName, "Value");
+            XName keyAlias = elementName.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone() + "Key";
+            XName valueAlias = elementName.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone() + "Value";
 
             XName eachElementName = null;
-            if(collectionAttrInst != null && !String.IsNullOrEmpty(collectionAttrInst.EachElementName))
-                eachElementName = GetXNameForMember(elementName, collectionAttrInst.EachElementName);
+            if (collectionAttrInst != null && !String.IsNullOrEmpty(collectionAttrInst.EachElementName))
+            {
+                eachElementName = StringUtils.RefineSingleElement(collectionAttrInst.EachElementName);
+                if (eachElementName.Namespace.HasNamespace())
+                    RegisterNamespace(eachElementName.Namespace, null);
+                eachElementName = eachElementName.OverrideNsIfEmpty(elementName.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
+            }
 
             if (dicAttrInst != null)
             {
                 if (dicAttrInst.EachPairName != null)
-                    eachElementName =  GetXNameForMember(elementName, dicAttrInst.EachPairName);
+                {
+                    eachElementName = StringUtils.RefineSingleElement(dicAttrInst.EachPairName);
+                    if (eachElementName.Namespace.HasNamespace())
+                        RegisterNamespace(eachElementName.Namespace, null);
+                    eachElementName = eachElementName.OverrideNsIfEmpty(elementName.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
+                }
 
                 if (dicAttrInst.SerializeKeyAs == YAXNodeTypes.Attribute)
                 {
@@ -1006,8 +1054,15 @@ namespace YAXLib
                 keyFormat = dicAttrInst.KeyFormatString;
                 valueFormat = dicAttrInst.ValueFormatString;
 
-                keyAlias = GetXNameForMember(elementName, dicAttrInst.KeyName ?? "Key");
-                valueAlias = GetXNameForMember(elementName, dicAttrInst.ValueName ?? "Value");
+                keyAlias = StringUtils.RefineSingleElement(dicAttrInst.KeyName ?? "Key");
+                if (keyAlias.Namespace.HasNamespace())
+                    RegisterNamespace(keyAlias.Namespace, null);
+                keyAlias = keyAlias.OverrideNsIfEmpty(elementName.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
+
+                valueAlias = StringUtils.RefineSingleElement(dicAttrInst.ValueName ?? "Value");
+                if (valueAlias.Namespace.HasNamespace())
+                    RegisterNamespace(valueAlias.Namespace, null);
+                valueAlias = valueAlias.OverrideNsIfEmpty(elementName.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
             }
 
             XElement elem = new XElement(elementName, null);
@@ -1036,10 +1091,13 @@ namespace YAXLib
                     valueObj = ReflectionUtils.TryFormatObject(valueObj, valueFormat);
                 }
 
+                if (eachElementName == null)
+                {
+                    eachElementName = StringUtils.RefineSingleElement(ReflectionUtils.GetTypeFriendlyName(obj.GetType()));
+                    eachElementName = eachElementName.OverrideNsIfEmpty(elementName.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
+                }
 
-                XElement elemChild = new XElement(eachElementName ?? GetXNameForMember(elementName, 
-                                                                                       ReflectionUtils.GetTypeFriendlyName(obj.GetType()))
-                                                  , null);
+                XElement elemChild = new XElement(eachElementName, null);
 
                 if (isKeyAttrib && areKeyOfSameType)
                 {
@@ -1058,7 +1116,7 @@ namespace YAXLib
                         }
 
                         addedElem.Add(new XAttribute(s_yaxLibNamespaceUri + s_trueTypeAttrName, keyObj.GetType().FullName));
-                        m_needsYaxLibNamespaceAddition = true;
+                        RegisterYaxLibNamespace();
                     }
                 }
 
@@ -1079,7 +1137,7 @@ namespace YAXLib
                         }
 
                         addedElem.Add(new XAttribute(s_yaxLibNamespaceUri + s_trueTypeAttrName, valueObj.GetType().FullName));
-                        m_needsYaxLibNamespaceAddition = true;
+                        RegisterYaxLibNamespace();
                     }
                 }
 
@@ -1100,9 +1158,9 @@ namespace YAXLib
         private XElement AddObjectToElement(XElement elem, XName alias, object obj)
         {
             UdtWrapper udt = TypeWrappersPool.Pool.GetTypeWrapper(obj.GetType(), this);
-            
+
             if (alias == null)
-                alias = GetXNameForMember(udt, udt.Alias);
+                alias = udt.Alias.OverrideNsIfEmpty(TypeNamespace);
 
             XElement elemToAdd = null;
 
@@ -1162,13 +1220,19 @@ namespace YAXLib
             var collectionInst = elementValue as IEnumerable;
             YAXCollectionSerializationTypes serType = YAXCollectionSerializationTypes.Recursive;
             string seperator = string.Empty;
-            string eachElementName = null;
+            XName eachElementName = null;
 
             if (collectionAttrInst != null)
             {
                 serType = collectionAttrInst.SerializationType;
                 seperator = collectionAttrInst.SeparateBy;
-                eachElementName = collectionAttrInst.EachElementName;
+                if (collectionAttrInst.EachElementName != null)
+                {
+                    eachElementName = StringUtils.RefineSingleElement(collectionAttrInst.EachElementName);
+                    if (eachElementName.Namespace.HasNamespace())
+                        RegisterNamespace(eachElementName.Namespace, null);
+                    eachElementName = eachElementName.OverrideNsIfEmpty(elementName.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
+                }
             }
 
             Type colItemType = ReflectionUtils.GetCollectionItemType(elementValue.GetType());
@@ -1226,14 +1290,14 @@ namespace YAXLib
                         curElemName = udt.Alias;
                     }
 
-                    XElement itemElem = this.AddObjectToElement(elem, elementName.Namespace + curElemName, objToAdd);
+                    XElement itemElem = this.AddObjectToElement(elem, curElemName.OverrideNsIfEmpty(elementName.Namespace), objToAdd);
                     if (obj.GetType() != colItemType)
                     {
                         itemElem.Add(new XAttribute(s_yaxLibNamespaceUri + s_trueTypeAttrName, obj.GetType().FullName));
                         if (itemElem.Parent == null) // i.e., it has been removed, e.g., because all its members have been serialized outside the element
                             elem.Add(itemElem); // return it back, or undelete this item
 
-                        m_needsYaxLibNamespaceAddition = true;
+                        RegisterYaxLibNamespace();
                     }
                 }
 
@@ -1244,7 +1308,7 @@ namespace YAXLib
             if (arrayDims != null && arrayDims.Length > 1)
             {
                 elemToAdd.Add(new XAttribute(s_yaxLibNamespaceUri + s_dimsAttrName, StringUtils.GetArrayDimsString(arrayDims)));
-                m_needsYaxLibNamespaceAddition = true;
+                RegisterYaxLibNamespace();
             }
 
             return elemToAdd;
@@ -1283,11 +1347,9 @@ namespace YAXLib
                 ser.SetNamespaceToOverrideEmptyNamespace(name.Namespace);
                 ser.SetBaseElement(insertionLocation);
                 XElement elem = ser.SerializeBase(value, name);
+                ImportNamespaces(ser);
 
-                if (ser.m_needsYaxLibNamespaceAddition)
-                    this.m_needsYaxLibNamespaceAddition = true;
-
-                this.m_parsingErrors.AddRange(ser.ParsingErrors);
+                m_parsingErrors.AddRange(ser.ParsingErrors);
                 alreadyAdded = true;
                 return elem;
             }
@@ -1367,14 +1429,6 @@ namespace YAXLib
                 XElement xelemValue = null; // the XElement instance gathered at the first phase
                 XAttribute xattrValue = null; // the XAttribute instance gathered at the first phase
 
-
-                //We get the default namespace for our element
-                XNamespace xmlns = baseElement.Name.Namespace;
-
-                //If our member overrides the namespace, then use that instead
-                if (member.HasNamespace)
-                    xmlns = member.Namespace;
-
                 // first evaluate elemValue
                 bool createdFakeElement = false;
 
@@ -1385,11 +1439,11 @@ namespace YAXLib
                 {
 
                     // find the parent element from its location
-                    XAttribute attr = XMLUtils.FindAttribute(baseElement, serializationLocation, xmlns + member.Alias);
+                    XAttribute attr = XMLUtils.FindAttribute(baseElement, serializationLocation, member.Alias.OverrideNsIfEmpty(TypeNamespace));
                     if (attr == null) // if the parent element does not exist
                     {
                         // loook for an element with the same name AND a yaxlib:realtype attribute
-                        XElement elem = XMLUtils.FindElement(baseElement, serializationLocation, xmlns + member.Alias);
+                        XElement elem = XMLUtils.FindElement(baseElement, serializationLocation, member.Alias.OverrideNsIfEmpty(TypeNamespace));
                         if (elem != null && elem.Attribute(s_yaxLibNamespaceUri + s_trueTypeAttrName) != null)
                         {
                             elemValue = elem.Value;
@@ -1424,7 +1478,7 @@ namespace YAXLib
                         if(values.Length <= 0)
                         {
                             // loook for an element with the same name AND a yaxlib:realtype attribute
-                            XElement innerelem = XMLUtils.FindElement(baseElement, serializationLocation, xmlns + member.Alias);
+                            XElement innerelem = XMLUtils.FindElement(baseElement, serializationLocation, member.Alias.OverrideNsIfEmpty(TypeNamespace));
                             if (innerelem != null && innerelem.Attribute(s_yaxLibNamespaceUri + s_trueTypeAttrName) != null)
                             {
                                 elemValue = innerelem.Value;
@@ -1447,7 +1501,7 @@ namespace YAXLib
                 else // if member is serialized as an xml element
                 {
                     bool canContinue = false;
-                    XElement elem = XMLUtils.FindElement(baseElement, serializationLocation, xmlns + member.Alias);
+                    XElement elem = XMLUtils.FindElement(baseElement, serializationLocation, member.Alias.OverrideNsIfEmpty(TypeNamespace));
                     if (elem == null) // such element is not found
                     {
                         if ((member.IsTreatedAsCollection || member.IsTreatedAsDictionary) && member.CollectionAttributeInstance != null &&
@@ -1468,7 +1522,7 @@ namespace YAXLib
                         else if (!ReflectionUtils.IsBasicType(member.MemberType) && !member.IsTreatedAsCollection && !member.IsTreatedAsDictionary)
                         {
                             // try to fix this problem by creating a fake element, maybe all its children are placed somewhere else
-                            XElement fakeElem = XMLUtils.CreateElement(baseElement, serializationLocation, xmlns + member.Alias);
+                            XElement fakeElem = XMLUtils.CreateElement(baseElement, serializationLocation, member.Alias.OverrideNsIfEmpty(TypeNamespace));
                             if (fakeElem != null)
                             {
                                 createdFakeElement = true;
@@ -1485,7 +1539,7 @@ namespace YAXLib
                         if (!canContinue)
                         {
                             this.OnExceptionOccurred(new YAXElementMissingException(
-                                StringUtils.CombineLocationAndElementName(serializationLocation, xmlns + member.Alias)),
+                                StringUtils.CombineLocationAndElementName(serializationLocation, member.Alias.OverrideNsIfEmpty(TypeNamespace))),
                                 (!member.MemberType.IsValueType && m_udtWrapper.IsNotAllowdNullObjectSerialization) ? YAXExceptionTypes.Ignore : member.TreatErrorsAs);
                         }
                     }
@@ -1512,7 +1566,7 @@ namespace YAXLib
                             catch
                             {
                                 OnExceptionOccurred(
-                                    new YAXDefaultValueCannotBeAssigned(member.Alias, member.DefaultValue),
+                                    new YAXDefaultValueCannotBeAssigned(member.Alias.LocalName, member.DefaultValue),
                                     m_defaultExceptionType);
                             }
                         }
@@ -1525,7 +1579,7 @@ namespace YAXLib
                             catch
                             {
                                 OnExceptionOccurred(
-                                    new YAXDefaultValueCannotBeAssigned(member.Alias, member.DefaultValue),
+                                    new YAXDefaultValueCannotBeAssigned(member.Alias.LocalName, member.DefaultValue),
                                     m_defaultExceptionType);
                             }
                         }
@@ -1568,7 +1622,7 @@ namespace YAXLib
                     }
                     catch
                     {
-                        OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias), m_defaultExceptionType);
+                        OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias.LocalName), m_defaultExceptionType);
                     }
                 }
                 else if (elemValue != null)
@@ -1606,30 +1660,26 @@ namespace YAXLib
                 member.CollectionAttributeInstance.SerializationType == YAXCollectionSerializationTypes.RecursiveWithNoContainingElement))
                 throw new ArgumentException("member should be a collection serialized without containing element");
 
-            string eachElementName = null;
+            XName eachElementName = null;
 
             if (member.CollectionAttributeInstance != null)
             {
-                eachElementName = member.CollectionAttributeInstance.EachElementName;
+                eachElementName = StringUtils.RefineSingleElement(member.CollectionAttributeInstance.EachElementName);
             }
 
             if (member.DictionaryAttributeInstance != null && member.DictionaryAttributeInstance.EachPairName != null)
             {
-                eachElementName = member.DictionaryAttributeInstance.EachPairName;
+                eachElementName = StringUtils.RefineSingleElement(member.DictionaryAttributeInstance.EachPairName);
             }
 
             if (eachElementName == null)
             {
                 Type colItemType = ReflectionUtils.GetCollectionItemType(member.MemberType);
-                eachElementName = ReflectionUtils.GetTypeFriendlyName(colItemType);
+                eachElementName = StringUtils.RefineSingleElement(ReflectionUtils.GetTypeFriendlyName(colItemType));
             }
 
-            XName xElemName = GetXNameForMember(member, eachElementName);
-
-            if (elem.Element(xElemName) != null) // if such an element exists
-                return true;
-            else
-                return false;
+            // return if such an element exists
+            return (elem.Element(eachElementName.OverrideNsIfEmpty(member.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone())) != null);
         }
 
         /// <summary>
@@ -1736,7 +1786,7 @@ namespace YAXLib
                 }
                 catch
                 {
-                    OnExceptionOccurred(new YAXDefaultValueCannotBeAssigned(member.Alias, member.DefaultValue), member.TreatErrorsAs);
+                    OnExceptionOccurred(new YAXDefaultValueCannotBeAssigned(member.Alias.LocalName, member.DefaultValue), member.TreatErrorsAs);
                 }
             }
             else if (memberType == typeof(string))
@@ -1755,7 +1805,7 @@ namespace YAXLib
                 }
                 catch
                 {
-                    this.OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias), this.m_defaultExceptionType);
+                    this.OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias.LocalName), this.m_defaultExceptionType);
                 }
             }
             else if (ReflectionUtils.IsBasicType(memberType))
@@ -1779,7 +1829,7 @@ namespace YAXLib
                     }
                     catch
                     {
-                        this.OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias), this.m_defaultExceptionType);
+                        this.OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias.LocalName), this.m_defaultExceptionType);
                     }
                 }
                 catch (Exception ex)
@@ -1789,7 +1839,7 @@ namespace YAXLib
                         throw;
                     }
 
-                    this.OnExceptionOccurred(new YAXBadlyFormedInput(member.Alias, elemValue), member.TreatErrorsAs);
+                    this.OnExceptionOccurred(new YAXBadlyFormedInput(member.Alias.LocalName, elemValue), member.TreatErrorsAs);
 
                     try
                     {
@@ -1797,7 +1847,7 @@ namespace YAXLib
                     }
                     catch
                     {
-                        this.OnExceptionOccurred(new YAXDefaultValueCannotBeAssigned(member.Alias, member.DefaultValue), m_defaultExceptionType);
+                        this.OnExceptionOccurred(new YAXDefaultValueCannotBeAssigned(member.Alias.LocalName, member.DefaultValue), m_defaultExceptionType);
                     }
                 }
             }
@@ -1814,8 +1864,8 @@ namespace YAXLib
                 var ser = new YAXSerializer(memberType, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
                 ser.SetNamespaceToOverrideEmptyNamespace(
                     member.Namespace.
-                        IfInvalidNext(this.TypeNamespace).
-                        IfInvalidNext(null));
+                        IfEmptyThen(this.TypeNamespace).
+                        IfEmptyThenNone());
 
                 ser.IsCraetedToDeserializeANonCollectionMember = !(member.IsTreatedAsDictionary || member.IsTreatedAsCollection);
 
@@ -1825,7 +1875,7 @@ namespace YAXLib
                 }
 
                 object convertedObj = ser.DeserializeBase(xelemValue);
-                this.m_parsingErrors.AddRange(ser.ParsingErrors);
+                m_parsingErrors.AddRange(ser.ParsingErrors);
 
                 try
                 {
@@ -1833,7 +1883,7 @@ namespace YAXLib
                 }
                 catch
                 {
-                    this.OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias), this.m_defaultExceptionType);
+                    this.OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias.LocalName), this.m_defaultExceptionType);
                 }
             }
         }
@@ -1887,19 +1937,14 @@ namespace YAXLib
                     isPrimitive = true;
                 }
 
-                string eachElemName = null;// = ReflectionUtils.GetTypeFriendlyName(itemType);
+                XName eachElemName = null;
                 if (colAttrInstance != null && colAttrInstance.EachElementName != null)
                 {
-                    eachElemName = colAttrInstance.EachElementName;
+                    eachElemName = StringUtils.RefineSingleElement(colAttrInstance.EachElementName);
+                    eachElemName = eachElemName.OverrideNsIfEmpty(memberAlias.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
                 }
 
-                XName xEachElemName = null;
-                if(eachElemName != null)
-                {
-                    xEachElemName = GetXNameForMember(memberAlias, eachElemName);
-                }
-
-                var elemsToSearch = xEachElemName == null ? xelemValue.Elements() : xelemValue.Elements(xEachElemName);
+                var elemsToSearch = eachElemName == null ? xelemValue.Elements() : xelemValue.Elements(eachElemName);
 
                 foreach (XElement childElem in elemsToSearch)
                 {
@@ -1937,8 +1982,8 @@ namespace YAXLib
                         var ser = new YAXSerializer(curElementType, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
                         ser.SetNamespaceToOverrideEmptyNamespace(
                             memberAlias.Namespace.
-                                IfInvalidNext(this.TypeNamespace).
-                                IfInvalidNext(null));
+                                IfEmptyThen(this.TypeNamespace).
+                                IfEmptyThenNone());
 
                         lst.Add(ser.DeserializeBase(childElem));
                         m_parsingErrors.AddRange(ser.ParsingErrors);
@@ -2145,7 +2190,7 @@ namespace YAXLib
             }
             else
             {
-                XName memberAlias = GetXNameForMember(member);
+                XName memberAlias = member.Alias.OverrideNsIfEmpty(TypeNamespace);
                 colObject = DeserializeCollectionValue(colType, xelemValue, memberAlias, member.CollectionAttributeInstance);
             }
 
@@ -2155,7 +2200,7 @@ namespace YAXLib
             }
             catch
             {
-                OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias), m_defaultExceptionType);
+                OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias.LocalName), m_defaultExceptionType);
             }
         }
 
@@ -2200,20 +2245,26 @@ namespace YAXLib
 
             Type pairType = null;
             ReflectionUtils.IsIEnumerable(memberType, out pairType);
-            string eachElementName = ReflectionUtils.GetTypeFriendlyName(pairType);
+            XName eachElementName = StringUtils.RefineSingleElement(ReflectionUtils.GetTypeFriendlyName(pairType));
             bool isKeyAttrib = false;
             bool isValueAttrib = false;
-            XName keyAlias = GetXNameForMember(member, "Key");
-            XName valueAlias = GetXNameForMember(member, "Value");
+            XName keyAlias = member.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone() + "Key";
+            XName valueAlias = member.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone() + "Value";
 
-            if (member.CollectionAttributeInstance != null)
+            if (member.CollectionAttributeInstance != null && member.CollectionAttributeInstance.EachElementName != null)
             {
-                eachElementName = member.CollectionAttributeInstance.EachElementName ?? eachElementName;
+                eachElementName = StringUtils.RefineSingleElement(member.CollectionAttributeInstance.EachElementName);
+                eachElementName.OverrideNsIfEmpty(member.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
             }
 
             if (member.DictionaryAttributeInstance != null)
             {
-                eachElementName = member.DictionaryAttributeInstance.EachPairName ?? eachElementName;
+                if (member.DictionaryAttributeInstance.EachPairName != null)
+                {
+                    eachElementName = StringUtils.RefineSingleElement(member.DictionaryAttributeInstance.EachPairName);
+                    eachElementName.OverrideNsIfEmpty(member.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
+                }
+                
                 if (member.DictionaryAttributeInstance.SerializeKeyAs == YAXNodeTypes.Attribute)
                 {
                     isKeyAttrib = ReflectionUtils.IsBasicType(keyType);
@@ -2224,10 +2275,16 @@ namespace YAXLib
                     isValueAttrib = ReflectionUtils.IsBasicType(valueType);
                 }
 
-                if(member.DictionaryAttributeInstance.KeyName != null)
-                    keyAlias = GetXNameForMember(member, member.DictionaryAttributeInstance.KeyName);
-                if(member.DictionaryAttributeInstance.ValueName != null)
-                    valueAlias = GetXNameForMember(member, member.DictionaryAttributeInstance.ValueName);
+                if (member.DictionaryAttributeInstance.KeyName != null)
+                {
+                    keyAlias = StringUtils.RefineSingleElement(member.DictionaryAttributeInstance.KeyName);
+                    keyAlias = keyAlias.OverrideNsIfEmpty(member.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
+                }
+                if (member.DictionaryAttributeInstance.ValueName != null)
+                {
+                    valueAlias = StringUtils.RefineSingleElement(member.DictionaryAttributeInstance.ValueName);
+                    valueAlias = valueAlias.OverrideNsIfEmpty(member.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
+                }
             }
 
             object dic = memberType.InvokeMember(string.Empty, System.Reflection.BindingFlags.CreateInstance, null, null, new object[0]);
@@ -2258,14 +2315,11 @@ namespace YAXLib
                         if (keySer == null)
                         {
                             keySer = new YAXSerializer(keyType, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
-                            keySer.SetNamespaceToOverrideEmptyNamespace(
-                                keyAlias.Namespace.
-                                    IfInvalidNext(this.TypeNamespace).
-                                    IfInvalidNext(null));
+                            keySer.SetNamespaceToOverrideEmptyNamespace(keyAlias.Namespace);
                         }
 
                         key = keySer.DeserializeBase(childElem.Element(keyAlias));
-                        this.m_parsingErrors.AddRange(keySer.ParsingErrors);
+                        m_parsingErrors.AddRange(keySer.ParsingErrors);
                     }
                 }
 
@@ -2284,10 +2338,7 @@ namespace YAXLib
                         if (valueSer == null)
                         {
                             valueSer = new YAXSerializer(valueType, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
-                            valueSer.SetNamespaceToOverrideEmptyNamespace(
-                                valueAlias.Namespace.
-                                    IfInvalidNext(this.TypeNamespace).
-                                    IfInvalidNext(null));
+                            valueSer.SetNamespaceToOverrideEmptyNamespace(valueAlias.Namespace);
                         }
 
                         value = valueSer.DeserializeBase(childElem.Element(valueAlias));
@@ -2302,8 +2353,8 @@ namespace YAXLib
                 catch
                 {
                     this.OnExceptionOccurred(
-                        new YAXCannotAddObjectToCollection(member.Alias, new KeyValuePair<object, object>(key, value)),
-                        this.m_defaultExceptionType);
+                        new YAXCannotAddObjectToCollection(member.Alias.LocalName, new KeyValuePair<object, object>(key, value)),
+                        m_defaultExceptionType);
                 }
             }
 
@@ -2313,7 +2364,7 @@ namespace YAXLib
             }
             catch
             {
-                this.OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias), this.m_defaultExceptionType);
+                this.OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias.LocalName), this.m_defaultExceptionType);
             }
         }
 
@@ -2385,8 +2436,8 @@ namespace YAXLib
             Type keyType = genArgs[0];
             Type valueType = genArgs[1];
 
-            XName xnameKey = GetXNameForMember("Key");
-            XName xnameValue = GetXNameForMember("Value");
+            XName xnameKey = TypeNamespace.IfEmptyThenNone() + "Key";
+            XName xnameValue = TypeNamespace.IfEmptyThenNone() + "Value";
 
             object keyValue, valueValue;
             if (ReflectionUtils.IsBasicType(keyType))
@@ -2417,7 +2468,7 @@ namespace YAXLib
             {
                 var ser = new YAXSerializer(keyType, m_exceptionPolicy, 
                     m_defaultExceptionType, m_serializationOption);
-                ser.SetNamespaceToOverrideEmptyNamespace(xnameKey.Namespace.IfInvalidNext(null));
+                ser.SetNamespaceToOverrideEmptyNamespace(xnameKey.Namespace.IfEmptyThenNone());
 
                 keyValue = ser.DeserializeBase(baseElement.Element(xnameKey));
                 m_parsingErrors.AddRange(ser.ParsingErrors);
@@ -2449,7 +2500,7 @@ namespace YAXLib
             {
                 var ser = new YAXSerializer(valueType, m_exceptionPolicy, 
                     m_defaultExceptionType, m_serializationOption);
-                ser.SetNamespaceToOverrideEmptyNamespace(xnameValue.Namespace.IfInvalidNext(null));
+                ser.SetNamespaceToOverrideEmptyNamespace(xnameValue.Namespace.IfEmptyThenNone());
                 valueValue = ser.DeserializeBase(baseElement.Element(xnameValue));
                 m_parsingErrors.AddRange(ser.ParsingErrors);
             }
@@ -2533,65 +2584,6 @@ namespace YAXLib
         private IEnumerable<MemberWrapper> GetFieldsToBeSerialized()
         {
             return GetFieldsToBeSerialized(m_udtWrapper);
-        }
-
-        private XName GetXNameForMember(MemberWrapper member, string memberName = null)
-        {
-            string alias = memberName == null ? member.Alias : memberName;
-            XName xname;
-            if (member.HasNamespace)
-                xname = XName.Get(alias, member.Namespace.NamespaceName);
-            else if (this.HasTypeNamespace)
-                xname = XName.Get(alias, this.TypeNamespace.NamespaceName);
-            else
-                xname = XName.Get(alias);
-            return xname;
-        }
-
-        private XName GetXNameForMember(string memberName)
-        {
-            XName xname;
-            if (this.HasTypeNamespace)
-                xname = XName.Get(memberName, this.TypeNamespace.NamespaceName);
-            else
-                xname = XName.Get(memberName);
-            return xname;
-        }
-
-        /// <summary>
-        /// Creates an instance of <c>XName</c> for the given <c>memberName</c>, 
-        /// getting the namespace from <c>otherMember</c> or inheriting from the type-namespace.
-        /// </summary>
-        /// <param name="otherMember">An instance of <c>XName</c> to copy namespace info from.
-        /// Note: only the namespace info for this parameter is used, nothing else.</param>
-        /// <param name="memberName">The member name for which an instance of <c>XName</c> is going
-        /// to be created.</param>
-        /// <returns></returns>
-        private XName GetXNameForMember(XName otherMember, string memberName)
-        {
-            XName xname;
-
-            if (!String.IsNullOrEmpty(otherMember.NamespaceName))
-                xname = XName.Get(memberName, otherMember.NamespaceName);
-            else if (this.HasTypeNamespace)
-                xname = XName.Get(memberName, this.TypeNamespace.NamespaceName);
-            else
-                xname = XName.Get(memberName);
-
-            return xname;
-        }
-
-        private XName GetXNameForMember(UdtWrapper memberType, string memberName = null)
-        {
-            string alias = memberName == null ? memberType.Alias : memberName;
-            XName xname;
-            if (memberType.HasNamespace)
-                xname = XName.Get(alias, memberType.Namespace.NamespaceName);
-            else if (this.HasTypeNamespace)
-                xname = XName.Get(alias, this.TypeNamespace.NamespaceName);
-            else
-                xname = XName.Get(alias);
-            return xname;
         }
 
         /// <summary>

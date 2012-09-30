@@ -45,6 +45,16 @@ namespace YAXLib
         private bool m_isSerializationOptionSetByAttribute;
 
         /// <summary>
+        /// Alias for the type
+        /// </summary>
+        private XName m_alias = null;
+
+        /// <summary>
+        /// the namespace associated with this element
+        /// </summary>
+        private XNamespace m_namespace = XNamespace.None;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="UdtWrapper"/> class.
         /// </summary>
         /// <param name="udtType">The underlying type to create the wrapper around.</param>
@@ -57,7 +67,7 @@ namespace YAXLib
             m_isTypeCollection = ReflectionUtils.IsCollectionType(m_udtType);
             m_isTypeDictionary = ReflectionUtils.IsIDictionary(m_udtType);
 
-            Alias = ReflectionUtils.GetTypeFriendlyName(m_udtType);
+            Alias = StringUtils.RefineSingleElement(ReflectionUtils.GetTypeFriendlyName(m_udtType));
             Comment = null;
             FieldsToSerialize = YAXSerializationFields.PublicPropertiesOnly;
             IsAttributedAsNotCollection = false;
@@ -75,7 +85,25 @@ namespace YAXLib
         /// Gets the alias of the type.
         /// </summary>
         /// <value>The alias of the type.</value>
-        public string Alias { get; private set; }
+        public XName Alias 
+        {
+            get
+            {
+                return m_alias;
+            }
+
+            private set
+            {
+                if (Namespace.HasNamespace())
+                    m_alias = Namespace + value.LocalName;
+                else
+                {
+                    m_alias = value;
+                    if (m_alias.Namespace.HasNamespace())
+                        m_namespace = m_alias.Namespace;
+                }
+            }
+        }
 
         /// <summary>
         /// Gets an array of comments for the underlying type.
@@ -245,12 +273,6 @@ namespace YAXLib
         /// <value>The type of the custom serializer.</value>
         public Type CustomSerializerType { get; private set; }
 
-        ///// <summary>
-        ///// Gets or sets the type of the custom deserializer.
-        ///// </summary>
-        ///// <value>The type of the custom deserializer.</value>
-        //public Type CustomDeserializerType { get; private set; }
-
         /// <summary>
         /// Gets a value indicating whether this instance has custom serializer.
         /// </summary>
@@ -286,7 +308,21 @@ namespace YAXLib
         /// If <see cref="HasNamespace"/> is <c>false</c> then this should
         /// be inherited from any parent elements.
         /// </remarks>
-        public XNamespace Namespace { get; private set; }
+        public XNamespace Namespace 
+        {
+            get
+            {
+                return m_namespace;
+            }
+
+            private set
+            {
+                m_namespace = value;
+                // explicit namespace definition overrides namespace definitions in SerializeAs attributes.
+                m_alias = m_namespace + m_alias.LocalName;
+
+            }
+        }
 
         /// <summary>
         /// Gets the namespace prefix associated with this element
@@ -393,7 +429,7 @@ namespace YAXLib
             }
             else if (attr is YAXSerializeAsAttribute)
             {
-                Alias = (attr as YAXSerializeAsAttribute).SerializeAs;
+                Alias = StringUtils.RefineSingleElement((attr as YAXSerializeAsAttribute).SerializeAs);
             }
             else if (attr is YAXNotCollectionAttribute)
             {

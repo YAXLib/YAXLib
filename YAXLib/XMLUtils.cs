@@ -459,6 +459,22 @@ namespace YAXLib
             return sb.Remove(0, 1).ToString();
         }
 
+        public static string GetRandomPrefix(this XElement self)
+        {
+            var q = self.Attributes().Where(xa => xa.Name.Namespace == XNamespace.Xmlns).Select(xa => xa.Name.LocalName).ToArray();
+            var setPrefixes = new HashSet<string>(q);
+
+            string prefix = "p";
+
+            for(int i = 1; i <= 10000; i++)
+            {
+                if (!setPrefixes.Contains(prefix + i))
+                    return prefix + i;
+            }
+
+            throw new InvalidOperationException("Cannot create a unique random prefix");
+        }
+
         public static XElement Element_NamespaceNeutral(this XContainer parent, string name)
         {
             return parent.Elements().Where(e => e.Name.LocalName == name).FirstOrDefault();
@@ -474,12 +490,26 @@ namespace YAXLib
             return self != null && !String.IsNullOrEmpty(self.NamespaceName.Trim());
         }
 
-        public static XNamespace IfInvalidNext(this XNamespace self, XNamespace next)
+        public static XNamespace IfEmptyThen(this XNamespace self, XNamespace next)
         {
             return self.HasNamespace() ? self : next;
         }
 
+        public static XNamespace IfEmptyThenNone(this XNamespace self)
+        {
+            return IfEmptyThen(self, XNamespace.None);
+        }
 
+
+        public static XName OverrideNsIfEmpty(this XName self, XNamespace ns)
+        {
+            if (self.Namespace.HasNamespace())
+                return self;
+            else if (ns.HasNamespace())
+                return ns + self.LocalName;
+            else
+                return self;
+        }
 
     }
 }
