@@ -1,3 +1,20 @@
+[2.10] October 1, 2012
+   * Full support for XML Namespaces. 
+   * Defining XML namespaces through [YAXNamespace] attribute which 
+     allows for specifying prefixes also.
+   * Implicit XML namespace definition wherever there's an option
+     to define an alias for an xml-attribute or xml-element, like an
+     expanded name, as in "{path/to/namespace}alias". This support have
+     been added into YAXSerializeAs attribute, EachElementName property
+     of the YAXCollection attribute; and KeyName, and ValueName properties
+     of the YAXDictionary attribute.
+   * The initial support for XML-namespaces into YAXLib had been brought
+     by kind community contribution. Special thanks go to Benjamin Pannell, 
+     Tom Glastonbury, and CodePlex user "sttereo3" for starting this.
+     However full namespace support and vast and various bug fixes 
+     have been performed in current version.
+   * Added a Visual Studio 2012 solution file.
+
 [2.9] July 22, 2012
    * Lots of thanks go to Benjamin Pannell for bringing the support
      for XML namespaces into the library. This is brought through the
