@@ -103,11 +103,15 @@
     <Compile Include="SampleClasses\ColorExample.cs" />
     <Compile Include="SampleClasses\CsprojParser.cs" />
     <Compile Include="SampleClasses\Namespace\AttributeNamespaceSample.cs" />
-    <Compile Include="SampleClasses\Namespace\CellPhone.cs" />
     <Compile Include="SampleClasses\Namespace\CellPhone_DictionaryNamespace.cs" />
     <Compile Include="SampleClasses\Namespace\CellPhone_MemberAndClassDifferentNamespaces.cs" />
     <Compile Include="SampleClasses\Namespace\CellPhone_MemberAndClassDifferentNamespacePrefixes.cs" />
     <Compile Include="SampleClasses\Namespace\CellPhone_MultiLevelMemberAndClassDifferentNamespaces.cs" />
+    <Compile Include="SampleClasses\Namespace\CellPhone_DictionaryNamespaceForAllItems.cs" />
+    <Compile Include="SampleClasses\Namespace\CellPhone_CollectionNamespaceGoesThruRecursiveNoContainingElement.cs" />
+    <Compile Include="SampleClasses\Namespace\CellPhone_CollectionNamespaceForAllItems.cs" />
+    <Compile Include="SampleClasses\Namespace\MutlilevelObjectsWithNamespaces.cs" />
+    <Compile Include="SampleClasses\Namespace\CellPhone_YAXNamespaceOverridesImplicitNamespace.cs" />
     <Compile Include="SampleClasses\Namespace\MultipleNamespaceSample.cs" />
     <Compile Include="SampleClasses\Namespace\SingleNamespaceSample.cs" />
     <Compile Include="SampleClasses\Namespace\XmlNamespaceElementNames.cs" />

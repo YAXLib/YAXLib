@@ -6,7 +6,7 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
-    [ShowInDemoApplication]
+    [ShowInDemoApplication(SortKey="001")]
 
     [YAXComment("This example demonstrates serailizing a very simple class")]
     public class Book

@@ -6,7 +6,7 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
-    [ShowInDemoApplication]
+    [ShowInDemoApplication(SortKey="002")]
 
     [YAXComment("This example demonstrates serailizing a very simple struct")]
     public struct BookStruct

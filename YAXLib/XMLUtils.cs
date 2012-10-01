@@ -64,7 +64,12 @@ namespace YAXLib
                 }
                 else
                 {
-                    currentLocation = currentLocation.Element(XName.Get(loc));
+                    XName curLocName = loc;
+                    if (curLocName.Namespace.HasNamespace())
+                        currentLocation = currentLocation.Element(curLocName);
+                    else
+                        currentLocation = currentLocation.Element_NamespaceNeutral(curLocName);
+
                     if (currentLocation == null)
                         break;
                 }
@@ -100,7 +105,12 @@ namespace YAXLib
                 }
                 else
                 {
-                    currentLocation = currentLocation.Element_NamespaceNeutral(loc);
+                    XName curLocName = loc;
+                    if (curLocName.Namespace.HasNamespace())
+                        currentLocation = currentLocation.Element(curLocName);
+                    else
+                        currentLocation = currentLocation.Element_NamespaceNeutral(curLocName);
+
                     if (currentLocation == null)
                         return true;
                 }
@@ -134,11 +144,18 @@ namespace YAXLib
                 }
                 else
                 {
-                    XElement newLoc = currentLocation.Element(loc);
+                    XName curLocName = loc;
+                    XElement newLoc;
+                    if (curLocName.Namespace.HasNamespace())
+                        newLoc = currentLocation.Element(curLocName);
+                    else
+                        newLoc = currentLocation.Element_NamespaceNeutral(curLocName);
+
                     if (newLoc == null)
                     {
-                        currentLocation.Add(new XElement(loc));
-                        currentLocation = currentLocation.Element(loc);
+                        var newElem = new XElement(curLocName.OverrideNsIfEmpty(currentLocation.Name.Namespace));
+                        currentLocation.Add(newElem);
+                        currentLocation = newElem;
                     }
                     else
                     {
@@ -178,12 +195,15 @@ namespace YAXLib
             if (newLoc == null)
                 return null;
 
+            var newAttrName = attrName;
+            // the following stupid code is because of odd behaviour of LINQ to XML
+            if (newAttrName.Namespace == newLoc.Name.Namespace)
+                newAttrName = newAttrName.RemoveNamespace();
 
-            XName newAttrName = attrName;
-            if (newAttrName.NamespaceName == newLoc.Name.NamespaceName)
-                newAttrName = attrName.LocalName;
-
-            return newLoc.Attribute(newAttrName);
+            if (newAttrName.Namespace.HasNamespace())
+                return newLoc.Attribute(newAttrName);
+            else
+                return newLoc.Attribute_NamespaceNeutral(newAttrName);
         }
 
         /// <summary>
@@ -214,12 +234,16 @@ namespace YAXLib
                 }
             }
 
+            var newAttrName = attrName;
+            // the following stupid code is because of odd behaviour of LINQ to XML
+            if (newAttrName.Namespace == newLoc.Name.Namespace)
+                newAttrName = newAttrName.RemoveNamespace();
 
-            XName newAttrName = attrName;
-            if (newAttrName.NamespaceName == newLoc.Name.NamespaceName)
-                newAttrName = attrName.LocalName;
-
-            return newLoc.Attribute(newAttrName) == null; // i.e., check if the attribute does not exist
+            // check if the attribute does not exist
+            if (newAttrName.Namespace.HasNamespace())
+                return newLoc.Attribute(newAttrName) == null;
+            else
+                return newLoc.Attribute_NamespaceNeutral(newAttrName) == null;
         }
 
         /// <summary>
@@ -247,14 +271,27 @@ namespace YAXLib
                 }
             }
 
-            if (newLoc.Attribute(attrName) != null) // i.e., the attribute already exists 
-                return null; // we cannot create another one with the same name
+            // check if the attribute does not exist
+            if (attrName.Namespace.HasNamespace())
+            {
+                // i.e., the attribute already exists 
+                if (newLoc.Attribute(attrName) != null)
+                    return null; // we cannot create another one with the same name
+            }
+            else
+            {
+                if (newLoc.Attribute_NamespaceNeutral(attrName) != null) // i.e., the attribute already exists
+                    return null; // we cannot create another one with the same name
+            }
 
-            XName newAttrName = attrName;
-            if (newAttrName.NamespaceName == newLoc.Name.NamespaceName)
-                newAttrName = attrName.LocalName;
+            var newAttrName = attrName;
+            
+            // the following stupid code is because of odd behaviour of LINQ to XML
+            if (newAttrName.Namespace == newLoc.Name.Namespace)
+                newAttrName = newAttrName.RemoveNamespace();
 
-            var newAttr = new XAttribute(newAttrName, Convert.ToString((attrValue ?? String.Empty), CultureInfo.InvariantCulture));
+            string strAttrValue = Convert.ToString((attrValue ?? String.Empty), CultureInfo.InvariantCulture);
+            var newAttr = new XAttribute(newAttrName, strAttrValue);
             newLoc.Add(newAttr);
             return newAttr;
         }
@@ -397,68 +434,6 @@ namespace YAXLib
             return element;
         }
         
-        /// <summary>
-        /// Converts a given location string into one where each part specifies an explicit
-        /// namespace, replacing any namespace placeholders.
-        /// </summary>
-        /// <param name="rootElement">The root document node holding any namespace declarations</param>
-        /// <param name="locationString">The location string to update</param>
-        /// <returns>The explicit location string specifying namespaces</returns>
-        public static string CreateExplicitNamespaceLocationString(XElement rootElement, string locationString)
-        {
-            XNamespace defaultNamespace = rootElement.Name.Namespace;
-
-            //We need this in case the default namespace isn't unnamed
-            string defaultNamespacePrefix = rootElement.GetPrefixOfNamespace(defaultNamespace);
-
-            //We are using a dictionary to cache namespaces here, in case we have some very large objects
-            Dictionary<string, XNamespace> namespaceMappings = new Dictionary<string, XNamespace>();
-            if(!string.IsNullOrEmpty(defaultNamespacePrefix))
-                namespaceMappings.Add(defaultNamespacePrefix, defaultNamespace);
-
-            StringBuilder sb = new StringBuilder();
-
-            var locSteps = locationString.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-
-            foreach (var loc in locSteps)
-            {
-                if (loc == ".")
-                {
-                    sb.Append("/" + loc);
-                }
-                else if (loc == "..")
-                {
-                    sb.Append("/" + loc);
-                }
-                else
-                {
-                    if (loc.Contains(':'))
-                    {
-                        //Then we have a namespace
-                        string[] parts = loc.Split(new char[] { ':' }, 2);
-                        string ns = parts[0];
-                        string alias = parts[1];
-
-                        if (!namespaceMappings.ContainsKey(ns))
-                        {
-                            var foundNamespaceDeclaration = rootElement.Attribute(XNamespace.Xmlns + ns);
-                            if (foundNamespaceDeclaration == null)
-                                throw new Exception("Could not find the namespace '" + ns + "' for element: " + loc);
-                            XNamespace foundNamespace = foundNamespaceDeclaration.Value;
-                            namespaceMappings.Add(ns, foundNamespace);
-                        }
-
-                        sb.Append("/" + ((XName)(namespaceMappings[ns] + loc)).ToString());
-                    }
-                    else
-                        //We are using the default namespace
-                        sb.Append("/" + ((XName)(defaultNamespace + loc)).ToString());
-                }
-            }
-
-            return sb.Remove(0, 1).ToString();
-        }
-
         public static string GetRandomPrefix(this XElement self)
         {
             var q = self.Attributes().Where(xa => xa.Name.Namespace == XNamespace.Xmlns).Select(xa => xa.Name.LocalName).ToArray();
@@ -475,14 +450,24 @@ namespace YAXLib
             throw new InvalidOperationException("Cannot create a unique random prefix");
         }
 
-        public static XElement Element_NamespaceNeutral(this XContainer parent, string name)
+        public static XAttribute Attribute_NamespaceNeutral(this XElement parent, XName name)
         {
-            return parent.Elements().Where(e => e.Name.LocalName == name).FirstOrDefault();
+            return parent.Attributes().Where(e => e.Name.LocalName == name.LocalName).FirstOrDefault();
         }
 
-        public static IEnumerable<XElement> Elements_NamespaceNeutral(this XContainer parent, string name)
+        public static IEnumerable<XAttribute> Attributes_NamespaceNeutral(this XElement parent, XName name)
         {
-            return parent.Elements().Where(e => e.Name.LocalName == name);
+            return parent.Attributes().Where(e => e.Name.LocalName == name.LocalName);
+        }
+
+        public static XElement Element_NamespaceNeutral(this XContainer parent, XName name)
+        {
+            return parent.Elements().Where(e => e.Name.LocalName == name.LocalName).FirstOrDefault();
+        }
+
+        public static IEnumerable<XElement> Elements_NamespaceNeutral(this XContainer parent, XName name)
+        {
+            return parent.Elements().Where(e => e.Name.LocalName == name.LocalName);
         }
 
         public static bool HasNamespace(this XNamespace self)
@@ -510,6 +495,12 @@ namespace YAXLib
             else
                 return self;
         }
+
+        public static XName RemoveNamespace(this XName self)
+        {
+            return XName.Get(self.LocalName);
+        }
+
 
     }
 }

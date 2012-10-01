@@ -10,16 +10,11 @@ namespace YAXLibTests.SampleClasses.Namespace
     public class AttributeNamespaceSample
     {
         [YAXAttributeFor("Attribs")]
-        public string attrib
-        {
-            get;
-            private set;
-        }
+        public string attrib { get; private set; }
 
         [YAXAttributeFor("Attribs")]
-        [YAXNamespace("ns","http://namespaces.org/ns")]
-        public string attrib2
-        { get; private set; }
+        [YAXNamespace("ns", "http://namespaces.org/ns")]
+        public string attrib2 { get; private set; }
 
         public static AttributeNamespaceSample GetSampleInstance()
         {

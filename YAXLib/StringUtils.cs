@@ -35,16 +35,13 @@ namespace YAXLib
             elemAddr = elemAddr.Replace('\\', '/');
 
             var sb = new StringBuilder();
-            string[] steps = elemAddr.Split(new [] {'/'}, StringSplitOptions.RemoveEmptyEntries);
-            for(int i = 0; i < steps.Length; i++)
+            var steps = elemAddr.SplitPathNamespaceSafe();
+            foreach(var step in steps)
             {
-                if (i == 0)
-                    sb.Append(RefineSingleElement(steps[i]));
-                else
-                    sb.AppendFormat("/" + RefineSingleElement(steps[i]));
+                sb.Append("/" + RefineSingleElement(step));
             }
 
-            return sb.ToString();
+            return sb.Remove(0, 1).ToString();
         }
 
         /// <summary>
@@ -216,9 +213,9 @@ namespace YAXLib
         /// </returns>
         public static bool IsLocationAllGeneric(string location)
         {
-            string[] locSteps = location.Split(new char[] {'/'}, StringSplitOptions.RemoveEmptyEntries);
+            var locSteps = location.SplitPathNamespaceSafe();
 
-            foreach (string loc in locSteps)
+            foreach (var loc in locSteps)
             {
                 if (!IsSingleLocationGeneric(loc))
                     return false;

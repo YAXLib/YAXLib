@@ -634,7 +634,7 @@ namespace YAXLib
                                                 member.CollectionAttributeInstance.SerializationType == YAXCollectionSerializationTypes.Serially;
                     bool isKnownType = member.IsKnownType;
 
-                    var serializationLocation = XMLUtils.CreateExplicitNamespaceLocationString(m_baseElement, member.SerializationLocation);
+                    var serializationLocation = member.SerializationLocation;
 
                     // it gets true only for basic data types
                     if (member.IsSerializedAsAttribute && (areOfSameType || hasCustomSerializer || isCollectionSerially || isKnownType))
@@ -644,6 +644,8 @@ namespace YAXLib
                             XAttribute attrToCreate = XMLUtils.CreateAttribute(m_baseElement,
                                 serializationLocation, member.Alias.OverrideNsIfEmpty(TypeNamespace), 
                                 (hasCustomSerializer || isCollectionSerially || isKnownType) ? "" : elementValue);
+
+                            RegisterNamespace(member.Alias.OverrideNsIfEmpty(TypeNamespace).Namespace, null);
 
                             if (attrToCreate == null)
                             {
@@ -1432,8 +1434,7 @@ namespace YAXLib
                 // first evaluate elemValue
                 bool createdFakeElement = false;
 
-                //We compute a namespace-safe location string
-                var serializationLocation = XMLUtils.CreateExplicitNamespaceLocationString(baseElement, member.SerializationLocation);
+                var serializationLocation = member.SerializationLocation;
 
                 if (member.IsSerializedAsAttribute)
                 {
