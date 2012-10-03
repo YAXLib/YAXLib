@@ -115,6 +115,10 @@
     <Compile Include="SampleClasses\Namespace\MultipleNamespaceSample.cs" />
     <Compile Include="SampleClasses\Namespace\SingleNamespaceSample.cs" />
     <Compile Include="SampleClasses\Namespace\XmlNamespaceElementNames.cs" />
+    <Compile Include="SampleClasses\PolymorphicOneSample.cs" />
+    <Compile Include="SampleClasses\PolymorphicSample.cs" />
+    <Compile Include="SampleClasses\PolymorphicSampleList.cs" />
+    <Compile Include="SampleClasses\PolymorphicTwoSample.cs" />
     <Compile Include="SampleClasses\PreserveWhitespaceOnFieldsSample.cs" />
     <Compile Include="SampleClasses\CultureSample.cs" />
     <Compile Include="SampleClasses\CustomSerializationTests.cs" />

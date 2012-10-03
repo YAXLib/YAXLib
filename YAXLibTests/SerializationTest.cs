@@ -1539,5 +1539,43 @@ namespace YAXLibTests
             Assert.AreEqual(lst[1], desLst[1]);
             Assert.AreEqual(lst[2], desLst[2]);
         }
+
+        [TestMethod]
+        public void ListOfPolymorphicObjectsTest()
+        {
+            PolymorphicSampleList samples = new PolymorphicSampleList
+            {
+                new PolymorphicOneSample(),
+                new PolymorphicTwoSample(),
+            };
+
+            var ser = new YAXSerializer(typeof(PolymorphicSampleList));
+            string result = ser.Serialize(samples);
+            
+            const string expectedResult =
+@"<samples>
+  <sample yax:realtype=""YAXLibTests.SampleClasses.PolymorphicOneSample"" xmlns:yax=""http://www.sinairv.com/yaxlib/"" />
+  <samples yax:realtype=""YAXLibTests.SampleClasses.PolymorphicTwoSample"" xmlns:yax=""http://www.sinairv.com/yaxlib/"" />
+</samples>";
+
+            /* NOTE: Preferably, the '@realtype' should be configurable, so you can have an expected result like this:
+             * 
+             * <samples>
+             *      <sample type="One" />
+             *      <samples type="Two" />
+             * </samples>
+             * 
+             * This can be achieved by having a [YAXPolymorphic(AttributeName = "type")] attribute on the base class
+             * that uses the "type" attribute instead of "realtype" and then [YAXPolymorphic(TypeKey = "One")] on
+             * the subclasses to assign their System.Type's a key that will be used for the "@type" attribute when
+             * serializing and deserializing.
+             * 
+             * [asbjornu]             
+             */
+
+            // NOTE: This fails in two ways. First, each item in the list isn't named <sample /> as specified on
+            //       the abstract PolymorphicSample class. Second, the namespace prefix is "dp2" instead of "yax".
+            Assert.AreEqual(expectedResult, result);
+        }
     }
 }
