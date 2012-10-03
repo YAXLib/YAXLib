@@ -1541,7 +1541,7 @@ namespace YAXLibTests
         }
 
         [TestMethod]
-        public void DashesArePreserved()
+        public void DashPreservationTest()
         {
             const string expectedResult = @"<dashed-sample dashed-name=""Name"" />";
 
