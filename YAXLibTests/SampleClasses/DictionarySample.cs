@@ -5,7 +5,7 @@ using YAXLib;
 namespace YAXLibTests.SampleClasses
 {
     [YAXSerializeAs("items")]
-    public class DictionarySample : Dictionary<string, string>
+    public class DictionarySample : Dictionary<string, object>
     {
     }
 }

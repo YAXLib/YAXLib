@@ -1568,8 +1568,8 @@ namespace YAXLibTests
         {
             DictionarySample dictionary = new DictionarySample
             {
-                { "key1", "value1" },
-                { "key2", "value2" },
+                    { "key1", new Guid(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)},
+                    { "key2", 1234 },
             };
 
             var ser = new YAXSerializer(typeof(DictionarySample));
@@ -1577,8 +1577,38 @@ namespace YAXLibTests
             
             const string expectedResult =
 @"<items>
-  <item key=""key1"">value1</item>
-  <item key=""key2"">value2</item>
+  <item key=""key1"" type=""guid"">00000001-0002-0003-0405-060708090a0b<</item>
+  <item key=""key2"" type=""int"">1234</item>
+</items>";
+
+            /* NOTE: This fails partly because you can't decorate a class with [YAXDictionary] and 
+             * because it's not possible to say that the value should be the content of <item/> while
+             * the key should be an attribute.
+             */
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [TestMethod]
+        public void AttributeForKeyInDictionaryPropertyTest()
+        {
+            DictionaryContainerSample container = new DictionaryContainerSample
+            {
+                Items = new DictionarySample
+                {
+                    { "key1", new Guid(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)},
+                    { "key2", 1234 },
+                }
+            };
+
+            var ser = new YAXSerializer(typeof(DictionaryContainerSample));
+            string result = ser.Serialize(container);
+
+            const string expectedResult =
+@"<container>
+  <items>
+    <item key=""key1"" type=""guid"">00000001-0002-0003-0405-060708090a0b<</item>
+    <item key=""key2"" type=""int"">1234</item>
+  </items>
 </container>";
 
             /* NOTE: This fails partly because you can't decorate a class with [YAXDictionary] and 
