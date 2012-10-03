@@ -1539,5 +1539,20 @@ namespace YAXLibTests
             Assert.AreEqual(lst[1], desLst[1]);
             Assert.AreEqual(lst[2], desLst[2]);
         }
+
+        [TestMethod]
+        public void DashPreservationTest()
+        {
+            const string expectedResult = @"<dashed-sample dashed-name=""Name"" />";
+
+            DashedSample sample = new DashedSample
+            {
+                DashedName = "Name"
+            };
+
+            YAXSerializer ser = new YAXSerializer(typeof(DashedSample));
+            string got = ser.Serialize(sample);
+            Assert.AreEqual(expectedResult, got);
+        }
     }
 }
