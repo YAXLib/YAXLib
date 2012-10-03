@@ -1562,5 +1562,30 @@ namespace YAXLibTests
 
             Assert.AreEqual(expectedResult, result);
         }
+
+        [TestMethod]
+        public void AttributeForKeyInDictionaryTest()
+        {
+            DictionarySample dictionary = new DictionarySample
+            {
+                { "key1", "value1" },
+                { "key2", "value2" },
+            };
+
+            var ser = new YAXSerializer(typeof(DictionarySample));
+            string result = ser.Serialize(dictionary);
+            
+            const string expectedResult =
+@"<items>
+  <item key=""key1"">value1</item>
+  <item key=""key2"">value2</item>
+</container>";
+
+            /* NOTE: This fails partly because you can't decorate a class with [YAXDictionary] and 
+             * because it's not possible to say that the value should be the content of <item/> while
+             * the key should be an attribute.
+             */
+            Assert.AreEqual(expectedResult, result);
+        }
     }
 }
