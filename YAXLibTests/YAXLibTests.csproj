@@ -102,6 +102,7 @@
     <Compile Include="SampleClasses\CollectionSeriallyAsAttribute.cs" />
     <Compile Include="SampleClasses\ColorExample.cs" />
     <Compile Include="SampleClasses\CsprojParser.cs" />
+    <Compile Include="SampleClasses\DashedSample.cs" />
     <Compile Include="SampleClasses\Namespace\AttributeNamespaceSample.cs" />
     <Compile Include="SampleClasses\Namespace\CellPhone_DictionaryNamespace.cs" />
     <Compile Include="SampleClasses\Namespace\CellPhone_MemberAndClassDifferentNamespaces.cs" />
