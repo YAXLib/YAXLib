@@ -1539,5 +1539,28 @@ namespace YAXLibTests
             Assert.AreEqual(lst[1], desLst[1]);
             Assert.AreEqual(lst[2], desLst[2]);
         }
+
+        [TestMethod]
+        public void AttributeForClassTest()
+        {
+            AttributeContainerSample container = new AttributeContainerSample
+            {
+                Range = new AttributeSample
+                {
+                    From = 1,
+                    To = 3,
+                }
+            };
+
+            var ser = new YAXSerializer(typeof(AttributeContainerSample));
+            string result = ser.Serialize(container);
+
+            const string expectedResult =
+@"<container>
+  <range from=""1"" to=""3"" />
+</container>";
+
+            Assert.AreEqual(expectedResult, result);
+        }
     }
 }
