@@ -23,25 +23,25 @@ namespace YAXLibTests
         [Test]
         public void RefineElementNameTest()
         {
-            Assert.AreEqual(StringUtils.RefineLocationString(".."), "..");
-            Assert.AreEqual(StringUtils.RefineLocationString("."), ".");
-            Assert.AreEqual(StringUtils.RefineLocationString("      "), ".");
-            Assert.AreEqual(StringUtils.RefineLocationString(" /      \\ "), ".");
-            Assert.AreEqual(StringUtils.RefineLocationString("ans"), "ans");
-            Assert.AreEqual(StringUtils.RefineLocationString("/ans"), "ans");
-            Assert.AreEqual(StringUtils.RefineLocationString("/ans/"), "ans");
-            Assert.AreEqual(StringUtils.RefineLocationString("ans/"), "ans");
-            Assert.AreEqual(StringUtils.RefineLocationString("ans/////"), "ans");
-            Assert.AreEqual(StringUtils.RefineLocationString("ans\\\\\\"), "ans");
-            Assert.AreEqual(StringUtils.RefineLocationString("..."), "___");
-            Assert.AreEqual(StringUtils.RefineLocationString("one / two / three / four "), "one/two/three/four");
-            Assert.AreEqual(StringUtils.RefineLocationString("one / two \\ three / four "), "one/two/three/four");
-            Assert.AreEqual(StringUtils.RefineLocationString("one / two / three and else / four "), "one/two/three_and_else/four");
-            Assert.AreEqual(StringUtils.RefineLocationString("one / two / .. / four "), "one/two/../four");
-            Assert.AreEqual(StringUtils.RefineLocationString("one / two / .. / four / "), "one/two/../four");
-            Assert.AreEqual(StringUtils.RefineLocationString("one / two / . . / four / "), "one/two/___/four");
-            Assert.AreEqual(StringUtils.RefineLocationString("one / two / two:words.are / four "), "one/two/two_words_are/four");
-            Assert.AreEqual(StringUtils.RefineLocationString("one-two-three-four"), "one-two-three-four");
+            Assert.That(StringUtils.RefineLocationString(".."), Is.EqualTo(".."));
+            Assert.That(StringUtils.RefineLocationString("."), Is.EqualTo("."));
+            Assert.That(StringUtils.RefineLocationString("      "), Is.EqualTo("."));
+            Assert.That(StringUtils.RefineLocationString(" /      \\ "), Is.EqualTo("."));
+            Assert.That(StringUtils.RefineLocationString("ans"), Is.EqualTo("ans"));
+            Assert.That(StringUtils.RefineLocationString("/ans"), Is.EqualTo("ans"));
+            Assert.That(StringUtils.RefineLocationString("/ans/"), Is.EqualTo("ans"));
+            Assert.That(StringUtils.RefineLocationString("ans/"), Is.EqualTo("ans"));
+            Assert.That(StringUtils.RefineLocationString("ans/////"), Is.EqualTo("ans"));
+            Assert.That(StringUtils.RefineLocationString("ans\\\\\\"), Is.EqualTo("ans"));
+            Assert.That(StringUtils.RefineLocationString("..."), Is.EqualTo("___"));
+            Assert.That(StringUtils.RefineLocationString("one / two / three / four "), Is.EqualTo("one/two/three/four"));
+            Assert.That(StringUtils.RefineLocationString("one / two \\ three / four "), Is.EqualTo("one/two/three/four"));
+            Assert.That(StringUtils.RefineLocationString("one / two / three and else / four "), Is.EqualTo("one/two/three_and_else/four"));
+            Assert.That(StringUtils.RefineLocationString("one / two / .. / four "), Is.EqualTo("one/two/../four"));
+            Assert.That(StringUtils.RefineLocationString("one / two / .. / four / "), Is.EqualTo("one/two/../four"));
+            Assert.That(StringUtils.RefineLocationString("one / two / . . / four / "), Is.EqualTo("one/two/___/four"));
+            Assert.That(StringUtils.RefineLocationString("one / two / two:words.are / four "), Is.EqualTo("one/two/two_words_are/four"));
+            Assert.That(StringUtils.RefineLocationString("one-two-three-four"), Is.EqualTo("one-two-three-four"));
         }
 
         [Test]
