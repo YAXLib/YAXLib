@@ -400,23 +400,26 @@ namespace YAXLibTests
         [TestMethod]
         public void AttributeForKeyInDictionaryPropertyTest()
         {
-            const string input =
-@"<container xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"" xmlns=""http://example.com"">
-  <items>
-    <item p4:key=""key1"" xmlns:p4=""http://example.com"">
-      <p4:Value yaxlib:realtype=""System.Guid"">00000001-0002-0003-0405-060708090a0b</p4:Value>
-    </item>
-    <item p4:key=""key2"" xmlns:p4=""http://example.com"">
-      <p4:Value yaxlib:realtype=""System.Int32"">1234</p4:Value>
-    </item>
-  </items>
-</container>";
-
+            DictionaryContainerSample container = new DictionaryContainerSample
+            {
+                Items = new DictionarySample
+                {
+                    { "key1", new Guid(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)},
+                    { "key2", 1234 },
+                }
+            };
+            
             var ser = new YAXSerializer(typeof(DictionaryContainerSample));
-            DictionaryContainerSample container = (DictionaryContainerSample)ser.Deserialize(input);
 
-            Assert.IsNotNull(container.Items);
-            Assert.IsTrue(container.Items.Count == 2, "Expected Count: 2. Actual Count: {0}", container.Items.Count);
+            string input = ser.Serialize(container);
+
+            DictionaryContainerSample deserializedContainer = (DictionaryContainerSample)ser.Deserialize(input);
+
+            Assert.IsNotNull(deserializedContainer.Items);
+            Assert.IsTrue(deserializedContainer.Items.Count == container.Items.Count,
+                          "Expected Count: {0}. Actual Count: {1}",
+                          container.Items.Count,
+                          deserializedContainer.Items.Count);
         }
     }
 }
