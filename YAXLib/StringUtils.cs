@@ -106,7 +106,8 @@ namespace YAXLib
                 // invalid chars are all punctunations except underline
                 foreach (char c in elemName)
                 {
-                    if (Char.IsLetterOrDigit(c) || c == '_')
+                    // TOOD: This should rather use the rules defined in http://www.w3.org/TR/xml/#NT-Name. [asbjornu]
+                    if (Char.IsLetterOrDigit(c) || c == '_' || c == '-')
                         sb.Append(c);
                     else
                         sb.Append('_');
