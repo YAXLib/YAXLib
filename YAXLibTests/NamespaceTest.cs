@@ -8,20 +8,19 @@
 // LIABILITY FOR ANY DATA DAMAGE/LOSS THAT THIS PRODUCT MAY CAUSE.
 //-----------------------------------------------------------------------
 
-using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+
 using YAXLib;
-using System.Threading;
-using System.Globalization;
+
 using YAXLibTests.SampleClasses;
 using YAXLibTests.SampleClasses.Namespace;
 
 namespace YAXLibTests
 {
-    [TestClass]
+    [TestFixture]
     public class NamespaceTest
     {
-        [TestMethod]
+        [Test]
         public void SingleNamespaceSerializationTest()
         {
             const string result = @"<!-- This example shows usage of a custom default namespace -->
@@ -35,7 +34,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void MultipleNamespaceSerializationTest()
         {
             const string result = @"<!-- This example shows usage of a number of custom namespaces -->
@@ -50,7 +49,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void AttributeNamespaceSerializationTest()
         {
             const string result = "<AttributeNamespaceSample xmlns:ns=\"http://namespaces.org/ns\" xmlns=\"http://namespaces.org/default\">" + @"
@@ -62,7 +61,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void MemberAndClassDifferentNamespacesDeserializationTest()
         {
             const string result = @"<CellPhone_MemberAndClassDifferentNamespaces xmlns:x1=""http://namespace.org/x1"" xmlns=""http://namespace.org/nsmain"">
@@ -75,7 +74,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void MemberAndClassDifferentNamespacePrefixesSerializationTest()
         {
             const string result = 
@@ -89,7 +88,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void MultiLevelMemberAndClassDifferentNamespacesSerializationTest()
         {
             const string result =
@@ -107,7 +106,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void DictionaryNamespaceSerializationTest()
         {
             const string result = 
@@ -134,7 +133,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void DictionaryNamespaceForAllItemsSerializationTest()
         {
             const string result =
@@ -161,7 +160,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void CollectionNamespaceGoesThruRecursiveNoContainingElementSerializationTest()
         {
             const string result =
@@ -177,7 +176,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void CollectionNamespaceForAllItemsSerializationTest()
         {
             const string result =
@@ -199,7 +198,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void YAXNamespaceOverridesImplicitNamespaceSerializationTest()
         {
             const string result =
@@ -213,7 +212,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void MutlilevelObjectsWithNamespacesSerializationTest()
         {
             const string result =
@@ -239,7 +238,7 @@ namespace YAXLibTests
         }
 
 
-        [TestMethod]
+        [Test]
         public void SingleNamespaceDeserializationTest()
         {            
             var serializer = new YAXSerializer(typeof(SingleNamespaceSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
@@ -249,7 +248,7 @@ namespace YAXLibTests
             Assert.AreEqual(0, serializer.ParsingErrors.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void MultipleNamespaceDeserializationTest()
         {
             var serializer = new YAXSerializer(typeof(MultipleNamespaceSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
@@ -259,7 +258,7 @@ namespace YAXLibTests
             Assert.AreEqual(0, serializer.ParsingErrors.Count);
         }
         
-        [TestMethod]
+        [Test]
         public void AttributeNamespaceDeserializationTest()
         {
             var serializer = new YAXSerializer(typeof(AttributeNamespaceSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
@@ -269,7 +268,7 @@ namespace YAXLibTests
             Assert.AreEqual(0, serializer.ParsingErrors.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void MemberAndClassDifferentNamespacesSerializationTest()
         {
             var serializer = new YAXSerializer(typeof(CellPhone_MemberAndClassDifferentNamespaces), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
@@ -279,7 +278,7 @@ namespace YAXLibTests
             Assert.AreEqual(0, serializer.ParsingErrors.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void MemberAndClassDifferentNamespacePrefixesDeserializationTest()
         {
             var serializer = new YAXSerializer(typeof(CellPhone_MemberAndClassDifferentNamespacePrefixes), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
@@ -289,7 +288,7 @@ namespace YAXLibTests
             Assert.AreEqual(0, serializer.ParsingErrors.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void MultiLevelMemberAndClassDifferentNamespacesDeserializationTest()
         {
             var serializer = new YAXSerializer(typeof(CellPhone_MultiLevelMemberAndClassDifferentNamespaces), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
@@ -299,7 +298,7 @@ namespace YAXLibTests
             Assert.AreEqual(0, serializer.ParsingErrors.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void DictionaryNamespaceDeserializationTest()
         {
             var serializer = new YAXSerializer(typeof(CellPhone_DictionaryNamespaceForAllItems), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
@@ -309,7 +308,7 @@ namespace YAXLibTests
             Assert.AreEqual(0, serializer.ParsingErrors.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void DictionaryNamespaceForAllItemsDeserializationTest()
         {
             var serializer = new YAXSerializer(typeof(CellPhone_DictionaryNamespace), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
@@ -320,7 +319,7 @@ namespace YAXLibTests
 
         }
 
-        [TestMethod]
+        [Test]
         public void CollectionNamespaceGoesThruRecursiveNoContainingElementDeserializationTest()
         {
             var serializer = new YAXSerializer(typeof(CellPhone_CollectionNamespaceGoesThruRecursiveNoContainingElement), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
@@ -330,7 +329,7 @@ namespace YAXLibTests
             Assert.AreEqual(0, serializer.ParsingErrors.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void CollectionNamespaceForAllItemsDeserializationTest()
         {
             var serializer = new YAXSerializer(typeof(CellPhone_CollectionNamespaceForAllItems), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
@@ -340,7 +339,7 @@ namespace YAXLibTests
             Assert.AreEqual(0, serializer.ParsingErrors.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void YAXNamespaceOverridesImplicitNamespaceDeserializationTest()
         {
             var serializer = new YAXSerializer(typeof(CellPhone_YAXNamespaceOverridesImplicitNamespace), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
@@ -350,7 +349,7 @@ namespace YAXLibTests
             Assert.AreEqual(0, serializer.ParsingErrors.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void MutlilevelObjectsWithNamespacesDeserializationTest()
         {
             var serializer = new YAXSerializer(typeof(MutlilevelObjectsWithNamespaces), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
@@ -361,7 +360,7 @@ namespace YAXLibTests
        }
 
 
-        [TestMethod]
+        [Test]
         public void CSProjParsingTest()
         {
             string csprojContent = @"<Project ToolsVersion=""4.0"" DefaultTargets=""Build"" xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">

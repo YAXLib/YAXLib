@@ -9,13 +9,15 @@
 //-----------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using NUnit.Framework;
+
 using YAXLib;
 using YAXLibTests.SampleClasses;
 
 namespace YAXLibTests
 {
-    [TestClass]
+    [TestFixture]
     public class DeserializationTest
     {
         private void GetTheTwoStrings(object obj, out string originalString, out string gottonString, out int errorCounts)
@@ -38,82 +40,82 @@ namespace YAXLibTests
             Assert.AreEqual(errorCounts, 0);
         }
 
-        [TestMethod]
+        [Test]
         public void DeserializeBasicTypesTest()
         {
             PerformTest(666);
         }
 
 
-        [TestMethod]
+        [Test]
         public void DesBookTest()
         {
             PerformTest(Book.GetSampleInstance());
         }
 
-        [TestMethod]
+        [Test]
         public void DesBookWithDecimalTest()
         {
             PerformTest(SimpleBookClassWithDecimalPrice.GetSampleInstance());
         }
 
-        [TestMethod]
+        [Test]
         public void DesBookStructTest()
         {
             object obj = BookStruct.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesWarehouseSimpleTest()
         {
             object obj = WarehouseSimple.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesWarehouseStructuredTest()
         {
             object obj = WarehouseStructured.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesWarehouseWithArrayTest()
         {
             object obj = WarehouseWithArray.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesWarehouseWithDictionaryTest()
         {
             object obj = WarehouseWithDictionary.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesWarehouseNestedObjectTest()
         {
             object obj = WarehouseNestedObjectExample.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesProgrammingLanguageTest()
         {
             object obj = ProgrammingLanguage.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesColorExampleTest()
         {
             object obj = ColorExample.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesMultiLevelClassTest()
         {
             object obj = MultilevelClass.GetSampleInstance();
@@ -121,21 +123,21 @@ namespace YAXLibTests
         }
 
 
-        [TestMethod]
+        [Test]
         public void DesPathsExampleTest()
         {
             object obj = PathsExample.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesMoreComplexExampleTest()
         {
             object obj = MoreComplexExample.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesNestedDicSampleTest()
         {
             object obj = NestedDicSample.GetSampleInstance();
@@ -143,7 +145,7 @@ namespace YAXLibTests
 
         }
 
-        [TestMethod]
+        [Test]
         public void DesGUIDTestTest()
         {
             Guid g1 = Guid.NewGuid();
@@ -155,14 +157,14 @@ namespace YAXLibTests
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesNullableTest()
         {
             object obj = NullableClass.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesNullableSample2Test()
         {
             object obj = NullableSample2.GetSampleInstance();
@@ -170,133 +172,133 @@ namespace YAXLibTests
         }
 
 
-        [TestMethod]
+        [Test]
         public void DesListHolderClassTest()
         {
             object obj = ListHolderClass.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesStandaloneListTest()
         {
             object obj = ListHolderClass.GetSampleInstance().ListOfStrings;
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesNamesExampleTest()
         {
             object obj = NamesExample.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesRequestTest()
         {
             object obj = Request.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesAudioSampleTest()
         {
             object obj = AudioSample.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesTimeSpanTest()
         {
             object obj = TimeSpanSample.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesMoreComplexBookTest()
         {
             object obj = MoreComplexBook.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesMoreComplexBookTwoTest()
         {
             object obj = MoreComplexBook2.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesMoreComplexBookThreeTest()
         {
             object obj = MoreComplexBook3.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesWarehouseWithDictionaryNoContainerTest()
         {
             object obj = WarehouseWithDictionaryNoContainer.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesWarehouseWithCommentsTest()
         {
             object obj = WarehouseWithComments.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesEnumsSampleTest()
         {
             object obj = EnumsSample.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesMultiDimArraySampleTest()
         {
             object obj = MultiDimArraySample.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesAnotherArraySampleTest()
         {
             object obj = AnotherArraySample.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesCollectionOfInterfacesSampleTest()
         {
             object obj = CollectionOfInterfacesSample.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesInterfaceMatchingSampleTest()
         {
             object obj = InterfaceMatchingSample.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesNonGenericCollectionsSampleTest()
         {
             object obj = NonGenericCollectionsSample.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesGenericCollectionsSampleTest()
         {
             object obj = GenericCollectionsSample.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void MoreComplexBookTwoResumedDeserializationTest()
         {
             string result =
@@ -320,7 +322,7 @@ namespace YAXLibTests
             Assert.AreNotEqual(bookResult.ToString(), initialToString);
         }
 
-        [TestMethod]
+        [Test]
         public void DesSerializationOptionsSampleTest()
         {
             object obj = SerializationOptionsSample.GetSampleInstance();
@@ -355,42 +357,42 @@ namespace YAXLibTests
             Assert.AreEqual(serializer.ParsingErrors.Count, 1);
         }
 
-        [TestMethod]
+        [Test]
         public void DesPathAndAliasAssignmentSampleTest()
         {
             object obj = PathAndAliasAssignmentSample.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesCollectionSeriallyAsAttributeTest()
         {
             object obj = CollectionSeriallyAsAttribute.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesDictionaryKeyValueAsInterfaceTest()
         {
             object obj = DictionaryKeyValueAsInterface.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesPreserveWhitespaceOnFieldsTest()
         {
             object obj = PreserveWhitespaceOnFieldsSample.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesPreserveWhitespaceOnClassTest()
         {
             object obj = PreserveWhitespaceOnClassSample.GetSampleInstance();
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void DesGuidAsBasicTypeTest()
         {
             object obj = GuidAsBasicType.GetSampleInstance();

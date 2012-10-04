@@ -1,16 +1,18 @@
 ﻿using System.Drawing;
 using System.Xml.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using NUnit.Framework;
+
 using YAXLib;
 using System;
 using YAXLibTests.SampleClasses;
 
 namespace YAXLibTests
 {
-    [TestClass]
+    [TestFixture]
     public class KnownTypeTests
     {
-        [TestMethod]
+        [Test]
         public void TestExtensionMethod()
         {
             var colorKnownType = new ColorKnownType();
@@ -20,7 +22,7 @@ namespace YAXLibTests
             Assert.AreEqual(t1, kt.Type);
         }
 
-        [TestMethod]
+        [Test]
         public void TestColorNames()
         {
             var colorKnownType = new ColorKnownType();
@@ -50,7 +52,7 @@ namespace YAXLibTests
             Assert.AreEqual(Color.Red.ToArgb(), desCl3.ToArgb());
         }
 
-        [TestMethod]
+        [Test]
         public void TestWrappers()
         {
             var typeToTest = typeof (TimeSpan);
@@ -60,7 +62,7 @@ namespace YAXLibTests
             Assert.IsTrue(typeWrapper.IsKnownType);
         }
 
-        [TestMethod]
+        [Test]
         public void TestSingleKnownTypeSerialization()
         {
             var typeToTest = typeof(Color);
@@ -85,7 +87,7 @@ namespace YAXLibTests
             Assert.AreEqual(expectedCol2, colStr2);
         }
 
-        [TestMethod]
+        [Test]
         public void TestSerializingNDeserializingNullKnownTypes()
         {
             var inst = ClassContainingXElement.GetSampleInstance();

@@ -8,7 +8,8 @@
 // LIABILITY FOR ANY DATA DAMAGE/LOSS THAT THIS PRODUCT MAY CAUSE.
 //-----------------------------------------------------------------------
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+
 using YAXLib;
 
 namespace YAXLibTests
@@ -16,10 +17,10 @@ namespace YAXLibTests
     /// <summary>
     /// Summary description for StringUtilsTest
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class StringUtilsTest
     {
-        [TestMethod]
+        [Test]
         public void RefineElementNameTest()
         {
             Assert.AreEqual(StringUtils.RefineLocationString(".."), "..");
@@ -43,7 +44,7 @@ namespace YAXLibTests
             Assert.AreEqual(StringUtils.RefineLocationString("one-two-three-four"), "one-two-three-four");
         }
 
-        [TestMethod]
+        [Test]
         public void ExtractPathAndAliasTest()
         {
             TestPathAndAlias("one/two#name", "one/two", "name");
@@ -65,7 +66,7 @@ namespace YAXLibTests
             Assert.AreEqual(alias, expAlias);
         }
 
-        [TestMethod]
+        [Test]
         public void IsLocationAllGenericTest()
         {
             Assert.IsTrue(StringUtils.IsLocationAllGeneric(".."));
@@ -83,7 +84,7 @@ namespace YAXLibTests
             Assert.IsFalse(StringUtils.IsLocationAllGeneric("one/../two/.."));
         }
 
-        [TestMethod]
+        [Test]
         public void DivideLocationOneStepTest()
         {
             string newLocation;
@@ -132,7 +133,7 @@ namespace YAXLibTests
             Assert.AreEqual(returnValue, true);
         }
 
-        [TestMethod]
+        [Test]
         public void LooksLikeExpandedNameTest()
         {
             var falseCases = new[] {"", "    ", "{}", "{a", "{} ", " {}", " {} ", " {a} ", "{a}", "{a}    ", "something"};

@@ -8,18 +8,20 @@
 // LIABILITY FOR ANY DATA DAMAGE/LOSS THAT THIS PRODUCT MAY CAUSE.
 //-----------------------------------------------------------------------
 
+using NUnit.Framework;
+
 using YAXLib;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using System;
 using System.Collections.Generic;
 using System.Collections;
 
 namespace YAXLibTests
 {
-    [TestClass]
+    [TestFixture]
     public class ReflectionUtilsTest
     {
-        [TestMethod]
+        [Test]
         public void IsArrayTest()
         {
             Assert.IsTrue(ReflectionUtils.IsArray(typeof(int[])));
@@ -32,7 +34,7 @@ namespace YAXLibTests
             Assert.IsFalse(ReflectionUtils.IsArray(typeof(string)));
         }
         
-        [TestMethod]
+        [Test]
         public void IsCollectionTypeTest()
         {
             Assert.IsTrue(ReflectionUtils.IsCollectionType(typeof(int[])));
@@ -47,7 +49,7 @@ namespace YAXLibTests
             Assert.IsFalse(ReflectionUtils.IsCollectionType(typeof(string)));
         }
 
-        [TestMethod]
+        [Test]
         public void GetCollectionItemTypeTest()
         {
             Assert.IsTrue(ReflectionUtils.GetCollectionItemType(typeof(IEnumerable<int>)) == typeof(int));
@@ -61,7 +63,7 @@ namespace YAXLibTests
             //Assert.IsTrue(ReflectionUtils.GetCollectionItemType(typeof(IEnumerable<>)) == typeof(object));
         }
 
-        [TestMethod]
+        [Test]
         public void IsTypeEqualOrInheritedFromTypeTest()
         {
             Assert.IsTrue(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof (int), typeof (object)));
@@ -77,7 +79,7 @@ namespace YAXLibTests
             Assert.IsTrue(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(ICollection), typeof(IEnumerable)));
         }
 
-        [TestMethod]
+        [Test]
         public void GetTypeByNameTest()
         {
             var type1 = ReflectionUtils.GetTypeByName("System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]");

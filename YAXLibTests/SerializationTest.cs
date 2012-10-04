@@ -10,7 +10,9 @@
 
 using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using NUnit.Framework;
+
 using YAXLib;
 using System.Threading;
 using System.Globalization;
@@ -18,10 +20,10 @@ using YAXLibTests.SampleClasses;
 
 namespace YAXLibTests
 {
-    [TestClass]
+    [TestFixture]
     public class SerializationTest
     {
-        [TestMethod]
+        [Test]
         public void BasicTypeSerializationTest()
         {
             var objs = new object[] {123, 654.321, "SomeString", 24234L};
@@ -41,7 +43,7 @@ namespace YAXLibTests
 
         }
 
-        [TestMethod]
+        [Test]
         public void BookTest()
         {
             const string result =
@@ -57,7 +59,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void ThreadingTest()
         {
             try
@@ -84,7 +86,7 @@ namespace YAXLibTests
 
         }
 
-        [TestMethod]
+        [Test]
         public void BookWithDecimalPriceTest()
         {
             const string result =
@@ -100,7 +102,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void CultureChangeTest()
         {
             var curCulture = CultureInfo.CurrentCulture;
@@ -144,7 +146,7 @@ namespace YAXLibTests
             Assert.AreEqual(usResult, expected, "Checking US is as expected!");
         }
 
-        [TestMethod]
+        [Test]
         public void BookStructTest()
         {
             const string result =
@@ -160,7 +162,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void WarehouseSimpleTest()
         {
             const string result =
@@ -175,7 +177,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void WarehouseStructuredTest()
         {
             const string result =
@@ -190,7 +192,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void WarehouseWithArrayTest()
         {
             const string result =
@@ -206,7 +208,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void WarehouseWithDictionaryTest()
         {
             const string result =
@@ -228,7 +230,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void WarehouseNestedObjectTest()
         {
             const string result =
@@ -254,7 +256,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void ProgrammingLanguageTest()
         {
             const string result =
@@ -268,7 +270,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void ColorExampleTest()
         {
             const string result =
@@ -281,7 +283,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void MultiLevelClassTest()
         {
             const string result =
@@ -308,7 +310,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void FormattingTest()
         {
             string result =
@@ -349,7 +351,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void PathsExampleTest()
         {
             const string result =
@@ -364,7 +366,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void MoreComplexExampleTest()
         {
             const string result =
@@ -409,7 +411,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void NestedDicSampleTest()
         {
             const string result =
@@ -499,7 +501,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void GuidDemoTest()
         {
             Guid g1 = Guid.NewGuid();
@@ -531,7 +533,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void NullableTest()
         {
             const string result =
@@ -546,7 +548,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void NullableSample2Test()
         {
             const string result =
@@ -561,7 +563,7 @@ namespace YAXLibTests
         }
 
 
-        [TestMethod]
+        [Test]
         public void ListHolderClassTest()
         {
             const string result =
@@ -576,7 +578,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void StandaloneListTest()
         {
             const string result =
@@ -589,7 +591,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void NamesExampleTest()
         {
             const string result =
@@ -611,7 +613,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void RequestTest()
         {
             const string result =
@@ -632,7 +634,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void AudioSampleTest()
         {
             const string result =
@@ -645,7 +647,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void TimeSpanTest()
         {
             const string result =
@@ -670,7 +672,7 @@ namespace YAXLibTests
         }
 
 
-        [TestMethod]
+        [Test]
         public void FieldSerializationSampleTest()
         {
             const string result =
@@ -685,7 +687,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void MoreComplexBookTest()
         {
             const string result =
@@ -708,7 +710,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void MoreComplexBookTwoTest()
         {
             const string result =
@@ -732,7 +734,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void MoreComplexBookThreeTest()
         {
             const string result =
@@ -753,7 +755,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void WarehouseWithDictionaryNoContainerTest()
         {
             const string result =
@@ -774,7 +776,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void WarehouseWithCommentsTest()
         {
             const string result =
@@ -806,7 +808,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void EnumsSampleTest()
         {
             const string result =
@@ -861,7 +863,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void MultiDimArraySampleTest()
         {
             const string result =
@@ -952,7 +954,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void AnotherArraySampleTest()
         {
             const string result =
@@ -983,7 +985,7 @@ namespace YAXLibTests
         }
 
 
-        [TestMethod]
+        [Test]
         public void CollectionOfInterfacesSampleTest()
         {
             const string result =
@@ -1063,7 +1065,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void MultipleCommentsTestTest()
         {
             const string result =
@@ -1081,7 +1083,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void InterfaceMatchingSampleTest()
         {
             const string result =
@@ -1117,7 +1119,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void NonGenericCollectionsSampleTest()
         {
             const string result =
@@ -1219,7 +1221,7 @@ namespace YAXLibTests
         }
 
 
-        [TestMethod]
+        [Test]
         public void GenericCollectionsSampleTest()
         {
             const string result =
@@ -1264,7 +1266,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod] 
+        [Test] 
         public void SerializingPathAndAliasTogetherTest()
         {
             const string result = 
@@ -1282,7 +1284,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void CollectionSeriallyAsAttributeTest()
         {
             const string result =
@@ -1299,7 +1301,7 @@ namespace YAXLibTests
         }
 
 
-        [TestMethod]
+        [Test]
         public void SerializationOptionsSampleTest()
         {
             const string resultWithSerializeNullRefs =
@@ -1354,7 +1356,7 @@ namespace YAXLibTests
             Assert.AreEqual(resultWithDontSerializeNullRefs, got);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializeAClassContainingXElementItself()
         {
             var initialInstance = ClassContainingXElement.GetSampleInstance();
@@ -1380,7 +1382,7 @@ namespace YAXLibTests
             Assert.AreEqual(nulledElementString, nulledInstanceDeser.ToString());
         }
 
-        [TestMethod]
+        [Test]
         public void SerializaitonOfPropertylessClasses()
         {
             const string result =
@@ -1399,7 +1401,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void GuidsAsBasicTypeTest()
         {
             const string result =
@@ -1476,7 +1478,7 @@ namespace YAXLibTests
             Assert.AreEqual(result, got);
         }
 
-        [TestMethod]
+        [Test]
         public void PolymorphicSerializationThroughObjectTest()
         {
             object content = "this is just a simple test";
@@ -1492,7 +1494,7 @@ namespace YAXLibTests
             Assert.AreEqual(content.ToString(), desObj.ToString());
         }
 
-        [TestMethod]
+        [Test]
         public void PolymorphicSerializationThroughListTest()
         {
             var lst = new List<int> {1, 2, 3};
@@ -1516,7 +1518,7 @@ namespace YAXLibTests
             Assert.AreEqual(lst[2], desLst[2]);
         }
 
-        [TestMethod]
+        [Test]
         public void PolymorphicSerializationThroughListWhichMayContainYaxlibNamespaceTest()
         {
             var lst = new List<object> { 1, 2, 3 };
@@ -1540,7 +1542,7 @@ namespace YAXLibTests
             Assert.AreEqual(lst[2], desLst[2]);
         }
 
-        [TestMethod]
+        [Test]
         public void DashPreservationTest()
         {
             const string expectedResult = @"<dashed-sample dashed-name=""Name"" />";

@@ -8,7 +8,8 @@
 // LIABILITY FOR ANY DATA DAMAGE/LOSS THAT THIS PRODUCT MAY CAUSE.
 //-----------------------------------------------------------------------
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+
 using YAXLib;
 using System.Xml.Linq;
 
@@ -17,10 +18,10 @@ namespace YAXLibTests
     /// <summary>
     /// Summary description for XMLUtilsTest
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class XMLUtilsTest
     {
-        [TestMethod]
+        [Test]
         public void CanCreateLocationTest()
         {
             var elem = new XElement("Base", null);
