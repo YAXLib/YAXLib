@@ -31,7 +31,7 @@ namespace YAXLibTests
 
             var serializer = new YAXSerializer(typeof(SingleNamespaceSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(SingleNamespaceSample.GetInstance());
-            Assert.AreEqual(result, got);
+            Assert.That(got, Is.EqualTo(result));
         }
 
         [Test]
@@ -46,7 +46,7 @@ namespace YAXLibTests
 
             var serializer = new YAXSerializer(typeof(MultipleNamespaceSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(MultipleNamespaceSample.GetSampleInstance());
-            Assert.AreEqual(result, got);
+            Assert.That(got, Is.EqualTo(result));
         }
 
         [Test]
@@ -58,7 +58,7 @@ namespace YAXLibTests
 
             var serializer = new YAXSerializer(typeof(AttributeNamespaceSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(AttributeNamespaceSample.GetSampleInstance());
-            Assert.AreEqual(result, got);
+            Assert.That(got, Is.EqualTo(result));
         }
 
         [Test]
@@ -71,7 +71,7 @@ namespace YAXLibTests
 
             var serializer = new YAXSerializer(typeof(CellPhone_MemberAndClassDifferentNamespaces), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(CellPhone_MemberAndClassDifferentNamespaces.GetSampleInstance());
-            Assert.AreEqual(result, got);
+            Assert.That(got, Is.EqualTo(result));
         }
 
         [Test]
@@ -85,7 +85,7 @@ namespace YAXLibTests
 
             var serializer = new YAXSerializer(typeof(CellPhone_MemberAndClassDifferentNamespacePrefixes), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(CellPhone_MemberAndClassDifferentNamespacePrefixes.GetSampleInstance());
-            Assert.AreEqual(result, got);
+            Assert.That(got, Is.EqualTo(result));
         }
 
         [Test]
@@ -103,7 +103,7 @@ namespace YAXLibTests
 
             var serializer = new YAXSerializer(typeof(CellPhone_MultiLevelMemberAndClassDifferentNamespaces), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(CellPhone_MultiLevelMemberAndClassDifferentNamespaces.GetSampleInstance());
-            Assert.AreEqual(result, got);
+            Assert.That(got, Is.EqualTo(result));
         }
 
         [Test]
@@ -130,7 +130,7 @@ namespace YAXLibTests
 </CellPhone_DictionaryNamespace>";
             var serializer = new YAXSerializer(typeof(CellPhone_DictionaryNamespace), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(CellPhone_DictionaryNamespace.GetSampleInstance());
-            Assert.AreEqual(result, got);
+            Assert.That(got, Is.EqualTo(result));
         }
 
         [Test]
@@ -157,7 +157,7 @@ namespace YAXLibTests
 </CellPhone_DictionaryNamespaceForAllItems>";
             var serializer = new YAXSerializer(typeof(CellPhone_DictionaryNamespaceForAllItems), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(CellPhone_DictionaryNamespaceForAllItems.GetSampleInstance());
-            Assert.AreEqual(result, got);
+            Assert.That(got, Is.EqualTo(result));
         }
 
         [Test]
@@ -173,7 +173,7 @@ namespace YAXLibTests
 </MobilePhone>";
             var serializer = new YAXSerializer(typeof(CellPhone_CollectionNamespaceGoesThruRecursiveNoContainingElement), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(CellPhone_CollectionNamespaceGoesThruRecursiveNoContainingElement.GetSampleInstance());
-            Assert.AreEqual(result, got);
+            Assert.That(got, Is.EqualTo(result));
         }
 
         [Test]
@@ -195,7 +195,7 @@ namespace YAXLibTests
 </MobilePhone>";
             var serializer = new YAXSerializer(typeof(CellPhone_CollectionNamespaceForAllItems), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(CellPhone_CollectionNamespaceForAllItems.GetSampleInstance());
-            Assert.AreEqual(result, got);
+            Assert.That(got, Is.EqualTo(result));
         }
 
         [Test]
@@ -209,7 +209,7 @@ namespace YAXLibTests
 
             var serializer = new YAXSerializer(typeof(CellPhone_YAXNamespaceOverridesImplicitNamespace), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(CellPhone_YAXNamespaceOverridesImplicitNamespace.GetSampleInstance());
-            Assert.AreEqual(result, got);
+            Assert.That(got, Is.EqualTo(result));
         }
 
         [Test]
@@ -234,7 +234,7 @@ namespace YAXLibTests
 
             var serializer = new YAXSerializer(typeof(MutlilevelObjectsWithNamespaces), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(MutlilevelObjectsWithNamespaces.GetSampleInstance());
-            Assert.AreEqual(result, got);
+            Assert.That(got, Is.EqualTo(result));
         }
 
 
@@ -434,7 +434,7 @@ namespace YAXLibTests
 
             var project = CsprojParser.Parse(csprojContent);
             string xml2 = CsprojParser.ParseAndRegenerateXml(csprojContent);
-            Assert.AreEqual(csprojContent, xml2);
+            Assert.That(xml2, Is.EqualTo(csprojContent));
         }
     }
 }

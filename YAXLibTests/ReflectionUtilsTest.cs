@@ -88,8 +88,8 @@ namespace YAXLibTests
             Assert.IsNotNull(type1);
             Assert.IsNotNull(type2);
             Assert.IsNotNull(type3);
-            Assert.AreEqual(type1, type2);
-            Assert.AreEqual(type2, type3);
+            Assert.That(type2, Is.EqualTo(type1));
+            Assert.That(type3, Is.EqualTo(type2));
         }
     }
 }

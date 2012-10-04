@@ -44,8 +44,8 @@ namespace YAXLibTests
             GetTheTwoStrings(obj, out originalString, out gottonString, out errorCounts);
             Assert.IsNotNull(originalString);
             Assert.IsNotNull(gottonString);
-            Assert.AreEqual(originalString, gottonString);
-            Assert.AreEqual(errorCounts, 0);
+            Assert.That(gottonString, Is.EqualTo(originalString));
+            Assert.That(errorCounts, Is.EqualTo(0));
         }
 
         [Test]
@@ -360,9 +360,9 @@ namespace YAXLibTests
             var serializer = new YAXSerializer(typeof(SerializationOptionsSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.DontSerializeNullObjects);
             var gottonObject = serializer.Deserialize(input1) as SerializationOptionsSample;
 
-            Assert.AreEqual(gottonObject.ObjectWithOptionsSet.SomeValueType, 123);
+            Assert.That(123, Is.EqualTo(gottonObject.ObjectWithOptionsSet.SomeValueType));
             Assert.IsNull(gottonObject.ObjectWithOptionsSet.StrNull);
-            Assert.AreEqual(serializer.ParsingErrors.Count, 1);
+            Assert.That(1, Is.EqualTo(serializer.ParsingErrors.Count));
         }
 
         [Test]

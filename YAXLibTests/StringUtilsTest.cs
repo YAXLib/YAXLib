@@ -62,8 +62,8 @@ namespace YAXLibTests
         {
             string path, alias;
             StringUtils.ExttractPathAndAliasFromLocationString(locationString, out path, out alias);
-            Assert.AreEqual(path, expPath);
-            Assert.AreEqual(alias, expAlias);
+            Assert.That(path, Is.EqualTo(expPath));
+            Assert.That(alias, Is.EqualTo(expAlias));
         }
 
         [Test]
@@ -92,45 +92,45 @@ namespace YAXLibTests
 
             string location = "..";
             bool returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
-            Assert.AreEqual(newLocation, "..");
-            Assert.AreEqual(newElement, null);
-            Assert.AreEqual(returnValue, false);
+            Assert.That(newLocation, Is.EqualTo(".."));
+            Assert.That(newElement, Is.Null);
+            Assert.That(returnValue, Is.False);
 
             location = ".";
             returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
-            Assert.AreEqual(newLocation, ".");
-            Assert.AreEqual(newElement, null);
-            Assert.AreEqual(returnValue, false);
+            Assert.That(newLocation, Is.EqualTo("."));
+            Assert.That(newElement, Is.Null);
+            Assert.That(returnValue, Is.False);
 
             location = "../..";
             returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
-            Assert.AreEqual(newLocation, "../..");
-            Assert.AreEqual(newElement, null);
-            Assert.AreEqual(returnValue, false);
+            Assert.That("../..", Is.EqualTo(newLocation));
+            Assert.That(newElement, Is.Null);
+            Assert.That(returnValue, Is.False);
 
             location = "../../folder";
             returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
-            Assert.AreEqual(newLocation, "../..");
-            Assert.AreEqual(newElement, "folder");
-            Assert.AreEqual(returnValue, true);
+            Assert.That(newLocation, Is.EqualTo("../.."));
+            Assert.That(newElement, Is.EqualTo("folder"));
+            Assert.That(returnValue, Is.True);
 
             location = "../../folder/..";
             returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
-            Assert.AreEqual(newLocation, "../../folder/..");
-            Assert.AreEqual(newElement, null);
-            Assert.AreEqual(returnValue, false);
+            Assert.That(newLocation, Is.EqualTo("../../folder/.."));
+            Assert.That(newElement, Is.Null);
+            Assert.That(returnValue, Is.False);
 
             location = "one/two/three/four";
             returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
-            Assert.AreEqual(newLocation, "one/two/three");
-            Assert.AreEqual(newElement, "four");
-            Assert.AreEqual(returnValue, true);
+            Assert.That(newLocation, Is.EqualTo("one/two/three"));
+            Assert.That(newElement, Is.EqualTo("four"));
+            Assert.That(returnValue, Is.True);
 
             location = "one";
             returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
-            Assert.AreEqual(newLocation, ".");
-            Assert.AreEqual(newElement, "one");
-            Assert.AreEqual(returnValue, true);
+            Assert.That(newLocation, Is.EqualTo("."));
+            Assert.That(newElement, Is.EqualTo("one"));
+            Assert.That(returnValue, Is.True);
         }
 
         [Test]

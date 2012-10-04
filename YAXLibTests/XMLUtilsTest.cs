@@ -28,10 +28,10 @@ namespace YAXLibTests
 
             Assert.IsTrue(XMLUtils.CanCreateLocation(elem, "level1/level2"));
             var created = XMLUtils.CreateLocation(elem, "level1/level2");
-            Assert.AreEqual(created.Name.ToString(), "level2");
+            Assert.That(created.Name.ToString(), Is.EqualTo("level2"));
             Assert.IsTrue(XMLUtils.LocationExists(elem, "level1/level2"));
             created = XMLUtils.CreateLocation(elem, "level1/level3");
-            Assert.AreEqual(created.Name.ToString(), "level3");
+            Assert.That(created.Name.ToString(), Is.EqualTo("level3"));
             Assert.IsTrue(XMLUtils.LocationExists(elem, "level1/level3"));
         }
     }
