@@ -3,6 +3,7 @@
 namespace YAXLibTests.SampleClasses
 {
     [YAXSerializeAs("container")]
+    [YAXNamespace("http://example.com")]
     public class DictionaryContainerSample
     {
         [YAXSerializeAs("items")]
