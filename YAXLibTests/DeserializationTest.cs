@@ -9,6 +9,8 @@
 //-----------------------------------------------------------------------
 
 using System;
+using System.Globalization;
+using System.Threading;
 
 using NUnit.Framework;
 
@@ -20,6 +22,12 @@ namespace YAXLibTests
     [TestFixture]
     public class DeserializationTest
     {
+        [TestFixtureSetUp]
+        public void TestFixtureSetUp()
+        {
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+        }
+
         private void GetTheTwoStrings(object obj, out string originalString, out string gottonString, out int errorCounts)
         {
             originalString = GeneralToStringProvider.GeneralToString(obj);

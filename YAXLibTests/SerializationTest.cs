@@ -23,6 +23,12 @@ namespace YAXLibTests
     [TestFixture]
     public class SerializationTest
     {
+        [TestFixtureSetUp]
+        public void TestFixtureSetUp()
+        {
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+        }
+
         [Test]
         public void BasicTypeSerializationTest()
         {
@@ -341,7 +347,7 @@ namespace YAXLibTests
   </SomeLogarithmExample>
 </FormattingExample>";
 
-            result = string.Format(result,
+            result = String.Format(result,
                 FormattingExample.GetSampleInstance().CreationDate.ToLongDateString(),
                 FormattingExample.GetSampleInstance().ModificationDate.ToShortDateString()
                 );
