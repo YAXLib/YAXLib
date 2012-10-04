@@ -1518,10 +1518,8 @@ namespace YAXLibTests
             var desObj = ser.Deserialize(xmlResult);
             Assert.AreEqual(lst.GetType(), desObj.GetType());
             var desLst = desObj as List<int>;
-            Assert.AreEqual(lst.Count, desLst.Count);
-            Assert.AreEqual(lst[0], desLst[0]);
-            Assert.AreEqual(lst[1], desLst[1]);
-            Assert.AreEqual(lst[2], desLst[2]);
+            Assert.That(lst, Has.Count.EqualTo(desLst.Count));
+            Assert.That(lst, Is.EquivalentTo(desLst));
         }
 
         [Test]
@@ -1542,10 +1540,8 @@ namespace YAXLibTests
             var desObj = ser.Deserialize(xmlResult);
             Assert.AreEqual(lst.GetType(), desObj.GetType());
             var desLst = desObj as List<object>;
-            Assert.AreEqual(lst.Count, desLst.Count);
-            Assert.AreEqual(lst[0], desLst[0]);
-            Assert.AreEqual(lst[1], desLst[1]);
-            Assert.AreEqual(lst[2], desLst[2]);
+            Assert.That(lst, Has.Count.EqualTo(desLst.Count));
+            Assert.That(lst, Is.EquivalentTo(desLst));
         }
 
         [Test]
