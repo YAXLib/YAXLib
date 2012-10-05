@@ -1,3 +1,8 @@
+[2.10.1] October 4, 2012
+   * Allowing dashes to appear in name aliases
+     Thanks go to Asbjørn Ulsberg for fixing the issue and providing
+     unit tests.
+
 [2.10] October 1, 2012
    * Full support for XML Namespaces. 
    * Defining XML namespaces through [YAXNamespace] attribute which 
