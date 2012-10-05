@@ -69,10 +69,10 @@ namespace YAXLibTests
         [Test]
         public void IsLocationAllGenericTest()
         {
-            Assert.IsTrue(StringUtils.IsLocationAllGeneric(".."));
-            Assert.IsTrue(StringUtils.IsLocationAllGeneric("."));
-            Assert.IsTrue(StringUtils.IsLocationAllGeneric("./.."));
-            Assert.IsTrue(StringUtils.IsLocationAllGeneric("../.."));
+            Assert.That(StringUtils.IsLocationAllGeneric(".."), Is.True);
+            Assert.That(StringUtils.IsLocationAllGeneric("."), Is.True);
+            Assert.That(StringUtils.IsLocationAllGeneric("./.."), Is.True);
+            Assert.That(StringUtils.IsLocationAllGeneric("../.."), Is.True);
 
             Assert.IsFalse(StringUtils.IsLocationAllGeneric("../one/.."));
             Assert.IsFalse(StringUtils.IsLocationAllGeneric("../one"));
@@ -146,7 +146,7 @@ namespace YAXLibTests
 
             foreach (var trueCase in trueCases)
             {
-                Assert.IsTrue(StringUtils.LooksLikeExpandedXName(trueCase));
+                Assert.That(StringUtils.LooksLikeExpandedXName(trueCase), Is.True);
             }
         } 
     }

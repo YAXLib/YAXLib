@@ -1223,7 +1223,7 @@ namespace YAXLibTests
             //result.ShouldEqualWithDiff(got, DiffStyle.Minimal);
             bool result1Match = String.Equals(got, possibleResult1, StringComparison.Ordinal);
             bool result2Match = String.Equals(got, possibleResult2, StringComparison.Ordinal);
-            Assert.IsTrue(result1Match || result2Match);
+            Assert.That(result1Match || result2Match, Is.True);
         }
 
 

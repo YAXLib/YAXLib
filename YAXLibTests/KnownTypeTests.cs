@@ -59,7 +59,7 @@ namespace YAXLibTests
             var serializer = new YAXSerializer(typeToTest);
             var typeWrapper = new UdtWrapper(typeToTest, serializer);
 
-            Assert.IsTrue(typeWrapper.IsKnownType);
+            Assert.That(typeWrapper.IsKnownType, Is.True);
         }
 
         [Test]
