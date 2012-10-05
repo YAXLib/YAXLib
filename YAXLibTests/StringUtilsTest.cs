@@ -104,7 +104,7 @@ namespace YAXLibTests
 
             location = "../..";
             returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
-            Assert.That("../..", Is.EqualTo(newLocation));
+            Assert.That(newLocation, Is.EqualTo("../.."));
             Assert.That(newElement, Is.Null);
             Assert.That(returnValue, Is.False);
 
