@@ -74,14 +74,14 @@ namespace YAXLibTests
             Assert.That(StringUtils.IsLocationAllGeneric("./.."), Is.True);
             Assert.That(StringUtils.IsLocationAllGeneric("../.."), Is.True);
 
-            Assert.IsFalse(StringUtils.IsLocationAllGeneric("../one/.."));
-            Assert.IsFalse(StringUtils.IsLocationAllGeneric("../one"));
-            Assert.IsFalse(StringUtils.IsLocationAllGeneric("one/.."));
-            Assert.IsFalse(StringUtils.IsLocationAllGeneric("one"));
-            Assert.IsFalse(StringUtils.IsLocationAllGeneric("one/../two"));
-            Assert.IsFalse(StringUtils.IsLocationAllGeneric("../one/../two"));
-            Assert.IsFalse(StringUtils.IsLocationAllGeneric("../one/../two/.."));
-            Assert.IsFalse(StringUtils.IsLocationAllGeneric("one/../two/.."));
+            Assert.That(StringUtils.IsLocationAllGeneric("../one/.."), Is.False);
+            Assert.That(StringUtils.IsLocationAllGeneric("../one"), Is.False);
+            Assert.That(StringUtils.IsLocationAllGeneric("one/.."), Is.False);
+            Assert.That(StringUtils.IsLocationAllGeneric("one"), Is.False);
+            Assert.That(StringUtils.IsLocationAllGeneric("one/../two"), Is.False);
+            Assert.That(StringUtils.IsLocationAllGeneric("../one/../two"), Is.False);
+            Assert.That(StringUtils.IsLocationAllGeneric("../one/../two/.."), Is.False);
+            Assert.That(StringUtils.IsLocationAllGeneric("one/../two/.."), Is.False);
         }
 
         [Test]
@@ -141,7 +141,7 @@ namespace YAXLibTests
 
             foreach (var falseCase in falseCases)
             {
-                Assert.IsFalse(StringUtils.LooksLikeExpandedXName(falseCase));
+                Assert.That(StringUtils.LooksLikeExpandedXName(falseCase), Is.False);
             }
 
             foreach (var trueCase in trueCases)
