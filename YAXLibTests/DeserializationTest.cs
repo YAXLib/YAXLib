@@ -42,8 +42,8 @@ namespace YAXLibTests
             string originalString, gottonString;
             int errorCounts;
             GetTheTwoStrings(obj, out originalString, out gottonString, out errorCounts);
-            Assert.IsNotNull(originalString);
-            Assert.IsNotNull(gottonString);
+            Assert.That(originalString, Is.Not.Null);
+            Assert.That(gottonString, Is.Not.Null);
             Assert.That(gottonString, Is.EqualTo(originalString));
             Assert.That(errorCounts, Is.EqualTo(0));
         }

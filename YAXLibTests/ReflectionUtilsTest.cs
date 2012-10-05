@@ -85,9 +85,9 @@ namespace YAXLibTests
             var type1 = ReflectionUtils.GetTypeByName("System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]");
             var type2 = ReflectionUtils.GetTypeByName("System.Collections.Generic.List`1[[System.Int32]]");
             var type3 = ReflectionUtils.GetTypeByName("System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral]]");
-            Assert.IsNotNull(type1);
-            Assert.IsNotNull(type2);
-            Assert.IsNotNull(type3);
+            Assert.That(type1, Is.Not.Null);
+            Assert.That(type2, Is.Not.Null);
+            Assert.That(type3, Is.Not.Null);
             Assert.That(type2, Is.EqualTo(type1));
             Assert.That(type3, Is.EqualTo(type2));
         }

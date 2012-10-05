@@ -78,7 +78,7 @@ namespace YAXLibTests
                             string got = serializer.Serialize(Book.GetSampleInstance());
                             var deserializer = new YAXSerializer(typeof(Book), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
                             var book = deserializer.Deserialize(got) as Book;
-                            Assert.IsNotNull(book);
+                            Assert.That(book, Is.Not.Null);
                         }
                     );
 
@@ -1374,7 +1374,7 @@ namespace YAXLibTests
             var initialXmlSer = ser.Serialize(initialInstance);
 
             var initialInstDes = ser.Deserialize(initialXmlSer) as ClassContainingXElement;
-            Assert.IsNotNull(initialInstDes);
+            Assert.That(initialInstDes, Is.Not.Null);
             var initialInstDesString = initialInstDes.ToString();
 
             Assert.That(initialInstDesString, Is.EqualTo(initialInstanceString));
