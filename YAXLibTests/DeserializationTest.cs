@@ -361,7 +361,7 @@ namespace YAXLibTests
             var gottonObject = serializer.Deserialize(input1) as SerializationOptionsSample;
 
             Assert.That(123, Is.EqualTo(gottonObject.ObjectWithOptionsSet.SomeValueType));
-            Assert.IsNull(gottonObject.ObjectWithOptionsSet.StrNull);
+            Assert.That(gottonObject.ObjectWithOptionsSet.StrNull, Is.Null);
             Assert.That(1, Is.EqualTo(serializer.ParsingErrors.Count));
         }
 
