@@ -40,6 +40,7 @@ namespace YAXLibTests
             Assert.AreEqual(StringUtils.RefineLocationString("one / two / .. / four / "), "one/two/../four");
             Assert.AreEqual(StringUtils.RefineLocationString("one / two / . . / four / "), "one/two/___/four");
             Assert.AreEqual(StringUtils.RefineLocationString("one / two / two:words.are / four "), "one/two/two_words_are/four");
+            Assert.AreEqual(StringUtils.RefineLocationString("one-two-three-four"), "one-two-three-four");
         }
 
         [TestMethod]

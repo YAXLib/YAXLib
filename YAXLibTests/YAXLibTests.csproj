@@ -104,6 +104,7 @@
     <Compile Include="SampleClasses\CollectionSeriallyAsAttribute.cs" />
     <Compile Include="SampleClasses\ColorExample.cs" />
     <Compile Include="SampleClasses\CsprojParser.cs" />
+    <Compile Include="SampleClasses\DashedSample.cs" />
     <Compile Include="SampleClasses\DictionaryContainerSample.cs" />
     <Compile Include="SampleClasses\DictionarySample.cs" />
     <Compile Include="SampleClasses\Namespace\AttributeNamespaceSample.cs" />

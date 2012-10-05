@@ -1541,6 +1541,21 @@ namespace YAXLibTests
         }
 
         [TestMethod]
+        public void DashPreservationTest()
+        {
+            const string expectedResult = @"<dashed-sample dashed-name=""Name"" />";
+
+            DashedSample sample = new DashedSample
+            {
+                DashedName = "Name"
+            };
+
+            YAXSerializer ser = new YAXSerializer(typeof(DashedSample));
+            string got = ser.Serialize(sample);
+            Assert.AreEqual(expectedResult, got);
+        }
+
+        [TestMethod]
         public void AttributeForClassTest()
         {
             AttributeContainerSample container = new AttributeContainerSample
