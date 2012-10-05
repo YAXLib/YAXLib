@@ -1,37 +1,39 @@
 ﻿using System.Drawing;
 using System.Xml.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using NUnit.Framework;
+
 using YAXLib;
 using System;
 using YAXLibTests.SampleClasses;
 
 namespace YAXLibTests
 {
-    [TestClass]
+    [TestFixture]
     public class KnownTypeTests
     {
-        [TestMethod]
+        [Test]
         public void TestExtensionMethod()
         {
             var colorKnownType = new ColorKnownType();
             var t1 = colorKnownType.Type;
             IKnownType kt = new ColorKnownType();
 
-            Assert.AreEqual(t1, kt.Type);
+            Assert.That(kt.Type, Is.EqualTo(t1));
         }
 
-        [TestMethod]
+        [Test]
         public void TestColorNames()
         {
             var colorKnownType = new ColorKnownType();
 
             var elem = new XElement("TheColor", "Red");
             var desCl = colorKnownType.Deserialize(elem, "");
-            Assert.AreEqual(Color.Red.ToArgb(), desCl.ToArgb());
+            Assert.That(desCl.ToArgb(), Is.EqualTo(Color.Red.ToArgb()));
 
             var serElem = new XElement("TheColor");
             colorKnownType.Serialize(Color.Red, serElem, "");
-            Assert.AreEqual(elem.ToString(), serElem.ToString());
+            Assert.That(serElem.ToString(), Is.EqualTo(elem.ToString()));
 
             var elemRgbForRed = new XElement("TheColor", 
                 new XElement("A", 255),
@@ -39,7 +41,7 @@ namespace YAXLibTests
                 new XElement("G", 0),
                 new XElement("B", 0));
             var desCl2 = colorKnownType.Deserialize(elemRgbForRed, "");
-            Assert.AreEqual(Color.Red.ToArgb(), desCl2.ToArgb());
+            Assert.That(desCl2.ToArgb(), Is.EqualTo(Color.Red.ToArgb()));
 
             var elemRgbAndValueForRed = new XElement("TheColor",
                 "Blue",
@@ -47,20 +49,20 @@ namespace YAXLibTests
                 new XElement("G", 0),
                 new XElement("B", 0));
             var desCl3 = colorKnownType.Deserialize(elemRgbAndValueForRed, "");
-            Assert.AreEqual(Color.Red.ToArgb(), desCl3.ToArgb());
+            Assert.That(desCl3.ToArgb(), Is.EqualTo(Color.Red.ToArgb()));
         }
 
-        [TestMethod]
+        [Test]
         public void TestWrappers()
         {
             var typeToTest = typeof (TimeSpan);
             var serializer = new YAXSerializer(typeToTest);
             var typeWrapper = new UdtWrapper(typeToTest, serializer);
 
-            Assert.IsTrue(typeWrapper.IsKnownType);
+            Assert.That(typeWrapper.IsKnownType, Is.True);
         }
 
-        [TestMethod]
+        [Test]
         public void TestSingleKnownTypeSerialization()
         {
             var typeToTest = typeof(Color);
@@ -76,16 +78,16 @@ namespace YAXLibTests
   <B>123</B>
 </Color>";
 
-            Assert.AreEqual(expectedCol1, colStr1);
+            Assert.That(colStr1, Is.EqualTo(expectedCol1));
 
             var col2 = SystemColors.ButtonFace;
             var colStr2 = serializer.Serialize(col2);
             const string expectedCol2 = @"<Color>ButtonFace</Color>";
 
-            Assert.AreEqual(expectedCol2, colStr2);
+            Assert.That(colStr2, Is.EqualTo(expectedCol2));
         }
 
-        [TestMethod]
+        [Test]
         public void TestSerializingNDeserializingNullKnownTypes()
         {
             var inst = ClassContainingXElement.GetSampleInstance();
@@ -99,7 +101,7 @@ namespace YAXLibTests
             {
                 var xml = ser.Serialize(inst);
                 var deseredInstance = ser.Deserialize(xml);
-                Assert.AreEqual(inst.ToString(), deseredInstance.ToString());
+                Assert.That(deseredInstance.ToString(), Is.EqualTo(inst.ToString()));
             }
             catch (Exception ex)
             {

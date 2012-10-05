@@ -8,7 +8,8 @@
 // LIABILITY FOR ANY DATA DAMAGE/LOSS THAT THIS PRODUCT MAY CAUSE.
 //-----------------------------------------------------------------------
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+
 using YAXLib;
 
 namespace YAXLibTests
@@ -16,34 +17,34 @@ namespace YAXLibTests
     /// <summary>
     /// Summary description for StringUtilsTest
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class StringUtilsTest
     {
-        [TestMethod]
+        [Test]
         public void RefineElementNameTest()
         {
-            Assert.AreEqual(StringUtils.RefineLocationString(".."), "..");
-            Assert.AreEqual(StringUtils.RefineLocationString("."), ".");
-            Assert.AreEqual(StringUtils.RefineLocationString("      "), ".");
-            Assert.AreEqual(StringUtils.RefineLocationString(" /      \\ "), ".");
-            Assert.AreEqual(StringUtils.RefineLocationString("ans"), "ans");
-            Assert.AreEqual(StringUtils.RefineLocationString("/ans"), "ans");
-            Assert.AreEqual(StringUtils.RefineLocationString("/ans/"), "ans");
-            Assert.AreEqual(StringUtils.RefineLocationString("ans/"), "ans");
-            Assert.AreEqual(StringUtils.RefineLocationString("ans/////"), "ans");
-            Assert.AreEqual(StringUtils.RefineLocationString("ans\\\\\\"), "ans");
-            Assert.AreEqual(StringUtils.RefineLocationString("..."), "___");
-            Assert.AreEqual(StringUtils.RefineLocationString("one / two / three / four "), "one/two/three/four");
-            Assert.AreEqual(StringUtils.RefineLocationString("one / two \\ three / four "), "one/two/three/four");
-            Assert.AreEqual(StringUtils.RefineLocationString("one / two / three and else / four "), "one/two/three_and_else/four");
-            Assert.AreEqual(StringUtils.RefineLocationString("one / two / .. / four "), "one/two/../four");
-            Assert.AreEqual(StringUtils.RefineLocationString("one / two / .. / four / "), "one/two/../four");
-            Assert.AreEqual(StringUtils.RefineLocationString("one / two / . . / four / "), "one/two/___/four");
-            Assert.AreEqual(StringUtils.RefineLocationString("one / two / two:words.are / four "), "one/two/two_words_are/four");
-            Assert.AreEqual(StringUtils.RefineLocationString("one-two-three-four"), "one-two-three-four");
+            Assert.That(StringUtils.RefineLocationString(".."), Is.EqualTo(".."));
+            Assert.That(StringUtils.RefineLocationString("."), Is.EqualTo("."));
+            Assert.That(StringUtils.RefineLocationString("      "), Is.EqualTo("."));
+            Assert.That(StringUtils.RefineLocationString(" /      \\ "), Is.EqualTo("."));
+            Assert.That(StringUtils.RefineLocationString("ans"), Is.EqualTo("ans"));
+            Assert.That(StringUtils.RefineLocationString("/ans"), Is.EqualTo("ans"));
+            Assert.That(StringUtils.RefineLocationString("/ans/"), Is.EqualTo("ans"));
+            Assert.That(StringUtils.RefineLocationString("ans/"), Is.EqualTo("ans"));
+            Assert.That(StringUtils.RefineLocationString("ans/////"), Is.EqualTo("ans"));
+            Assert.That(StringUtils.RefineLocationString("ans\\\\\\"), Is.EqualTo("ans"));
+            Assert.That(StringUtils.RefineLocationString("..."), Is.EqualTo("___"));
+            Assert.That(StringUtils.RefineLocationString("one / two / three / four "), Is.EqualTo("one/two/three/four"));
+            Assert.That(StringUtils.RefineLocationString("one / two \\ three / four "), Is.EqualTo("one/two/three/four"));
+            Assert.That(StringUtils.RefineLocationString("one / two / three and else / four "), Is.EqualTo("one/two/three_and_else/four"));
+            Assert.That(StringUtils.RefineLocationString("one / two / .. / four "), Is.EqualTo("one/two/../four"));
+            Assert.That(StringUtils.RefineLocationString("one / two / .. / four / "), Is.EqualTo("one/two/../four"));
+            Assert.That(StringUtils.RefineLocationString("one / two / . . / four / "), Is.EqualTo("one/two/___/four"));
+            Assert.That(StringUtils.RefineLocationString("one / two / two:words.are / four "), Is.EqualTo("one/two/two_words_are/four"));
+            Assert.That(StringUtils.RefineLocationString("one-two-three-four"), Is.EqualTo("one-two-three-four"));
         }
 
-        [TestMethod]
+        [Test]
         public void ExtractPathAndAliasTest()
         {
             TestPathAndAlias("one/two#name", "one/two", "name");
@@ -57,33 +58,33 @@ namespace YAXLibTests
             TestPathAndAlias("# one / two ", "", "one / two");
         }
 
-        private static void TestPathAndAlias(string locationString, string expPath, string expAlias)
+        private static void TestPathAndAlias(string locationString, string expectedPath, string expectedAlias)
         {
             string path, alias;
             StringUtils.ExttractPathAndAliasFromLocationString(locationString, out path, out alias);
-            Assert.AreEqual(path, expPath);
-            Assert.AreEqual(alias, expAlias);
+            Assert.That(path, Is.EqualTo(expectedPath));
+            Assert.That(alias, Is.EqualTo(expectedAlias));
         }
 
-        [TestMethod]
+        [Test]
         public void IsLocationAllGenericTest()
         {
-            Assert.IsTrue(StringUtils.IsLocationAllGeneric(".."));
-            Assert.IsTrue(StringUtils.IsLocationAllGeneric("."));
-            Assert.IsTrue(StringUtils.IsLocationAllGeneric("./.."));
-            Assert.IsTrue(StringUtils.IsLocationAllGeneric("../.."));
+            Assert.That(StringUtils.IsLocationAllGeneric(".."), Is.True);
+            Assert.That(StringUtils.IsLocationAllGeneric("."), Is.True);
+            Assert.That(StringUtils.IsLocationAllGeneric("./.."), Is.True);
+            Assert.That(StringUtils.IsLocationAllGeneric("../.."), Is.True);
 
-            Assert.IsFalse(StringUtils.IsLocationAllGeneric("../one/.."));
-            Assert.IsFalse(StringUtils.IsLocationAllGeneric("../one"));
-            Assert.IsFalse(StringUtils.IsLocationAllGeneric("one/.."));
-            Assert.IsFalse(StringUtils.IsLocationAllGeneric("one"));
-            Assert.IsFalse(StringUtils.IsLocationAllGeneric("one/../two"));
-            Assert.IsFalse(StringUtils.IsLocationAllGeneric("../one/../two"));
-            Assert.IsFalse(StringUtils.IsLocationAllGeneric("../one/../two/.."));
-            Assert.IsFalse(StringUtils.IsLocationAllGeneric("one/../two/.."));
+            Assert.That(StringUtils.IsLocationAllGeneric("../one/.."), Is.False);
+            Assert.That(StringUtils.IsLocationAllGeneric("../one"), Is.False);
+            Assert.That(StringUtils.IsLocationAllGeneric("one/.."), Is.False);
+            Assert.That(StringUtils.IsLocationAllGeneric("one"), Is.False);
+            Assert.That(StringUtils.IsLocationAllGeneric("one/../two"), Is.False);
+            Assert.That(StringUtils.IsLocationAllGeneric("../one/../two"), Is.False);
+            Assert.That(StringUtils.IsLocationAllGeneric("../one/../two/.."), Is.False);
+            Assert.That(StringUtils.IsLocationAllGeneric("one/../two/.."), Is.False);
         }
 
-        [TestMethod]
+        [Test]
         public void DivideLocationOneStepTest()
         {
             string newLocation;
@@ -91,48 +92,48 @@ namespace YAXLibTests
 
             string location = "..";
             bool returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
-            Assert.AreEqual(newLocation, "..");
-            Assert.AreEqual(newElement, null);
-            Assert.AreEqual(returnValue, false);
+            Assert.That(newLocation, Is.EqualTo(".."));
+            Assert.That(newElement, Is.Null);
+            Assert.That(returnValue, Is.False);
 
             location = ".";
             returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
-            Assert.AreEqual(newLocation, ".");
-            Assert.AreEqual(newElement, null);
-            Assert.AreEqual(returnValue, false);
+            Assert.That(newLocation, Is.EqualTo("."));
+            Assert.That(newElement, Is.Null);
+            Assert.That(returnValue, Is.False);
 
             location = "../..";
             returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
-            Assert.AreEqual(newLocation, "../..");
-            Assert.AreEqual(newElement, null);
-            Assert.AreEqual(returnValue, false);
+            Assert.That(newLocation, Is.EqualTo("../.."));
+            Assert.That(newElement, Is.Null);
+            Assert.That(returnValue, Is.False);
 
             location = "../../folder";
             returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
-            Assert.AreEqual(newLocation, "../..");
-            Assert.AreEqual(newElement, "folder");
-            Assert.AreEqual(returnValue, true);
+            Assert.That(newLocation, Is.EqualTo("../.."));
+            Assert.That(newElement, Is.EqualTo("folder"));
+            Assert.That(returnValue, Is.True);
 
             location = "../../folder/..";
             returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
-            Assert.AreEqual(newLocation, "../../folder/..");
-            Assert.AreEqual(newElement, null);
-            Assert.AreEqual(returnValue, false);
+            Assert.That(newLocation, Is.EqualTo("../../folder/.."));
+            Assert.That(newElement, Is.Null);
+            Assert.That(returnValue, Is.False);
 
             location = "one/two/three/four";
             returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
-            Assert.AreEqual(newLocation, "one/two/three");
-            Assert.AreEqual(newElement, "four");
-            Assert.AreEqual(returnValue, true);
+            Assert.That(newLocation, Is.EqualTo("one/two/three"));
+            Assert.That(newElement, Is.EqualTo("four"));
+            Assert.That(returnValue, Is.True);
 
             location = "one";
             returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
-            Assert.AreEqual(newLocation, ".");
-            Assert.AreEqual(newElement, "one");
-            Assert.AreEqual(returnValue, true);
+            Assert.That(newLocation, Is.EqualTo("."));
+            Assert.That(newElement, Is.EqualTo("one"));
+            Assert.That(returnValue, Is.True);
         }
 
-        [TestMethod]
+        [Test]
         public void LooksLikeExpandedNameTest()
         {
             var falseCases = new[] {"", "    ", "{}", "{a", "{} ", " {}", " {} ", " {a} ", "{a}", "{a}    ", "something"};
@@ -140,12 +141,12 @@ namespace YAXLibTests
 
             foreach (var falseCase in falseCases)
             {
-                Assert.IsFalse(StringUtils.LooksLikeExpandedXName(falseCase));
+                Assert.That(StringUtils.LooksLikeExpandedXName(falseCase), Is.False);
             }
 
             foreach (var trueCase in trueCases)
             {
-                Assert.IsTrue(StringUtils.LooksLikeExpandedXName(trueCase));
+                Assert.That(StringUtils.LooksLikeExpandedXName(trueCase), Is.True);
             }
         } 
     }

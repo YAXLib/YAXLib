@@ -10,3 +10,5 @@ YAXLibTests/bin/
 TestResults/
 Bin/*.dll
 Bin/*.xml
+/packages/*
+!/packages/repositories.config
