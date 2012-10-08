@@ -8,7 +8,8 @@
 // LIABILITY FOR ANY DATA DAMAGE/LOSS THAT THIS PRODUCT MAY CAUSE.
 //-----------------------------------------------------------------------
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+
 using YAXLib;
 using System.Xml.Linq;
 
@@ -17,21 +18,21 @@ namespace YAXLibTests
     /// <summary>
     /// Summary description for XMLUtilsTest
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class XMLUtilsTest
     {
-        [TestMethod]
+        [Test]
         public void CanCreateLocationTest()
         {
             var elem = new XElement("Base", null);
 
-            Assert.IsTrue(XMLUtils.CanCreateLocation(elem, "level1/level2"));
+            Assert.That(XMLUtils.CanCreateLocation(elem, "level1/level2"), Is.True);
             var created = XMLUtils.CreateLocation(elem, "level1/level2");
-            Assert.AreEqual(created.Name.ToString(), "level2");
-            Assert.IsTrue(XMLUtils.LocationExists(elem, "level1/level2"));
+            Assert.That(created.Name.ToString(), Is.EqualTo("level2"));
+            Assert.That(XMLUtils.LocationExists(elem, "level1/level2"), Is.True);
             created = XMLUtils.CreateLocation(elem, "level1/level3");
-            Assert.AreEqual(created.Name.ToString(), "level3");
-            Assert.IsTrue(XMLUtils.LocationExists(elem, "level1/level3"));
+            Assert.That(created.Name.ToString(), Is.EqualTo("level3"));
+            Assert.That(XMLUtils.LocationExists(elem, "level1/level3"), Is.True);
         }
     }
 }
