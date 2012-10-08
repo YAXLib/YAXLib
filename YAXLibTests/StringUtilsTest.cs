@@ -33,15 +33,20 @@ namespace YAXLibTests
             Assert.That(StringUtils.RefineLocationString("ans/"), Is.EqualTo("ans"));
             Assert.That(StringUtils.RefineLocationString("ans/////"), Is.EqualTo("ans"));
             Assert.That(StringUtils.RefineLocationString("ans\\\\\\"), Is.EqualTo("ans"));
-            Assert.That(StringUtils.RefineLocationString("..."), Is.EqualTo("___"));
+            Assert.That(StringUtils.RefineLocationString("..."), Is.EqualTo("_.."));
             Assert.That(StringUtils.RefineLocationString("one / two / three / four "), Is.EqualTo("one/two/three/four"));
             Assert.That(StringUtils.RefineLocationString("one / two \\ three / four "), Is.EqualTo("one/two/three/four"));
             Assert.That(StringUtils.RefineLocationString("one / two / three and else / four "), Is.EqualTo("one/two/three_and_else/four"));
             Assert.That(StringUtils.RefineLocationString("one / two / .. / four "), Is.EqualTo("one/two/../four"));
             Assert.That(StringUtils.RefineLocationString("one / two / .. / four / "), Is.EqualTo("one/two/../four"));
-            Assert.That(StringUtils.RefineLocationString("one / two / . . / four / "), Is.EqualTo("one/two/___/four"));
-            Assert.That(StringUtils.RefineLocationString("one / two / two:words.are / four "), Is.EqualTo("one/two/two_words_are/four"));
+            Assert.That(StringUtils.RefineLocationString("one / two / . . / four / "), Is.EqualTo("one/two/__./four"));
+            Assert.That(StringUtils.RefineLocationString("one / two / two:words.are / four "), Is.EqualTo("one/two/two_words.are/four"));
             Assert.That(StringUtils.RefineLocationString("one-two-three-four"), Is.EqualTo("one-two-three-four"));
+            Assert.That(StringUtils.RefineLocationString("one.two.three.four"), Is.EqualTo("one.two.three.four"));
+            Assert.That(StringUtils.RefineLocationString(".one"), Is.EqualTo("_one"));
+            Assert.That(StringUtils.RefineLocationString("-one"), Is.EqualTo("_one"));
+            Assert.That(StringUtils.RefineLocationString("one."), Is.EqualTo("one."));
+            Assert.That(StringUtils.RefineLocationString("one-"), Is.EqualTo("one-"));
         }
 
         [Test]
