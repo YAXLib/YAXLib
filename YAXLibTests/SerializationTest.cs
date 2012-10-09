@@ -1560,7 +1560,7 @@ namespace YAXLibTests
         }
 
         
-        [TestMethod]
+        [Test]
         public void AttributeForClassTest()
         {
             AttributeContainerSample container = new AttributeContainerSample
@@ -1583,7 +1583,7 @@ namespace YAXLibTests
             Assert.AreEqual(expectedResult, result);
         }
 
-        [TestMethod]
+        [Test]
         public void AttributeForKeyInDictionaryTest()
         {
             DictionarySample dictionary = new DictionarySample
@@ -1608,7 +1608,7 @@ namespace YAXLibTests
             Assert.AreEqual(expectedResult, result);
         }
 
-        [TestMethod]
+        [Test]
         public void AttributeForKeyInDictionaryPropertyTest()
         {
             DictionaryContainerSample container = new DictionaryContainerSample

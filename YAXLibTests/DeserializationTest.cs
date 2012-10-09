@@ -407,7 +407,7 @@ namespace YAXLibTests
             PerformTest(obj);
         }
 
-        [TestMethod]
+        [Test]
         public void AttributeForKeyInDictionaryPropertyTest()
         {
             DictionaryContainerSample container = new DictionaryContainerSample
