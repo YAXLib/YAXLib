@@ -21,13 +21,9 @@ namespace YAXLibTests.SampleClasses
 
         public static DictionaryContainerSample GetSampleInstance()
         {
-            DictionaryContainerSample container = new DictionaryContainerSample
+            var container = new DictionaryContainerSample
             {
-                Items = new DictionarySample
-                {
-                    { "key1", new Guid(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)},
-                    { "key2", 1234 },
-                }
+                Items =  DictionarySample.GetSampleInstance()
             };
 
             return container;
@@ -41,8 +37,18 @@ namespace YAXLibTests.SampleClasses
 
     [YAXSerializeAs("items")]
     [YAXNamespace("http://example.com/")]
-    public class DictionarySample : Dictionary<string, object>
+    public class DictionarySample : Dictionary<string, string>
     {
+        public static DictionarySample GetSampleInstance()
+        {
+            var dictionary = new DictionarySample
+            {
+                    { "key1", new Guid(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11).ToString()},
+                    { "key2", 1234.ToString() },
+            };
+
+            return dictionary;
+        }
     }
 
 }

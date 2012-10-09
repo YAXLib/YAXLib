@@ -622,8 +622,6 @@ namespace YAXLib
 
                     bool areOfSameType = true; // are element value and the member declared type the same?
                     object originalValue = member.GetOriginalValue(obj, null);
-                    // TODO: remove later
-                    //if (elementValue != null && member.MemberType != originalValue.GetType())
                     if (elementValue != null && !member.MemberType.EqualsOrIsNullableOf(originalValue.GetType()))
                     {
                         areOfSameType = false;

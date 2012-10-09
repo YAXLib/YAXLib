@@ -7,6 +7,25 @@ namespace YAXLibTests.SampleClasses
     {
         [YAXSerializeAs("range")]
         public AttributeSample Range { get; set; } 
+
+        public static AttributeContainerSample GetSampleInstance()
+        {
+            var container = new AttributeContainerSample
+            {
+                Range = new AttributeSample
+                {
+                    From = 1,
+                    To = 3,
+                }
+            };
+
+            return container;
+        }
+
+        public override string ToString()
+        {
+            return GeneralToStringProvider.GeneralToString(this);
+        }
     }
 
     public class AttributeSample

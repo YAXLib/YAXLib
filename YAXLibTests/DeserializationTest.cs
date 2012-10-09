@@ -410,14 +410,7 @@ namespace YAXLibTests
         [Test]
         public void AttributeForKeyInDictionaryPropertyTest()
         {
-            DictionaryContainerSample container = new DictionaryContainerSample
-            {
-                Items = new DictionarySample
-                {
-                    { "key1", new Guid(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)},
-                    { "key2", 1234 },
-                }
-            };
+            var container = DictionaryContainerSample.GetSampleInstance();
             
             var ser = new YAXSerializer(typeof(DictionaryContainerSample));
 

@@ -6,7 +6,6 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses.Namespace
 {
-    [ShowInDemoApplication(SortKey="_")]
     [YAXNamespace("http://www.mywarehouse.com/warehouse/def/v3")]
     public class Warehouse_Dictionary
     {
