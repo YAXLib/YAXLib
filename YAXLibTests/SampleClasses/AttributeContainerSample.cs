@@ -8,4 +8,16 @@ namespace YAXLibTests.SampleClasses
         [YAXSerializeAs("range")]
         public AttributeSample Range { get; set; } 
     }
+
+    public class AttributeSample
+    {
+        [YAXSerializeAs("from")]
+        [YAXAttributeForClass]
+        public int? From { get; set; }
+
+        [YAXSerializeAs("to")]
+        [YAXAttributeForClass]
+        public int? To { get; set; }
+    }
+
 }

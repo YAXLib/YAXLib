@@ -284,16 +284,7 @@ namespace YAXLib
                     return null; // we cannot create another one with the same name
             }
 
-            var newAttrName = attrName;
-            
-            // the following stupid code is because of odd behaviour of LINQ to XML
-            if (newAttrName.Namespace == newLoc.Name.Namespace)
-                newAttrName = newAttrName.RemoveNamespace();
-
-            string strAttrValue = Convert.ToString((attrValue ?? String.Empty), CultureInfo.InvariantCulture);
-            var newAttr = new XAttribute(newAttrName, strAttrValue);
-            newLoc.Add(newAttr);
-            return newAttr;
+            return newLoc.AddAttributeNamespaceSafe(attrName, attrValue);
         }
 
         /// <summary>
@@ -430,7 +421,7 @@ namespace YAXLib
         /// <returns></returns>
         public static XElement AddPreserveSpaceAttribute(XElement element)
         {
-            element.Add(new XAttribute(XNamespace.Xml + "space", "preserve"));
+            element.AddAttributeNamespaceSafe(XNamespace.Xml + "space", "preserve");
             return element;
         }
         
@@ -448,6 +439,20 @@ namespace YAXLib
             }
 
             throw new InvalidOperationException("Cannot create a unique random prefix");
+        }
+
+        public static XAttribute AddAttributeNamespaceSafe(this XElement parent, XName attrName, object attrValue)
+        {
+            var newAttrName = attrName;
+
+            // the following stupid code is because of odd behaviour of LINQ to XML
+            if (newAttrName.Namespace == parent.Name.Namespace)
+                newAttrName = newAttrName.RemoveNamespace();
+
+            string strAttrValue = Convert.ToString((attrValue ?? String.Empty), CultureInfo.InvariantCulture);
+            var newAttr = new XAttribute(newAttrName, strAttrValue);
+            parent.Add(newAttr);
+            return newAttr;
         }
 
         public static XAttribute Attribute_NamespaceNeutral(this XElement parent, XName name)

@@ -237,6 +237,19 @@ namespace YAXLibTests
             Assert.That(got, Is.EqualTo(result));
         }
 
+        [Test]
+        public void DictionaryWithParentNamespaceSerializationTest()
+        {
+            const string result =
+@"<Warehouse_Dictionary xmlns=""http://www.mywarehouse.com/warehouse/def/v3"">
+  <ItemInfo Item=""Item1"" Count=""10"" />
+  <ItemInfo Item=""Item4"" Count=""30"" />
+  <ItemInfo Item=""Item2"" Count=""20"" />
+</Warehouse_Dictionary>";
+            var serializer = new YAXSerializer(typeof(Warehouse_Dictionary), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string got = serializer.Serialize(Warehouse_Dictionary.GetSampleInstance());
+            Assert.That(got, Is.EqualTo(result));
+        }
 
         [Test]
         public void SingleNamespaceDeserializationTest()
@@ -359,6 +372,15 @@ namespace YAXLibTests
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
         }
 
+        [Test]
+        public void DictionaryWithParentNamespaceDeserializationTest()
+        {
+            var serializer = new YAXSerializer(typeof(Warehouse_Dictionary), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string got = serializer.Serialize(Warehouse_Dictionary.GetSampleInstance());
+            var deserialized = serializer.Deserialize(got) as Warehouse_Dictionary;
+            Assert.That(deserialized, Is.Not.Null);
+            Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
+        }
 
         [Test]
         public void CSProjParsingTest()

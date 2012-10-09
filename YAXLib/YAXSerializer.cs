@@ -508,14 +508,12 @@ namespace YAXLib
                 m_parsingErrors.AddRange(ser.ParsingErrors);
                 elem.Name = m_udtWrapper.Alias;
                 
-                elem.Add(new XAttribute(s_yaxLibNamespaceUri + s_trueTypeAttrName, obj.GetType().FullName));
+                elem.AddAttributeNamespaceSafe(s_yaxLibNamespaceUri + s_trueTypeAttrName, obj.GetType().FullName);
                 RegisterYaxLibNamespace();
 
                 AddNamespacesToElement(elem);
 
-                //var nsAttrName = XNamespace.Xmlns + s_yaxLibNamespacePrefix;
-                //if(elem.Attribute(nsAttrName) == null)
-                //    elem.Add(new XAttribute(nsAttrName, s_yaxLibNamespaceUri));
+
                 return elem;
             }
             else
@@ -785,7 +783,7 @@ namespace YAXLib
                             XElement elemToAdd = MakeElement(parElem, member, elementValue, out moveDescOnly, out alreadyAdded);
                             if (!areOfSameType)
                             {
-                                elemToAdd.Add(new XAttribute(s_yaxLibNamespaceUri + s_trueTypeAttrName, elementValue.GetType().FullName));
+                                elemToAdd.AddAttributeNamespaceSafe(s_yaxLibNamespaceUri + s_trueTypeAttrName, elementValue.GetType().FullName);
                                 RegisterYaxLibNamespace();
                             }
 
@@ -911,7 +909,7 @@ namespace YAXLib
                     // if no namespace with this prefix already exists
                     if (rootNode.GetNamespaceOfPrefix(prefix) == null)
                     {
-                        rootNode.Add(new XAttribute(XNamespace.Xmlns + prefix, ns));
+                        rootNode.AddAttributeNamespaceSafe(XNamespace.Xmlns + prefix, ns);
                     }
                     else // if this prefix is already added
                     {
@@ -931,13 +929,12 @@ namespace YAXLib
             {
                 // it will be added automatically
                 nsNoPrefix.Remove(m_udtWrapper.Namespace);
-                //rootNode.Add(new XAttribute("xmlns", m_udtWrapper.Namespace.NamespaceName));
             }
 
             // now generate namespaces for those without prefix
             foreach (var ns in nsNoPrefix)
             {
-                rootNode.Add(new XAttribute(XNamespace.Xmlns + rootNode.GetRandomPrefix(), ns));
+                rootNode.AddAttributeNamespaceSafe(XNamespace.Xmlns + rootNode.GetRandomPrefix(), ns);
             }
         }
 
@@ -1105,7 +1102,7 @@ namespace YAXLib
 
                 if (isKeyAttrib && areKeyOfSameType)
                 {
-                    elemChild.Add(new XAttribute(keyAlias, (keyObj ?? string.Empty).ToString()));
+                    elemChild.AddAttributeNamespaceSafe(keyAlias, keyObj);
                 }
                 else
                 {
@@ -1119,14 +1116,14 @@ namespace YAXLib
                             elemChild.Add(addedElem);
                         }
 
-                        addedElem.Add(new XAttribute(s_yaxLibNamespaceUri + s_trueTypeAttrName, keyObj.GetType().FullName));
+                        addedElem.AddAttributeNamespaceSafe(s_yaxLibNamespaceUri + s_trueTypeAttrName, keyObj.GetType().FullName);
                         RegisterYaxLibNamespace();
                     }
                 }
 
                 if (isValueAttrib && areValueOfSameType)
                 {
-                    elemChild.Add(new XAttribute(valueAlias, (valueObj ?? string.Empty).ToString()));
+                    elemChild.AddAttributeNamespaceSafe(valueAlias, valueObj);
                 }
                 else
                 {
@@ -1140,7 +1137,7 @@ namespace YAXLib
                             elemChild.Add(addedElem);
                         }
 
-                        addedElem.Add(new XAttribute(s_yaxLibNamespaceUri + s_trueTypeAttrName, valueObj.GetType().FullName));
+                        addedElem.AddAttributeNamespaceSafe(s_yaxLibNamespaceUri + s_trueTypeAttrName, valueObj.GetType().FullName);
                         RegisterYaxLibNamespace();
                     }
                 }
@@ -1297,7 +1294,7 @@ namespace YAXLib
                     XElement itemElem = this.AddObjectToElement(elem, curElemName.OverrideNsIfEmpty(elementName.Namespace), objToAdd);
                     if (!obj.GetType().EqualsOrIsNullableOf(colItemType))
                     {
-                        itemElem.Add(new XAttribute(s_yaxLibNamespaceUri + s_trueTypeAttrName, obj.GetType().FullName));
+                        itemElem.AddAttributeNamespaceSafe(s_yaxLibNamespaceUri + s_trueTypeAttrName, obj.GetType().FullName);
                         if (itemElem.Parent == null) // i.e., it has been removed, e.g., because all its members have been serialized outside the element
                             elem.Add(itemElem); // return it back, or undelete this item
 
@@ -1311,7 +1308,7 @@ namespace YAXLib
             int[] arrayDims = ReflectionUtils.GetArrayDimensions(elementValue);
             if (arrayDims != null && arrayDims.Length > 1)
             {
-                elemToAdd.Add(new XAttribute(s_yaxLibNamespaceUri + s_dimsAttrName, StringUtils.GetArrayDimsString(arrayDims)));
+                elemToAdd.AddAttributeNamespaceSafe(s_yaxLibNamespaceUri + s_dimsAttrName, StringUtils.GetArrayDimsString(arrayDims));
                 RegisterYaxLibNamespace();
             }
 

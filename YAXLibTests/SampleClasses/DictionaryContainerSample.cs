@@ -1,7 +1,11 @@
-﻿using YAXLib;
+﻿using System;
+using System.Collections.Generic;
+using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
+    [ShowInDemoApplication(SortKey="_")]
+
     [YAXSerializeAs("container")]
     [YAXNamespace("http://example.com")]
     public class DictionaryContainerSample
@@ -14,5 +18,31 @@ namespace YAXLibTests.SampleClasses
              * SerializeValueAs = YAXNodeTypes.Content */
             )]
         public DictionarySample Items { get; set; }
+
+        public static DictionaryContainerSample GetSampleInstance()
+        {
+            DictionaryContainerSample container = new DictionaryContainerSample
+            {
+                Items = new DictionarySample
+                {
+                    { "key1", new Guid(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)},
+                    { "key2", 1234 },
+                }
+            };
+
+            return container;
+        }
+
+        public override string ToString()
+        {
+            return GeneralToStringProvider.GeneralToString(this);
+        }
     }
+
+    [YAXSerializeAs("items")]
+    [YAXNamespace("http://example.com/")]
+    public class DictionarySample : Dictionary<string, object>
+    {
+    }
+
 }
