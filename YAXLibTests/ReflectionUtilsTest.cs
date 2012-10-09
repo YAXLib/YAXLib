@@ -80,6 +80,20 @@ namespace YAXLibTests
         }
 
         [Test]
+        public void EqualsOrIsNullableOfTest()
+        {
+            Assert.That(typeof(int).EqualsOrIsNullableOf(typeof(int)), Is.True);
+            Assert.That(typeof(int?).EqualsOrIsNullableOf(typeof(int)), Is.True);
+            Assert.That(typeof(int).EqualsOrIsNullableOf(typeof(int?)), Is.True);
+            Assert.That(typeof(double).EqualsOrIsNullableOf(typeof(Nullable<double>)), Is.True);
+            Assert.That(typeof(double?).EqualsOrIsNullableOf(typeof(Nullable<>)), Is.False);
+            Assert.That(typeof(Nullable<double>).EqualsOrIsNullableOf(typeof(double)), Is.True);
+            Assert.That(typeof(Nullable<char>).EqualsOrIsNullableOf(typeof(char?)), Is.True);
+            Assert.That(typeof(char?).EqualsOrIsNullableOf(typeof(Nullable<char>)), Is.True);
+            Assert.That(typeof(int[]).EqualsOrIsNullableOf(typeof(System.Array)), Is.False);
+        }
+
+        [Test]
         public void GetTypeByNameTest()
         {
             var type1 = ReflectionUtils.GetTypeByName("System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]");

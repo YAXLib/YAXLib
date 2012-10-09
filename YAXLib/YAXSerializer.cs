@@ -490,7 +490,7 @@ namespace YAXLib
                     XMLUtils.AddPreserveSpaceAttribute(elemResult);
                 return elemResult;
             }
-            else if(m_udtWrapper.UnderlyingType != obj.GetType())
+            else if(!m_udtWrapper.UnderlyingType.EqualsOrIsNullableOf(obj.GetType()))
             {
                 // this block of code runs if the serializer is instantiated with a
                 // another base value such as System.Object but is provided with an
@@ -624,7 +624,9 @@ namespace YAXLib
 
                     bool areOfSameType = true; // are element value and the member declared type the same?
                     object originalValue = member.GetOriginalValue(obj, null);
-                    if (elementValue != null && member.MemberType != originalValue.GetType())
+                    // TODO: remove later
+                    //if (elementValue != null && member.MemberType != originalValue.GetType())
+                    if (elementValue != null && !member.MemberType.EqualsOrIsNullableOf(originalValue.GetType()))
                     {
                         areOfSameType = false;
                     }
@@ -1077,10 +1079,10 @@ namespace YAXLib
                 bool areKeyOfSameType = true;
                 bool areValueOfSameType = true;
 
-                if (keyObj != null && keyObj.GetType() != keyType)
+                if (keyObj != null && !keyObj.GetType().EqualsOrIsNullableOf(keyType))
                     areKeyOfSameType = false;
 
-                if (valueObj != null && valueObj.GetType() != valueType)
+                if (valueObj != null && !valueObj.GetType().EqualsOrIsNullableOf(valueType))
                     areValueOfSameType = false;
 
                 if (keyFormat != null)
@@ -1293,7 +1295,7 @@ namespace YAXLib
                     }
 
                     XElement itemElem = this.AddObjectToElement(elem, curElemName.OverrideNsIfEmpty(elementName.Namespace), objToAdd);
-                    if (obj.GetType() != colItemType)
+                    if (!obj.GetType().EqualsOrIsNullableOf(colItemType))
                     {
                         itemElem.Add(new XAttribute(s_yaxLibNamespaceUri + s_trueTypeAttrName, obj.GetType().FullName));
                         if (itemElem.Parent == null) // i.e., it has been removed, e.g., because all its members have been serialized outside the element

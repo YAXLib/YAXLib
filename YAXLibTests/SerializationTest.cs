@@ -137,9 +137,9 @@ namespace YAXLibTests
 
             const string expected =
 @"<!-- This class contains fields that are vulnerable to culture changes! -->
-<CultureSample Number2=""32243.67676"" Dec2=""19232389.18391912318232131"" Date2=""09/20/2011 04:10:30"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
+<CultureSample Number2=""32243.67676"" Dec2=""19232389.18391912318232131"" Date2=""09/20/2011 04:10:30"">
   <Number1>123123.1233</Number1>
-  <Number3 yaxlib:realtype=""System.Double"">21313.123123</Number3>
+  <Number3>21313.123123</Number3>
   <Numbers>
     <Double>23213.2132</Double>
     <Double>123.213</Double>
@@ -558,11 +558,7 @@ namespace YAXLibTests
         public void NullableSample2Test()
         {
             const string result =
-@"<!-- This example shows how nullable fields -->
-<!-- may not be serialized in their expected location -->
-<NullableSample2 xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
-  <Number yaxlib:realtype=""System.Int32"">10</Number>
-</NullableSample2>";
+@"<NullableSample2 Number=""10"" />";
             var serializer = new YAXSerializer(typeof(NullableSample2), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(NullableSample2.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
@@ -1096,27 +1092,16 @@ namespace YAXLibTests
 @"<!-- This example shows serialization and deserialization of objects -->
 <!-- through a reference to their base class or interface while used in -->
 <!-- collection classes -->
-<InterfaceMatchingSample xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
-  <SomeNumber yaxlib:realtype=""System.Int32"">10</SomeNumber>
+<InterfaceMatchingSample SomeNumber=""10"">
   <ListOfSamples>2 4 8</ListOfSamples>
   <DictNullable2Int>
-    <KeyValuePairOfNullableOfDoubleInt32 Value=""1"">
-      <Key yaxlib:realtype=""System.Double"">1</Key>
-    </KeyValuePairOfNullableOfDoubleInt32>
-    <KeyValuePairOfNullableOfDoubleInt32 Value=""2"">
-      <Key yaxlib:realtype=""System.Double"">2</Key>
-    </KeyValuePairOfNullableOfDoubleInt32>
-    <KeyValuePairOfNullableOfDoubleInt32 Value=""3"">
-      <Key yaxlib:realtype=""System.Double"">3</Key>
-    </KeyValuePairOfNullableOfDoubleInt32>
+    <KeyValuePairOfNullableOfDoubleInt32 Key=""1"" Value=""1"" />
+    <KeyValuePairOfNullableOfDoubleInt32 Key=""2"" Value=""2"" />
+    <KeyValuePairOfNullableOfDoubleInt32 Key=""3"" Value=""3"" />
   </DictNullable2Int>
   <DictInt2Nullable>
-    <KeyValuePairOfInt32NullableOfDouble Key=""1"">
-      <Value yaxlib:realtype=""System.Double"">1</Value>
-    </KeyValuePairOfInt32NullableOfDouble>
-    <KeyValuePairOfInt32NullableOfDouble Key=""2"">
-      <Value yaxlib:realtype=""System.Double"">2</Value>
-    </KeyValuePairOfInt32NullableOfDouble>
+    <KeyValuePairOfInt32NullableOfDouble Key=""1"" Value=""1"" />
+    <KeyValuePairOfInt32NullableOfDouble Key=""2"" Value=""2"" />
     <KeyValuePairOfInt32NullableOfDouble Key=""3"" Value="""" />
   </DictInt2Nullable>
 </InterfaceMatchingSample>";
@@ -1580,7 +1565,7 @@ namespace YAXLibTests
   <range from=""1"" to=""3"" />
 </container>";
 
-            Assert.AreEqual(expectedResult, result);
+            Assert.That(expectedResult, Is.EqualTo(result));
         }
 
         [Test]
