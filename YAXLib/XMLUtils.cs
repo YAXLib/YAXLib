@@ -441,6 +441,11 @@ namespace YAXLib
             throw new InvalidOperationException("Cannot create a unique random prefix");
         }
 
+        public static string ToXmlValue(this object self)
+        {
+            return Convert.ToString((self ?? String.Empty), CultureInfo.InvariantCulture);
+        }
+
         public static XAttribute AddAttributeNamespaceSafe(this XElement parent, XName attrName, object attrValue)
         {
             var newAttrName = attrName;
@@ -449,10 +454,24 @@ namespace YAXLib
             if (newAttrName.Namespace == parent.Name.Namespace)
                 newAttrName = newAttrName.RemoveNamespace();
 
-            string strAttrValue = Convert.ToString((attrValue ?? String.Empty), CultureInfo.InvariantCulture);
-            var newAttr = new XAttribute(newAttrName, strAttrValue);
+            var newAttr = new XAttribute(newAttrName, attrValue.ToXmlValue());
             parent.Add(newAttr);
             return newAttr;
+        }
+
+        public static XElement AddXmlContent(this XElement self, object contentValue)
+        {
+            self.Add(new XText(contentValue.ToXmlValue()));
+            return self;
+        }
+
+        public static string GetXmlContent(this XElement self)
+        {
+            XText[] values = self.Nodes().OfType<XText>().ToArray();
+            if (values != null && values.Length > 0)
+                return values[0].Value;
+            else 
+                return null;
         }
 
         public static XAttribute Attribute_NamespaceNeutral(this XElement parent, XName name)

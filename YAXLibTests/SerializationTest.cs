@@ -1544,7 +1544,6 @@ namespace YAXLibTests
             Assert.That(got, Is.EqualTo(expectedResult));
         }
 
-        
         [Test]
         public void AttributeForClassTest()
         {
@@ -1556,6 +1555,42 @@ namespace YAXLibTests
   <range from=""1"" to=""3"" />
 </container>";
 
+            Assert.That(expectedResult, Is.EqualTo(result));
+        }
+
+
+        [Test]
+        public void DictionaryKeyValueAsContentTest()
+        {
+            var ser = new YAXSerializer(typeof(DictionaryKeyValueAsContent));
+            string result = ser.Serialize(DictionaryKeyValueAsContent.GetSampleInstance());
+
+            const string expectedResult =
+@"<DictionaryKeyValueAsContent>
+  <DicValueAsContent>
+    <Pair Digits=""1"">one</Pair>
+    <Pair Digits=""2"">two</Pair>
+    <Pair Digits=""3"">three</Pair>
+  </DicValueAsContent>
+  <DicKeyAsContnet>
+    <Pair Letters=""one"">1</Pair>
+    <Pair Letters=""two"">2</Pair>
+    <Pair Letters=""three"">3</Pair>
+  </DicKeyAsContnet>
+  <DicKeyAsContentValueAsElement>
+    <Pair>1<Letters>one</Letters></Pair>
+    <Pair>2<Letters>two</Letters></Pair>
+    <Pair>3<Letters>three</Letters></Pair>
+  </DicKeyAsContentValueAsElement>
+  <DicValueAsContentKeyAsElement>
+    <Pair>
+      <Digits>1</Digits>one</Pair>
+    <Pair>
+      <Digits>2</Digits>two</Pair>
+    <Pair>
+      <Digits>3</Digits>three</Pair>
+  </DicValueAsContentKeyAsElement>
+</DictionaryKeyValueAsContent>";
             Assert.That(expectedResult, Is.EqualTo(result));
         }
 
@@ -1600,5 +1635,7 @@ namespace YAXLibTests
              */
             Assert.AreEqual(expectedResult, result);
         }
+
+
     }
 }

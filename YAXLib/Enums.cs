@@ -102,7 +102,12 @@ namespace YAXLib
         /// <summary>
         /// Serialize data as an element
         /// </summary>
-        Element
+        Element,
+
+        /// <summary>
+        /// Serialize data as content of the element
+        /// </summary>
+        Content
     }
 
     /// <summary>

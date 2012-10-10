@@ -408,6 +408,13 @@ namespace YAXLibTests
         }
 
         [Test]
+        public void DesDictionaryKeyValueAsContent()
+        {
+            object obj = DictionaryKeyValueAsContent.GetSampleInstance();
+            PerformTest(obj);
+        }
+
+        [Test]
         public void AttributeForKeyInDictionaryPropertyTest()
         {
             var container = DictionaryContainerSample.GetSampleInstance();

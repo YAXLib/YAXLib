@@ -69,6 +69,7 @@
     <Compile Include="SampleClasses\CustomSerializationTests.cs" />
     <Compile Include="SampleClasses\DashedSample.cs" />
     <Compile Include="SampleClasses\DictionaryContainerSample.cs" />
+    <Compile Include="SampleClasses\DictionaryKeyValueAsContent.cs" />
     <Compile Include="SampleClasses\DictionaryKeyValueAsInterface.cs" />
     <Compile Include="SampleClasses\EnumsSample.cs" />
     <Compile Include="SampleClasses\FieldSerializationExample.cs" />
