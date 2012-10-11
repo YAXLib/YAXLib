@@ -434,6 +434,29 @@ namespace YAXLib
         }
 
         /// <summary>
+        /// Determines whether the specified type is equal to this type,
+        /// or is a nullable of this type, or this type is a nullable of 
+        /// the other type.
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public static bool EqualsOrIsNullableOf(this Type self, Type other)
+        {
+            if (self == other)
+                return true;
+
+            Type selfBaseType;
+            Type otherBaseType;
+            if (!IsNullable(self, out selfBaseType))
+                selfBaseType = self;
+            if (!IsNullable(other, out otherBaseType))
+                otherBaseType = other;
+
+            return selfBaseType == otherBaseType;
+        }
+
+        /// <summary>
         /// Determines whether the specified type is equal or inherited from another specified type.
         /// </summary>
         /// <param name="type">The type to check.</param>
@@ -716,6 +739,8 @@ namespace YAXLib
                 Type nullableType;
                 if (IsNullable(dstType, out nullableType))
                 {
+                    if (value == null || value.ToString() == String.Empty)
+                        return null;
                     return ConvertBasicType(value, nullableType);
                 }
 
