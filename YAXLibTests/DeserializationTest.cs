@@ -407,5 +407,29 @@ namespace YAXLibTests
             PerformTest(obj);
         }
 
+        [Test]
+        public void DesDictionaryKeyValueAsContent()
+        {
+            object obj = DictionaryKeyValueAsContent.GetSampleInstance();
+            PerformTest(obj);
+        }
+
+        [Test]
+        public void AttributeForKeyInDictionaryPropertyTest()
+        {
+            var container = DictionaryContainerSample.GetSampleInstance();
+            
+            var ser = new YAXSerializer(typeof(DictionaryContainerSample));
+
+            string input = ser.Serialize(container);
+
+            DictionaryContainerSample deserializedContainer = (DictionaryContainerSample)ser.Deserialize(input);
+
+            Assert.IsNotNull(deserializedContainer.Items);
+            Assert.IsTrue(deserializedContainer.Items.Count == container.Items.Count,
+                          "Expected Count: {0}. Actual Count: {1}",
+                          container.Items.Count,
+                          deserializedContainer.Items.Count);
+        }
     }
 }
