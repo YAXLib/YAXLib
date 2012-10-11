@@ -137,9 +137,9 @@ namespace YAXLibTests
 
             const string expected =
 @"<!-- This class contains fields that are vulnerable to culture changes! -->
-<CultureSample Number2=""32243.67676"" Dec2=""19232389.18391912318232131"" Date2=""09/20/2011 04:10:30"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
+<CultureSample Number2=""32243.67676"" Dec2=""19232389.18391912318232131"" Date2=""09/20/2011 04:10:30"">
   <Number1>123123.1233</Number1>
-  <Number3 yaxlib:realtype=""System.Double"">21313.123123</Number3>
+  <Number3>21313.123123</Number3>
   <Numbers>
     <Double>23213.2132</Double>
     <Double>123.213</Double>
@@ -1101,27 +1101,16 @@ namespace YAXLibTests
 @"<!-- This example shows serialization and deserialization of objects -->
 <!-- through a reference to their base class or interface while used in -->
 <!-- collection classes -->
-<InterfaceMatchingSample xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
-  <SomeNumber yaxlib:realtype=""System.Int32"">10</SomeNumber>
+<InterfaceMatchingSample SomeNumber=""10"">
   <ListOfSamples>2 4 8</ListOfSamples>
   <DictNullable2Int>
-    <KeyValuePairOfNullableOfDoubleInt32 Value=""1"">
-      <Key yaxlib:realtype=""System.Double"">1</Key>
-    </KeyValuePairOfNullableOfDoubleInt32>
-    <KeyValuePairOfNullableOfDoubleInt32 Value=""2"">
-      <Key yaxlib:realtype=""System.Double"">2</Key>
-    </KeyValuePairOfNullableOfDoubleInt32>
-    <KeyValuePairOfNullableOfDoubleInt32 Value=""3"">
-      <Key yaxlib:realtype=""System.Double"">3</Key>
-    </KeyValuePairOfNullableOfDoubleInt32>
+    <KeyValuePairOfNullableOfDoubleInt32 Key=""1"" Value=""1"" />
+    <KeyValuePairOfNullableOfDoubleInt32 Key=""2"" Value=""2"" />
+    <KeyValuePairOfNullableOfDoubleInt32 Key=""3"" Value=""3"" />
   </DictNullable2Int>
   <DictInt2Nullable>
-    <KeyValuePairOfInt32NullableOfDouble Key=""1"">
-      <Value yaxlib:realtype=""System.Double"">1</Value>
-    </KeyValuePairOfInt32NullableOfDouble>
-    <KeyValuePairOfInt32NullableOfDouble Key=""2"">
-      <Value yaxlib:realtype=""System.Double"">2</Value>
-    </KeyValuePairOfInt32NullableOfDouble>
+    <KeyValuePairOfInt32NullableOfDouble Key=""1"" Value=""1"" />
+    <KeyValuePairOfInt32NullableOfDouble Key=""2"" Value=""2"" />
     <KeyValuePairOfInt32NullableOfDouble Key=""3"" Value="""" />
   </DictInt2Nullable>
 </InterfaceMatchingSample>";
@@ -1563,5 +1552,99 @@ namespace YAXLibTests
             string got = ser.Serialize(sample);
             Assert.That(got, Is.EqualTo(expectedResult));
         }
+
+        [Test]
+        public void AttributeForClassTest()
+        {
+            var ser = new YAXSerializer(typeof(AttributeContainerSample));
+            string result = ser.Serialize(AttributeContainerSample.GetSampleInstance());
+
+            const string expectedResult =
+@"<container>
+  <range from=""1"" to=""3"" />
+</container>";
+
+            Assert.That(expectedResult, Is.EqualTo(result));
+        }
+
+
+        [Test]
+        public void DictionaryKeyValueAsContentTest()
+        {
+            var ser = new YAXSerializer(typeof(DictionaryKeyValueAsContent));
+            string result = ser.Serialize(DictionaryKeyValueAsContent.GetSampleInstance());
+
+            const string expectedResult =
+@"<DictionaryKeyValueAsContent>
+  <DicValueAsContent>
+    <Pair Digits=""1"">one</Pair>
+    <Pair Digits=""2"">two</Pair>
+    <Pair Digits=""3"">three</Pair>
+  </DicValueAsContent>
+  <DicKeyAsContnet>
+    <Pair Letters=""one"">1</Pair>
+    <Pair Letters=""two"">2</Pair>
+    <Pair Letters=""three"">3</Pair>
+  </DicKeyAsContnet>
+  <DicKeyAsContentValueAsElement>
+    <Pair>1<Letters>one</Letters></Pair>
+    <Pair>2<Letters>two</Letters></Pair>
+    <Pair>3<Letters>three</Letters></Pair>
+  </DicKeyAsContentValueAsElement>
+  <DicValueAsContentKeyAsElement>
+    <Pair>
+      <Digits>1</Digits>one</Pair>
+    <Pair>
+      <Digits>2</Digits>two</Pair>
+    <Pair>
+      <Digits>3</Digits>three</Pair>
+  </DicValueAsContentKeyAsElement>
+</DictionaryKeyValueAsContent>";
+            Assert.That(expectedResult, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void AttributeForKeyInDictionaryTest()
+        {
+            var dictionary = DictionarySample.GetSampleInstance();
+            var ser = new YAXSerializer(typeof(DictionarySample));
+            string result = ser.Serialize(dictionary);
+            
+            const string expectedResult =
+@"<items>
+  <item key=""key1"" type=""guid"">00000001-0002-0003-0405-060708090a0b<</item>
+  <item key=""key2"" type=""int"">1234</item>
+</items>";
+
+            /* NOTE: This fails partly because you can't decorate a class with [YAXDictionary] and 
+             * because it's not possible to say that the value should be the content of <item/> while
+             * the key should be an attribute.
+             */
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [Test]
+        public void AttributeForKeyInDictionaryPropertyTest()
+        {
+            var container = DictionaryContainerSample.GetSampleInstance();
+            var ser = new YAXSerializer(typeof(DictionaryContainerSample));
+            string result = ser.Serialize(container);
+
+            const string expectedResult =
+@"<container>
+  <items>
+    <item key=""key1"" type=""guid"">00000001-0002-0003-0405-060708090a0b<</item>
+    <item key=""key2"" type=""int"">1234</item>
+  </items>
+</container>";
+
+            /* NOTE: This fails partly because you can't decorate a class with [YAXDictionary] and 
+             * because it's not possible to say that the value should be the content of <item/> while
+             * the key should be an attribute.
+             */
+            Assert.AreEqual(expectedResult, result);
+        }
+
+
     }
 }

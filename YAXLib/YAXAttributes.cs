@@ -240,6 +240,7 @@ namespace YAXLib
         #endregion
     }
 
+    // TODO: rename to YAXContentFor in v3
 
     /// <summary>
     /// Makes a field or property to appear as a value for another element, if possible.
@@ -271,6 +272,8 @@ namespace YAXLib
         #endregion
     }
 
+
+    // TODO: rename to YAXContentForClass in v3
     /// <summary>
     /// Makes a field or property to appear as a value for its parent element, if possible.
     /// This attribute is applicable to fields and properties.
@@ -427,25 +430,20 @@ namespace YAXLib
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class YAXDictionaryAttribute : YAXBaseAttribute
     {
-        #region Constructors
+        private YAXNodeTypes _serializeKeyAs = YAXNodeTypes.Element;
+        private YAXNodeTypes _serializeValueAs = YAXNodeTypes.Element;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="YAXDictionaryAttribute"/> class.
         /// </summary>
         public YAXDictionaryAttribute()
         {
-            this.KeyName = null;
-            this.ValueName = null;
-            this.EachPairName = null;
-            this.SerializeKeyAs = YAXNodeTypes.Element;
-            this.SerializeValueAs = YAXNodeTypes.Element;
-            this.KeyFormatString = null;
-            this.ValueFormatString = null;
+            KeyName = null;
+            ValueName = null;
+            EachPairName = null;
+            KeyFormatString = null;
+            ValueFormatString = null;
         }
-
-        #endregion
-
-        #region Properties
 
         /// <summary>
         /// Gets or sets the alias for the key part of the dicitonary.
@@ -469,13 +467,37 @@ namespace YAXLib
         /// Gets or sets the node type according to which the key part of the dictionary is serialized.
         /// </summary>
         /// <value></value>
-        public YAXNodeTypes SerializeKeyAs { get; set; }
+        public YAXNodeTypes SerializeKeyAs 
+        {
+            get
+            {
+                return _serializeKeyAs;
+            }
+
+            set
+            {
+                _serializeKeyAs = value;
+                CheckIntegrity();
+            }
+        }
 
         /// <summary>
         /// Gets or sets the node type according to which the value part of the dictionary is serialized.
         /// </summary>
         /// <value></value>
-        public YAXNodeTypes SerializeValueAs { get; set; }
+        public YAXNodeTypes SerializeValueAs 
+        {
+            get
+            {
+                return _serializeValueAs;
+            }
+            
+            set
+            {
+                _serializeValueAs = value;
+                CheckIntegrity();
+            }
+        }
 
         /// <summary>
         /// Gets or sets the key format string.
@@ -489,7 +511,13 @@ namespace YAXLib
         /// <value></value>
         public string ValueFormatString { get; set; }
 
-        #endregion
+        private void CheckIntegrity()
+        {
+            if (_serializeKeyAs == _serializeValueAs && _serializeValueAs == YAXNodeTypes.Content)
+            {
+                throw new Exception("Key and Value cannot both be serialized as Content at the same time.");
+            }
+        }
     }
 
     /// <summary>

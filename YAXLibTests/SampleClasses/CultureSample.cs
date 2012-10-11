@@ -11,8 +11,7 @@ namespace YAXLibTests.SampleClasses
         [YAXAttributeForClass]
         public double Number2 { get; set; }
 
-        [YAXAttributeForClass]
-        public double? Number3 { get; set; }
+        public double Number3 { get; set; }
 
         public double[] Numbers { get; set; }
 
