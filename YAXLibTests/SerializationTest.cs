@@ -558,13 +558,10 @@ namespace YAXLibTests
         public void NullableSample2Test()
         {
             const string result =
-@"<!-- This example shows how nullable fields -->
-<!-- may not be serialized in their expected location -->
-<NullableSample2>
-  <Number>10</Number>
-  <DateTime>1980-04-11T13:37:1.2345678Z</DateTime>
+@"<NullableSample2 Number=""10"">
+  <DateTime>1980-04-11T13:37:01.2345678Z</DateTime>
   <Decimal>1234.56789</Decimal>
-  <Boolean>true</Boolean>
+  <Boolean>True</Boolean>
 </NullableSample2>";
             var serializer = new YAXSerializer(typeof(NullableSample2), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(NullableSample2.GetSampleInstance());
@@ -1611,7 +1608,7 @@ namespace YAXLibTests
             string result = ser.Serialize(dictionary);
             
             const string expectedResult =
-@"<items>
+@"<items xmlns=""http://example.com/"">
   <item key=""key1"" type=""guid"">00000001-0002-0003-0405-060708090a0b<</item>
   <item key=""key2"" type=""int"">1234</item>
 </items>";
@@ -1631,7 +1628,7 @@ namespace YAXLibTests
             string result = ser.Serialize(container);
 
             const string expectedResult =
-@"<container>
+@"<container xmlns=""http://example.com/"">
   <items>
     <item key=""key1"" type=""guid"">00000001-0002-0003-0405-060708090a0b<</item>
     <item key=""key2"" type=""int"">1234</item>

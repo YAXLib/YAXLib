@@ -7,7 +7,7 @@ namespace YAXLibTests.SampleClasses
     [ShowInDemoApplication(SortKey="_")]
 
     [YAXSerializeAs("container")]
-    [YAXNamespace("http://example.com")]
+    [YAXNamespace("http://example.com/")]
     public class DictionaryContainerSample
     {
         [YAXSerializeAs("items")]
