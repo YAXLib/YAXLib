@@ -560,11 +560,16 @@ namespace YAXLibTests
             const string result =
 @"<!-- This example shows how nullable fields -->
 <!-- may not be serialized in their expected location -->
-<NullableSample2 xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
-  <Number yaxlib:realtype=""System.Int32"">10</Number>
+<NullableSample2>
+  <Number>10</Number>
+  <DateTime>1980-04-11T13:37:1.2345678Z</DateTime>
+  <Decimal>1234.56789</Decimal>
+  <Boolean>true</Boolean>
 </NullableSample2>";
             var serializer = new YAXSerializer(typeof(NullableSample2), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(NullableSample2.GetSampleInstance());
+
+            Console.WriteLine(got);
             Assert.That(got, Is.EqualTo(result));
         }
 
