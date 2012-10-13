@@ -356,5 +356,24 @@ namespace YAXLib
                 yield return temp.Substring(lastStart);
         }
 
+        public static DateTime ParseDateTimeTimeZoneSafe(string str, IFormatProvider formatProvider)
+        {
+            DateTimeOffset dto;
+            if (!DateTimeOffset.TryParse(str, out dto))
+            {
+                return DateTime.MinValue;
+            }
+
+            if (dto.Offset == TimeSpan.Zero)
+            {
+                return dto.UtcDateTime;
+            }
+            else
+            {
+                return dto.DateTime;
+            }
+        }
+
+
     }
 }

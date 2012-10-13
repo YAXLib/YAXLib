@@ -698,16 +698,15 @@ namespace YAXLib
         /// <returns>the converted object</returns>
         public static object ConvertBasicType(object value, Type dstType)
         {
-            //if (!ReflectionUtils.IsBasicType(dstType))
-            //{
-            //    throw new ArgumentException("Destination type must be a basic type", "dstType");
-            //}
-
             object convertedObj = null;
             if (dstType.IsEnum)
             {
                 UdtWrapper typeWrapper = TypeWrappersPool.Pool.GetTypeWrapper(dstType, null);
                 convertedObj = typeWrapper.EnumWrapper.ParseAlias(value.ToString());
+            }
+            else if (dstType == typeof(DateTime))
+            {
+                convertedObj = StringUtils.ParseDateTimeTimeZoneSafe(value.ToString(), CultureInfo.InvariantCulture);
             }
             else if (dstType == typeof(decimal))
             {
@@ -730,7 +729,7 @@ namespace YAXLib
                         throw new Exception("The specified value is not recognized as boolean: " + strValue);
                 }
             }
-            else if(dstType == typeof(Guid))
+            else if (dstType == typeof(Guid))
             {
                 return new Guid(value.ToString());
             }
