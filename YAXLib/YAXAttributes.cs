@@ -369,9 +369,9 @@ namespace YAXLib
 
     /// <summary>
     /// Controls the serialization of collection instances.
-    /// This attribute is applicable to fields and properties.
+    /// This attribute is applicable to fields and properties, and collection classes.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class | AttributeTargets.Struct)]
     public class YAXCollectionAttribute : YAXBaseAttribute
     {
         #region Constructors
@@ -425,9 +425,10 @@ namespace YAXLib
 
     /// <summary>
     /// Controls the serialization of generic Dictionary instances.
-    /// This attribute is applicable to fields and properties.
+    /// This attribute is applicable to fields and properties, and 
+    /// classes derived from the <c>Dictionary</c> base class.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property| AttributeTargets.Class | AttributeTargets.Struct)]
     public class YAXDictionaryAttribute : YAXBaseAttribute
     {
         private YAXNodeTypes _serializeKeyAs = YAXNodeTypes.Element;

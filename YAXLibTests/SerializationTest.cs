@@ -1608,15 +1608,11 @@ namespace YAXLibTests
             string result = ser.Serialize(dictionary);
             
             const string expectedResult =
-@"<items xmlns=""http://example.com/"">
-  <item key=""key1"">00000001-0002-0003-0405-060708090a0b</item>
-  <item key=""key2"">1234</item>
-</items>";
+@"<TheItems xmlns=""http://example.com/"">
+  <TheItem TheKey=""key1"">00000001-0002-0003-0405-060708090a0b</TheItem>
+  <TheItem TheKey=""key2"">1234</TheItem>
+</TheItems>";
 
-            /* NOTE: This fails partly because you can't decorate a class with [YAXDictionary] and 
-             * because it's not possible to say that the value should be the content of <item/> while
-             * the key should be an attribute.
-             */
             Assert.AreEqual(expectedResult, result);
         }
 

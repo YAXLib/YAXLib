@@ -431,5 +431,23 @@ namespace YAXLibTests
                           container.Items.Count,
                           deserializedContainer.Items.Count);
         }
+
+        [Test]
+        public void DeserializingADictionaryDerivedInstance()
+        {
+            var inst = DictionarySample.GetSampleInstance();
+
+            var ser = new YAXSerializer(typeof(DictionarySample));
+
+            string input = ser.Serialize(inst);
+
+            DictionarySample deserializedInstance = (DictionarySample)ser.Deserialize(input);
+
+            Assert.That(deserializedInstance, Is.Not.Null);
+            Assert.IsTrue(deserializedInstance.Count  == inst.Count,
+                          "Expected Count: {0}. Actual Count: {1}",
+                          inst.Count,
+                          deserializedInstance.Count);
+        }
     }
 }

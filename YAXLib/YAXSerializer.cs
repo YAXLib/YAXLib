@@ -11,6 +11,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -470,7 +471,8 @@ namespace YAXLib
             // to serialize stand-alone collection or dictionary objects
             if (m_udtWrapper.IsTreatedAsDictionary)
             {
-                var elemResult = MakeDictionaryElement(null, m_udtWrapper.Alias, obj, null, null);
+                var elemResult = MakeDictionaryElement(null, m_udtWrapper.Alias, obj, 
+                    m_udtWrapper.DictionaryAttributeInstance, m_udtWrapper.CollectionAttributeInstance);
                 if (m_udtWrapper.PreservesWhitespace)
                     XMLUtils.AddPreserveSpaceAttribute(elemResult);
                 return elemResult;
@@ -1416,7 +1418,14 @@ namespace YAXLib
 
             if ((m_udtWrapper.IsTreatedAsCollection || m_udtWrapper.IsTreatedAsDictionary) && !IsCraetedToDeserializeANonCollectionMember)
             {
-                return DeserializeCollectionValue(m_type, baseElement, ReflectionUtils.GetTypeFriendlyName(m_type), null);
+                if (m_udtWrapper.DictionaryAttributeInstance != null)
+                {
+                    return DeserializeTaggedDictionaryValue(baseElement, m_udtWrapper.Alias, m_type, m_udtWrapper.CollectionAttributeInstance, m_udtWrapper.DictionaryAttributeInstance);
+                }
+                else
+                {
+                    return DeserializeCollectionValue(m_type, baseElement, m_udtWrapper.Alias, m_udtWrapper.CollectionAttributeInstance);
+                }
             }
 
             if (ReflectionUtils.IsBasicType(m_type))
@@ -1869,7 +1878,7 @@ namespace YAXLib
             }
             else if (member.IsTreatedAsDictionary && member.DictionaryAttributeInstance != null)
             {
-                DeserializeTaggedDictionaryMember(o, member, memberType, xelemValue);
+                DeserializeTaggedDictionaryMember(o, member, xelemValue);
             }
             else if (member.IsTreatedAsCollection)
             {
@@ -2243,77 +2252,71 @@ namespace YAXLib
             return result;
         }
 
-        /// <summary>
-        /// Deserializes a dictionary member which also benefits from a YAXDictionary attribute
-        /// </summary>
-        /// <param name="o">The object to hold the deserialized value.</param>
-        /// <param name="member">The member corresponding to the dictionary member.</param>
-        /// <param name="memberType">Type of the dictionary member.</param>
-        /// <param name="xelemValue">The XML element value.</param>
-        private void DeserializeTaggedDictionaryMember(object o, MemberWrapper member, Type memberType, XElement xelemValue)
+        private object DeserializeTaggedDictionaryValue(XElement xelemValue, XName alias, Type type, 
+            YAXCollectionAttribute colAttributeInstance, YAXDictionaryAttribute dicAttrInstance)
         {
             // otherwise the "else if(member.IsTreatedAsCollection)" block solves the problem
             Type keyType, valueType;
-            if (!ReflectionUtils.IsIDictionary(memberType, out keyType, out valueType))
+            if (!ReflectionUtils.IsIDictionary(type, out keyType, out valueType))
             {
                 throw new Exception("elemValue must be a Dictionary");
             }
 
             Type pairType = null;
-            ReflectionUtils.IsIEnumerable(memberType, out pairType);
+            ReflectionUtils.IsIEnumerable(type, out pairType);
             XName eachElementName = StringUtils.RefineSingleElement(ReflectionUtils.GetTypeFriendlyName(pairType));
             bool isKeyAttrib = false;
             bool isValueAttrib = false;
             bool isKeyContent = false;
             bool isValueContent = false;
-            XName keyAlias = member.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone() + "Key";
-            XName valueAlias = member.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone() + "Value";
+            XName keyAlias = alias.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone() + "Key";
+            XName valueAlias = alias.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone() + "Value";
 
-            if (member.CollectionAttributeInstance != null && member.CollectionAttributeInstance.EachElementName != null)
+            if (colAttributeInstance != null && colAttributeInstance.EachElementName != null)
             {
-                eachElementName = StringUtils.RefineSingleElement(member.CollectionAttributeInstance.EachElementName);
-                eachElementName = eachElementName.OverrideNsIfEmpty(member.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
+                eachElementName = StringUtils.RefineSingleElement(colAttributeInstance.EachElementName);
+                eachElementName = eachElementName.OverrideNsIfEmpty(alias.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
             }
 
-            if (member.DictionaryAttributeInstance != null)
+            if (dicAttrInstance != null)
             {
-                if (member.DictionaryAttributeInstance.EachPairName != null)
+                if (dicAttrInstance.EachPairName != null)
                 {
-                    eachElementName = StringUtils.RefineSingleElement(member.DictionaryAttributeInstance.EachPairName);
-                    eachElementName = eachElementName.OverrideNsIfEmpty(member.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
+                    eachElementName = StringUtils.RefineSingleElement(dicAttrInstance.EachPairName);
+                    eachElementName = eachElementName.OverrideNsIfEmpty(alias.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
                 }
-                
-                if (member.DictionaryAttributeInstance.SerializeKeyAs == YAXNodeTypes.Attribute)
+
+                if (dicAttrInstance.SerializeKeyAs == YAXNodeTypes.Attribute)
                 {
                     isKeyAttrib = ReflectionUtils.IsBasicType(keyType);
                 }
-                else if (member.DictionaryAttributeInstance.SerializeKeyAs == YAXNodeTypes.Content)
+                else if (dicAttrInstance.SerializeKeyAs == YAXNodeTypes.Content)
                 {
                     isKeyContent = ReflectionUtils.IsBasicType(keyType);
                 }
 
-                if (member.DictionaryAttributeInstance.SerializeValueAs == YAXNodeTypes.Attribute)
+                if (dicAttrInstance.SerializeValueAs == YAXNodeTypes.Attribute)
                 {
                     isValueAttrib = ReflectionUtils.IsBasicType(valueType);
                 }
-                else if (member.DictionaryAttributeInstance.SerializeValueAs == YAXNodeTypes.Content)
+                else if (dicAttrInstance.SerializeValueAs == YAXNodeTypes.Content)
                 {
                     isValueContent = ReflectionUtils.IsBasicType(valueType);
                 }
 
-                if (member.DictionaryAttributeInstance.KeyName != null)
+                if (dicAttrInstance.KeyName != null)
                 {
-                    keyAlias = StringUtils.RefineSingleElement(member.DictionaryAttributeInstance.KeyName);
-                    keyAlias = keyAlias.OverrideNsIfEmpty(member.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
+                    keyAlias = StringUtils.RefineSingleElement(dicAttrInstance.KeyName);
+                    keyAlias = keyAlias.OverrideNsIfEmpty(alias.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
                 }
-                if (member.DictionaryAttributeInstance.ValueName != null)
+                if (dicAttrInstance.ValueName != null)
                 {
-                    valueAlias = StringUtils.RefineSingleElement(member.DictionaryAttributeInstance.ValueName);
-                    valueAlias = valueAlias.OverrideNsIfEmpty(member.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
+                    valueAlias = StringUtils.RefineSingleElement(dicAttrInstance.ValueName);
+                    valueAlias = valueAlias.OverrideNsIfEmpty(alias.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
                 }
             }
 
-            object dic = memberType.InvokeMember(string.Empty, System.Reflection.BindingFlags.CreateInstance, null, null, new object[0]);
+            object dic = type.InvokeMember(string.Empty, System.Reflection.BindingFlags.CreateInstance, null, null, new object[0]);
 
             foreach (XElement childElem in xelemValue.Elements(eachElementName))
             {
@@ -2382,15 +2385,29 @@ namespace YAXLib
 
                 try
                 {
-                    memberType.InvokeMember("Add", BindingFlags.InvokeMethod, null, dic, new object[] { key, value });
+                    type.InvokeMember("Add", BindingFlags.InvokeMethod, null, dic, new object[] { key, value });
                 }
                 catch
                 {
                     this.OnExceptionOccurred(
-                        new YAXCannotAddObjectToCollection(member.Alias.LocalName, new KeyValuePair<object, object>(key, value)),
+                        new YAXCannotAddObjectToCollection(alias.LocalName, new KeyValuePair<object, object>(key, value)),
                         m_defaultExceptionType);
                 }
             }
+
+            return dic;
+        }
+
+        /// <summary>
+        /// Deserializes a dictionary member which also benefits from a YAXDictionary attribute
+        /// </summary>
+        /// <param name="o">The object to hold the deserialized value.</param>
+        /// <param name="member">The member corresponding to the dictionary member.</param>
+        /// <param name="xelemValue">The XML element value.</param>
+        private void DeserializeTaggedDictionaryMember(object o, MemberWrapper member, XElement xelemValue)
+        {
+            object dic = DeserializeTaggedDictionaryValue(xelemValue, member.Alias, member.MemberType,
+                member.CollectionAttributeInstance, member.DictionaryAttributeInstance);
 
             try
             {
@@ -2407,6 +2424,7 @@ namespace YAXLib
         /// </summary>
         /// <param name="keyType">Type of the key.</param>
         /// <param name="isKeyAttrib">if set to <c>true</c> means that key has been serialize as an attribute.</param>
+        /// <param name="isKeyContent">if set to <c>true</c> means that key has been serialize as an XML content.</param>
         /// <param name="keyAlias">The alias for <c>Key</c>.</param>
         /// <param name="childElem">The child XML elemenet to search <c>Key</c> and <c>Value</c> elements in.</param>
         /// <returns></returns>

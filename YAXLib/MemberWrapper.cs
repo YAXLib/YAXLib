@@ -129,12 +129,19 @@ namespace YAXLib
                 // no need to preces, it has been proccessed earlier
                 if (attrsToProcessEarlier.Contains(attr.GetType()))
                     continue;
-                //if (attr is YAXCustomSerializerAttribute)
-                //    continue; // no need to preces, it has been proccessed earlier
 
                 if (attr is YAXBaseAttribute)
                     ProcessYaxAttribute(attr);
             }
+
+            // now override some values from memeber-type-wrapper into member-wrapper
+            // if member-type has collection attributes while the member itself does not have them, 
+            // then use those of the member-type
+            if (m_collectionAttributeInstance == null && m_memberTypeWrapper.CollectionAttributeInstance != null)
+                m_collectionAttributeInstance = m_memberTypeWrapper.CollectionAttributeInstance;
+
+            if (m_dictionaryAttributeInstance == null && m_memberTypeWrapper.DictionaryAttributeInstance != null)
+                m_dictionaryAttributeInstance = m_memberTypeWrapper.DictionaryAttributeInstance;
         }
 
         /// <summary>

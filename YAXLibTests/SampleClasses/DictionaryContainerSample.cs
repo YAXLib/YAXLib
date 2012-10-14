@@ -11,6 +11,7 @@ namespace YAXLibTests.SampleClasses
     public class DictionaryContainerSample
     {
         [YAXSerializeAs("items")]
+        [YAXCollection(YAXCollectionSerializationTypes.Recursive)]
         [YAXDictionary(EachPairName = "item",
             KeyName = "key",
             SerializeKeyAs = YAXNodeTypes.Attribute, SerializeValueAs = YAXNodeTypes.Content)]
@@ -34,8 +35,12 @@ namespace YAXLibTests.SampleClasses
 
     [ShowInDemoApplication(SortKey = "_")]
 
-    [YAXSerializeAs("items")]
+    [YAXSerializeAs("TheItems")]
     [YAXNamespace("http://example.com/")]
+    [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement)]
+    [YAXDictionary(EachPairName = "TheItem",
+        KeyName = "TheKey",
+        SerializeKeyAs = YAXNodeTypes.Attribute, SerializeValueAs = YAXNodeTypes.Content)]
     public class DictionarySample : Dictionary<string, string>
     {
         public static DictionarySample GetSampleInstance()
