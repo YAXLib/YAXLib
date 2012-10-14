@@ -4,8 +4,6 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
-    [ShowInDemoApplication(SortKey="_")]
-
     [YAXSerializeAs("container")]
     [YAXNamespace("http://example.com/")]
     public class DictionaryContainerSample
@@ -32,8 +30,6 @@ namespace YAXLibTests.SampleClasses
             return GeneralToStringProvider.GeneralToString(this);
         }
     }
-
-    [ShowInDemoApplication(SortKey = "_")]
 
     [YAXSerializeAs("TheItems")]
     [YAXNamespace("http://example.com/")]

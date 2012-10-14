@@ -53,6 +53,7 @@
     <Compile Include="GeneralToString.cs" />
     <Compile Include="KnownTypeTests.cs" />
     <Compile Include="NamespaceTest.cs" />
+    <Compile Include="OverridingYAXLibMetadataTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionUtilsTest.cs" />
     <Compile Include="SampleClasses\AnotherArraySample.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="SampleClasses\CollectionOfInterfacesSample.cs" />
     <Compile Include="SampleClasses\CollectionSeriallyAsAttribute.cs" />
     <Compile Include="SampleClasses\ColorExample.cs" />
+    <Compile Include="SampleClasses\YAXLibMetadataOverriding.cs" />
     <Compile Include="SampleClasses\CsprojParser.cs" />
     <Compile Include="SampleClasses\CultureSample.cs" />
     <Compile Include="SampleClasses\CustomSerializationTests.cs" />
@@ -136,7 +138,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="YAXLib.DevKey.snk" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\YAXLib\YAXLib.csproj">
