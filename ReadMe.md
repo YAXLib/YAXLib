@@ -171,7 +171,7 @@ And this is the result of XML serialization:
 
 YAXLib is hosted on both [GitHub](https://github.com/sinairv/YAXLib) and [CodePlex](http://yaxlib.codeplex.com). Feel free to discuss about and fork it on either of these sites that you prefer. 
 
-Sina Iravanian:
+Copyright (c) 2009 - 2012 Sina Iravanian and Contributors - Licenced under MIT 
 
 Homepage: [www.sinairv.com](http://www.sinairv.com)
 
