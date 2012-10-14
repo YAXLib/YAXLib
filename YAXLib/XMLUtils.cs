@@ -459,6 +459,20 @@ namespace YAXLib
             return newAttr;
         }
 
+        public static XAttribute Attribute_NamespaceSafe(this XElement parent, XName attrName)
+        {
+            if(attrName.Namespace == parent.Name.Namespace)
+                attrName = attrName.RemoveNamespace();
+            return parent.Attribute(attrName);
+        }
+
+        public static IEnumerable<XAttribute> Attributes_NamespaceSafe(this XElement parent, XName attrName)
+        {
+            if (attrName.Namespace == parent.Name.Namespace)
+                attrName = attrName.RemoveNamespace();
+            return parent.Attributes(attrName);
+        }
+
         public static XElement AddXmlContent(this XElement self, object contentValue)
         {
             self.Add(new XText(contentValue.ToXmlValue()));

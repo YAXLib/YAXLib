@@ -13,10 +13,7 @@ namespace YAXLibTests.SampleClasses
         [YAXSerializeAs("items")]
         [YAXDictionary(EachPairName = "item",
             KeyName = "key",
-            SerializeKeyAs = YAXNodeTypes.Attribute
-            /* TODO: Add YAXNodeTypes.Content so the value can be the the content of the <item/> element.
-             * SerializeValueAs = YAXNodeTypes.Content */
-            )]
+            SerializeKeyAs = YAXNodeTypes.Attribute, SerializeValueAs = YAXNodeTypes.Content)]
         public DictionarySample Items { get; set; }
 
         public static DictionaryContainerSample GetSampleInstance()
@@ -35,6 +32,8 @@ namespace YAXLibTests.SampleClasses
         }
     }
 
+    [ShowInDemoApplication(SortKey = "_")]
+
     [YAXSerializeAs("items")]
     [YAXNamespace("http://example.com/")]
     public class DictionarySample : Dictionary<string, string>
@@ -48,6 +47,11 @@ namespace YAXLibTests.SampleClasses
             };
 
             return dictionary;
+        }
+
+        public override string ToString()
+        {
+            return GeneralToStringProvider.GeneralToString(this);
         }
     }
 

@@ -1393,7 +1393,7 @@ namespace YAXLib
                 return InvokeCustomDeserializerFromElement(m_udtWrapper.CustomSerializerType, baseElement);
             }
 
-            var realTypeAttr = baseElement.Attribute(s_yaxLibNamespaceUri + s_trueTypeAttrName);
+            var realTypeAttr = baseElement.Attribute_NamespaceSafe(s_yaxLibNamespaceUri + s_trueTypeAttrName);
             if (realTypeAttr != null)
             {
                 Type theRealType = ReflectionUtils.GetTypeByName(realTypeAttr.Value);
@@ -1460,7 +1460,7 @@ namespace YAXLib
                     {
                         // loook for an element with the same name AND a yaxlib:realtype attribute
                         XElement elem = XMLUtils.FindElement(baseElement, serializationLocation, member.Alias.OverrideNsIfEmpty(TypeNamespace));
-                        if (elem != null && elem.Attribute(s_yaxLibNamespaceUri + s_trueTypeAttrName) != null)
+                        if (elem != null && elem.Attribute_NamespaceSafe(s_yaxLibNamespaceUri + s_trueTypeAttrName) != null)
                         {
                             elemValue = elem.Value;
                             xelemValue = elem;
@@ -1495,7 +1495,7 @@ namespace YAXLib
                         {
                             // loook for an element with the same name AND a yaxlib:realtype attribute
                             XElement innerelem = XMLUtils.FindElement(baseElement, serializationLocation, member.Alias.OverrideNsIfEmpty(TypeNamespace));
-                            if (innerelem != null && innerelem.Attribute(s_yaxLibNamespaceUri + s_trueTypeAttrName) != null)
+                            if (innerelem != null && innerelem.Attribute_NamespaceSafe(s_yaxLibNamespaceUri + s_trueTypeAttrName) != null)
                             {
                                 elemValue = innerelem.Value;
                                 xelemValue = innerelem;
@@ -1734,7 +1734,7 @@ namespace YAXLib
                     {
                         // maybe it has got a realtype attribute and hence have turned into an element
                         XElement theElem = XMLUtils.FindElement(elem, member.SerializationLocation, member.Alias);
-                        if (theElem != null && theElem.Attribute(s_yaxLibNamespaceUri + s_trueTypeAttrName) != null)
+                        if (theElem != null && theElem.Attribute_NamespaceSafe(s_yaxLibNamespaceUri + s_trueTypeAttrName) != null)
                             return true;
                     }
                 }
@@ -1781,7 +1781,7 @@ namespace YAXLib
             // try to retrieve the real-type if specified
             if (xelemValue != null)
             {
-                XAttribute realTypeAttribute = xelemValue.Attribute(s_yaxLibNamespaceUri + s_trueTypeAttrName);
+                XAttribute realTypeAttribute = xelemValue.Attribute_NamespaceSafe(s_yaxLibNamespaceUri + s_trueTypeAttrName);
                 if (realTypeAttribute != null)
                 {
                     Type realType = ReflectionUtils.GetTypeByName(realTypeAttribute.Value);
@@ -1967,7 +1967,7 @@ namespace YAXLib
                     Type curElementType = itemType;
                     bool curElementIsPrimitive = isPrimitive;
 
-                    XAttribute realTypeAttribute = childElem.Attribute(s_yaxLibNamespaceUri + s_trueTypeAttrName);
+                    XAttribute realTypeAttribute = childElem.Attribute_NamespaceSafe(s_yaxLibNamespaceUri + s_trueTypeAttrName);
                     if (realTypeAttribute != null)
                     {
                         Type theRealType = ReflectionUtils.GetTypeByName(realTypeAttribute.Value);
@@ -2011,7 +2011,7 @@ namespace YAXLib
             Type dicKeyType, dicValueType;
             if (ReflectionUtils.IsArray(colType))
             {
-                XAttribute dimsAttr = xelemValue.Attribute(s_yaxLibNamespaceUri + s_dimsAttrName);
+                XAttribute dimsAttr = xelemValue.Attribute_NamespaceSafe(s_yaxLibNamespaceUri + s_dimsAttrName);
                 int[] dims = new int[0];
                 if (dimsAttr != null)
                 {
@@ -2272,7 +2272,7 @@ namespace YAXLib
             if (member.CollectionAttributeInstance != null && member.CollectionAttributeInstance.EachElementName != null)
             {
                 eachElementName = StringUtils.RefineSingleElement(member.CollectionAttributeInstance.EachElementName);
-                eachElementName.OverrideNsIfEmpty(member.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
+                eachElementName = eachElementName.OverrideNsIfEmpty(member.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
             }
 
             if (member.DictionaryAttributeInstance != null)
@@ -2280,7 +2280,7 @@ namespace YAXLib
                 if (member.DictionaryAttributeInstance.EachPairName != null)
                 {
                     eachElementName = StringUtils.RefineSingleElement(member.DictionaryAttributeInstance.EachPairName);
-                    eachElementName.OverrideNsIfEmpty(member.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
+                    eachElementName = eachElementName.OverrideNsIfEmpty(member.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
                 }
                 
                 if (member.DictionaryAttributeInstance.SerializeKeyAs == YAXNodeTypes.Attribute)
@@ -2330,7 +2330,7 @@ namespace YAXLib
                 {
                     if (isKeyAttrib)
                     {
-                        key = ReflectionUtils.ConvertBasicType(childElem.Attribute(keyAlias).Value, keyType);
+                        key = ReflectionUtils.ConvertBasicType(childElem.Attribute_NamespaceSafe(keyAlias).Value, keyType);
                     }
                     else if (isKeyContent)
                     {
@@ -2357,7 +2357,7 @@ namespace YAXLib
                 {
                     if (isValueAttrib)
                     {
-                        value = ReflectionUtils.ConvertBasicType(childElem.Attribute(valueAlias).Value, valueType);
+                        value = ReflectionUtils.ConvertBasicType(childElem.Attribute_NamespaceSafe(valueAlias).Value, valueType);
                     }
                     else if (isValueContent)
                     {
@@ -2413,7 +2413,8 @@ namespace YAXLib
         private static bool VerifyDictionaryPairElements(ref Type keyType, ref bool isKeyAttrib, ref bool isKeyContent, XName keyAlias, XElement childElem)
         {
             bool isKeyFound = false;
-            if (isKeyAttrib && childElem.Attribute(keyAlias) != null)
+            
+            if (isKeyAttrib && childElem.Attribute_NamespaceSafe(keyAlias) != null)
             {
                 isKeyFound = true;
             }
@@ -2427,7 +2428,7 @@ namespace YAXLib
                 XElement elem = childElem.Element(keyAlias);
                 if (elem != null)
                 {
-                    XAttribute realTypeAttr = elem.Attribute(s_yaxLibNamespaceUri + s_trueTypeAttrName);
+                    XAttribute realTypeAttr = elem.Attribute_NamespaceSafe(s_yaxLibNamespaceUri + s_trueTypeAttrName);
                     if (realTypeAttr != null)
                     {
                         Type theRealType = ReflectionUtils.GetTypeByName(realTypeAttr.Value);
@@ -2448,7 +2449,7 @@ namespace YAXLib
                 {
                     isKeyFound = true;
 
-                    XAttribute realTypeAttr = elem.Attribute(s_yaxLibNamespaceUri + s_trueTypeAttrName);
+                    XAttribute realTypeAttr = elem.Attribute_NamespaceSafe(s_yaxLibNamespaceUri + s_trueTypeAttrName);
                     if (realTypeAttr != null)
                     {
                         Type theRealType = ReflectionUtils.GetTypeByName(realTypeAttr.Value);

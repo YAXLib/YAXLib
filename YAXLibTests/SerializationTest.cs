@@ -1609,8 +1609,8 @@ namespace YAXLibTests
             
             const string expectedResult =
 @"<items xmlns=""http://example.com/"">
-  <item key=""key1"" type=""guid"">00000001-0002-0003-0405-060708090a0b<</item>
-  <item key=""key2"" type=""int"">1234</item>
+  <item key=""key1"">00000001-0002-0003-0405-060708090a0b</item>
+  <item key=""key2"">1234</item>
 </items>";
 
             /* NOTE: This fails partly because you can't decorate a class with [YAXDictionary] and 
@@ -1630,15 +1630,11 @@ namespace YAXLibTests
             const string expectedResult =
 @"<container xmlns=""http://example.com/"">
   <items>
-    <item key=""key1"" type=""guid"">00000001-0002-0003-0405-060708090a0b<</item>
-    <item key=""key2"" type=""int"">1234</item>
+    <item key=""key1"">00000001-0002-0003-0405-060708090a0b</item>
+    <item key=""key2"">1234</item>
   </items>
 </container>";
 
-            /* NOTE: This fails partly because you can't decorate a class with [YAXDictionary] and 
-             * because it's not possible to say that the value should be the content of <item/> while
-             * the key should be an attribute.
-             */
             Assert.AreEqual(expectedResult, result);
         }
 
