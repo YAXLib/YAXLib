@@ -284,16 +284,7 @@ namespace YAXLib
                     return null; // we cannot create another one with the same name
             }
 
-            var newAttrName = attrName;
-            
-            // the following stupid code is because of odd behaviour of LINQ to XML
-            if (newAttrName.Namespace == newLoc.Name.Namespace)
-                newAttrName = newAttrName.RemoveNamespace();
-
-            string strAttrValue = Convert.ToString((attrValue ?? String.Empty), CultureInfo.InvariantCulture);
-            var newAttr = new XAttribute(newAttrName, strAttrValue);
-            newLoc.Add(newAttr);
-            return newAttr;
+            return newLoc.AddAttributeNamespaceSafe(attrName, attrValue);
         }
 
         /// <summary>
@@ -430,7 +421,7 @@ namespace YAXLib
         /// <returns></returns>
         public static XElement AddPreserveSpaceAttribute(XElement element)
         {
-            element.Add(new XAttribute(XNamespace.Xml + "space", "preserve"));
+            element.AddAttributeNamespaceSafe(XNamespace.Xml + "space", "preserve");
             return element;
         }
         
@@ -448,6 +439,53 @@ namespace YAXLib
             }
 
             throw new InvalidOperationException("Cannot create a unique random prefix");
+        }
+
+        public static string ToXmlValue(this object self)
+        {
+            return Convert.ToString((self ?? String.Empty), CultureInfo.InvariantCulture);
+        }
+
+        public static XAttribute AddAttributeNamespaceSafe(this XElement parent, XName attrName, object attrValue)
+        {
+            var newAttrName = attrName;
+
+            // the following stupid code is because of odd behaviour of LINQ to XML
+            if (newAttrName.Namespace == parent.Name.Namespace)
+                newAttrName = newAttrName.RemoveNamespace();
+
+            var newAttr = new XAttribute(newAttrName, attrValue.ToXmlValue());
+            parent.Add(newAttr);
+            return newAttr;
+        }
+
+        public static XAttribute Attribute_NamespaceSafe(this XElement parent, XName attrName)
+        {
+            if(attrName.Namespace == parent.Name.Namespace)
+                attrName = attrName.RemoveNamespace();
+            return parent.Attribute(attrName);
+        }
+
+        public static IEnumerable<XAttribute> Attributes_NamespaceSafe(this XElement parent, XName attrName)
+        {
+            if (attrName.Namespace == parent.Name.Namespace)
+                attrName = attrName.RemoveNamespace();
+            return parent.Attributes(attrName);
+        }
+
+        public static XElement AddXmlContent(this XElement self, object contentValue)
+        {
+            self.Add(new XText(contentValue.ToXmlValue()));
+            return self;
+        }
+
+        public static string GetXmlContent(this XElement self)
+        {
+            XText[] values = self.Nodes().OfType<XText>().ToArray();
+            if (values != null && values.Length > 0)
+                return values[0].Value;
+            else 
+                return null;
         }
 
         public static XAttribute Attribute_NamespaceNeutral(this XElement parent, XName name)

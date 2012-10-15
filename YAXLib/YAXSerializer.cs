@@ -11,6 +11,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -82,23 +83,23 @@ namespace YAXLib
         /// <summary>
         /// The URI address which holds the xmlns:yaxlib definition.
         /// </summary>
-        private static readonly XNamespace s_yaxLibNamespaceUri = XNamespace.Get("http://www.sinairv.com/yaxlib/");
+        private XNamespace m_yaxLibNamespaceUri = XNamespace.Get("http://www.sinairv.com/yaxlib/");
 
         /// <summary>
         /// The initials used for the xml namespace
         /// </summary>
-        private const string s_yaxLibNamespacePrefix = "yaxlib";
+        private string m_yaxLibNamespacePrefix = "yaxlib";
 
         /// <summary>
         /// the attribute name used to deserialize meta-data for multi-dimensional arrays.
         /// </summary>
-        private const string s_dimsAttrName = "dims";
+        private string m_dimsAttrName = "dims";
 
         /// <summary>
         /// the attribute name used to deserialize meta-data for real types of objects serialized through
         /// a reference to their base class or interface.
         /// </summary>
-        private const string s_trueTypeAttrName = "realtype";
+        private string m_trueTypeAttrName = "realtype";
 
         /// <summary>
         /// a map of namespaces to their prefixes (if any) to be added utlimately to the xml result
@@ -237,6 +238,71 @@ namespace YAXLib
         /// <c>true</c> if this instance is craeted to deserialize a non collection member of another object; otherwise, <c>false</c>.
         /// </value>
         private bool IsCraetedToDeserializeANonCollectionMember { get; set; }
+
+        /// <summary>
+        /// The URI address which holds the xmlns:yaxlib definition.
+        /// </summary>
+        public XNamespace YaxLibNamespaceUri 
+        {
+            get
+            {
+                return m_yaxLibNamespaceUri;
+            }
+            set
+            {
+                m_yaxLibNamespaceUri = value;
+            }
+        }
+
+        /// <summary>
+        /// The prefix used for the xml namespace
+        /// </summary>
+        public string YaxLibNamespacePrefix
+        {
+            get
+            {
+                return m_yaxLibNamespacePrefix;
+            }
+            
+            set
+            {
+                m_yaxLibNamespacePrefix = value;
+            }
+        }
+
+        /// <summary>
+        /// the attribute name used to deserialize meta-data for multi-dimensional arrays.
+        /// </summary>
+        public string DimentionsAttributeName
+        {
+            get
+            {
+                return m_dimsAttrName;
+            }
+
+            set
+            {
+                m_dimsAttrName = value;
+            }
+        }
+
+        /// <summary>
+        /// the attribute name used to deserialize meta-data for real types of objects serialized through
+        /// a reference to their base class or interface.
+        /// </summary>
+        public string RealTypeAttributeName
+        {
+            get
+            {
+                return m_trueTypeAttrName;
+            }
+
+            set
+            {
+                m_trueTypeAttrName = value;
+            }
+        }
+
 
         #endregion
 
@@ -470,7 +536,8 @@ namespace YAXLib
             // to serialize stand-alone collection or dictionary objects
             if (m_udtWrapper.IsTreatedAsDictionary)
             {
-                var elemResult = MakeDictionaryElement(null, m_udtWrapper.Alias, obj, null, null);
+                var elemResult = MakeDictionaryElement(null, m_udtWrapper.Alias, obj, 
+                    m_udtWrapper.DictionaryAttributeInstance, m_udtWrapper.CollectionAttributeInstance);
                 if (m_udtWrapper.PreservesWhitespace)
                     XMLUtils.AddPreserveSpaceAttribute(elemResult);
                 return elemResult;
@@ -490,7 +557,7 @@ namespace YAXLib
                     XMLUtils.AddPreserveSpaceAttribute(elemResult);
                 return elemResult;
             }
-            else if(m_udtWrapper.UnderlyingType != obj.GetType())
+            else if(!m_udtWrapper.UnderlyingType.EqualsOrIsNullableOf(obj.GetType()))
             {
                 // this block of code runs if the serializer is instantiated with a
                 // another base value such as System.Object but is provided with an
@@ -508,14 +575,12 @@ namespace YAXLib
                 m_parsingErrors.AddRange(ser.ParsingErrors);
                 elem.Name = m_udtWrapper.Alias;
                 
-                elem.Add(new XAttribute(s_yaxLibNamespaceUri + s_trueTypeAttrName, obj.GetType().FullName));
+                elem.AddAttributeNamespaceSafe(m_yaxLibNamespaceUri + m_trueTypeAttrName, obj.GetType().FullName);
                 RegisterYaxLibNamespace();
 
                 AddNamespacesToElement(elem);
 
-                //var nsAttrName = XNamespace.Xmlns + s_yaxLibNamespacePrefix;
-                //if(elem.Attribute(nsAttrName) == null)
-                //    elem.Add(new XAttribute(nsAttrName, s_yaxLibNamespaceUri));
+
                 return elem;
             }
             else
@@ -624,7 +689,7 @@ namespace YAXLib
 
                     bool areOfSameType = true; // are element value and the member declared type the same?
                     object originalValue = member.GetOriginalValue(obj, null);
-                    if (elementValue != null && member.MemberType != originalValue.GetType())
+                    if (elementValue != null && !member.MemberType.EqualsOrIsNullableOf(originalValue.GetType()))
                     {
                         areOfSameType = false;
                     }
@@ -643,7 +708,7 @@ namespace YAXLib
                         {
                             XAttribute attrToCreate = XMLUtils.CreateAttribute(m_baseElement,
                                 serializationLocation, member.Alias.OverrideNsIfEmpty(TypeNamespace), 
-                                (hasCustomSerializer || isCollectionSerially || isKnownType) ? "" : elementValue);
+                                (hasCustomSerializer || isCollectionSerially || isKnownType) ? String.Empty : elementValue);
 
                             RegisterNamespace(member.Alias.OverrideNsIfEmpty(TypeNamespace).Namespace, null);
 
@@ -709,7 +774,7 @@ namespace YAXLib
                         else if(isKnownType)
                         {
                             var tempLoc = new XElement("temp");
-                            KnownTypes.Serialize(elementValue, tempLoc, "");
+                            KnownTypes.Serialize(elementValue, tempLoc, String.Empty);
                             valueToSet = tempLoc.Value;
                         }
                         else if (isCollectionSerially)
@@ -720,7 +785,7 @@ namespace YAXLib
                         }
                         else
                         {
-                            valueToSet = (elementValue ?? String.Empty).ToString();
+                            valueToSet = elementValue.ToXmlValue();
                         }
 
                         parElem.Add(new XText(valueToSet));
@@ -783,7 +848,7 @@ namespace YAXLib
                             XElement elemToAdd = MakeElement(parElem, member, elementValue, out moveDescOnly, out alreadyAdded);
                             if (!areOfSameType)
                             {
-                                elemToAdd.Add(new XAttribute(s_yaxLibNamespaceUri + s_trueTypeAttrName, elementValue.GetType().FullName));
+                                elemToAdd.AddAttributeNamespaceSafe(m_yaxLibNamespaceUri + m_trueTypeAttrName, elementValue.GetType().FullName);
                                 RegisterYaxLibNamespace();
                             }
 
@@ -860,7 +925,7 @@ namespace YAXLib
 
         private void RegisterYaxLibNamespace()
         {
-            RegisterNamespace(s_yaxLibNamespaceUri, s_yaxLibNamespacePrefix);
+            RegisterNamespace(m_yaxLibNamespaceUri, m_yaxLibNamespacePrefix);
         }
 
         /// <summary>
@@ -909,7 +974,7 @@ namespace YAXLib
                     // if no namespace with this prefix already exists
                     if (rootNode.GetNamespaceOfPrefix(prefix) == null)
                     {
-                        rootNode.Add(new XAttribute(XNamespace.Xmlns + prefix, ns));
+                        rootNode.AddAttributeNamespaceSafe(XNamespace.Xmlns + prefix, ns);
                     }
                     else // if this prefix is already added
                     {
@@ -929,13 +994,12 @@ namespace YAXLib
             {
                 // it will be added automatically
                 nsNoPrefix.Remove(m_udtWrapper.Namespace);
-                //rootNode.Add(new XAttribute("xmlns", m_udtWrapper.Namespace.NamespaceName));
             }
 
             // now generate namespaces for those without prefix
             foreach (var ns in nsNoPrefix)
             {
-                rootNode.Add(new XAttribute(XNamespace.Xmlns + rootNode.GetRandomPrefix(), ns));
+                rootNode.AddAttributeNamespaceSafe(XNamespace.Xmlns + rootNode.GetRandomPrefix(), ns);
             }
         }
 
@@ -1019,6 +1083,8 @@ namespace YAXLib
             var dicInst = elementValue as IEnumerable;
             bool isKeyAttrib = false;
             bool isValueAttrib = false;
+            bool isKeyContent = false;
+            bool isValueContent = false;
             string keyFormat = null;
             string valueFormat = null;
             XName keyAlias = elementName.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone() + "Key";
@@ -1047,10 +1113,18 @@ namespace YAXLib
                 {
                     isKeyAttrib = ReflectionUtils.IsBasicType(keyType);
                 }
+                else if (dicAttrInst.SerializeKeyAs == YAXNodeTypes.Content)
+                {
+                    isKeyContent = ReflectionUtils.IsBasicType(keyType);
+                }
 
                 if (dicAttrInst.SerializeValueAs == YAXNodeTypes.Attribute)
                 {
                     isValueAttrib = ReflectionUtils.IsBasicType(valueType);
+                }
+                else if (dicAttrInst.SerializeValueAs == YAXNodeTypes.Content)
+                {
+                    isValueContent = ReflectionUtils.IsBasicType(valueType);
                 }
 
                 keyFormat = dicAttrInst.KeyFormatString;
@@ -1077,10 +1151,10 @@ namespace YAXLib
                 bool areKeyOfSameType = true;
                 bool areValueOfSameType = true;
 
-                if (keyObj != null && keyObj.GetType() != keyType)
+                if (keyObj != null && !keyObj.GetType().EqualsOrIsNullableOf(keyType))
                     areKeyOfSameType = false;
 
-                if (valueObj != null && valueObj.GetType() != valueType)
+                if (valueObj != null && !valueObj.GetType().EqualsOrIsNullableOf(valueType))
                     areValueOfSameType = false;
 
                 if (keyFormat != null)
@@ -1103,7 +1177,11 @@ namespace YAXLib
 
                 if (isKeyAttrib && areKeyOfSameType)
                 {
-                    elemChild.Add(new XAttribute(keyAlias, (keyObj ?? string.Empty).ToString()));
+                    elemChild.AddAttributeNamespaceSafe(keyAlias, keyObj);
+                }
+                else if (isKeyContent && areKeyOfSameType)
+                {
+                    elemChild.AddXmlContent(keyObj);
                 }
                 else
                 {
@@ -1117,28 +1195,32 @@ namespace YAXLib
                             elemChild.Add(addedElem);
                         }
 
-                        addedElem.Add(new XAttribute(s_yaxLibNamespaceUri + s_trueTypeAttrName, keyObj.GetType().FullName));
+                        addedElem.AddAttributeNamespaceSafe(m_yaxLibNamespaceUri + m_trueTypeAttrName, keyObj.GetType().FullName);
                         RegisterYaxLibNamespace();
                     }
                 }
 
                 if (isValueAttrib && areValueOfSameType)
                 {
-                    elemChild.Add(new XAttribute(valueAlias, (valueObj ?? string.Empty).ToString()));
+                    elemChild.AddAttributeNamespaceSafe(valueAlias, valueObj);
+                }
+                else if (isValueContent && areValueOfSameType)
+                {
+                    elemChild.AddXmlContent(valueObj);
                 }
                 else
                 {
                     XElement addedElem = AddObjectToElement(elemChild, valueAlias, valueObj);
                     if (!areValueOfSameType)
                     {
-                        if(addedElem.Parent == null)
+                        if (addedElem.Parent == null)
                         {
                             // sometimes empty elements are removed because its members are serialized in
                             // other elements, therefore we need to make sure to re-add the element.
                             elemChild.Add(addedElem);
                         }
 
-                        addedElem.Add(new XAttribute(s_yaxLibNamespaceUri + s_trueTypeAttrName, valueObj.GetType().FullName));
+                        addedElem.AddAttributeNamespaceSafe(m_yaxLibNamespaceUri + m_trueTypeAttrName, valueObj.GetType().FullName);
                         RegisterYaxLibNamespace();
                     }
                 }
@@ -1262,7 +1344,7 @@ namespace YAXLib
 
                     if (isFirst)
                     {
-                        sb.Append(objToAdd.ToString());
+                        sb.Append(objToAdd.ToXmlValue());
                         isFirst = false;
                     }
                     else
@@ -1293,9 +1375,9 @@ namespace YAXLib
                     }
 
                     XElement itemElem = this.AddObjectToElement(elem, curElemName.OverrideNsIfEmpty(elementName.Namespace), objToAdd);
-                    if (obj.GetType() != colItemType)
+                    if (!obj.GetType().EqualsOrIsNullableOf(colItemType))
                     {
-                        itemElem.Add(new XAttribute(s_yaxLibNamespaceUri + s_trueTypeAttrName, obj.GetType().FullName));
+                        itemElem.AddAttributeNamespaceSafe(m_yaxLibNamespaceUri + m_trueTypeAttrName, obj.GetType().FullName);
                         if (itemElem.Parent == null) // i.e., it has been removed, e.g., because all its members have been serialized outside the element
                             elem.Add(itemElem); // return it back, or undelete this item
 
@@ -1309,7 +1391,7 @@ namespace YAXLib
             int[] arrayDims = ReflectionUtils.GetArrayDimensions(elementValue);
             if (arrayDims != null && arrayDims.Length > 1)
             {
-                elemToAdd.Add(new XAttribute(s_yaxLibNamespaceUri + s_dimsAttrName, StringUtils.GetArrayDimsString(arrayDims)));
+                elemToAdd.AddAttributeNamespaceSafe(m_yaxLibNamespaceUri + m_dimsAttrName, StringUtils.GetArrayDimsString(arrayDims));
                 RegisterYaxLibNamespace();
             }
 
@@ -1334,7 +1416,7 @@ namespace YAXLib
             if (value == null || ReflectionUtils.IsBasicType(value.GetType()))
             {
                 if (value != null)
-                    value = Convert.ToString(value, CultureInfo.InvariantCulture);
+                    value = value.ToXmlValue();
 
                 return new XElement(name, value);
             }
@@ -1378,7 +1460,7 @@ namespace YAXLib
                 return InvokeCustomDeserializerFromElement(m_udtWrapper.CustomSerializerType, baseElement);
             }
 
-            var realTypeAttr = baseElement.Attribute(s_yaxLibNamespaceUri + s_trueTypeAttrName);
+            var realTypeAttr = baseElement.Attribute_NamespaceSafe(m_yaxLibNamespaceUri + m_trueTypeAttrName);
             if (realTypeAttr != null)
             {
                 Type theRealType = ReflectionUtils.GetTypeByName(realTypeAttr.Value);
@@ -1401,7 +1483,14 @@ namespace YAXLib
 
             if ((m_udtWrapper.IsTreatedAsCollection || m_udtWrapper.IsTreatedAsDictionary) && !IsCraetedToDeserializeANonCollectionMember)
             {
-                return DeserializeCollectionValue(m_type, baseElement, ReflectionUtils.GetTypeFriendlyName(m_type), null);
+                if (m_udtWrapper.DictionaryAttributeInstance != null)
+                {
+                    return DeserializeTaggedDictionaryValue(baseElement, m_udtWrapper.Alias, m_type, m_udtWrapper.CollectionAttributeInstance, m_udtWrapper.DictionaryAttributeInstance);
+                }
+                else
+                {
+                    return DeserializeCollectionValue(m_type, baseElement, m_udtWrapper.Alias, m_udtWrapper.CollectionAttributeInstance);
+                }
             }
 
             if (ReflectionUtils.IsBasicType(m_type))
@@ -1445,7 +1534,7 @@ namespace YAXLib
                     {
                         // loook for an element with the same name AND a yaxlib:realtype attribute
                         XElement elem = XMLUtils.FindElement(baseElement, serializationLocation, member.Alias.OverrideNsIfEmpty(TypeNamespace));
-                        if (elem != null && elem.Attribute(s_yaxLibNamespaceUri + s_trueTypeAttrName) != null)
+                        if (elem != null && elem.Attribute_NamespaceSafe(m_yaxLibNamespaceUri + m_trueTypeAttrName) != null)
                         {
                             elemValue = elem.Value;
                             xelemValue = elem;
@@ -1480,7 +1569,7 @@ namespace YAXLib
                         {
                             // loook for an element with the same name AND a yaxlib:realtype attribute
                             XElement innerelem = XMLUtils.FindElement(baseElement, serializationLocation, member.Alias.OverrideNsIfEmpty(TypeNamespace));
-                            if (innerelem != null && innerelem.Attribute(s_yaxLibNamespaceUri + s_trueTypeAttrName) != null)
+                            if (innerelem != null && innerelem.Attribute_NamespaceSafe(m_yaxLibNamespaceUri + m_trueTypeAttrName) != null)
                             {
                                 elemValue = innerelem.Value;
                                 xelemValue = innerelem;
@@ -1719,7 +1808,7 @@ namespace YAXLib
                     {
                         // maybe it has got a realtype attribute and hence have turned into an element
                         XElement theElem = XMLUtils.FindElement(elem, member.SerializationLocation, member.Alias);
-                        if (theElem != null && theElem.Attribute(s_yaxLibNamespaceUri + s_trueTypeAttrName) != null)
+                        if (theElem != null && theElem.Attribute_NamespaceSafe(m_yaxLibNamespaceUri + m_trueTypeAttrName) != null)
                             return true;
                     }
                 }
@@ -1766,7 +1855,7 @@ namespace YAXLib
             // try to retrieve the real-type if specified
             if (xelemValue != null)
             {
-                XAttribute realTypeAttribute = xelemValue.Attribute(s_yaxLibNamespaceUri + s_trueTypeAttrName);
+                XAttribute realTypeAttribute = xelemValue.Attribute_NamespaceSafe(m_yaxLibNamespaceUri + m_trueTypeAttrName);
                 if (realTypeAttribute != null)
                 {
                     Type realType = ReflectionUtils.GetTypeByName(realTypeAttribute.Value);
@@ -1797,7 +1886,7 @@ namespace YAXLib
                     if (xelemValue.IsEmpty)
                         elemValue = null;
                     else
-                        elemValue = "";
+                        elemValue = String.Empty;
                 }
 
                 try
@@ -1830,7 +1919,7 @@ namespace YAXLib
                     }
                     catch
                     {
-                        this.OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias.LocalName), this.m_defaultExceptionType);
+                        this.OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias.LocalName), m_defaultExceptionType);
                     }
                 }
                 catch (Exception ex)
@@ -1854,7 +1943,7 @@ namespace YAXLib
             }
             else if (member.IsTreatedAsDictionary && member.DictionaryAttributeInstance != null)
             {
-                DeserializeTaggedDictionaryMember(o, member, memberType, xelemValue);
+                DeserializeTaggedDictionaryMember(o, member, xelemValue);
             }
             else if (member.IsTreatedAsCollection)
             {
@@ -1952,7 +2041,7 @@ namespace YAXLib
                     Type curElementType = itemType;
                     bool curElementIsPrimitive = isPrimitive;
 
-                    XAttribute realTypeAttribute = childElem.Attribute(s_yaxLibNamespaceUri + s_trueTypeAttrName);
+                    XAttribute realTypeAttribute = childElem.Attribute_NamespaceSafe(m_yaxLibNamespaceUri + m_trueTypeAttrName);
                     if (realTypeAttribute != null)
                     {
                         Type theRealType = ReflectionUtils.GetTypeByName(realTypeAttribute.Value);
@@ -1996,7 +2085,7 @@ namespace YAXLib
             Type dicKeyType, dicValueType;
             if (ReflectionUtils.IsArray(colType))
             {
-                XAttribute dimsAttr = xelemValue.Attribute(s_yaxLibNamespaceUri + s_dimsAttrName);
+                XAttribute dimsAttr = xelemValue.Attribute_NamespaceSafe(m_yaxLibNamespaceUri + m_dimsAttrName);
                 int[] dims = new int[0];
                 if (dimsAttr != null)
                 {
@@ -2228,75 +2317,79 @@ namespace YAXLib
             return result;
         }
 
-        /// <summary>
-        /// Deserializes a dictionary member which also benefits from a YAXDictionary attribute
-        /// </summary>
-        /// <param name="o">The object to hold the deserialized value.</param>
-        /// <param name="member">The member corresponding to the dictionary member.</param>
-        /// <param name="memberType">Type of the dictionary member.</param>
-        /// <param name="xelemValue">The XML element value.</param>
-        private void DeserializeTaggedDictionaryMember(object o, MemberWrapper member, Type memberType, XElement xelemValue)
+        private object DeserializeTaggedDictionaryValue(XElement xelemValue, XName alias, Type type, 
+            YAXCollectionAttribute colAttributeInstance, YAXDictionaryAttribute dicAttrInstance)
         {
             // otherwise the "else if(member.IsTreatedAsCollection)" block solves the problem
             Type keyType, valueType;
-            if (!ReflectionUtils.IsIDictionary(memberType, out keyType, out valueType))
+            if (!ReflectionUtils.IsIDictionary(type, out keyType, out valueType))
             {
                 throw new Exception("elemValue must be a Dictionary");
             }
 
             Type pairType = null;
-            ReflectionUtils.IsIEnumerable(memberType, out pairType);
+            ReflectionUtils.IsIEnumerable(type, out pairType);
             XName eachElementName = StringUtils.RefineSingleElement(ReflectionUtils.GetTypeFriendlyName(pairType));
             bool isKeyAttrib = false;
             bool isValueAttrib = false;
-            XName keyAlias = member.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone() + "Key";
-            XName valueAlias = member.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone() + "Value";
+            bool isKeyContent = false;
+            bool isValueContent = false;
+            XName keyAlias = alias.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone() + "Key";
+            XName valueAlias = alias.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone() + "Value";
 
-            if (member.CollectionAttributeInstance != null && member.CollectionAttributeInstance.EachElementName != null)
+            if (colAttributeInstance != null && colAttributeInstance.EachElementName != null)
             {
-                eachElementName = StringUtils.RefineSingleElement(member.CollectionAttributeInstance.EachElementName);
-                eachElementName.OverrideNsIfEmpty(member.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
+                eachElementName = StringUtils.RefineSingleElement(colAttributeInstance.EachElementName);
+                eachElementName = eachElementName.OverrideNsIfEmpty(alias.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
             }
 
-            if (member.DictionaryAttributeInstance != null)
+            if (dicAttrInstance != null)
             {
-                if (member.DictionaryAttributeInstance.EachPairName != null)
+                if (dicAttrInstance.EachPairName != null)
                 {
-                    eachElementName = StringUtils.RefineSingleElement(member.DictionaryAttributeInstance.EachPairName);
-                    eachElementName.OverrideNsIfEmpty(member.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
+                    eachElementName = StringUtils.RefineSingleElement(dicAttrInstance.EachPairName);
+                    eachElementName = eachElementName.OverrideNsIfEmpty(alias.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
                 }
-                
-                if (member.DictionaryAttributeInstance.SerializeKeyAs == YAXNodeTypes.Attribute)
+
+                if (dicAttrInstance.SerializeKeyAs == YAXNodeTypes.Attribute)
                 {
                     isKeyAttrib = ReflectionUtils.IsBasicType(keyType);
                 }
+                else if (dicAttrInstance.SerializeKeyAs == YAXNodeTypes.Content)
+                {
+                    isKeyContent = ReflectionUtils.IsBasicType(keyType);
+                }
 
-                if (member.DictionaryAttributeInstance.SerializeValueAs == YAXNodeTypes.Attribute)
+                if (dicAttrInstance.SerializeValueAs == YAXNodeTypes.Attribute)
                 {
                     isValueAttrib = ReflectionUtils.IsBasicType(valueType);
                 }
-
-                if (member.DictionaryAttributeInstance.KeyName != null)
+                else if (dicAttrInstance.SerializeValueAs == YAXNodeTypes.Content)
                 {
-                    keyAlias = StringUtils.RefineSingleElement(member.DictionaryAttributeInstance.KeyName);
-                    keyAlias = keyAlias.OverrideNsIfEmpty(member.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
+                    isValueContent = ReflectionUtils.IsBasicType(valueType);
                 }
-                if (member.DictionaryAttributeInstance.ValueName != null)
+
+                if (dicAttrInstance.KeyName != null)
                 {
-                    valueAlias = StringUtils.RefineSingleElement(member.DictionaryAttributeInstance.ValueName);
-                    valueAlias = valueAlias.OverrideNsIfEmpty(member.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
+                    keyAlias = StringUtils.RefineSingleElement(dicAttrInstance.KeyName);
+                    keyAlias = keyAlias.OverrideNsIfEmpty(alias.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
+                }
+                if (dicAttrInstance.ValueName != null)
+                {
+                    valueAlias = StringUtils.RefineSingleElement(dicAttrInstance.ValueName);
+                    valueAlias = valueAlias.OverrideNsIfEmpty(alias.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
                 }
             }
 
-            object dic = memberType.InvokeMember(string.Empty, System.Reflection.BindingFlags.CreateInstance, null, null, new object[0]);
+            object dic = type.InvokeMember(string.Empty, System.Reflection.BindingFlags.CreateInstance, null, null, new object[0]);
 
             foreach (XElement childElem in xelemValue.Elements(eachElementName))
             {
                 object key = null, value = null;
                 YAXSerializer keySer = null, valueSer = null;
 
-                bool isKeyFound = VerifyDictionaryPairElements(ref keyType, ref isKeyAttrib, keyAlias, childElem);
-                bool isValueFound = VerifyDictionaryPairElements(ref valueType, ref isValueAttrib, valueAlias, childElem);
+                bool isKeyFound = VerifyDictionaryPairElements(ref keyType, ref isKeyAttrib, ref isKeyContent, keyAlias, childElem);
+                bool isValueFound = VerifyDictionaryPairElements(ref valueType, ref isValueAttrib, ref isValueContent, valueAlias, childElem);
 
                 if (!isKeyFound && !isValueFound)
                     continue;
@@ -2305,7 +2398,11 @@ namespace YAXLib
                 {
                     if (isKeyAttrib)
                     {
-                        key = ReflectionUtils.ConvertBasicType(childElem.Attribute(keyAlias).Value, keyType);
+                        key = ReflectionUtils.ConvertBasicType(childElem.Attribute_NamespaceSafe(keyAlias).Value, keyType);
+                    }
+                    else if (isKeyContent)
+                    {
+                        key = ReflectionUtils.ConvertBasicType(childElem.GetXmlContent(), keyType);
                     }
                     else if (ReflectionUtils.IsBasicType(keyType))
                     {
@@ -2328,7 +2425,11 @@ namespace YAXLib
                 {
                     if (isValueAttrib)
                     {
-                        value = ReflectionUtils.ConvertBasicType(childElem.Attribute(valueAlias).Value, valueType);
+                        value = ReflectionUtils.ConvertBasicType(childElem.Attribute_NamespaceSafe(valueAlias).Value, valueType);
+                    }
+                    else if (isValueContent)
+                    {
+                        value = ReflectionUtils.ConvertBasicType(childElem.GetXmlContent(), valueType);
                     }
                     else if (ReflectionUtils.IsBasicType(valueType))
                     {
@@ -2349,15 +2450,29 @@ namespace YAXLib
 
                 try
                 {
-                    memberType.InvokeMember("Add", BindingFlags.InvokeMethod, null, dic, new object[] { key, value });
+                    type.InvokeMember("Add", BindingFlags.InvokeMethod, null, dic, new object[] { key, value });
                 }
                 catch
                 {
                     this.OnExceptionOccurred(
-                        new YAXCannotAddObjectToCollection(member.Alias.LocalName, new KeyValuePair<object, object>(key, value)),
+                        new YAXCannotAddObjectToCollection(alias.LocalName, new KeyValuePair<object, object>(key, value)),
                         m_defaultExceptionType);
                 }
             }
+
+            return dic;
+        }
+
+        /// <summary>
+        /// Deserializes a dictionary member which also benefits from a YAXDictionary attribute
+        /// </summary>
+        /// <param name="o">The object to hold the deserialized value.</param>
+        /// <param name="member">The member corresponding to the dictionary member.</param>
+        /// <param name="xelemValue">The XML element value.</param>
+        private void DeserializeTaggedDictionaryMember(object o, MemberWrapper member, XElement xelemValue)
+        {
+            object dic = DeserializeTaggedDictionaryValue(xelemValue, member.Alias, member.MemberType,
+                member.CollectionAttributeInstance, member.DictionaryAttributeInstance);
 
             try
             {
@@ -2365,7 +2480,7 @@ namespace YAXLib
             }
             catch
             {
-                this.OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias.LocalName), this.m_defaultExceptionType);
+                this.OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias.LocalName), m_defaultExceptionType);
             }
         }
 
@@ -2374,23 +2489,29 @@ namespace YAXLib
         /// </summary>
         /// <param name="keyType">Type of the key.</param>
         /// <param name="isKeyAttrib">if set to <c>true</c> means that key has been serialize as an attribute.</param>
+        /// <param name="isKeyContent">if set to <c>true</c> means that key has been serialize as an XML content.</param>
         /// <param name="keyAlias">The alias for <c>Key</c>.</param>
         /// <param name="childElem">The child XML elemenet to search <c>Key</c> and <c>Value</c> elements in.</param>
         /// <returns></returns>
-        private static bool VerifyDictionaryPairElements(ref Type keyType, ref bool isKeyAttrib, XName keyAlias, XElement childElem)
+        private bool VerifyDictionaryPairElements(ref Type keyType, ref bool isKeyAttrib, ref bool isKeyContent, XName keyAlias, XElement childElem)
         {
             bool isKeyFound = false;
-            if (isKeyAttrib && childElem.Attribute(keyAlias) != null)
+            
+            if (isKeyAttrib && childElem.Attribute_NamespaceSafe(keyAlias) != null)
             {
                 isKeyFound = true;
             }
-            else if (isKeyAttrib)
+            else if (isKeyContent && childElem.GetXmlContent() != null)
+            {
+                isKeyFound = true;
+            }
+            else if (isKeyAttrib || isKeyContent)
             {
                 // loook for an element with the same name AND a yaxlib:realtype attribute
                 XElement elem = childElem.Element(keyAlias);
                 if (elem != null)
                 {
-                    XAttribute realTypeAttr = elem.Attribute(s_yaxLibNamespaceUri + s_trueTypeAttrName);
+                    XAttribute realTypeAttr = elem.Attribute_NamespaceSafe(m_yaxLibNamespaceUri + m_trueTypeAttrName);
                     if (realTypeAttr != null)
                     {
                         Type theRealType = ReflectionUtils.GetTypeByName(realTypeAttr.Value);
@@ -2398,6 +2519,7 @@ namespace YAXLib
                         {
                             keyType = theRealType;
                             isKeyAttrib = false;
+                            isKeyContent = false;
                             isKeyFound = true;
                         }
                     }
@@ -2410,7 +2532,7 @@ namespace YAXLib
                 {
                     isKeyFound = true;
 
-                    XAttribute realTypeAttr = elem.Attribute(s_yaxLibNamespaceUri + s_trueTypeAttrName);
+                    XAttribute realTypeAttr = elem.Attribute_NamespaceSafe(m_yaxLibNamespaceUri + m_trueTypeAttrName);
                     if (realTypeAttr != null)
                     {
                         Type theRealType = ReflectionUtils.GetTypeByName(realTypeAttr.Value);
