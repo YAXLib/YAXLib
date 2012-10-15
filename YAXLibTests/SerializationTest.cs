@@ -571,6 +571,24 @@ namespace YAXLibTests
             Assert.That(got, Is.EqualTo(result));
         }
 
+        [Test]
+        public void NullableSample2WithNullAttributeTest()
+        {
+            const string result =
+@"<NullableSample2>
+  <DateTime>1980-04-11T13:37:01.2345678Z</DateTime>
+  <Decimal>1234.56789</Decimal>
+  <Boolean>True</Boolean>
+  <Enum>Third</Enum>
+</NullableSample2>";
+            var serializer = new YAXSerializer(typeof(NullableSample2), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            NullableSample2 sample = NullableSample2.GetSampleInstance();
+            sample.Number = null;
+            string got = serializer.Serialize(sample);
+
+            Console.WriteLine(got);
+            Assert.That(got, Is.EqualTo(result));
+        }
 
         [Test]
         public void ListHolderClassTest()
