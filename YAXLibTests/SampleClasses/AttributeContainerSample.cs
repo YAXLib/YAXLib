@@ -1,4 +1,7 @@
-﻿using YAXLib;
+﻿using System.Collections;
+using System.Collections.Generic;
+
+using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
@@ -39,4 +42,35 @@ namespace YAXLibTests.SampleClasses
         public int? To { get; set; }
     }
 
+    public interface IAttributeSample<T> : IList<T>
+    {
+        string Url { get; set; }
+        int Page { get; }
+    }
+
+    public abstract class AttributeSampleBase<T> : List<T>, IAttributeSample<T>
+    {
+        [YAXSerializeAs("url")]
+        [YAXAttributeForClass]
+        public string Url { get; set; }
+
+        [YAXSerializeAs("page")]
+        [YAXAttributeForClass]
+        public int Page
+        {
+            get { return 1; }
+        }
+    }
+
+    [YAXSerializeAs("subclass")]
+    public class AttributeSubclassSample : AttributeSampleBase<AttributeSample>
+    {
+        public static AttributeSubclassSample GetSampleInstance()
+        {
+            return new AttributeSubclassSample
+            {
+                Url = "http://example.com/subclass/1",
+            };
+        }
+    }
 }

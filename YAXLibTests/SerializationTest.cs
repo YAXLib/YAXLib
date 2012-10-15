@@ -1564,6 +1564,15 @@ namespace YAXLibTests
             Assert.That(expectedResult, Is.EqualTo(result));
         }
 
+        [Test]
+        public void AttributeForSubclassTest()
+        {
+            var ser = new YAXSerializer(typeof(AttributeSubclassSample));
+            string result = ser.Serialize(AttributeSubclassSample.GetSampleInstance());
+
+            const string expectedResult = @"<subclass url=""http://example.com/subclass/1"" page=""1"" />";
+            Assert.That(result, Is.EqualTo(expectedResult));
+        }
 
         [Test]
         public void DictionaryKeyValueAsContentTest()
