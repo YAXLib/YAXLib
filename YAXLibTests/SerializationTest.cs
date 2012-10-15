@@ -562,6 +562,7 @@ namespace YAXLibTests
   <DateTime>1980-04-11T13:37:01.2345678Z</DateTime>
   <Decimal>1234.56789</Decimal>
   <Boolean>True</Boolean>
+  <Enum>Third</Enum>
 </NullableSample2>";
             var serializer = new YAXSerializer(typeof(NullableSample2), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(NullableSample2.GetSampleInstance());
