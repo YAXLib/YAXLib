@@ -166,6 +166,21 @@ namespace YAXLibTests
         }
 
         [Test]
+        public void DesEmptyNullableTest()
+        {
+            const string xml = @"<NullableSample2 />";
+            YAXSerializer serializer = new YAXSerializer(typeof(NullableSample2));
+            NullableSample2 got = (NullableSample2)serializer.Deserialize(xml);
+            
+            Assert.That(got, Is.Not.Null);
+            Assert.That(got.Boolean, Is.Null);
+            Assert.That(got.DateTime, Is.Null);
+            Assert.That(got.Decimal, Is.Null);
+            Assert.That(got.Enum, Is.Null);
+            Assert.That(got.Number, Is.Null);
+        }
+
+        [Test]
         public void DesNullableTest()
         {
             object obj = NullableClass.GetSampleInstance();
