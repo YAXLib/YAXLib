@@ -169,7 +169,7 @@ namespace YAXLibTests
         public void DesEmptyNullableTest()
         {
             const string xml = @"<NullableSample2 />";
-            YAXSerializer serializer = new YAXSerializer(typeof(NullableSample2));
+            YAXSerializer serializer = new YAXSerializer(typeof(NullableSample2), YAXExceptionHandlingPolicies.DoNotThrow);
             NullableSample2 got = (NullableSample2)serializer.Deserialize(xml);
             
             Assert.That(got, Is.Not.Null);

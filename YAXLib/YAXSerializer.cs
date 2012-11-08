@@ -1729,9 +1729,9 @@ namespace YAXLib
                 }
             }
 
-            // if an empty element was given and non of its members have been retreived then return null, not an instance
-            if (!foundAnyOfMembers && !baseElement.HasElements && !baseElement.HasAttributes && baseElement.IsEmpty)
-                return null;
+            //// if an empty element was given and non of its members have been retreived then return null, not an instance
+            //if (!foundAnyOfMembers && !baseElement.HasElements && !baseElement.HasAttributes && baseElement.IsEmpty)
+            //    return null;
 
             return o;
         }

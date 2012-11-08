@@ -581,7 +581,7 @@ namespace YAXLibTests
   <Boolean>True</Boolean>
   <Enum>Third</Enum>
 </NullableSample2>";
-            var serializer = new YAXSerializer(typeof(NullableSample2), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(NullableSample2), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.DontSerializeNullObjects);
             NullableSample2 sample = NullableSample2.GetSampleInstance();
             sample.Number = null;
             string got = serializer.Serialize(sample);
