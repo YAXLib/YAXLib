@@ -1634,6 +1634,14 @@ namespace YAXLibTests
             Assert.AreEqual(expectedResult, result);
         }
 
-
+        [Test]
+        public void AttributeNamespaceTest()
+        {
+            const string expectedResult =
+@"<w:font w:name=""Arial"" xmlns:w=""http://example.com/namespace"" />";
+            var serializer = new YAXSerializer(typeof(AttributeWithNamespace), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string got = serializer.Serialize(AttributeWithNamespace.GetSampleInstance());
+            Assert.That(got, Is.EqualTo(expectedResult));
+        }
     }
 }
