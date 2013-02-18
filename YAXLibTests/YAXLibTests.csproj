@@ -58,14 +58,19 @@
     <Compile Include="ReflectionUtilsTest.cs" />
     <Compile Include="SampleClasses\AnotherArraySample.cs" />
     <Compile Include="SampleClasses\AttributeContainerSample.cs" />
-    <Compile Include="SampleClasses\AttributeWithNamespace.cs" />
+    <Compile Include="SampleClasses\AttributeInheritance.cs" />
     <Compile Include="SampleClasses\AudioSample.cs" />
     <Compile Include="SampleClasses\BookClassTestingSerializeAsValue.cs" />
     <Compile Include="SampleClasses\ClassContainingXElement.cs" />
     <Compile Include="SampleClasses\Code4PublicTheme.cs" />
     <Compile Include="SampleClasses\CollectionOfInterfacesSample.cs" />
     <Compile Include="SampleClasses\CollectionSeriallyAsAttribute.cs" />
+    <Compile Include="SampleClasses\CollectionWithExtraProperties.cs" />
     <Compile Include="SampleClasses\ColorExample.cs" />
+    <Compile Include="SampleClasses\CollectionWithExtraPropertiesAttributedAsNotCollection.cs" />
+    <Compile Include="SampleClasses\DictionaryWithExtraPropertiesAttributedAsNotCollection.cs" />
+    <Compile Include="SampleClasses\DictionaryWithExtraProperties.cs" />
+    <Compile Include="SampleClasses\PolymorphicSampleList.cs" />
     <Compile Include="SampleClasses\YAXLibMetadataOverriding.cs" />
     <Compile Include="SampleClasses\CsprojParser.cs" />
     <Compile Include="SampleClasses\CultureSample.cs" />
@@ -133,9 +138,6 @@
     <Compile Include="ShowInDemoApplicationAttribute.cs" />
     <Compile Include="StringUtilsTest.cs" />
     <Compile Include="XMLUtilsTest.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="AuthoringTests.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

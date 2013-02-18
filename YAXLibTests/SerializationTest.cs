@@ -562,6 +562,7 @@ namespace YAXLibTests
   <DateTime>1980-04-11T13:37:01.2345678Z</DateTime>
   <Decimal>1234.56789</Decimal>
   <Boolean>True</Boolean>
+  <Enum>Third</Enum>
 </NullableSample2>";
             var serializer = new YAXSerializer(typeof(NullableSample2), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(NullableSample2.GetSampleInstance());
@@ -570,6 +571,24 @@ namespace YAXLibTests
             Assert.That(got, Is.EqualTo(result));
         }
 
+        [Test]
+        public void NullableSample2WithNullAttributeTest()
+        {
+            const string result =
+@"<NullableSample2>
+  <DateTime>1980-04-11T13:37:01.2345678Z</DateTime>
+  <Decimal>1234.56789</Decimal>
+  <Boolean>True</Boolean>
+  <Enum>Third</Enum>
+</NullableSample2>";
+            var serializer = new YAXSerializer(typeof(NullableSample2), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.DontSerializeNullObjects);
+            NullableSample2 sample = NullableSample2.GetSampleInstance();
+            sample.Number = null;
+            string got = serializer.Serialize(sample);
+
+            Console.WriteLine(got);
+            Assert.That(got, Is.EqualTo(result));
+        }
 
         [Test]
         public void ListHolderClassTest()
@@ -1521,7 +1540,7 @@ namespace YAXLibTests
             string xmlResult = ser.Serialize(lst);
 
             string expectedResult =
-@"<Object yaxlib:realtype=""System.Collections.Generic.List`1[[System.Object, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
+@"<Object xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"" yaxlib:realtype=""System.Collections.Generic.List`1[[System.Object, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"">
   <Int32 yaxlib:realtype=""System.Int32"">1</Int32>
   <Int32 yaxlib:realtype=""System.Int32"">2</Int32>
   <Int32 yaxlib:realtype=""System.Int32"">3</Int32>
@@ -1564,6 +1583,15 @@ namespace YAXLibTests
             Assert.That(expectedResult, Is.EqualTo(result));
         }
 
+        [Test]
+        public void AttributeForSubclassTest()
+        {
+            var ser = new YAXSerializer(typeof(AttributeSubclassSample));
+            string result = ser.Serialize(AttributeSubclassSample.GetSampleInstance());
+
+            const string expectedResult = @"<subclass url=""http://example.com/subclass/1"" page=""1"" />";
+            Assert.That(result, Is.EqualTo(expectedResult));
+        }
 
         [Test]
         public void DictionaryKeyValueAsContentTest()
@@ -1631,6 +1659,113 @@ namespace YAXLibTests
   </items>
 </container>";
 
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [Test]
+        public void CollectionWithExtraPropertiesTest()
+        {
+            var container = CollectionWithExtraProperties.GetSampleInstance();
+            var ser = new YAXSerializer(typeof(CollectionWithExtraProperties));
+            string result = ser.Serialize(container);
+
+            const string expectedResult =
+@"<CollectionWithExtraProperties>
+  <Property1>Property1</Property1>
+  <Property2>1.234</Property2>
+  <Int32>1</Int32>
+  <Int32>2</Int32>
+  <Int32>3</Int32>
+  <Int32>4</Int32>
+</CollectionWithExtraProperties>";
+
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [Test]
+        public void CollectionWithExtraPropertiesAttributedAsNotCollectionTest()
+        {
+            var container = CollectionWithExtraPropertiesAttributedAsNotCollection.GetSampleInstance();
+            var ser = new YAXSerializer(typeof(CollectionWithExtraPropertiesAttributedAsNotCollection));
+            string result = ser.Serialize(container);
+
+            const string expectedResult =
+@"<CollectionWithExtraPropertiesAttributedAsNotCollection>
+  <Property1>Property1</Property1>
+  <Property2>1.234</Property2>
+</CollectionWithExtraPropertiesAttributedAsNotCollection>";
+
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [Test]
+        public void DictionaryWithExtraPropertiesTest()
+        {
+            var container = DictionaryWithExtraProperties.GetSampleInstance();
+            var ser = new YAXSerializer(typeof(DictionaryWithExtraProperties));
+            string result = ser.Serialize(container);
+
+            const string expectedResult =
+@"<DictionaryWithExtraProperties>
+  <Prop1>Prop1</Prop1>
+  <Prop2>2.234</Prop2>
+  <Pair>
+    <Key>1</Key>
+    <Value>One</Value>
+  </Pair>
+  <Pair>
+    <Key>2</Key>
+    <Value>Two</Value>
+  </Pair>
+  <Pair>
+    <Key>3</Key>
+    <Value>Three</Value>
+  </Pair>
+</DictionaryWithExtraProperties>";
+
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [Test]
+        public void DictionaryWithExtraPropertiesAttributedAsNotCollectionTest()
+        {
+            var container = DictionaryWithExtraPropertiesAttributedAsNotCollection.GetSampleInstance();
+            var ser = new YAXSerializer(typeof(DictionaryWithExtraPropertiesAttributedAsNotCollection));
+            string result = ser.Serialize(container);
+
+            const string expectedResult =
+@"<DictionaryWithExtraPropertiesAttributedAsNotCollection>
+  <Prop1>Prop1</Prop1>
+  <Prop2>2.234</Prop2>
+</DictionaryWithExtraPropertiesAttributedAsNotCollection>";
+
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [Test]
+        public void AttributeInheritanceTest()
+        {
+            const string result =
+@"<Child>
+  <TheAge>30.2</TheAge>
+  <TheName>John</TheName>
+</Child>";
+            var serializer = new YAXSerializer(typeof(AttributeInheritance), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string got = serializer.Serialize(AttributeInheritance.GetSampleInstance());
+            Assert.That(got, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void ListOfPolymorphicObjectsTest()
+        {
+            var ser = new YAXSerializer(typeof(PolymorphicSampleList));
+            string result = ser.Serialize(PolymorphicSampleList.GetSampleInstance());
+            
+            const string expectedResult =
+@"<samples xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
+  <sample yaxlib:realtype=""YAXLibTests.SampleClasses.PolymorphicOneSample"" />
+  <sample yaxlib:realtype=""YAXLibTests.SampleClasses.PolymorphicTwoSample"" />
+</samples>";
             Assert.AreEqual(expectedResult, result);
         }
 

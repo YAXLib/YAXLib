@@ -124,7 +124,7 @@ namespace YAXLib
                 }
             }
 
-            foreach (var attr in m_memberInfo.GetCustomAttributes(false))
+            foreach (var attr in m_memberInfo.GetCustomAttributes(true))
             {
                 // no need to preces, it has been proccessed earlier
                 if (attrsToProcessEarlier.Contains(attr.GetType()))

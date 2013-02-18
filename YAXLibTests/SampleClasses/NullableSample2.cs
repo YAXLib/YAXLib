@@ -18,6 +18,8 @@ namespace YAXLibTests.SampleClasses
 
         public bool? Boolean { get; set; }
 
+        public Seasons? Enum { get; set; }
+
         public override string ToString()
         {
             return GeneralToStringProvider.GeneralToString(this);
@@ -31,6 +33,7 @@ namespace YAXLibTests.SampleClasses
                 DateTime = new DateTime(624599050212345678, DateTimeKind.Utc),
                 Decimal = 1234.56789m,
                 Boolean = true,
+                Enum = Seasons.Third,
             };
         }
     }

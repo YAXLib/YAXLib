@@ -1,3 +1,10 @@
+[2.12] February 19, 2013
+   * Added support for serialization of non-collection fields
+     in objects derived from collection types/interfaces
+   * Fixed a bug with namespace data not serialized for collections 
+     passed directly to the serializer
+   * to be cont'd
+
 [2.11] October 14, 2012
    * XML entity names now accept W3C standards.
    * Nullable types are not serialized with a `yaxlib:realtype`
