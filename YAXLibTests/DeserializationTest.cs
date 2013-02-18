@@ -415,6 +415,38 @@ namespace YAXLibTests
         }
 
         [Test]
+        public void DesDictionaryWithExtraProperties()
+        {
+            object obj = DictionaryWithExtraProperties.GetSampleInstance();
+            PerformTest(obj);
+        }
+
+        [Test]
+        public void DesDictionaryWithExtraPropertiesAttributedAsNotCollection()
+        {
+            var obj = DictionaryWithExtraPropertiesAttributedAsNotCollection.GetSampleInstance();
+            // it is going to ignore the collection members which are not explicitly exposed
+            obj.Clear();
+            PerformTest(obj);
+        }
+
+        [Test]
+        public void DesCollectionWithExtraProperties()
+        {
+            object obj = CollectionWithExtraProperties.GetSampleInstance();
+            PerformTest(obj);
+        }
+
+        [Test]
+        public void DesCollectionWithExtraPropertiesAttributedAsNotCollection()
+        {
+            var obj = CollectionWithExtraPropertiesAttributedAsNotCollection.GetSampleInstance();
+            // it is going to ignore the collection members which are not explicitly exposed
+            obj.Clear();
+            PerformTest(obj);
+        }
+
+        [Test]
         public void AttributeForKeyInDictionaryPropertyTest()
         {
             var container = DictionaryContainerSample.GetSampleInstance();

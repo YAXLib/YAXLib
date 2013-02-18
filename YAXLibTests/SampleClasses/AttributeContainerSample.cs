@@ -67,10 +67,16 @@ namespace YAXLibTests.SampleClasses
     {
         public static AttributeSubclassSample GetSampleInstance()
         {
-            return new AttributeSubclassSample
+            var instance = new AttributeSubclassSample
             {
                 Url = "http://example.com/subclass/1",
             };
+
+            //instance.Add(new AttributeSample { From = 1, To = 2 });
+            //instance.Add(new AttributeSample { From = 3, To = 4 });
+            //instance.Add(new AttributeSample { From = 5, To = 6 });
+
+            return instance;
         }
     }
 }
