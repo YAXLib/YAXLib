@@ -84,7 +84,7 @@ namespace YAXLib
 
             SetYAXSerializerOptions(callerSerializer);
 
-            foreach (var attr in m_udtType.GetCustomAttributes(false))
+            foreach (var attr in m_udtType.GetCustomAttributes(true))
             {
                 if (attr is YAXBaseAttribute)
                     ProcessYAXAttribute(attr);

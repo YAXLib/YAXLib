@@ -794,5 +794,28 @@ namespace YAXLib
 
             return false;
         }
+
+        public static bool IsPartOfNetFx(MemberInfo memberInfo)
+        {
+            string moduleName = memberInfo.Module.Name;
+            //memberInfo.Module.Assembly.
+
+            return moduleName.Equals("mscorlib.dll", StringComparison.InvariantCultureIgnoreCase)
+                || moduleName.Equals("System.dll", StringComparison.InvariantCultureIgnoreCase)
+                || moduleName.Equals("System.Core.dll", StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        public static bool IsInstantiableCollection(Type colType)
+        {
+            try
+            {
+                var col = colType.InvokeMember(string.Empty, System.Reflection.BindingFlags.CreateInstance, null, null, new object[0]);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }
