@@ -1540,7 +1540,7 @@ namespace YAXLibTests
             string xmlResult = ser.Serialize(lst);
 
             string expectedResult =
-@"<Object yaxlib:realtype=""System.Collections.Generic.List`1[[System.Object, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
+@"<Object xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"" yaxlib:realtype=""System.Collections.Generic.List`1[[System.Object, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"">
   <Int32 yaxlib:realtype=""System.Int32"">1</Int32>
   <Int32 yaxlib:realtype=""System.Int32"">2</Int32>
   <Int32 yaxlib:realtype=""System.Int32"">3</Int32>
@@ -1755,41 +1755,17 @@ namespace YAXLibTests
             Assert.That(got, Is.EqualTo(result));
         }
 
-        [TestMethod]
+        [Test]
         public void ListOfPolymorphicObjectsTest()
         {
-            PolymorphicSampleList samples = new PolymorphicSampleList
-            {
-                new PolymorphicOneSample(),
-                new PolymorphicTwoSample(),
-            };
-
             var ser = new YAXSerializer(typeof(PolymorphicSampleList));
-            string result = ser.Serialize(samples);
+            string result = ser.Serialize(PolymorphicSampleList.GetSampleInstance());
             
             const string expectedResult =
-@"<samples>
-  <sample yax:realtype=""YAXLibTests.SampleClasses.PolymorphicOneSample"" xmlns:yax=""http://www.sinairv.com/yaxlib/"" />
-  <samples yax:realtype=""YAXLibTests.SampleClasses.PolymorphicTwoSample"" xmlns:yax=""http://www.sinairv.com/yaxlib/"" />
+@"<samples xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
+  <sample yaxlib:realtype=""YAXLibTests.SampleClasses.PolymorphicOneSample"" />
+  <sample yaxlib:realtype=""YAXLibTests.SampleClasses.PolymorphicTwoSample"" />
 </samples>";
-
-            /* NOTE: Preferably, the '@realtype' should be configurable, so you can have an expected result like this:
-             * 
-             * <samples>
-             *      <sample type="One" />
-             *      <samples type="Two" />
-             * </samples>
-             * 
-             * This can be achieved by having a [YAXPolymorphic(AttributeName = "type")] attribute on the base class
-             * that uses the "type" attribute instead of "realtype" and then [YAXPolymorphic(TypeKey = "One")] on
-             * the subclasses to assign their System.Type's a key that will be used for the "@type" attribute when
-             * serializing and deserializing.
-             * 
-             * [asbjornu]             
-             */
-
-            // NOTE: This fails in two ways. First, each item in the list isn't named <sample /> as specified on
-            //       the abstract PolymorphicSample class. Second, the namespace prefix is "dp2" instead of "yax".
             Assert.AreEqual(expectedResult, result);
         }
     }

@@ -545,6 +545,8 @@ namespace YAXLib
                     m_udtWrapper.DictionaryAttributeInstance, m_udtWrapper.CollectionAttributeInstance);
                 if (m_udtWrapper.PreservesWhitespace)
                     XMLUtils.AddPreserveSpaceAttribute(elemResult);
+                if (elemResult.Parent == null)
+                    AddNamespacesToElement(elemResult);
                 return elemResult;
             }
             else if (m_udtWrapper.IsTreatedAsCollection)
@@ -552,6 +554,8 @@ namespace YAXLib
                 var elemResult = MakeCollectionElement(null, m_udtWrapper.Alias, obj, null, null);
                 if (m_udtWrapper.PreservesWhitespace)
                     XMLUtils.AddPreserveSpaceAttribute(elemResult);
+                if (elemResult.Parent == null)
+                    AddNamespacesToElement(elemResult);
                 return elemResult;
             }
             else if(ReflectionUtils.IsBasicType(m_udtWrapper.UnderlyingType))
@@ -560,6 +564,8 @@ namespace YAXLib
                 var elemResult = MakeBaseElement(null, m_udtWrapper.Alias, obj, out dummyAlreadyAdded);
                 if (m_udtWrapper.PreservesWhitespace)
                     XMLUtils.AddPreserveSpaceAttribute(elemResult);
+                if (elemResult.Parent == null)
+                    AddNamespacesToElement(elemResult);
                 return elemResult;
             }
             else if(!m_udtWrapper.UnderlyingType.EqualsOrIsNullableOf(obj.GetType()))
