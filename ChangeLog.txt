@@ -1,3 +1,30 @@
+[2.12] February 19, 2013
+   * Added support for serialization of non-collection fields
+     in objects derived from collection types/interfaces.
+   * cont'd
+
+[2.11] October 14, 2012
+   * XML entity names now accept W3C standards.
+   * Nullable types are not serialized with a `yaxlib:realtype`
+     attribute any more.
+   * Fixed some namespace related bugs.
+   * Fixed an issue with deserializing date-time values that expose
+     date time kind of UTC during serialization.
+   * Classes can accept [YAXDictionary] and [YAXCollection] 
+     attributes. The value to these attributes can then be 
+     overridden by members instantiating them.
+   * Unit tests all migrated to NUnit.
+   * Lots of thanks go to Asbjørn Ulsberg for migrating the unit-tests
+     NUnit, reporting the above bugs, and providing failing unit-tests
+     regarding the above bugs.
+   * It is now allowed to change the constant values used by the library to
+     serialize meta-data. For this modify the following properties of the 
+     `YAXSerializer` instance: 
+     `YaxLibNamespaceUri`, `YaxLibNamespacePrefix`, 
+     `DimentionsAttributeName`, `RealTypeAttributeName`
+     Please see `YAXLibTests` > `OverridingYAXLibMetadataTests.cs` for a an
+     example of how to achieve this.
+
 [2.10.1] October 4, 2012
    * Allowing dashes to appear in name aliases
      Thanks go to Asbjørn Ulsberg for fixing the issue and providing

@@ -34,6 +34,16 @@ namespace YAXLib
         private readonly bool m_isTypeDictionary;
 
         /// <summary>
+        /// The collection attribute instance
+        /// </summary>
+        private YAXCollectionAttribute m_collectionAttributeInstance = null;
+
+        /// <summary>
+        /// the dictionary attribute instance
+        /// </summary>
+        private YAXDictionaryAttribute m_dictionaryAttributeInstance = null;
+
+        /// <summary>
         /// reference to an instance of <c>EnumWrapper</c> in case that the current instance is an enum.
         /// </summary>
         private EnumWrapper m_enumWrapper;
@@ -74,7 +84,7 @@ namespace YAXLib
 
             SetYAXSerializerOptions(callerSerializer);
 
-            foreach (var attr in m_udtType.GetCustomAttributes(false))
+            foreach (var attr in m_udtType.GetCustomAttributes(true))
             {
                 if (attr is YAXBaseAttribute)
                     ProcessYAXAttribute(attr);
@@ -264,6 +274,30 @@ namespace YAXLib
             get
             {
                 return !IsAttributedAsNotCollection && IsDictionaryType;
+            }
+        }
+
+        /// <summary>
+        /// Gets the collection attribute instance.
+        /// </summary>
+        /// <value>The collection attribute instance.</value>
+        public YAXCollectionAttribute CollectionAttributeInstance
+        {
+            get
+            {
+                return m_collectionAttributeInstance;
+            }
+        }
+
+        /// <summary>
+        /// Gets the dictionary attribute instance.
+        /// </summary>
+        /// <value>The dictionary attribute instance.</value>
+        public YAXDictionaryAttribute DictionaryAttributeInstance
+        {
+            get
+            {
+                return m_dictionaryAttributeInstance;
             }
         }
 
@@ -464,6 +498,14 @@ namespace YAXLib
                 var nsAttrib = (attr as YAXNamespaceAttribute);
                 Namespace = nsAttrib.Namespace;
                 NamespacePrefix = nsAttrib.Prefix;
+            }
+            else if (attr is YAXCollectionAttribute)
+            {
+                m_collectionAttributeInstance = attr as YAXCollectionAttribute;
+            }
+            else if (attr is YAXDictionaryAttribute)
+            {
+                m_dictionaryAttributeInstance = attr as YAXDictionaryAttribute;
             }
             else
             {

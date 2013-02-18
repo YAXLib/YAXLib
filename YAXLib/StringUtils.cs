@@ -34,7 +34,7 @@ namespace YAXLib
             // replace all back-slaches to slash
             elemAddr = elemAddr.Replace('\\', '/');
 
-            var sb = new StringBuilder();
+            var sb = new StringBuilder(elemAddr.Length);
             var steps = elemAddr.SplitPathNamespaceSafe();
             foreach(var step in steps)
             {
@@ -101,21 +101,63 @@ namespace YAXLib
             }
             else
             {
-                var sb = new StringBuilder();
+                var sb = new StringBuilder(elemName.Length);
 
-                // invalid chars are all punctunations except underline
-                foreach (char c in elemName)
+                // This uses the rules defined in http://www.w3.org/TR/xml/#NT-Name. 
+                // Thanks go to [@asbjornu] for pointing to the W3C standard
+                for (int i = 0; i < elemName.Length; i++)
                 {
-                    // TOOD: This should rather use the rules defined in http://www.w3.org/TR/xml/#NT-Name. [asbjornu]
-                    if (Char.IsLetterOrDigit(c) || c == '_' || c == '-')
-                        sb.Append(c);
+                    if (i == 0)
+                        sb.Append(IsValidNameStartChar(elemName[i]) ? elemName[i] : '_');
                     else
-                        sb.Append('_');
+                        sb.Append(IsValidNameChar(elemName[i]) ? elemName[i] : '_');
                 }
 
                 return sb.ToString();
             }
         }
+
+        private static bool IsValidNameStartChar(char ch)
+        {
+            // This uses the rules defined in http://www.w3.org/TR/xml/#NT-Name. 
+            // However colon (:) has been removed from the set of allowed characters,
+            // because it is reserved for separating namespace prefix and XML-entity names.
+            if (//ch == ':' || 
+                ch == '_' ||
+                IsInRange(ch, 'A', 'Z') || IsInRange(ch, 'a', 'z') ||
+                IsInRange(ch, '\u00C0', '\u00D6') || 
+                IsInRange(ch, '\u00D8', '\u00F6') ||
+                IsInRange(ch, '\u00F8', '\u02FF') || 
+                IsInRange(ch, '\u0370', '\u037D') ||
+                IsInRange(ch, '\u037F', '\u1FFF') ||
+                IsInRange(ch, '\u200C', '\u200D') ||
+                IsInRange(ch, '\u2070', '\u218F') ||
+                IsInRange(ch, '\u2C00', '\u2FEF') ||
+                IsInRange(ch, '\u3001', '\uD7FF') ||
+                IsInRange(ch, '\uF900', '\uFDCF') || 
+                IsInRange(ch, '\uFDF0', '\uFFFD') 
+                //|| IsInRange(ch, '\u10000', '\uEFFFF')
+                )
+                return true;
+
+            return false;
+        }
+
+        private static bool IsValidNameChar(char ch)
+        {
+            return IsValidNameStartChar(ch) ||
+                    ch == '-' || ch == '.' ||
+                    IsInRange(ch, '0', '9') ||
+                    ch == '\u00B7' ||
+                    IsInRange(ch, '\u0300', '\u036F')
+            || IsInRange(ch, '\u203F', '\u2040');
+        }
+
+        private static bool IsInRange(char ch, char lower, char upper)
+        {
+            return lower <= ch && ch <= upper;
+        }
+
 
         /// <summary>
         /// Exttracts the path and alias from location string.
@@ -313,6 +355,25 @@ namespace YAXLib
             if (lastStart < temp.Length - 1)
                 yield return temp.Substring(lastStart);
         }
+
+        public static DateTime ParseDateTimeTimeZoneSafe(string str, IFormatProvider formatProvider)
+        {
+            DateTimeOffset dto;
+            if (!DateTimeOffset.TryParse(str, out dto))
+            {
+                return DateTime.MinValue;
+            }
+
+            if (dto.Offset == TimeSpan.Zero)
+            {
+                return dto.UtcDateTime;
+            }
+            else
+            {
+                return dto.DateTime;
+            }
+        }
+
 
     }
 }

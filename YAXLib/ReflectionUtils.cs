@@ -434,6 +434,29 @@ namespace YAXLib
         }
 
         /// <summary>
+        /// Determines whether the specified type is equal to this type,
+        /// or is a nullable of this type, or this type is a nullable of 
+        /// the other type.
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public static bool EqualsOrIsNullableOf(this Type self, Type other)
+        {
+            if (self == other)
+                return true;
+
+            Type selfBaseType;
+            Type otherBaseType;
+            if (!IsNullable(self, out selfBaseType))
+                selfBaseType = self;
+            if (!IsNullable(other, out otherBaseType))
+                otherBaseType = other;
+
+            return selfBaseType == otherBaseType;
+        }
+
+        /// <summary>
         /// Determines whether the specified type is equal or inherited from another specified type.
         /// </summary>
         /// <param name="type">The type to check.</param>
@@ -675,16 +698,15 @@ namespace YAXLib
         /// <returns>the converted object</returns>
         public static object ConvertBasicType(object value, Type dstType)
         {
-            //if (!ReflectionUtils.IsBasicType(dstType))
-            //{
-            //    throw new ArgumentException("Destination type must be a basic type", "dstType");
-            //}
-
             object convertedObj = null;
             if (dstType.IsEnum)
             {
                 UdtWrapper typeWrapper = TypeWrappersPool.Pool.GetTypeWrapper(dstType, null);
                 convertedObj = typeWrapper.EnumWrapper.ParseAlias(value.ToString());
+            }
+            else if (dstType == typeof(DateTime))
+            {
+                convertedObj = StringUtils.ParseDateTimeTimeZoneSafe(value.ToString(), CultureInfo.InvariantCulture);
             }
             else if (dstType == typeof(decimal))
             {
@@ -707,7 +729,7 @@ namespace YAXLib
                         throw new Exception("The specified value is not recognized as boolean: " + strValue);
                 }
             }
-            else if(dstType == typeof(Guid))
+            else if (dstType == typeof(Guid))
             {
                 return new Guid(value.ToString());
             }
@@ -716,6 +738,8 @@ namespace YAXLib
                 Type nullableType;
                 if (IsNullable(dstType, out nullableType))
                 {
+                    if (value == null || value.ToString() == String.Empty)
+                        return null;
                     return ConvertBasicType(value, nullableType);
                 }
 
@@ -769,6 +793,29 @@ namespace YAXLib
                     return true;
 
             return false;
+        }
+
+        public static bool IsPartOfNetFx(MemberInfo memberInfo)
+        {
+            string moduleName = memberInfo.Module.Name;
+            //memberInfo.Module.Assembly.
+
+            return moduleName.Equals("mscorlib.dll", StringComparison.InvariantCultureIgnoreCase)
+                || moduleName.Equals("System.dll", StringComparison.InvariantCultureIgnoreCase)
+                || moduleName.Equals("System.Core.dll", StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        public static bool IsInstantiableCollection(Type colType)
+        {
+            try
+            {
+                var col = colType.InvokeMember(string.Empty, System.Reflection.BindingFlags.CreateInstance, null, null, new object[0]);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

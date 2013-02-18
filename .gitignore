@@ -3,6 +3,8 @@
 *.pdb
 *.vshost.exe
 *.vshost.exe.manifest
+*.ncrunchproject
+*.ncrunchsolution
 obj/
 _ReSharper*/
 DemoApplication/bin/
@@ -10,3 +12,8 @@ YAXLibTests/bin/
 TestResults/
 Bin/*.dll
 Bin/*.xml
+/packages/*
+!/packages/repositories.config
+YAXLibTests.VisualState.xml
+TestResult.xml
+Bin/Signed
