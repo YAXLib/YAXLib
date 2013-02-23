@@ -37,8 +37,9 @@ namespace YAXLibTests
         [Test]
         public void MultipleNamespaceSerializationTest()
         {
-            const string result = @"<!-- This example shows usage of a number of custom namespaces -->
-" + "<ns1:MultipleNamespaceSample xmlns:ns1=\"http://namespaces.org/ns1\" xmlns:ns2=\"http://namespaces.org/ns2\" xmlns:ns3=\"http://namespaces.org/ns3\">" + @"
+            const string result = 
+@"<!-- This example shows usage of a number of custom namespaces -->
+<ns1:MultipleNamespaceSample xmlns:ns1=""http://namespaces.org/ns1"" xmlns:ns2=""http://namespaces.org/ns2"" xmlns:ns3=""http://namespaces.org/ns3"">
   <ns1:BoolItem>True</ns1:BoolItem>
   <ns2:StringItem>This is a test string</ns2:StringItem>
   <ns3:IntItem>10</ns3:IntItem>
@@ -52,8 +53,9 @@ namespace YAXLibTests
         [Test]
         public void AttributeNamespaceSerializationTest()
         {
-            const string result = "<AttributeNamespaceSample xmlns:ns=\"http://namespaces.org/ns\" xmlns=\"http://namespaces.org/default\">" + @"
-  <Attribs " + "attrib=\"value\" ns:attrib2=\"value2\"" + @" />
+            const string result = 
+@"<AttributeNamespaceSample xmlns:ns=""http://namespaces.org/ns"" xmlns=""http://namespaces.org/default"">
+  <Attribs attrib=""value"" ns:attrib2=""value2"" />
 </AttributeNamespaceSample>";
 
             var serializer = new YAXSerializer(typeof(AttributeNamespaceSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
@@ -252,6 +254,30 @@ namespace YAXLibTests
         }
 
         [Test]
+        public void AttributeWithDefaultNamespaceSerializationTest()
+        {
+            const string result =
+                @"<w:font w:name=""Arial"" xmlns:w=""http://example.com/namespace"" />";
+
+            var serializer = new YAXSerializer(typeof(AttributeWithNamespace), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string got = serializer.Serialize(AttributeWithNamespace.GetSampleInstance());
+            Assert.That(got, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void AttributeWithDefaultNamespaceAsMemberSerializationTest()
+        {
+            const string result = 
+@"<AttributeWithNamespaceAsMember xmlns:w=""http://example.com/namespace"">
+  <w:Member w:name=""Arial"" />
+</AttributeWithNamespaceAsMember>";
+
+            var serializer = new YAXSerializer(typeof(AttributeWithNamespaceAsMember), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string got = serializer.Serialize(AttributeWithNamespaceAsMember.GetSampleInstance());
+            Assert.That(got, Is.EqualTo(result));
+        }
+
+        [Test]
         public void SingleNamespaceDeserializationTest()
         {            
             var serializer = new YAXSerializer(typeof(SingleNamespaceSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
@@ -378,6 +404,26 @@ namespace YAXLibTests
             var serializer = new YAXSerializer(typeof(Warehouse_Dictionary), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(Warehouse_Dictionary.GetSampleInstance());
             var deserialized = serializer.Deserialize(got) as Warehouse_Dictionary;
+            Assert.That(deserialized, Is.Not.Null);
+            Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
+        }
+
+        [Test]
+        public void AttributeWithDefaultNamespaceDeserializationTest()
+        {
+            var serializer = new YAXSerializer(typeof(AttributeWithNamespace), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string got = serializer.Serialize(AttributeWithNamespace.GetSampleInstance());
+            var deserialized = serializer.Deserialize(got) as AttributeWithNamespace;
+            Assert.That(deserialized, Is.Not.Null);
+            Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
+        }
+
+        [Test]
+        public void AttributeWithDefaultNamespaceAsMemberDeserializationTest()
+        {
+            var serializer = new YAXSerializer(typeof(AttributeWithNamespaceAsMember), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string got = serializer.Serialize(AttributeWithNamespaceAsMember.GetSampleInstance());
+            var deserialized = serializer.Deserialize(got) as AttributeWithNamespaceAsMember;
             Assert.That(deserialized, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
         }

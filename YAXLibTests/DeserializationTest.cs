@@ -470,7 +470,7 @@ namespace YAXLibTests
 
             string input = ser.Serialize(container);
 
-            DictionaryContainerSample deserializedContainer = (DictionaryContainerSample)ser.Deserialize(input);
+            var deserializedContainer = (DictionaryContainerSample)ser.Deserialize(input);
 
             Assert.IsNotNull(deserializedContainer.Items);
             Assert.IsTrue(deserializedContainer.Items.Count == container.Items.Count,

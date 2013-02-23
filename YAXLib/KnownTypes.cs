@@ -130,7 +130,7 @@ namespace YAXLib
 
         protected XName GetXName(string name, XNamespace overridingNamespace)
         {
-            if (overridingNamespace.HasNamespace())
+            if (overridingNamespace.IsEmpty())
                 return XName.Get(name, overridingNamespace.NamespaceName);
             else
                 return XName.Get(name);

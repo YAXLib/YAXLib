@@ -104,12 +104,12 @@ namespace YAXLib
 
             private set
             {
-                if (Namespace.HasNamespace())
+                if (Namespace.IsEmpty())
                     m_alias = Namespace + value.LocalName;
                 else
                 {
                     m_alias = value;
-                    if (m_alias.Namespace.HasNamespace())
+                    if (m_alias.Namespace.IsEmpty())
                         m_namespace = m_alias.Namespace;
                 }
             }
@@ -331,7 +331,7 @@ namespace YAXLib
         {
             get
             {
-                return Namespace.HasNamespace();
+                return Namespace.IsEmpty();
             }
         }
 
@@ -414,7 +414,7 @@ namespace YAXLib
             if (obj is UdtWrapper)
             {
                 var other = obj as UdtWrapper;
-                return this.m_udtType == other.m_udtType;
+                return m_udtType == other.m_udtType;
             }
 
             return false;

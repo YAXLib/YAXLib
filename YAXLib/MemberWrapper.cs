@@ -108,6 +108,11 @@ namespace YAXLib
             m_memberType = m_isProperty ? m_propertyInfoInstance.PropertyType : m_fieldInfoInstance.FieldType;
 
             m_memberTypeWrapper = TypeWrappersPool.Pool.GetTypeWrapper(MemberType, callerSerializer);
+            if (m_memberTypeWrapper.HasNamespace)
+            {
+                Namespace = m_memberTypeWrapper.Namespace;
+                NamespacePrefix = m_memberTypeWrapper.NamespacePrefix;
+            }
 
             InitInstance();
 
@@ -157,12 +162,12 @@ namespace YAXLib
 
             private set
             {
-                if (Namespace.HasNamespace())
+                if (Namespace.IsEmpty())
                     m_alias = Namespace + value.LocalName;
                 else
                 {
                     m_alias = value;
-                    if (m_alias.Namespace.HasNamespace())
+                    if (m_alias.Namespace.IsEmpty())
                         m_namespace = m_alias.Namespace;
                 }
             }
@@ -499,7 +504,7 @@ namespace YAXLib
         {
             get
             {
-                return Namespace.HasNamespace();
+                return Namespace.IsEmpty();
             }
         }
 

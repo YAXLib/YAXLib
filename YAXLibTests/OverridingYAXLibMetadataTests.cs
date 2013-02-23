@@ -49,7 +49,7 @@ namespace YAXLibTests
         {
             var ser = new YAXSerializer(typeof(YAXLibMetadataOverriding));
 
-            ser.YaxLibNamespacePrefix = "";
+            ser.YaxLibNamespacePrefix = String.Empty;
             ser.YaxLibNamespaceUri = "http://namespace.org/sample";
             ser.DimentionsAttributeName = "dm";
             ser.RealTypeAttributeName = "type";

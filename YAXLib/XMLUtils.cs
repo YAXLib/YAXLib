@@ -65,7 +65,7 @@ namespace YAXLib
                 else
                 {
                     XName curLocName = loc;
-                    if (curLocName.Namespace.HasNamespace())
+                    if (curLocName.Namespace.IsEmpty())
                         currentLocation = currentLocation.Element(curLocName);
                     else
                         currentLocation = currentLocation.Element_NamespaceNeutral(curLocName);
@@ -106,7 +106,7 @@ namespace YAXLib
                 else
                 {
                     XName curLocName = loc;
-                    if (curLocName.Namespace.HasNamespace())
+                    if (curLocName.Namespace.IsEmpty())
                         currentLocation = currentLocation.Element(curLocName);
                     else
                         currentLocation = currentLocation.Element_NamespaceNeutral(curLocName);
@@ -146,7 +146,7 @@ namespace YAXLib
                 {
                     XName curLocName = loc;
                     XElement newLoc;
-                    if (curLocName.Namespace.HasNamespace())
+                    if (curLocName.Namespace.IsEmpty())
                         newLoc = currentLocation.Element(curLocName);
                     else
                         newLoc = currentLocation.Element_NamespaceNeutral(curLocName);
@@ -200,7 +200,7 @@ namespace YAXLib
             if (newAttrName.Namespace == newLoc.Name.Namespace)
                 newAttrName = newAttrName.RemoveNamespace();
 
-            if (newAttrName.Namespace.HasNamespace())
+            if (newAttrName.Namespace.IsEmpty())
                 return newLoc.Attribute(newAttrName);
             else
                 return newLoc.Attribute_NamespaceNeutral(newAttrName);
@@ -240,7 +240,7 @@ namespace YAXLib
                 newAttrName = newAttrName.RemoveNamespace();
 
             // check if the attribute does not exist
-            if (newAttrName.Namespace.HasNamespace())
+            if (newAttrName.Namespace.IsEmpty())
                 return newLoc.Attribute(newAttrName) == null;
             else
                 return newLoc.Attribute_NamespaceNeutral(newAttrName) == null;
@@ -256,7 +256,7 @@ namespace YAXLib
         /// <param name="attrValue">The value to be assigned to the attribute.</param>
         /// <returns>returns the attribute with the given name in the location 
         /// specified by the given location string in the given XML element.</returns>
-        public static XAttribute CreateAttribute(XElement baseElement, string location, XName attrName, object attrValue)
+        public static XAttribute CreateAttribute(XElement baseElement, string location, XName attrName, object attrValue, XNamespace documentDefaultNamespace)
         {
             XElement newLoc = FindLocation(baseElement, location);
             if (newLoc == null)
@@ -272,7 +272,7 @@ namespace YAXLib
             }
 
             // check if the attribute does not exist
-            if (attrName.Namespace.HasNamespace())
+            if (attrName.Namespace.IsEmpty() && attrName.Namespace != documentDefaultNamespace)
             {
                 // i.e., the attribute already exists 
                 if (newLoc.Attribute(attrName) != null)
@@ -284,7 +284,7 @@ namespace YAXLib
                     return null; // we cannot create another one with the same name
             }
 
-            return newLoc.AddAttributeNamespaceSafe(attrName, attrValue);
+            return newLoc.AddAttributeNamespaceSafe(attrName, attrValue, documentDefaultNamespace);
         }
 
         /// <summary>
@@ -421,7 +421,7 @@ namespace YAXLib
         /// <returns></returns>
         public static XElement AddPreserveSpaceAttribute(XElement element)
         {
-            element.AddAttributeNamespaceSafe(XNamespace.Xml + "space", "preserve");
+            element.AddAttributeNamespaceSafe(XNamespace.Xml + "space", "preserve", null);
             return element;
         }
         
@@ -446,29 +446,28 @@ namespace YAXLib
             return Convert.ToString((self ?? String.Empty), CultureInfo.InvariantCulture);
         }
 
-        public static XAttribute AddAttributeNamespaceSafe(this XElement parent, XName attrName, object attrValue)
+        public static XAttribute AddAttributeNamespaceSafe(this XElement parent, XName attrName, object attrValue, XNamespace documentDefaultNamespace)
         {
             var newAttrName = attrName;
 
-            // the following stupid code is because of odd behaviour of LINQ to XML
-            if (newAttrName.Namespace == parent.Name.Namespace)
-                newAttrName = newAttrName.RemoveNamespace();
+            if (newAttrName.Namespace == documentDefaultNamespace)
+                    newAttrName = newAttrName.RemoveNamespace();
 
             var newAttr = new XAttribute(newAttrName, attrValue.ToXmlValue());
             parent.Add(newAttr);
             return newAttr;
         }
 
-        public static XAttribute Attribute_NamespaceSafe(this XElement parent, XName attrName)
+        public static XAttribute Attribute_NamespaceSafe(this XElement parent, XName attrName, XNamespace documentDefaultNamespace)
         {
-            if(attrName.Namespace == parent.Name.Namespace)
+            if(attrName.Namespace == documentDefaultNamespace)
                 attrName = attrName.RemoveNamespace();
             return parent.Attribute(attrName);
         }
 
-        public static IEnumerable<XAttribute> Attributes_NamespaceSafe(this XElement parent, XName attrName)
+        public static IEnumerable<XAttribute> Attributes_NamespaceSafe(this XElement parent, XName attrName, XNamespace documentDefaultNamespace)
         {
-            if (attrName.Namespace == parent.Name.Namespace)
+            if (attrName.Namespace == documentDefaultNamespace)
                 attrName = attrName.RemoveNamespace();
             return parent.Attributes(attrName);
         }
@@ -482,7 +481,7 @@ namespace YAXLib
         public static string GetXmlContent(this XElement self)
         {
             XText[] values = self.Nodes().OfType<XText>().ToArray();
-            if (values != null && values.Length > 0)
+            if (values.Length > 0)
                 return values[0].Value;
             else 
                 return null;
@@ -490,7 +489,7 @@ namespace YAXLib
 
         public static XAttribute Attribute_NamespaceNeutral(this XElement parent, XName name)
         {
-            return parent.Attributes().Where(e => e.Name.LocalName == name.LocalName).FirstOrDefault();
+            return parent.Attributes().FirstOrDefault(e => e.Name.LocalName == name.LocalName);
         }
 
         public static IEnumerable<XAttribute> Attributes_NamespaceNeutral(this XElement parent, XName name)
@@ -500,7 +499,7 @@ namespace YAXLib
 
         public static XElement Element_NamespaceNeutral(this XContainer parent, XName name)
         {
-            return parent.Elements().Where(e => e.Name.LocalName == name.LocalName).FirstOrDefault();
+            return parent.Elements().FirstOrDefault(e => e.Name.LocalName == name.LocalName);
         }
 
         public static IEnumerable<XElement> Elements_NamespaceNeutral(this XContainer parent, XName name)
@@ -508,14 +507,14 @@ namespace YAXLib
             return parent.Elements().Where(e => e.Name.LocalName == name.LocalName);
         }
 
-        public static bool HasNamespace(this XNamespace self)
+        public static bool IsEmpty(this XNamespace self)
         {
             return self != null && !String.IsNullOrEmpty(self.NamespaceName.Trim());
         }
 
         public static XNamespace IfEmptyThen(this XNamespace self, XNamespace next)
         {
-            return self.HasNamespace() ? self : next;
+            return self.IsEmpty() ? self : next;
         }
 
         public static XNamespace IfEmptyThenNone(this XNamespace self)
@@ -526,9 +525,9 @@ namespace YAXLib
 
         public static XName OverrideNsIfEmpty(this XName self, XNamespace ns)
         {
-            if (self.Namespace.HasNamespace())
+            if (self.Namespace.IsEmpty())
                 return self;
-            else if (ns.HasNamespace())
+            else if (ns.IsEmpty())
                 return ns + self.LocalName;
             else
                 return self;

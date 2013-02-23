@@ -3,7 +3,10 @@
      in objects derived from collection types/interfaces
    * Fixed a bug with namespace data not serialized for collections 
      passed directly to the serializer
-   * to be cont'd
+   * Fixed a bug where attributes with namespace same as the default 
+     namespace are not serialized properly. Thanks go to [@silwol](https://github.com/silwol)
+     for reporting this bug.
+   * to be continued
 
 [2.11] October 14, 2012
    * XML entity names now accept W3C standards.

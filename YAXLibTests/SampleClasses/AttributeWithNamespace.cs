@@ -1,7 +1,6 @@
-using System;
 using YAXLib;
 
-namespace YAXLibTests
+namespace YAXLibTests.SampleClasses
 {
     [YAXSerializableType(Options = YAXSerializationOptions.DontSerializeNullObjects, FieldsToSerialize = YAXSerializationFields.AttributedFieldsOnly)]
     [YAXSerializeAs("font")]
@@ -11,17 +10,39 @@ namespace YAXLibTests
         [YAXSerializableField]
         [YAXSerializeAs("{http://example.com/namespace}name")]
         [YAXAttributeForClass]
-        public string Name {
-            get;
-            set;
-        }
+        public string Name { get; set; }
 
         public static AttributeWithNamespace GetSampleInstance()
         {
-            return new AttributeWithNamespace() {
+            return new AttributeWithNamespace 
+            {
                 Name = "Arial"
             };
         }
+
+        public override string ToString()
+        {
+            return GeneralToStringProvider.GeneralToString(this);
+        }
     }
+
+    public class AttributeWithNamespaceAsMember
+    {
+        public AttributeWithNamespace Member { get; set; }
+
+        public static AttributeWithNamespaceAsMember GetSampleInstance()
+        {
+            return new AttributeWithNamespaceAsMember
+                       {
+                           Member = AttributeWithNamespace.GetSampleInstance()
+                       };
+        }
+
+        public override string ToString()
+        {
+            return GeneralToStringProvider.GeneralToString(this);
+        }
+    }
+
 }
 
