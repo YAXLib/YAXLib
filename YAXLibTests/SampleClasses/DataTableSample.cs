@@ -3,7 +3,6 @@ using System.Text;
 
 namespace YAXLibTests.SampleClasses
 {
-    [ShowInDemoApplication(SortKey = "_")]
     public class DataTableSample
     {
         public DataTable TheDataTable { get; set; }

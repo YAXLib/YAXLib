@@ -109,5 +109,71 @@ namespace YAXLibTests
             }
 
         }
+
+        [Test]
+        public void RectangleSerializationTest()
+        {
+            const string result =
+@"<RectangleDynamicKnownType>
+  <Rect>
+    <Left>10</Left>
+    <Top>20</Top>
+    <Width>30</Width>
+    <Height>40</Height>
+  </Rect>
+</RectangleDynamicKnownType>";
+            var serializer = new YAXSerializer(typeof(SampleClasses.RectangleDynamicKnownType), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string got = serializer.Serialize(SampleClasses.RectangleDynamicKnownType.GetSampleInstance());
+            Assert.That(got, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void DataSetAndDataTableSerializationTest()
+        {
+            const string result =
+@"<DataTableSample>
+  <TheDataTable>
+    <NewDataSet>
+      <TableName xmlns=""http://tableNs/"">
+        <Col1>1</Col1>
+        <Col2>2</Col2>
+        <Col3>3</Col3>
+      </TableName>
+      <TableName xmlns=""http://tableNs/"">
+        <Col1>y</Col1>
+        <Col2>4</Col2>
+        <Col3>n</Col3>
+      </TableName>
+    </NewDataSet>
+  </TheDataTable>
+  <TheDataSet>
+    <MyDataSet>
+      <Table1>
+        <Cl1>num1</Cl1>
+        <Cl2>34</Cl2>
+      </Table1>
+      <Table1>
+        <Cl1>num2</Cl1>
+        <Cl2>54</Cl2>
+      </Table1>
+      <Table2>
+        <C1>one</C1>
+        <C2>1</C2>
+        <C3>1.5</C3>
+      </Table2>
+      <Table2>
+        <C1>two</C1>
+        <C2>2</C2>
+        <C3>2.5</C3>
+      </Table2>
+    </MyDataSet>
+  </TheDataSet>
+</DataTableSample>";
+
+            var serializer = new YAXSerializer(typeof(DataTableSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string got = serializer.Serialize(DataTableSample.GetSampleInstance());
+            Assert.That(got, Is.EqualTo(result));
+        }
+
     }
 }

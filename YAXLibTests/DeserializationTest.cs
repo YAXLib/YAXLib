@@ -462,6 +462,23 @@ namespace YAXLibTests
         }
 
         [Test]
+        public void DesRectangleDynamicKnownTypeSample()
+        {
+            var obj = YAXLibTests.SampleClasses.RectangleDynamicKnownType.GetSampleInstance();
+            PerformTest(obj);
+        }
+
+        [Test]
+        public void DesDataSetAndDataTableDynamicKnownTypes()
+        {
+            var obj = DataTableSample.GetSampleInstance();
+
+            var serializer = new YAXSerializer(obj.GetType(), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            object gottonObject = serializer.Deserialize(serializer.Serialize(obj));
+            Assert.That(obj.ToString(), Is.EqualTo(gottonObject.ToString()));
+        }
+
+        [Test]
         public void AttributeForKeyInDictionaryPropertyTest()
         {
             var container = DictionaryContainerSample.GetSampleInstance();
