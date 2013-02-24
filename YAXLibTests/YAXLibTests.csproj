@@ -44,6 +44,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
@@ -69,6 +70,7 @@
     <Compile Include="SampleClasses\CollectionWithExtraProperties.cs" />
     <Compile Include="SampleClasses\ColorExample.cs" />
     <Compile Include="SampleClasses\CollectionWithExtraPropertiesAttributedAsNotCollection.cs" />
+    <Compile Include="SampleClasses\DataTableSample.cs" />
     <Compile Include="SampleClasses\DictionaryWithExtraPropertiesAttributedAsNotCollection.cs" />
     <Compile Include="SampleClasses\DictionaryWithExtraProperties.cs" />
     <Compile Include="SampleClasses\PolymorphicSampleList.cs" />

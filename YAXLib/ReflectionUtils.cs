@@ -809,7 +809,7 @@ namespace YAXLib
         {
             try
             {
-                var col = colType.InvokeMember(string.Empty, System.Reflection.BindingFlags.CreateInstance, null, null, new object[0]);
+                var col = colType.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0]);
                 return true;
             }
             catch
@@ -818,15 +818,30 @@ namespace YAXLib
             }
         }
 
-        public static T InvokeGetProperty<T>(object srcObj, Type objectType, string propertyName)
+        public static T InvokeGetProperty<T>(object srcObj, string propertyName)
         {
-            return (T)objectType.InvokeMember(propertyName, BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance, null, srcObj, null);
+            return (T)srcObj.GetType().InvokeMember(propertyName, BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance, null, srcObj, null);
         }
 
-        public static object InvokeStaticMethod(Type type, string methodName, Type[] argTypes, object[] args)
+        public static T InvokeIntIndexer<T>(object srcObj, string propertyName, int index)
         {
+            var pi = srcObj.GetType().GetProperty("Item", new [] { typeof(int) });
+            return (T) pi.GetValue(srcObj, new object[] { index });
+        }
+
+        public static object InvokeStaticMethod(Type type, string methodName, params object[] args)
+        {
+            var argTypes = args.Select(x => x.GetType()).ToArray();
             var method = type.GetMethod(methodName, argTypes);
             var result = method.Invoke(null, args);
+            return result;
+        }
+
+        public static object InvokeMethod(object srcObj, string methodName, params object[] args)
+        {
+            var argTypes = args.Select(x => x.GetType()).ToArray();
+            var method = srcObj.GetType().GetMethod(methodName, argTypes);
+            var result = method.Invoke(srcObj, args);
             return result;
         }
     }

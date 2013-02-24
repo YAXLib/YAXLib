@@ -34,12 +34,13 @@ namespace YAXLib
         {
             // NOTE: known-types MUST be registered here
             Add(new TimeSpanKnownType());
-            //Add(new ColorKnownType());
             Add(new XElementKnownType());
             Add(new XAttributeKnownType());
             Add(new DbNullKnownType());
             AddDynamicKnownType(new RectangleDynamicKnownType());
             AddDynamicKnownType(new ColorDynamicKnownType());
+            AddDynamicKnownType(new DataTableDynamicKnownType());
+            AddDynamicKnownType(new DataSetDynamicKnownType());
         }
 
         public static void Add(IKnownType kt)
@@ -196,10 +197,10 @@ namespace YAXLib
             if (objectType.FullName != TypeName)
                 throw new ArgumentException("Object type does not match the provided typename", "obj");
 
-            var left = ReflectionUtils.InvokeGetProperty<int>(obj, objectType, "Left");
-            var top = ReflectionUtils.InvokeGetProperty<int>(obj, objectType, "Top");
-            var width = ReflectionUtils.InvokeGetProperty<int>(obj, objectType, "Width");
-            var height = ReflectionUtils.InvokeGetProperty<int>(obj, objectType, "Height"); 
+            var left = ReflectionUtils.InvokeGetProperty<int>(obj, "Left");
+            var top = ReflectionUtils.InvokeGetProperty<int>(obj, "Top");
+            var width = ReflectionUtils.InvokeGetProperty<int>(obj, "Width");
+            var height = ReflectionUtils.InvokeGetProperty<int>(obj, "Height"); 
 
             elem.Add(
                 new XElement(this.GetXName("Left", overridingNamespace), left),
@@ -239,18 +240,18 @@ namespace YAXLib
             if (objectType.FullName != TypeName)
                 throw new ArgumentException("Object type does not match the provided typename", "obj");
 
-            var isKnownColor = ReflectionUtils.InvokeGetProperty<bool>(obj, objectType, "IsKnownColor");
+            var isKnownColor = ReflectionUtils.InvokeGetProperty<bool>(obj, "IsKnownColor");
             if(isKnownColor)
             {
-                var colorName = ReflectionUtils.InvokeGetProperty<string>(obj, objectType, "Name");
+                var colorName = ReflectionUtils.InvokeGetProperty<string>(obj, "Name");
                 elem.Value = colorName;
             }
             else
             {
-                var a = ReflectionUtils.InvokeGetProperty<byte>(obj, objectType, "A");
-                var r = ReflectionUtils.InvokeGetProperty<byte>(obj, objectType, "R");
-                var g = ReflectionUtils.InvokeGetProperty<byte>(obj, objectType, "G");
-                var b = ReflectionUtils.InvokeGetProperty<byte>(obj, objectType, "B");
+                var a = ReflectionUtils.InvokeGetProperty<byte>(obj, "A");
+                var r = ReflectionUtils.InvokeGetProperty<byte>(obj, "R");
+                var g = ReflectionUtils.InvokeGetProperty<byte>(obj, "G");
+                var b = ReflectionUtils.InvokeGetProperty<byte>(obj, "B");
                 elem.Add(
                     new XElement(this.GetXName("A", overridingNamespace), a),
                     new XElement(this.GetXName("R", overridingNamespace), r),
@@ -265,8 +266,7 @@ namespace YAXLib
             if (elemR == null)
             {
                 string colorName = elem.Value;
-                var colorByName = ReflectionUtils.InvokeStaticMethod(Type, "FromName", new[] {typeof (string)},
-                                                                     new object[] {colorName});
+                var colorByName = ReflectionUtils.InvokeStaticMethod(Type, "FromName", new object[] {colorName});
                 return colorByName;
             }
 
@@ -287,13 +287,82 @@ namespace YAXLib
             if (elemB != null && !Int32.TryParse(elemB.Value, out b))
                 b = 0;
 
-            //var method = Type.GetMethod("FromArgb", new[] { typeof(int), typeof(int), typeof(int), typeof(int) });
-            //var result = method.Invoke(null, new object[] { a, r, g, b });
-            var result = ReflectionUtils.InvokeStaticMethod(Type, "FromArgb",
-                                                            new[]
-                                                                {typeof (int), typeof (int), typeof (int), typeof (int)},
-                                                            new object[] {a, r, g, b});
+            var result = ReflectionUtils.InvokeStaticMethod(Type, "FromArgb", a, r, g, b);
             return result;
+        }
+    }
+
+    internal class DataTableDynamicKnownType : DynamicKnownType
+    {
+        public override string TypeName
+        {
+            get { return "System.Data.DataTable"; }
+        }
+
+        public override void Serialize(object obj, XElement elem, XNamespace overridingNamespace)
+        {
+            using (var xw = elem.CreateWriter())
+            {
+                var dsType = ReflectionUtils.GetTypeByName("System.Data.DataSet");
+                var ds = Activator.CreateInstance(dsType);
+                var dsTables = ReflectionUtils.InvokeGetProperty<object>(ds, "Tables");
+                var dtCopy = ReflectionUtils.InvokeMethod(obj, "Copy", new object[0]);
+                ReflectionUtils.InvokeMethod(dsTables, "Add", dtCopy);
+                ReflectionUtils.InvokeMethod(ds, "WriteXml", xw);
+            }
+        }
+
+        public override object Deserialize(XElement elem, XNamespace overridingNamespace)
+        {
+            var dsElem = elem.Elements().FirstOrDefault(x => x.Name.LocalName == "NewDataSet");
+            if (dsElem == null)
+                return null;
+
+            using (var xr = dsElem.CreateReader())
+            {
+                var dsType = ReflectionUtils.GetTypeByName("System.Data.DataSet");
+                var ds = Activator.CreateInstance(dsType);
+                ReflectionUtils.InvokeMethod(ds, "ReadXml", xr);
+                var dsTables = ReflectionUtils.InvokeGetProperty<object>(ds, "Tables");
+                var dsTablesCount = ReflectionUtils.InvokeGetProperty<int>(dsTables, "Count");
+                if (dsTablesCount > 0)
+                {
+                    var dsTablesZero = ReflectionUtils.InvokeIntIndexer<object>(dsTables, "Index", 0);
+                    var copyDt = ReflectionUtils.InvokeMethod(dsTablesZero, "Copy");
+                    return copyDt;
+                }
+                return null;
+            }
+        }
+    }
+
+    internal class DataSetDynamicKnownType : DynamicKnownType
+    {
+        public override string TypeName
+        {
+            get { return "System.Data.DataSet"; }
+        }
+
+        public override void Serialize(object obj, XElement elem, XNamespace overridingNamespace)
+        {
+            using (var xw = elem.CreateWriter())
+            {
+                ReflectionUtils.InvokeMethod(obj, "WriteXml", xw);
+            }
+        }
+
+        public override object Deserialize(XElement elem, XNamespace overridingNamespace)
+        {
+            var child = elem.Elements().FirstOrDefault();
+            if (child == null)
+                return null;
+            using (var xr = child.CreateReader())
+            {
+                var dsType = ReflectionUtils.GetTypeByName("System.Data.DataSet");
+                var ds = Activator.CreateInstance(dsType);
+                ReflectionUtils.InvokeMethod(ds, "ReadXml", xr);
+                return ds;
+            }
         }
     }
 
@@ -308,7 +377,6 @@ namespace YAXLib
     {
         public override void Serialize(XElement obj, XElement elem, XNamespace overridingNamespace)
         {
-            Debug.Assert(obj != null);
             if (obj != null)
             {
                 elem.Add(obj);
@@ -329,7 +397,6 @@ namespace YAXLib
     {
         public override void Serialize(XAttribute obj, XElement elem, XNamespace overridingNamespace)
         {
-            Debug.Assert(obj != null);
             if(obj != null)
             {
                 elem.Add(obj);
