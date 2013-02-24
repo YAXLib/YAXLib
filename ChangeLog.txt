@@ -8,7 +8,8 @@
      for reporting this bug.
    * Added DynamicKnownTypes to remove dependency to System.Drawing (and potential other dlls)
      This will make YAXLib more portable.
-   * to be continued
+   * Added support for serializing DataTable and DataSet objects without making
+     YAXLib dependent to System.Data.dll
 
 [2.11] October 14, 2012
    * XML entity names now accept W3C standards.
