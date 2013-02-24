@@ -3,13 +3,13 @@ using System.Text;
 
 namespace YAXLibTests.SampleClasses
 {
-    public class DataTableSample
+    public class DataSetAndDataTableKnownTypeSample
     {
         public DataTable TheDataTable { get; set; }
 
         public DataSet TheDataSet { get; set; }
 
-        public static DataTableSample GetSampleInstance()
+        public static DataSetAndDataTableKnownTypeSample GetSampleInstance()
         {
             var dataTable = new DataTable("TableName", "http://tableNs/");
             dataTable.Columns.Add(new DataColumn("Col1", typeof(string)));
@@ -37,7 +37,7 @@ namespace YAXLibTests.SampleClasses
             var dataSet = new DataSet("MyDataSet");
             dataSet.Tables.AddRange(new[] { dataTable1, dataTable2 });
 
-            return new DataTableSample
+            return new DataSetAndDataTableKnownTypeSample
             {
                 TheDataTable = dataTable,
                 TheDataSet = dataSet

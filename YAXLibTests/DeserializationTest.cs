@@ -464,14 +464,14 @@ namespace YAXLibTests
         [Test]
         public void DesRectangleDynamicKnownTypeSample()
         {
-            var obj = YAXLibTests.SampleClasses.RectangleDynamicKnownType.GetSampleInstance();
+            var obj = YAXLibTests.SampleClasses.RectangleDynamicKnownTypeSample.GetSampleInstance();
             PerformTest(obj);
         }
 
         [Test]
         public void DesDataSetAndDataTableDynamicKnownTypes()
         {
-            var obj = DataTableSample.GetSampleInstance();
+            var obj = DataSetAndDataTableKnownTypeSample.GetSampleInstance();
 
             var serializer = new YAXSerializer(obj.GetType(), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             object gottonObject = serializer.Deserialize(serializer.Serialize(obj));

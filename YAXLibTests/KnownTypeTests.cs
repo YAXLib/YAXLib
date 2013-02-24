@@ -122,8 +122,8 @@ namespace YAXLibTests
     <Height>40</Height>
   </Rect>
 </RectangleDynamicKnownType>";
-            var serializer = new YAXSerializer(typeof(SampleClasses.RectangleDynamicKnownType), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
-            string got = serializer.Serialize(SampleClasses.RectangleDynamicKnownType.GetSampleInstance());
+            var serializer = new YAXSerializer(typeof(SampleClasses.RectangleDynamicKnownTypeSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string got = serializer.Serialize(SampleClasses.RectangleDynamicKnownTypeSample.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
 
@@ -170,8 +170,8 @@ namespace YAXLibTests
   </TheDataSet>
 </DataTableSample>";
 
-            var serializer = new YAXSerializer(typeof(DataTableSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
-            string got = serializer.Serialize(DataTableSample.GetSampleInstance());
+            var serializer = new YAXSerializer(typeof(DataSetAndDataTableKnownTypeSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string got = serializer.Serialize(DataSetAndDataTableKnownTypeSample.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
 

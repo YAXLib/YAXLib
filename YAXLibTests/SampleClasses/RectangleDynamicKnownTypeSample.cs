@@ -2,13 +2,13 @@
 
 namespace YAXLibTests.SampleClasses
 {
-    public class RectangleDynamicKnownType
+    public class RectangleDynamicKnownTypeSample
     {
         public Rectangle Rect { get; set; }
 
-        public static RectangleDynamicKnownType GetSampleInstance()
+        public static RectangleDynamicKnownTypeSample GetSampleInstance()
         {
-            return new RectangleDynamicKnownType {Rect = new Rectangle(10, 20, 30, 40)};
+            return new RectangleDynamicKnownTypeSample {Rect = new Rectangle(10, 20, 30, 40)};
         }
 
         public override string ToString()
