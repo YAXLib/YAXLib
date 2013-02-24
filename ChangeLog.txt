@@ -6,6 +6,8 @@
    * Fixed a bug where attributes with namespace same as the default 
      namespace are not serialized properly. Thanks go to [@silwol](https://github.com/silwol)
      for reporting this bug.
+   * Added DynamicKnownTypes to remove dependency to System.Drawing (and potential other dlls)
+     This will make YAXLib more portable.
    * to be continued
 
 [2.11] October 14, 2012
