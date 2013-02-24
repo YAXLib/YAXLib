@@ -72,6 +72,7 @@
     <Compile Include="SampleClasses\DictionaryWithExtraPropertiesAttributedAsNotCollection.cs" />
     <Compile Include="SampleClasses\DictionaryWithExtraProperties.cs" />
     <Compile Include="SampleClasses\PolymorphicSampleList.cs" />
+    <Compile Include="SampleClasses\RectangleDynamicKnownType.cs" />
     <Compile Include="SampleClasses\YAXLibMetadataOverriding.cs" />
     <Compile Include="SampleClasses\CsprojParser.cs" />
     <Compile Include="SampleClasses\CultureSample.cs" />

@@ -97,7 +97,7 @@ namespace YAXLib
             int[] dims = null;
             if (IsArray(ar.GetType()))
             {
-                System.Array arObj = ar as System.Array;
+                var arObj = ar as System.Array;
                 dims = new int[arObj.Rank];
                 for (int i = 0; i < dims.Length; i++)
                     dims[i] = arObj.GetLength(i);
@@ -816,6 +816,18 @@ namespace YAXLib
             {
                 return false;
             }
+        }
+
+        public static T InvokeGetProperty<T>(object srcObj, Type objectType, string propertyName)
+        {
+            return (T)objectType.InvokeMember(propertyName, BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance, null, srcObj, null);
+        }
+
+        public static object InvokeStaticMethod(Type type, string methodName, Type[] argTypes, object[] args)
+        {
+            var method = type.GetMethod(methodName, argTypes);
+            var result = method.Invoke(null, args);
+            return result;
         }
     }
 }

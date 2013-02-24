@@ -15,9 +15,9 @@ namespace YAXLibTests
         [Test]
         public void TestExtensionMethod()
         {
-            var colorKnownType = new ColorKnownType();
+            var colorKnownType = new ColorDynamicKnownType();
             var t1 = colorKnownType.Type;
-            IKnownType kt = new ColorKnownType();
+            IKnownType kt = new ColorDynamicKnownType();
 
             Assert.That(kt.Type, Is.EqualTo(t1));
         }
@@ -25,22 +25,22 @@ namespace YAXLibTests
         [Test]
         public void TestColorNames()
         {
-            var colorKnownType = new ColorKnownType();
+            var colorKnownType = new ColorDynamicKnownType();
 
             var elem = new XElement("TheColor", "Red");
-            var desCl = colorKnownType.Deserialize(elem, "");
+            var desCl = (Color)colorKnownType.Deserialize(elem, String.Empty);
             Assert.That(desCl.ToArgb(), Is.EqualTo(Color.Red.ToArgb()));
 
             var serElem = new XElement("TheColor");
             colorKnownType.Serialize(Color.Red, serElem, "");
             Assert.That(serElem.ToString(), Is.EqualTo(elem.ToString()));
 
-            var elemRgbForRed = new XElement("TheColor", 
+            var elemRgbForRed = new XElement("TheColor",
                 new XElement("A", 255),
                 new XElement("R", 255),
                 new XElement("G", 0),
                 new XElement("B", 0));
-            var desCl2 = colorKnownType.Deserialize(elemRgbForRed, "");
+            var desCl2 = (Color)colorKnownType.Deserialize(elemRgbForRed, "");
             Assert.That(desCl2.ToArgb(), Is.EqualTo(Color.Red.ToArgb()));
 
             var elemRgbAndValueForRed = new XElement("TheColor",
@@ -48,7 +48,7 @@ namespace YAXLibTests
                 new XElement("R", 255),
                 new XElement("G", 0),
                 new XElement("B", 0));
-            var desCl3 = colorKnownType.Deserialize(elemRgbAndValueForRed, "");
+            var desCl3 = (Color)colorKnownType.Deserialize(elemRgbAndValueForRed, "");
             Assert.That(desCl3.ToArgb(), Is.EqualTo(Color.Red.ToArgb()));
         }
 
