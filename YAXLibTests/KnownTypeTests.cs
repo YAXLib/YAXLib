@@ -114,14 +114,14 @@ namespace YAXLibTests
         public void RectangleSerializationTest()
         {
             const string result =
-@"<RectangleDynamicKnownType>
+@"<RectangleDynamicKnownTypeSample>
   <Rect>
     <Left>10</Left>
     <Top>20</Top>
     <Width>30</Width>
     <Height>40</Height>
   </Rect>
-</RectangleDynamicKnownType>";
+</RectangleDynamicKnownTypeSample>";
             var serializer = new YAXSerializer(typeof(SampleClasses.RectangleDynamicKnownTypeSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(SampleClasses.RectangleDynamicKnownTypeSample.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
@@ -131,7 +131,7 @@ namespace YAXLibTests
         public void DataSetAndDataTableSerializationTest()
         {
             const string result =
-@"<DataTableSample>
+@"<DataSetAndDataTableKnownTypeSample>
   <TheDataTable>
     <NewDataSet>
       <TableName xmlns=""http://tableNs/"">
@@ -168,7 +168,7 @@ namespace YAXLibTests
       </Table2>
     </MyDataSet>
   </TheDataSet>
-</DataTableSample>";
+</DataSetAndDataTableKnownTypeSample>";
 
             var serializer = new YAXSerializer(typeof(DataSetAndDataTableKnownTypeSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(DataSetAndDataTableKnownTypeSample.GetSampleInstance());

@@ -70,6 +70,7 @@
     <Compile Include="SampleClasses\CollectionWithExtraProperties.cs" />
     <Compile Include="SampleClasses\ColorExample.cs" />
     <Compile Include="SampleClasses\CollectionWithExtraPropertiesAttributedAsNotCollection.cs" />
+    <Compile Include="SampleClasses\SimpleBookClassShouldSerialize.cs" />
     <Compile Include="SampleClasses\DataSetAndDataTableKnownTypeSample.cs" />
     <Compile Include="SampleClasses\DictionaryWithExtraPropertiesAttributedAsNotCollection.cs" />
     <Compile Include="SampleClasses\DictionaryWithExtraProperties.cs" />

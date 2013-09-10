@@ -844,5 +844,15 @@ namespace YAXLib
             var result = method.Invoke(srcObj, args);
             return result;
         }
+
+        public static MethodInfo GetShouldSerializeMethodInfo(Type srcType, MemberWrapper member)
+        {
+            string methodName = string.Format("ShouldSerialize{0}", member.OriginalName);
+            var method = srcType.GetMethods()
+                .Where(m => m.Name == methodName 
+                    && m.ReturnType == typeof(bool) 
+                    && m.GetParameters().Length == 0).FirstOrDefault();
+            return method;
+        }
     }
 }

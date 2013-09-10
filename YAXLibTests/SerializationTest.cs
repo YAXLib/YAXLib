@@ -66,6 +66,39 @@ namespace YAXLibTests
         }
 
         [Test]
+        public void BookTestShouldNot()
+        {
+            const string result =
+@"<!-- This example demonstrates serailizing a very simple class -->
+<BookShouldSerialize>
+  <Title>Inside C#</Title>
+  <Author>Tom Archer &amp; Andrew Whitechapel</Author>
+  <PublishYear>2002</PublishYear>
+</BookShouldSerialize>";
+            var serializer = new YAXSerializer(typeof(BookShouldSerialize), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string got = serializer.Serialize(BookShouldSerialize.GetSampleInstance());
+            Assert.That(got, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void BookTestShouldNot_Exception()
+        {
+            const string result =
+@"<!-- This example demonstrates serailizing a very simple class -->
+<BookShouldSerialize>
+  <Title>Inside C#</Title>
+  <Author>Tom Archer &amp; Andrew Whitechapel</Author>
+  <PublishYear>2002</PublishYear>
+</BookShouldSerialize>";
+            var serializer = new YAXSerializer(typeof(BookShouldSerialize), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error, YAXSerializationOptions.SerializeNullObjects);
+            Assert.DoesNotThrow(() =>
+            {
+                var book = (BookShouldSerialize)serializer.Deserialize(result);
+            });
+        }
+
+
+        [Test]
         public void ThreadingTest()
         {
             try
