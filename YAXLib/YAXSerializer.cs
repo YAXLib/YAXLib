@@ -658,6 +658,9 @@ namespace YAXLib
                     if (!member.CanRead)
                         continue;
 
+                    if (m_udtWrapper.IgnoreMemberWrapper(member, obj))
+                        continue;
+
                     // ignore this member if it is attributed as dont serialize
                     if (member.IsAttributedAsDontSerialize)
                         continue;
@@ -1553,7 +1556,10 @@ namespace YAXLib
                         {
                             OnExceptionOccurred(new YAXAttributeMissingException(
                                 StringUtils.CombineLocationAndElementName(serializationLocation, member.Alias)),
-                                (!member.MemberType.IsValueType && m_udtWrapper.IsNotAllowdNullObjectSerialization) ? YAXExceptionTypes.Ignore : member.TreatErrorsAs);
+                                ((!member.MemberType.IsValueType && m_udtWrapper.IsNotAllowdNullObjectSerialization) 
+                                || m_udtWrapper.HasShouldSerialiseMethod(member))   
+                                ? YAXExceptionTypes.Ignore 
+                                : member.TreatErrorsAs);
                         }
                     }
                     else
@@ -1570,7 +1576,10 @@ namespace YAXLib
                     {
                         OnExceptionOccurred(new YAXElementMissingException(
                                 serializationLocation),
-                                (!member.MemberType.IsValueType && m_udtWrapper.IsNotAllowdNullObjectSerialization) ? YAXExceptionTypes.Ignore : member.TreatErrorsAs);
+                                ((!member.MemberType.IsValueType && m_udtWrapper.IsNotAllowdNullObjectSerialization)
+                                || m_udtWrapper.HasShouldSerialiseMethod(member)) 
+                                ? YAXExceptionTypes.Ignore 
+                                : member.TreatErrorsAs);
                     }
                     else
                     {
@@ -1587,7 +1596,10 @@ namespace YAXLib
                             else
                             {
                                 OnExceptionOccurred(new YAXElementValueMissingException(serializationLocation),
-                                    (!member.MemberType.IsValueType && m_udtWrapper.IsNotAllowdNullObjectSerialization) ? YAXExceptionTypes.Ignore : member.TreatErrorsAs);
+                                    ((!member.MemberType.IsValueType && m_udtWrapper.IsNotAllowdNullObjectSerialization)
+                                    || m_udtWrapper.HasShouldSerialiseMethod(member)) 
+                                    ? YAXExceptionTypes.Ignore 
+                                    : member.TreatErrorsAs);
                             }
                         }
                         else
@@ -1640,7 +1652,10 @@ namespace YAXLib
                         {
                             OnExceptionOccurred(new YAXElementMissingException(
                                 StringUtils.CombineLocationAndElementName(serializationLocation, member.Alias.OverrideNsIfEmpty(TypeNamespace))),
-                                (!member.MemberType.IsValueType && m_udtWrapper.IsNotAllowdNullObjectSerialization) ? YAXExceptionTypes.Ignore : member.TreatErrorsAs);
+                                ((!member.MemberType.IsValueType && m_udtWrapper.IsNotAllowdNullObjectSerialization)
+                                || m_udtWrapper.HasShouldSerialiseMethod(member))
+                                ? YAXExceptionTypes.Ignore 
+                                : member.TreatErrorsAs);
                         }
                     }
                     else
@@ -1807,6 +1822,7 @@ namespace YAXLib
             {
                 if (!member.CanWrite)
                     continue;
+                
 
                 // ignore this member if it is attributed as dont serialize
                 if (member.IsAttributedAsDontSerialize)

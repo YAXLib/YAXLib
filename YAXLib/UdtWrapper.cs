@@ -9,6 +9,8 @@
 //-----------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Xml.Linq;
 
 namespace YAXLib
@@ -511,6 +513,40 @@ namespace YAXLib
             {
                 throw new Exception("Attribute not applicable to types!");
             }
+        }
+
+        private Dictionary<MemberWrapper, MethodInfo> _shouldSerializeCache =
+            new Dictionary<MemberWrapper, MethodInfo>();
+        private object _shouldSerializeCacheLock = new object();
+
+        public bool IgnoreMemberWrapper(MemberWrapper member, object currentInstance)
+        {
+            MethodInfo info = FindShouldSerializeMethod(member);
+            if (info == null)
+                return false;
+            else
+            {
+                return !(bool)info.Invoke(currentInstance, null);
+            }
+        }
+
+        public bool HasShouldSerialiseMethod(MemberWrapper member)
+        {
+            return FindShouldSerializeMethod(member) != null;
+        }
+
+        private MethodInfo FindShouldSerializeMethod(MemberWrapper member)
+        {
+            MethodInfo info = null;
+            lock (_shouldSerializeCacheLock)
+            {
+                if (!_shouldSerializeCache.TryGetValue(member, out info))
+                {
+                    info = ReflectionUtils.GetShouldSerializeMethodInfo(UnderlyingType, member);
+                    _shouldSerializeCache.Add(member, info);
+                }
+            }
+            return info;
         }
     }
 }
