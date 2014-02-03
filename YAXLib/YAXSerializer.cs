@@ -1881,6 +1881,10 @@ namespace YAXLib
                     {
                         memberType = realType;
                     }
+                    if (member.DeserializeIntoType != null)
+                    {
+                        memberType = member.DeserializeIntoType;
+                    }
                 }
             }
 
