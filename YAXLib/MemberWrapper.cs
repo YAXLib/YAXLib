@@ -45,6 +45,11 @@ namespace YAXLib
         /// </summary>
         private readonly FieldInfo m_fieldInfoInstance = null;
 
+ 	/// <summary>
+        /// the <c>DeserializeInto</c> type, if the type is specified, <c>null</c> otherwise.
+        /// </summary>
+        private readonly Type m_deserializeIntoType = null;
+
         /// <summary>
         /// The collection attribute instance
         /// </summary>
@@ -108,6 +113,15 @@ namespace YAXLib
             m_memberType = m_isProperty ? m_propertyInfoInstance.PropertyType : m_fieldInfoInstance.FieldType;
 
             m_memberTypeWrapper = TypeWrappersPool.Pool.GetTypeWrapper(MemberType, callerSerializer);
+            
+             var deserializeIntoAttribute =
+                m_propertyInfoInstance.GetCustomAttributes(typeof (YAXDeserializeIntoAttribute), false).FirstOrDefault() as YAXDeserializeIntoAttribute;
+
+            if (deserializeIntoAttribute != null)
+            {
+                m_deserializeIntoType = deserializeIntoAttribute.Type;
+            }
+            
             if (m_memberTypeWrapper.HasNamespace)
             {
                 Namespace = m_memberTypeWrapper.Namespace;
@@ -566,6 +580,14 @@ namespace YAXLib
                 return m_fieldInfoInstance.GetValue(obj);
             }
         }
+        
+        /// <summary>
+        /// Property which returns the type into which the xml section is deserialized.
+        /// </summary>
+        public Type DeserializeIntoType
+        {
+            get { return m_deserializeIntoType; }
+        }
 
         /// <summary>
         /// Gets the processed value of this member in the specified object
@@ -823,6 +845,10 @@ namespace YAXLib
                 var nsAttrib = (attr as YAXNamespaceAttribute);
                 Namespace = nsAttrib.Namespace;
                 NamespacePrefix = nsAttrib.Prefix;
+            }
+            else if (attr is YAXDeserializeIntoAttribute)
+            {
+                var nsAttrib = (attr as YAXDeserializeIntoAttribute);
             }
             else
             {
