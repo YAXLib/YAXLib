@@ -336,6 +336,22 @@ namespace YAXLib
         #endregion
     }
 
+      /// <summary>
+    /// Attribute used when you want to deserialize an xml into a certain type. Type is
+    /// specified into the attribute constructor.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Property)]
+    public class YAXDeserializeIntoAttribute : YAXBaseAttribute
+    {
+        public Type Type { get; set; }
+
+        public YAXDeserializeIntoAttribute(Type type)
+        {
+            Type = type;
+        }
+    }
+
+
     /// <summary>
     /// Makes a property or field to appear as a child element 
     /// for another element. This attribute is applicable to fields and properties.
