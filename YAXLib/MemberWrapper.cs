@@ -114,12 +114,15 @@ namespace YAXLib
 
             m_memberTypeWrapper = TypeWrappersPool.Pool.GetTypeWrapper(MemberType, callerSerializer);
             
-             var deserializeIntoAttribute =
-                m_propertyInfoInstance.GetCustomAttributes(typeof (YAXDeserializeIntoAttribute), false).FirstOrDefault() as YAXDeserializeIntoAttribute;
-
-            if (deserializeIntoAttribute != null)
+            if (m_propertyInfoInstance != null)
             {
-                m_deserializeIntoType = deserializeIntoAttribute.Type;
+                var deserializeIntoAttribute =
+                m_propertyInfoInstance.GetCustomAttributes(typeof(YAXDeserializeIntoAttribute), false).FirstOrDefault() as YAXDeserializeIntoAttribute;
+
+                if (deserializeIntoAttribute != null)
+                {
+                    m_deserializeIntoType = deserializeIntoAttribute.Type;
+                }
             }
             
             if (m_memberTypeWrapper.HasNamespace)
