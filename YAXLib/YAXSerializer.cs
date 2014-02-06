@@ -1,4 +1,4 @@
-﻿// Copyright 2009 - 2010 Sina Iravanian - <sina@sinairv.com>
+// Copyright 2009 - 2010 Sina Iravanian - <sina@sinairv.com>
 //
 // This source file(s) may be redistributed, altered and customized
 // by any means PROVIDING the authors name and all copyright
@@ -113,12 +113,28 @@ namespace YAXLib
         private readonly Dictionary<XNamespace, string> m_namespaceToPrefix = new Dictionary<XNamespace, string>();
 
         /// <summary>
+        /// the property which specified if attributes should be serialized or not.
+        /// </summary>
+        private bool m_dontSerializeRealTypeAttributes = false;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="YAXSerializer"/> class.
         /// </summary>
         /// <param name="type">The type of the object being serialized/deserialized.</param>
         public YAXSerializer(Type type)
             : this(type, YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error, YAXSerializationOptions.SerializeNullObjects)
         {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="YAXSerializer"/> class.
+        /// </summary>
+        /// <param name="type">The type of the object being serialized/deserialized.</param>
+        /// <param name="dontSerializeRealTypeAttributes">If <c>false</c> serializer won't serialize real-type attributes, if <c>true</c>, it will serialize.</param>
+        public YAXSerializer(Type type, bool dontSerializeRealTypeAttributes = false)
+            : this(type, YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error, YAXSerializationOptions.SerializeNullObjects)
+        {
+            m_dontSerializeRealTypeAttributes = dontSerializeRealTypeAttributes;
         }
 
         /// <summary>
@@ -149,8 +165,10 @@ namespace YAXLib
         /// <param name="exceptionPolicy">The exception handling policy.</param>
         /// <param name="defaultExType">The exceptions are treated as the value specified, unless otherwise specified.</param>
         /// <param name="option">The serialization option.</param>
-        public YAXSerializer(Type t, YAXExceptionHandlingPolicies exceptionPolicy, YAXExceptionTypes defaultExType, YAXSerializationOptions option)
+        /// <param name="dontSerializeRealTypeAttributes">If <c>false</c> serializer won't serialize real-type attributes, if <c>true</c>, it will serialize.</param>
+        public YAXSerializer(Type t, YAXExceptionHandlingPolicies exceptionPolicy, YAXExceptionTypes defaultExType, YAXSerializationOptions option, bool dontSerializeRealTypeAttributes = false)
         {
+            m_dontSerializeRealTypeAttributes = dontSerializeRealTypeAttributes;
             m_type = t;
             m_exceptionPolicy = exceptionPolicy;
             m_defaultExceptionType = defaultExType;
@@ -554,8 +572,8 @@ namespace YAXLib
                 // another base value such as System.Object but is provided with an
                 // object of its child
 
-                var ser = new YAXSerializer(obj.GetType(), m_exceptionPolicy, 
-                    m_defaultExceptionType, m_serializationOption);
+                var ser = new YAXSerializer(obj.GetType(), m_exceptionPolicy,
+                    m_defaultExceptionType, m_serializationOption, m_dontSerializeRealTypeAttributes);
                 ser.SetNamespaceToOverrideEmptyNamespace(TypeNamespace);
                 
                 //ser.SetBaseElement(insertionLocation);
@@ -841,7 +859,10 @@ namespace YAXLib
                             XElement elemToAdd = MakeElement(parElem, member, elementValue, out moveDescOnly, out alreadyAdded);
                             if (!areOfSameType)
                             {
-                                elemToAdd.AddAttributeNamespaceSafe(m_yaxLibNamespaceUri + m_trueTypeAttrName, elementValue.GetType().FullName, m_documentDefaultNamespace);
+                                if (m_dontSerializeRealTypeAttributes == false)
+                                {
+                                    elemToAdd.AddAttributeNamespaceSafe(m_yaxLibNamespaceUri + m_trueTypeAttrName, elementValue.GetType().FullName, m_documentDefaultNamespace);
+                                }
                                 RegisterYaxLibNamespace();
                             }
 
@@ -964,20 +985,23 @@ namespace YAXLib
                 }
                 else // if it has a prefix assigned
                 {
-                    // if no namespace with this prefix already exists
-                    if (rootNode.GetNamespaceOfPrefix(prefix) == null)
+                    if (m_dontSerializeRealTypeAttributes == false)
                     {
-                        rootNode.AddAttributeNamespaceSafe(XNamespace.Xmlns + prefix, ns, m_documentDefaultNamespace);
-                    }
-                    else // if this prefix is already added
-                    {
-                        // check the namespace associated with this prefix
-                        var existing = rootNode.GetNamespaceOfPrefix(prefix);
-                        if (existing != ns)
-                            throw new InvalidOperationException(String.Format("You cannot have two different namespaces with the same prefix." + 
-                                Environment.NewLine + 
-                                "Prefix: {0}, Namespaces: \"{1}\", and \"{2}\"",
-                                prefix, ns, existing));
+                        // if no namespace with this prefix already exists
+                        if (rootNode.GetNamespaceOfPrefix(prefix) == null)
+                        {
+                            rootNode.AddAttributeNamespaceSafe(XNamespace.Xmlns + prefix, ns, m_documentDefaultNamespace);
+                        }
+                        else // if this prefix is already added
+                        {
+                            // check the namespace associated with this prefix
+                            var existing = rootNode.GetNamespaceOfPrefix(prefix);
+                            if (existing != ns)
+                                throw new InvalidOperationException(String.Format("You cannot have two different namespaces with the same prefix." +
+                                    Environment.NewLine +
+                                    "Prefix: {0}, Namespaces: \"{1}\", and \"{2}\"",
+                                    prefix, ns, existing));
+                        }
                     }
                 }
             }
@@ -1075,7 +1099,7 @@ namespace YAXLib
             }
 
             // serialize other non-collection members
-            var ser = new YAXSerializer(elementValue.GetType(), m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
+            var ser = new YAXSerializer(elementValue.GetType(), m_exceptionPolicy, m_defaultExceptionType, m_serializationOption, m_dontSerializeRealTypeAttributes);
             ser.m_documentDefaultNamespace = m_documentDefaultNamespace;
             ser.SetNamespaceToOverrideEmptyNamespace(elementName.Namespace);
             ser.SetBaseElement(insertionLocation);
@@ -1307,7 +1331,7 @@ namespace YAXLib
             }
 
             // serialize other non-collection members
-            var ser = new YAXSerializer(elementValue.GetType(), m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
+            var ser = new YAXSerializer(elementValue.GetType(), m_exceptionPolicy, m_defaultExceptionType, m_serializationOption, m_dontSerializeRealTypeAttributes);
             ser.m_documentDefaultNamespace = m_documentDefaultNamespace;
             ser.SetNamespaceToOverrideEmptyNamespace(elementName.Namespace);
             ser.SetBaseElement(insertionLocation);
@@ -1440,7 +1464,7 @@ namespace YAXLib
             }
             else
             {
-                var ser = new YAXSerializer(value.GetType(), m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
+                var ser = new YAXSerializer(value.GetType(), m_exceptionPolicy, m_defaultExceptionType, m_serializationOption, m_dontSerializeRealTypeAttributes);
                 ser.m_documentDefaultNamespace = m_documentDefaultNamespace;
                 ser.SetNamespaceToOverrideEmptyNamespace(name.Namespace);
                 ser.SetBaseElement(insertionLocation);
@@ -1882,6 +1906,10 @@ namespace YAXLib
                         memberType = realType;
                     }
                 }
+                if (member.DeserializeIntoType != null)
+                {
+                    memberType = member.DeserializeIntoType;
+                }
             }
 
             if (xelemValue != null && XMLUtils.IsElementCompletelyEmpty(xelemValue) &&
@@ -1966,7 +1994,7 @@ namespace YAXLib
             }
             else
             {
-                var ser = new YAXSerializer(memberType, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
+                var ser = new YAXSerializer(memberType, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption, m_dontSerializeRealTypeAttributes);
                 ser.m_documentDefaultNamespace = m_documentDefaultNamespace;
                 ser.SetNamespaceToOverrideEmptyNamespace(
                     member.Namespace.
@@ -2006,7 +2034,7 @@ namespace YAXLib
             if (ReflectionUtils.IsInstantiableCollection(colType))
             {
                 var containerSer = new YAXSerializer(colType, m_exceptionPolicy, m_defaultExceptionType,
-                                                     m_serializationOption);
+                                                     m_serializationOption, m_dontSerializeRealTypeAttributes);
                 containerSer.m_documentDefaultNamespace = m_documentDefaultNamespace;
                 containerSer.SetNamespaceToOverrideEmptyNamespace(
                     memberAlias.Namespace.
@@ -2095,7 +2123,7 @@ namespace YAXLib
                     }
                     else
                     {
-                        var ser = new YAXSerializer(curElementType, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
+                        var ser = new YAXSerializer(curElementType, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption, m_dontSerializeRealTypeAttributes);
                         ser.m_documentDefaultNamespace = m_documentDefaultNamespace;
                         ser.SetNamespaceToOverrideEmptyNamespace(
                             memberAlias.Namespace.
@@ -2351,7 +2379,7 @@ namespace YAXLib
             }
 
             // deserialize non-collection fields
-            var containerSer = new YAXSerializer(type, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
+            var containerSer = new YAXSerializer(type, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption, m_dontSerializeRealTypeAttributes);
             containerSer.m_documentDefaultNamespace = m_documentDefaultNamespace;
             containerSer.SetNamespaceToOverrideEmptyNamespace(
                 alias.Namespace.
@@ -2447,7 +2475,7 @@ namespace YAXLib
                     {
                         if (keySer == null)
                         {
-                            keySer = new YAXSerializer(keyType, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
+                            keySer = new YAXSerializer(keyType, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption, m_dontSerializeRealTypeAttributes);
                             keySer.m_documentDefaultNamespace = m_documentDefaultNamespace;
                             keySer.SetNamespaceToOverrideEmptyNamespace(keyAlias.Namespace);
                         }
@@ -2475,7 +2503,7 @@ namespace YAXLib
                     {
                         if (valueSer == null)
                         {
-                            valueSer = new YAXSerializer(valueType, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
+                            valueSer = new YAXSerializer(valueType, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption, m_dontSerializeRealTypeAttributes);
                             valueSer.m_documentDefaultNamespace = m_documentDefaultNamespace;
                             valueSer.SetNamespaceToOverrideEmptyNamespace(valueAlias.Namespace);
                         }
@@ -2626,7 +2654,7 @@ namespace YAXLib
             }
             else
             {
-                var ser = new YAXSerializer(keyType, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
+                var ser = new YAXSerializer(keyType, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption, m_dontSerializeRealTypeAttributes);
                 ser.m_documentDefaultNamespace = m_documentDefaultNamespace;
                 ser.SetNamespaceToOverrideEmptyNamespace(xnameKey.Namespace.IfEmptyThenNone());
 
@@ -2657,7 +2685,7 @@ namespace YAXLib
             }
             else
             {
-                var ser = new YAXSerializer(valueType, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
+                var ser = new YAXSerializer(valueType, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption, m_dontSerializeRealTypeAttributes);
                 ser.m_documentDefaultNamespace = m_documentDefaultNamespace;
                 ser.SetNamespaceToOverrideEmptyNamespace(xnameValue.Namespace.IfEmptyThenNone());
                 valueValue = ser.DeserializeBase(baseElement.Element(xnameValue));
