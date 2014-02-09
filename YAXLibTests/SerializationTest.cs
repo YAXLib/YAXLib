@@ -1768,5 +1768,20 @@ namespace YAXLibTests
 </samples>";
             Assert.AreEqual(expectedResult, result);
         }
+
+        [Test]
+        public void OneLetterPathTest()
+        {
+            var ser = new YAXSerializer(typeof (OneLetterAlias));
+            string result = ser.Serialize(OneLetterAlias.GetSampleInstance());
+
+            const string expectedResult =
+@"<OneLetterAlias>
+  <T>Inside C#</T>
+  <A>Tom Archer &amp; Andrew Whitechapel</A>
+</OneLetterAlias>";
+
+            Assert.AreEqual(expectedResult, result);
+        }
     }
 }

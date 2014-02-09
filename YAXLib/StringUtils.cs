@@ -352,7 +352,7 @@ namespace YAXLib
                 else continue;
             }
 
-            if (lastStart < temp.Length - 1)
+            if (lastStart <= temp.Length - 1)
                 yield return temp.Substring(lastStart);
         }
 

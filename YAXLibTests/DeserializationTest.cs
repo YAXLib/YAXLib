@@ -505,13 +505,20 @@ namespace YAXLibTests
 
             string input = ser.Serialize(inst);
 
-            DictionarySample deserializedInstance = (DictionarySample)ser.Deserialize(input);
+            var deserializedInstance = (DictionarySample)ser.Deserialize(input);
 
             Assert.That(deserializedInstance, Is.Not.Null);
             Assert.IsTrue(deserializedInstance.Count  == inst.Count,
                           "Expected Count: {0}. Actual Count: {1}",
                           inst.Count,
                           deserializedInstance.Count);
+        }
+
+        [Test]
+        public void DeserializingOneLetterAliases()
+        {
+            object obj = OneLetterAlias.GetSampleInstance();
+            PerformTest(obj);
         }
     }
 }

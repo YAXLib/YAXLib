@@ -1,3 +1,8 @@
+[2.13] February 10, 2014
+   * Fixed a bug and added unit tests related to serializing path like aliases with one 
+     letter (e.g., './B'). Thanks go to CodeProject user B.O.B. for reporting this bug.
+
+
 [2.12] February 19, 2013
    * Added support for serialization of non-collection fields
      in objects derived from collection types/interfaces

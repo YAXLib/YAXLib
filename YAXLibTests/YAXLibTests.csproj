@@ -73,6 +73,7 @@
     <Compile Include="SampleClasses\DataSetAndDataTableKnownTypeSample.cs" />
     <Compile Include="SampleClasses\DictionaryWithExtraPropertiesAttributedAsNotCollection.cs" />
     <Compile Include="SampleClasses\DictionaryWithExtraProperties.cs" />
+    <Compile Include="SampleClasses\OneLetterAlias.cs" />
     <Compile Include="SampleClasses\PolymorphicSampleList.cs" />
     <Compile Include="SampleClasses\RectangleDynamicKnownTypeSample.cs" />
     <Compile Include="SampleClasses\YAXLibMetadataOverriding.cs" />
