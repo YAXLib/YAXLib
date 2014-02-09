@@ -12,6 +12,7 @@ YAXLibTests/bin/
 TestResults/
 Bin/*.dll
 Bin/*.xml
+Bin/*.dll.mdb
 /packages/*
 !/packages/repositories.config
 YAXLibTests.VisualState.xml
