@@ -670,4 +670,26 @@ namespace YAXLib
     public class YAXPreserveWhitespaceAttribute : YAXBaseAttribute
     {
     }
+
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public class YAXCollectionItemTypeAttribute : YAXBaseAttribute
+    {
+        public Type Type { get; private set; }
+
+        public YAXCollectionItemTypeAttribute(Type type)
+        {
+            Type = type;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public class YAXTypeAttribute : YAXBaseAttribute
+    {
+        public Type Type { get; private set; }
+
+        public YAXTypeAttribute(Type type)
+        {
+            Type = type;
+        }
+    }
 }
