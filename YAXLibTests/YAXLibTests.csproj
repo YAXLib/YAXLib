@@ -142,6 +142,7 @@
     <Compile Include="SampleClasses\WarehouseWithDictionaryNoContainer.cs" />
     <Compile Include="SerializationTest.cs" />
     <Compile Include="ShowInDemoApplicationAttribute.cs" />
+    <Compile Include="StringExtensionsForTest.cs" />
     <Compile Include="StringUtilsTest.cs" />
     <Compile Include="XMLUtilsTest.cs" />
   </ItemGroup>

@@ -414,7 +414,8 @@ namespace YAXLibTests
 </MoreComplexExample>";
             var serializer = new YAXSerializer(typeof(MoreComplexExample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(MoreComplexExample.GetSampleInstance());
-            Assert.That(got, Is.EqualTo(result));
+
+            Assert.That(got.StripTypeAssemblyVersion(), Is.EqualTo(result.StripTypeAssemblyVersion()));
         }
 
         [Test]
@@ -1171,6 +1172,7 @@ namespace YAXLibTests
   <TheHashtable>
 {0}
 {1}
+{2}
   </TheHashtable>
   <TheQueue>
     <Int32 yaxlib:realtype=""System.Int32"">10</Int32>
@@ -1218,22 +1220,31 @@ namespace YAXLibTests
             string part2 = @"    <DictionaryEntry yaxlib:realtype=""System.Collections.DictionaryEntry"">
       <Key yaxlib:realtype=""System.String"">Tom</Key>
       <Value yaxlib:realtype=""System.String"">Sam</Value>
-    </DictionaryEntry>
-    <DictionaryEntry yaxlib:realtype=""System.Collections.DictionaryEntry"">
+    </DictionaryEntry>";
+            string part3 = @"    <DictionaryEntry yaxlib:realtype=""System.Collections.DictionaryEntry"">
       <Key yaxlib:realtype=""System.Double"">1</Key>
       <Value yaxlib:realtype=""System.String"">Tim</Value>
     </DictionaryEntry>";
 
-            string possibleResult1 = String.Format(result, part1, part2);
-            string possibleResult2 = String.Format(result, part2, part1);
-
+            string possibleResult1 = String.Format(result, part1, part2, part3);
+            string possibleResult2 = String.Format(result, part1, part3, part2);
+            string possibleResult3 = String.Format(result, part2, part1, part3);
+            string possibleResult4 = String.Format(result, part2, part3, part1);
+            string possibleResult5 = String.Format(result, part3, part1, part2);
+            string possibleResult6 = String.Format(result, part3, part2, part1);
 
             var serializer = new YAXSerializer(typeof(NonGenericCollectionsSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(NonGenericCollectionsSample.GetSampleInstance());
             //result.ShouldEqualWithDiff(got, DiffStyle.Minimal);
+
             bool result1Match = String.Equals(got, possibleResult1, StringComparison.Ordinal);
             bool result2Match = String.Equals(got, possibleResult2, StringComparison.Ordinal);
-            Assert.That(result1Match || result2Match, Is.True);
+            bool result3Match = String.Equals(got, possibleResult3, StringComparison.Ordinal);
+            bool result4Match = String.Equals(got, possibleResult4, StringComparison.Ordinal);
+            bool result5Match = String.Equals(got, possibleResult5, StringComparison.Ordinal);
+            bool result6Match = String.Equals(got, possibleResult6, StringComparison.Ordinal);
+
+            Assert.That(result1Match || result2Match || result3Match || result4Match || result5Match || result6Match, Is.True);
         }
 
 
@@ -1517,14 +1528,14 @@ namespace YAXLibTests
             var ser = new YAXSerializer(typeof(object));
             string xmlResult = ser.Serialize(lst);
 
-            string expectedResult = 
+            const string expectedResult = 
 @"<Object yaxlib:realtype=""System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
   <Int32>1</Int32>
   <Int32>2</Int32>
   <Int32>3</Int32>
 </Object>";
 
-            Assert.That(xmlResult, Is.EqualTo(expectedResult));
+            Assert.That(xmlResult.StripTypeAssemblyVersion(), Is.EqualTo(expectedResult.StripTypeAssemblyVersion()));
             var desObj = ser.Deserialize(xmlResult);
             Assert.That(desObj.GetType(), Is.EqualTo(lst.GetType()));
             var desLst = desObj as List<int>;
@@ -1539,14 +1550,14 @@ namespace YAXLibTests
             var ser = new YAXSerializer(typeof(object));
             string xmlResult = ser.Serialize(lst);
 
-            string expectedResult =
+            const string expectedResult =
 @"<Object xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"" yaxlib:realtype=""System.Collections.Generic.List`1[[System.Object, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"">
   <Int32 yaxlib:realtype=""System.Int32"">1</Int32>
   <Int32 yaxlib:realtype=""System.Int32"">2</Int32>
   <Int32 yaxlib:realtype=""System.Int32"">3</Int32>
 </Object>";
 
-            Assert.That(xmlResult, Is.EqualTo(expectedResult));
+            Assert.That(xmlResult.StripTypeAssemblyVersion(), Is.EqualTo(expectedResult.StripTypeAssemblyVersion()));
             var desObj = ser.Deserialize(xmlResult);
             Assert.That(desObj.GetType(), Is.EqualTo(lst.GetType()));
             var desLst = desObj as List<object>;

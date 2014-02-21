@@ -672,6 +672,7 @@ namespace YAXLib
     }
 
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    [Obsolete("Not implemented", true)]
     public class YAXCollectionItemTypeAttribute : YAXBaseAttribute
     {
         public Type Type { get; private set; }
@@ -682,7 +683,9 @@ namespace YAXLib
         }
     }
 
+
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    [Obsolete("Not implemented", true)]
     public class YAXTypeAttribute : YAXBaseAttribute
     {
         public Type Type { get; private set; }

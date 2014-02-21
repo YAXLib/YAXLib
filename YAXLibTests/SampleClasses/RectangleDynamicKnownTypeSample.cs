@@ -2,6 +2,7 @@
 
 namespace YAXLibTests.SampleClasses
 {
+    [ShowInDemoApplication(SortKey = "_")]
     public class RectangleDynamicKnownTypeSample
     {
         public Rectangle Rect { get; set; }
