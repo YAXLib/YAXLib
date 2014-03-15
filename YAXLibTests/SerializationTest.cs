@@ -1834,5 +1834,19 @@ namespace YAXLibTests
 
             Assert.AreEqual(expectedResult, result);
         }
+
+        [Test]
+        public void DelegatesAndFunctionPointersMustBeIgnored()
+        {
+            var ser = new YAXSerializer(typeof (DelegateInstances));
+            string result = ser.Serialize(DelegateInstances.GetSampleInstance());
+
+            const string expectedResult = 
+@"<DelegateInstances>
+  <SomeNumber>12</SomeNumber>
+</DelegateInstances>";
+
+            Assert.AreEqual(expectedResult, result);
+        }
     }
 }

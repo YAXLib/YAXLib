@@ -534,5 +534,12 @@ namespace YAXLibTests
             object obj = SingleLetterPropertyNames.GetSampleInstance();
             PerformTest(obj);
         }
+
+        [Test]
+        public void DelegatesAndFunctionPointersMustBeIgnored()
+        {
+            object obj = DelegateInstances.GetSampleInstance();
+            PerformTest(obj);
+        }
     }
 }

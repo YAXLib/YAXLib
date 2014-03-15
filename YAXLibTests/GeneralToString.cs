@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.Collections;
+using YAXLib;
 
 namespace YAXLibTests
 {
@@ -263,6 +264,9 @@ namespace YAXLibTests
 
                     if(prop.GetIndexParameters().Length > 0) // do not print indexers
                         continue;
+
+                    if (ReflectionUtils.IsTypeEqualOrInheritedFromType(prop.PropertyType, typeof(Delegate)))
+                        continue; // do not print delegates
 
                     propType = prop.PropertyType;
                     if (IsBasicType(propType))

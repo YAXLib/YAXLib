@@ -2723,10 +2723,14 @@ namespace YAXLib
                     (member.MemberType == MemberTypes.Property || member.MemberType == MemberTypes.Field))
                 {
                     var prop = member as PropertyInfo;
-                    if (prop != null && prop.GetIndexParameters().Length > 0)
+                    if (prop != null)
                     {
-                        // if member is an indexer property, do not serialize it
-                        continue;
+                        // ignore indexers; if member is an indexer property, do not serialize it
+                        if (prop.GetIndexParameters().Length > 0)
+                            continue;
+
+                        if (ReflectionUtils.IsTypeEqualOrInheritedFromType(prop.PropertyType, typeof(Delegate)))
+                            continue;
                     }
 
                     if((typeWrapper.IsCollectionType || typeWrapper.IsDictionaryType)) //&& typeWrapper.IsAttributedAsNotCollection)

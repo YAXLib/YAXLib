@@ -5,6 +5,9 @@
    * Fixed the issue with Indexer properties. Indexers must not be serialized/deserialized.
      Thanks go to CodePlex user [iBeta](http://www.codeplex.com/site/users/view/iBeta) for
      reporting this bug.
+   * YAXLib will ignore delegate (callback/function pointer) properties, so that the exception
+     upon serializing them is prevented. Thanks go to CodePlex user [zack2656](https://www.codeplex.com/site/users/view/zack2656)
+     for reporting this issue at CodePlex under [issue #17684](https://yaxlib.codeplex.com/workitem/17684).
 
 [2.12] February 19, 2013
    * Added support for serialization of non-collection fields
