@@ -2719,9 +2719,16 @@ namespace YAXLib
             foreach (var member in typeWrapper.UnderlyingType.GetMembers(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
             {
                 char name0 = member.Name[0];
-                if ((Char.IsLetter(name0) || name0 == '_') &&
+                if ((Char.IsLetter(name0) || name0 == '_') && // TODO: this is wrong, .NET supports unicode variable names or those starting with @
                     (member.MemberType == MemberTypes.Property || member.MemberType == MemberTypes.Field))
                 {
+                    var prop = member as PropertyInfo;
+                    if (prop != null && prop.GetIndexParameters().Length > 0)
+                    {
+                        // if member is an indexer property, do not serialize it
+                        continue;
+                    }
+
                     if((typeWrapper.IsCollectionType || typeWrapper.IsDictionaryType)) //&& typeWrapper.IsAttributedAsNotCollection)
                         if(ReflectionUtils.IsPartOfNetFx(member))
                             continue;
