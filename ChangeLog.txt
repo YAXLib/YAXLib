@@ -1,7 +1,10 @@
-[2.13] February 10, 2014
+[2.13] March 15, 2014
    * Fixed a bug and added unit tests related to serializing path like aliases with one 
      letter (e.g., './B'). Thanks go to CodeProject user B.O.B. for reporting this bug.
    * Added `Bin/*.dll.mdb` to `.gitignore` as requested by [@silwol](https://github.com/silwol).
+   * Fixed the issue with Indexer properties. Indexers must not be serialized/deserialized.
+     Thanks go to CodePlex user [iBeta](http://www.codeplex.com/site/users/view/iBeta) for
+     reporting this bug.
 
 [2.12] February 19, 2013
    * Added support for serialization of non-collection fields
