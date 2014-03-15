@@ -261,6 +261,9 @@ namespace YAXLibTests
                     if (!(prop.CanRead))
                         continue;
 
+                    if(prop.GetIndexParameters().Length > 0) // do not print indexers
+                        continue;
+
                     propType = prop.PropertyType;
                     if (IsBasicType(propType))
                     {
