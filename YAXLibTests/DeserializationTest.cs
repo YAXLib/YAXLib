@@ -526,7 +526,13 @@ namespace YAXLibTests
         {
             object obj = IndexerSample.GetSampleInstance();
             PerformTest(obj);
+        }
 
+        [Test]
+        public void SingleLetterPropertiesAreSerializedProperly()
+        {
+            object obj = SingleLetterPropertyNames.GetSampleInstance();
+            PerformTest(obj);
         }
     }
 }

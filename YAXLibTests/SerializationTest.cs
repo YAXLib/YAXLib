@@ -1809,5 +1809,30 @@ namespace YAXLibTests
 
             Assert.AreEqual(expectedResult, result);
         }
+
+        [Test]
+        public void SingleLetterPropertyNamesAreSerializedProperly()
+        {
+            var ser = new YAXSerializer(typeof (SingleLetterPropertyNames));
+            string result = ser.Serialize(SingleLetterPropertyNames.GetSampleInstance());
+
+            const string expectedResult =
+@"<SingleLetterPropertyNames>
+  <TestPoints>
+    <TestPoint>
+      <Id>0</Id>
+      <X>100</X>
+      <Y>100</Y>
+    </TestPoint>
+    <TestPoint>
+      <Id>1</Id>
+      <X>-100</X>
+      <Y>150</Y>
+    </TestPoint>
+  </TestPoints>
+</SingleLetterPropertyNames>";
+
+            Assert.AreEqual(expectedResult, result);
+        }
     }
 }

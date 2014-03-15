@@ -78,6 +78,7 @@
     <Compile Include="SampleClasses\PolymorphicSampleList.cs" />
     <Compile Include="SampleClasses\PolymorphicSerialization\GameScene.cs" />
     <Compile Include="SampleClasses\RectangleDynamicKnownTypeSample.cs" />
+    <Compile Include="SampleClasses\SingleLetterPropertyNames.cs" />
     <Compile Include="SampleClasses\YAXLibMetadataOverriding.cs" />
     <Compile Include="SampleClasses\CsprojParser.cs" />
     <Compile Include="SampleClasses\CultureSample.cs" />
