@@ -520,5 +520,13 @@ namespace YAXLibTests
             object obj = OneLetterAlias.GetSampleInstance();
             PerformTest(obj);
         }
+
+        [Test]
+        public void TestIndexerPropertiesAreNotDeserialized()
+        {
+            object obj = IndexerSample.GetSampleInstance();
+            PerformTest(obj);
+
+        }
     }
 }

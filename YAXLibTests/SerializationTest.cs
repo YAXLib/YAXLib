@@ -1794,5 +1794,20 @@ namespace YAXLibTests
 
             Assert.AreEqual(expectedResult, result);
         }
+
+        [Test]
+        public void IndexerPropertiesAreNotSerialized()
+        {
+            var ser = new YAXSerializer(typeof (IndexerSample));
+            string result = ser.Serialize(IndexerSample.GetSampleInstance());
+
+            const string expectedResult =
+@"<IndexerSample>
+  <SomeInt>1234</SomeInt>
+  <SomeString>Something</SomeString>
+</IndexerSample>";
+
+            Assert.AreEqual(expectedResult, result);
+        }
     }
 }

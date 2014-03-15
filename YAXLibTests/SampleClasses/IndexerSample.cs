@@ -12,7 +12,6 @@
 
         public string SomeString { get; set; }
 
-
         public override string ToString()
         {
             return GeneralToStringProvider.GeneralToString(this);
