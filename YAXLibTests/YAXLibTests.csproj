@@ -55,6 +55,7 @@
     <Compile Include="KnownTypeTests.cs" />
     <Compile Include="NamespaceTest.cs" />
     <Compile Include="OverridingYAXLibMetadataTests.cs" />
+    <Compile Include="PolymorphicSerializationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionUtilsTest.cs" />
     <Compile Include="SampleClasses\AnotherArraySample.cs" />
@@ -78,6 +79,8 @@
     <Compile Include="SampleClasses\OneLetterAlias.cs" />
     <Compile Include="SampleClasses\PolymorphicSampleList.cs" />
     <Compile Include="SampleClasses\PolymorphicSerialization\GameScene.cs" />
+    <Compile Include="SampleClasses\PolymorphicSerialization\MultipleYaxTypeAttributesWithSameAlias.cs" />
+    <Compile Include="SampleClasses\PolymorphicSerialization\MultipleYaxTypeAttributesWithSameType.cs" />
     <Compile Include="SampleClasses\RectangleDynamicKnownTypeSample.cs" />
     <Compile Include="SampleClasses\SingleLetterPropertyNames.cs" />
     <Compile Include="SampleClasses\YAXLibMetadataOverriding.cs" />

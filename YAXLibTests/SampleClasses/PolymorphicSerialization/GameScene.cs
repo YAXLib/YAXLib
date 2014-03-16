@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses.PolymorphicSerialization
@@ -9,16 +6,16 @@ namespace YAXLibTests.SampleClasses.PolymorphicSerialization
     [ShowInDemoApplication(SortKey = "_")]
     public class GameScene
     {
-        //[YAXCollectionItemType(typeof(Sword))]
+        [YAXCollectionItemType(typeof(Sword))]
         public IWeapon[] Weapons { get; set; }
 
-        //[YAXCollectionItemType(typeof(Alien))]
+        [YAXCollectionItemType(typeof(Alien))]
         public List<CharacterBase> Characters { get; set; }
 
-        //[YAXType(typeof(Sword))]
+        [YAXType(typeof(Sword))]
         public IWeapon DefaultWeapon { get; set; }
 
-        //[YAXType(typeof(Sword))]
+        [YAXType(typeof(Sword))]
         public IWeapon AlternativeWeapon { get; set; }
 
         public override string ToString()

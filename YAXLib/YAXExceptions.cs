@@ -744,4 +744,12 @@ namespace YAXLib
 
         #endregion
     }
+
+    public class YAXPolymorphicException : YAXException
+    {
+        public YAXPolymorphicException(string message)
+            : base(message)
+        {
+        }
+    }
 }

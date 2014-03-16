@@ -671,11 +671,12 @@ namespace YAXLib
     {
     }
 
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    [Obsolete("Not implemented", true)]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
     public class YAXCollectionItemTypeAttribute : YAXBaseAttribute
     {
         public Type Type { get; private set; }
+
+        public string Alias { get; set; }
 
         public YAXCollectionItemTypeAttribute(Type type)
         {
@@ -683,12 +684,12 @@ namespace YAXLib
         }
     }
 
-
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    [Obsolete("Not implemented", true)]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
     public class YAXTypeAttribute : YAXBaseAttribute
     {
         public Type Type { get; private set; }
+
+        public string Alias { get; set; }
 
         public YAXTypeAttribute(Type type)
         {

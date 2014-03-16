@@ -9,6 +9,7 @@
 //-----------------------------------------------------------------------
 
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Xml.Linq;
@@ -84,6 +85,10 @@ namespace YAXLib
         /// specifies whether this member is going to be serialized as a value for another element
         /// </summary>
         private bool m_isSerializedAsValue = false;
+
+        private List<YAXTypeAttribute> m_possibleRealTypes = new List<YAXTypeAttribute>();
+
+        private List<YAXCollectionItemTypeAttribute> m_possibleCollectionItemRealTypes = new List<YAXCollectionItemTypeAttribute>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MemberWrapper"/> class.
@@ -823,6 +828,26 @@ namespace YAXLib
                 var nsAttrib = (attr as YAXNamespaceAttribute);
                 Namespace = nsAttrib.Namespace;
                 NamespacePrefix = nsAttrib.Prefix;
+            }
+            else if (attr is YAXTypeAttribute)
+            {
+                var yaxTypeAttr = attr as YAXTypeAttribute;
+                string alias = yaxTypeAttr.Alias;
+                if (alias != null)
+                    alias = alias.Trim();
+
+                if(m_possibleRealTypes.Any(x => x.Type == yaxTypeAttr.Type))
+                    throw new YAXPolymorphicException(String.Format("The type \"{0}\" for field/property \"{1}\" has already been defined through another attribute.", yaxTypeAttr.Type.Name, m_memberInfo));
+
+                if (alias != null && m_possibleRealTypes.Any(x => alias.Equals(x.Alias, StringComparison.Ordinal)))
+                    throw new YAXPolymorphicException(String.Format("The alias \"{0}\" given to type \"{1}\" for field/property \"{2}\" has already been given to another type through another attribute.",
+                        alias, yaxTypeAttr.Type.Name, m_memberInfo));
+
+                m_possibleRealTypes.Add(yaxTypeAttr);
+            }
+            else if (attr is YAXCollectionItemTypeAttribute)
+            {
+                // TODO: do something
             }
             else
             {
