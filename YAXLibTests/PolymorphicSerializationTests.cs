@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using YAXLib;
 using YAXLibTests.SampleClasses.PolymorphicSerialization;
 
@@ -17,6 +13,15 @@ namespace YAXLibTests
         {
             var ser = new YAXSerializer(typeof(MultipleYaxTypeAttributesWithSameType));
             var obj = new MultipleYaxTypeAttributesWithSameType();
+            ser.Serialize(obj);
+        }
+
+        [Test]
+        [ExpectedException(typeof(YAXPolymorphicException))]
+        public void MultipleYaxTypeAttributesWIthSameAliasMustThrowAnException()
+        {
+            var ser = new YAXSerializer(typeof(MultipleYaxTypeAttributesWithSameAlias));
+            var obj = new MultipleYaxTypeAttributesWithSameAlias();
             ser.Serialize(obj);
         }
     }
