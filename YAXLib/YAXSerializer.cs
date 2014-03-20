@@ -841,8 +841,27 @@ namespace YAXLib
                             XElement elemToAdd = MakeElement(parElem, member, elementValue, out moveDescOnly, out alreadyAdded);
                             if (!areOfSameType)
                             {
-                                elemToAdd.AddAttributeNamespaceSafe(m_yaxLibNamespaceUri + m_trueTypeAttrName, elementValue.GetType().FullName, m_documentDefaultNamespace);
-                                RegisterYaxLibNamespace();
+                                Type realType = elementValue.GetType();
+
+                                // TODO: find other usages 
+                                var realTypeDefinition = member.GetRealTypeDefinition(realType);
+                                if (realTypeDefinition != null)
+                                {
+                                    string alias = realTypeDefinition.Alias;
+                                    if (String.IsNullOrEmpty(alias))
+                                    {
+                                        var typeWrapper = TypeWrappersPool.Pool.GetTypeWrapper(realType, this);
+                                        alias = typeWrapper.Alias.LocalName;
+                                    }
+
+                                    // TODO: see how namespace is handled in other parts of the code and do the same thing
+                                    elemToAdd.Name = XName.Get(alias, elemToAdd.Name.Namespace.NamespaceName);
+                                }
+                                else
+                                {
+                                    elemToAdd.AddAttributeNamespaceSafe(m_yaxLibNamespaceUri + m_trueTypeAttrName, realType.FullName, m_documentDefaultNamespace);
+                                    RegisterYaxLibNamespace();
+                                }
                             }
 
                             if (moveDescOnly)// if only the descendants of the resulting element are going to be added ...

@@ -552,7 +552,21 @@ namespace YAXLib
         /// </remarks>
         public string NamespacePrefix { get; private set; }
 
-		// Public Methods
+        public bool IsRealTypeDefined(Type type)
+        {
+            return GetRealTypeDefinition(type) != null;
+        }
+
+
+        // TODO: move to public methods section
+        public YAXTypeAttribute GetRealTypeDefinition(Type type)
+        {
+            return m_possibleRealTypes.FirstOrDefault(x => ReferenceEquals(x.Type, type));
+        }
+
+
+
+        // Public Methods
 
         /// <summary>
         /// Gets the original value of this member in the specified object
@@ -834,7 +848,11 @@ namespace YAXLib
                 var yaxTypeAttr = attr as YAXTypeAttribute;
                 string alias = yaxTypeAttr.Alias;
                 if (alias != null)
+                {
                     alias = alias.Trim();
+                    if (alias.Length == 0)
+                        alias = null;
+                }
 
                 if(m_possibleRealTypes.Any(x => x.Type == yaxTypeAttr.Type))
                     throw new YAXPolymorphicException(String.Format("The type \"{0}\" for field/property \"{1}\" has already been defined through another attribute.", yaxTypeAttr.Type.Name, m_memberInfo));
@@ -847,7 +865,23 @@ namespace YAXLib
             }
             else if (attr is YAXCollectionItemTypeAttribute)
             {
-                // TODO: do something
+                var yaxColletionItemTypeAttr = attr as YAXCollectionItemTypeAttribute;
+                string alias = yaxColletionItemTypeAttr.Alias;
+                if (alias != null)
+                {
+                    alias = alias.Trim();
+                    if (alias.Length == 0)
+                        alias = null;
+                }
+
+                if (m_possibleCollectionItemRealTypes.Any(x => x.Type == yaxColletionItemTypeAttr.Type))
+                    throw new YAXPolymorphicException(String.Format("The collection-item type \"{0}\" for collection \"{1}\" has already been defined through another attribute.", yaxColletionItemTypeAttr.Type.Name, m_memberInfo));
+
+                if (alias != null && m_possibleCollectionItemRealTypes.Any(x => alias.Equals(x.Alias, StringComparison.Ordinal)))
+                    throw new YAXPolymorphicException(String.Format("The alias \"{0}\" given to collection-item type \"{1}\" for field/property \"{2}\" has already been given to another type through another attribute.",
+                        alias, yaxColletionItemTypeAttr.Type.Name, m_memberInfo));
+
+                m_possibleCollectionItemRealTypes.Add(yaxColletionItemTypeAttr);
             }
             else
             {
