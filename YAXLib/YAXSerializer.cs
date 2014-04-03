@@ -113,6 +113,11 @@ namespace YAXLib
         private readonly Dictionary<XNamespace, string> m_namespaceToPrefix = new Dictionary<XNamespace, string>();
 
         /// <summary>
+        /// a collection of already serialized objects, kept for the sake of loop detection and preventing stack overflow exception
+        /// </summary>
+        private List<Object> m_serializedObjects = new List<object>(); 
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="YAXSerializer"/> class.
         /// </summary>
         /// <param name="type">The type of the object being serialized/deserialized.</param>
@@ -512,9 +517,7 @@ namespace YAXLib
         private XElement SerializeBase(object obj)
         {
             if (!m_type.IsInstanceOfType(obj))
-            {
                 throw new YAXObjectTypeMismatch(m_type, obj.GetType());
-            }
 
             FindDocumentDefaultNamespace();
 
@@ -609,6 +612,21 @@ namespace YAXLib
                 var baseElem = new XElement(className, null);
                 m_baseElement.Add(baseElem);
                 m_baseElement = baseElem;
+            }
+
+            if (!m_type.IsValueType)
+            {
+                var alreadySerializedObject = m_serializedObjects.FirstOrDefault(x => ReferenceEquals(x, obj));
+                if (alreadySerializedObject != null)
+                {
+                    // TODO: add otions to not throw the exception
+                    throw new YAXCannotSerializeSelfReferentialTypes(m_type);
+                    //return m_baseElement;
+                }
+                else
+                {
+                    m_serializedObjects.Add(obj);
+                }
             }
 
             if (m_udtWrapper.HasComment && m_baseElement.Parent == null && m_mainDocument != null)
@@ -2476,6 +2494,7 @@ namespace YAXLib
         private YAXSerializer NewInternalSerializer(Type type, XNamespace namespaceToOverride, XElement insertionLocation)
         {
             var serializer = new YAXSerializer(type, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
+            serializer.m_serializedObjects = m_serializedObjects;
             serializer.m_documentDefaultNamespace = m_documentDefaultNamespace;
             if(namespaceToOverride != null)
                 serializer.SetNamespaceToOverrideEmptyNamespace(namespaceToOverride);
