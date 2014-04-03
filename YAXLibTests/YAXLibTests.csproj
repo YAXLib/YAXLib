@@ -82,6 +82,7 @@
     <Compile Include="SampleClasses\PolymorphicSerialization\MultipleYaxTypeAttributesWithSameAlias.cs" />
     <Compile Include="SampleClasses\PolymorphicSerialization\MultipleYaxTypeAttributesWithSameType.cs" />
     <Compile Include="SampleClasses\RectangleDynamicKnownTypeSample.cs" />
+    <Compile Include="SampleClasses\SelfReferencingObjects\SelfReferringReferrenceType.cs" />
     <Compile Include="SampleClasses\SingleLetterPropertyNames.cs" />
     <Compile Include="SampleClasses\YAXLibMetadataOverriding.cs" />
     <Compile Include="SampleClasses\CsprojParser.cs" />
@@ -161,6 +162,7 @@
       <Name>YAXLib</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

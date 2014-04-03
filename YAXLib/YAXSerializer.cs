@@ -553,17 +553,10 @@ namespace YAXLib
                 // this block of code runs if the serializer is instantiated with a
                 // another base value such as System.Object but is provided with an
                 // object of its child
-
-                var ser = new YAXSerializer(obj.GetType(), m_exceptionPolicy, 
-                    m_defaultExceptionType, m_serializationOption);
-                ser.SetNamespaceToOverrideEmptyNamespace(TypeNamespace);
-                
-                //ser.SetBaseElement(insertionLocation);
+                var ser = NewInternalSerializer(obj.GetType(), TypeNamespace, null);
                 var xdoc = ser.SerializeToXDocument(obj);
                 var elem = xdoc.Root;
-
-                ImportNamespaces(ser);
-                m_parsingErrors.AddRange(ser.ParsingErrors);
+                FinalizeNewSerializer(ser, true);
                 elem.Name = m_udtWrapper.Alias;
                 
                 elem.AddAttributeNamespaceSafe(m_yaxLibNamespaceUri + m_trueTypeAttrName, obj.GetType().FullName, m_documentDefaultNamespace);
@@ -1094,13 +1087,9 @@ namespace YAXLib
             }
 
             // serialize other non-collection members
-            var ser = new YAXSerializer(elementValue.GetType(), m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
-            ser.m_documentDefaultNamespace = m_documentDefaultNamespace;
-            ser.SetNamespaceToOverrideEmptyNamespace(elementName.Namespace);
-            ser.SetBaseElement(insertionLocation);
+            var ser = NewInternalSerializer(elementValue.GetType(), elementName.Namespace, insertionLocation);
             XElement elem = ser.SerializeBase(elementValue, elementName);
-            ImportNamespaces(ser);
-            m_parsingErrors.AddRange(ser.ParsingErrors);
+            FinalizeNewSerializer(ser, true);
 
             // now iterate through collection members
 
@@ -1326,13 +1315,9 @@ namespace YAXLib
             }
 
             // serialize other non-collection members
-            var ser = new YAXSerializer(elementValue.GetType(), m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
-            ser.m_documentDefaultNamespace = m_documentDefaultNamespace;
-            ser.SetNamespaceToOverrideEmptyNamespace(elementName.Namespace);
-            ser.SetBaseElement(insertionLocation);
+            var ser = NewInternalSerializer(elementValue.GetType(), elementName.Namespace, insertionLocation);
             XElement elemToAdd = ser.SerializeBase(elementValue, elementName);
-            ImportNamespaces(ser);
-            m_parsingErrors.AddRange(ser.ParsingErrors);
+            FinalizeNewSerializer(ser, true);
 
             // now iterate through collection members
 
@@ -1459,14 +1444,9 @@ namespace YAXLib
             }
             else
             {
-                var ser = new YAXSerializer(value.GetType(), m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
-                ser.m_documentDefaultNamespace = m_documentDefaultNamespace;
-                ser.SetNamespaceToOverrideEmptyNamespace(name.Namespace);
-                ser.SetBaseElement(insertionLocation);
+                var ser = NewInternalSerializer(value.GetType(), name.Namespace, insertionLocation);
                 XElement elem = ser.SerializeBase(value, name);
-                ImportNamespaces(ser);
-
-                m_parsingErrors.AddRange(ser.ParsingErrors);
+                FinalizeNewSerializer(ser, true);
                 alreadyAdded = true;
                 return elem;
             }
@@ -1985,12 +1965,8 @@ namespace YAXLib
             }
             else
             {
-                var ser = new YAXSerializer(memberType, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
-                ser.m_documentDefaultNamespace = m_documentDefaultNamespace;
-                ser.SetNamespaceToOverrideEmptyNamespace(
-                    member.Namespace.
-                        IfEmptyThen(TypeNamespace).
-                        IfEmptyThenNone());
+                var namespaceToOverride = member.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone();
+                var ser = NewInternalSerializer(memberType, namespaceToOverride, null);
 
                 ser.IsCraetedToDeserializeANonCollectionMember = !(member.IsTreatedAsDictionary || member.IsTreatedAsCollection);
 
@@ -1998,7 +1974,7 @@ namespace YAXLib
                      ser.SetDeserializationBaseObject(member.GetValue(o));
 
                 object convertedObj = ser.DeserializeBase(xelemValue);
-                m_parsingErrors.AddRange(ser.ParsingErrors);
+                FinalizeNewSerializer(ser, false);
 
                 try
                 {
@@ -2024,19 +2000,15 @@ namespace YAXLib
             object containerObj = null;
             if (ReflectionUtils.IsInstantiableCollection(colType))
             {
-                var containerSer = new YAXSerializer(colType, m_exceptionPolicy, m_defaultExceptionType,
-                                                     m_serializationOption);
-                containerSer.m_documentDefaultNamespace = m_documentDefaultNamespace;
-                containerSer.SetNamespaceToOverrideEmptyNamespace(
-                    memberAlias.Namespace.
-                        IfEmptyThen(TypeNamespace).
-                        IfEmptyThenNone());
+                var namespaceToOverride = memberAlias.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone();
+
+                var containerSer = NewInternalSerializer(colType, namespaceToOverride, null);
 
                 containerSer.IsCraetedToDeserializeANonCollectionMember = true;
                 containerSer.RemoveDeserializedXmlNodes = true;
 
                 containerObj = containerSer.DeserializeBase(xelemValue);
-                m_parsingErrors.AddRange(containerSer.ParsingErrors);
+                FinalizeNewSerializer(containerSer, false);
             }
 
             var lst = new List<object>(); // this will hold the actual data items
@@ -2114,15 +2086,10 @@ namespace YAXLib
                     }
                     else
                     {
-                        var ser = new YAXSerializer(curElementType, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
-                        ser.m_documentDefaultNamespace = m_documentDefaultNamespace;
-                        ser.SetNamespaceToOverrideEmptyNamespace(
-                            memberAlias.Namespace.
-                                IfEmptyThen(TypeNamespace).
-                                IfEmptyThenNone());
-
+                        var namespaceToOverride = memberAlias.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone();
+                        var ser = NewInternalSerializer(curElementType, namespaceToOverride, null);
                         lst.Add(ser.DeserializeBase(childElem));
-                        m_parsingErrors.AddRange(ser.ParsingErrors);
+                        FinalizeNewSerializer(ser, false);
                     }
                 }
             } // end of else if 
@@ -2370,17 +2337,12 @@ namespace YAXLib
             }
 
             // deserialize non-collection fields
-            var containerSer = new YAXSerializer(type, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
-            containerSer.m_documentDefaultNamespace = m_documentDefaultNamespace;
-            containerSer.SetNamespaceToOverrideEmptyNamespace(
-                alias.Namespace.
-                    IfEmptyThen(TypeNamespace).
-                    IfEmptyThenNone());
-
+            var namespaceToOverride = alias.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone();
+            var containerSer = NewInternalSerializer(type, namespaceToOverride, null);
             containerSer.IsCraetedToDeserializeANonCollectionMember = true;
             containerSer.RemoveDeserializedXmlNodes = true;
             object dic = containerSer.DeserializeBase(xelemValue);
-            m_parsingErrors.AddRange(containerSer.ParsingErrors);
+            FinalizeNewSerializer(containerSer, false);
 
             // now try to deserialize collection fields
             Type pairType = null;
@@ -2465,14 +2427,10 @@ namespace YAXLib
                     else
                     {
                         if (keySer == null)
-                        {
-                            keySer = new YAXSerializer(keyType, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
-                            keySer.m_documentDefaultNamespace = m_documentDefaultNamespace;
-                            keySer.SetNamespaceToOverrideEmptyNamespace(keyAlias.Namespace);
-                        }
+                            keySer = NewInternalSerializer(keyType, keyAlias.Namespace, null);
 
                         key = keySer.DeserializeBase(childElem.Element(keyAlias));
-                        m_parsingErrors.AddRange(keySer.ParsingErrors);
+                        FinalizeNewSerializer(keySer, false);
                     }
                 }
 
@@ -2493,14 +2451,10 @@ namespace YAXLib
                     else
                     {
                         if (valueSer == null)
-                        {
-                            valueSer = new YAXSerializer(valueType, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
-                            valueSer.m_documentDefaultNamespace = m_documentDefaultNamespace;
-                            valueSer.SetNamespaceToOverrideEmptyNamespace(valueAlias.Namespace);
-                        }
+                            valueSer = NewInternalSerializer(valueType, valueAlias.Namespace, null);
 
                         value = valueSer.DeserializeBase(childElem.Element(valueAlias));
-                        m_parsingErrors.AddRange(valueSer.ParsingErrors);
+                        FinalizeNewSerializer(valueSer, false);
                     }
                 }
 
@@ -2517,6 +2471,29 @@ namespace YAXLib
             }
 
             return dic;
+        }
+
+        private YAXSerializer NewInternalSerializer(Type type, XNamespace namespaceToOverride, XElement insertionLocation)
+        {
+            var serializer = new YAXSerializer(type, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
+            serializer.m_documentDefaultNamespace = m_documentDefaultNamespace;
+            if(namespaceToOverride != null)
+                serializer.SetNamespaceToOverrideEmptyNamespace(namespaceToOverride);
+
+            if(insertionLocation != null)
+                serializer.SetBaseElement(insertionLocation);
+
+            return serializer;
+        }
+
+        private void FinalizeNewSerializer(YAXSerializer serializer, bool importNamespaces)
+        {
+            if (serializer == null)
+                return;
+
+            if(importNamespaces)
+                ImportNamespaces(serializer);
+            m_parsingErrors.AddRange(serializer.ParsingErrors);
         }
 
         /// <summary>
@@ -2645,12 +2622,9 @@ namespace YAXLib
             }
             else
             {
-                var ser = new YAXSerializer(keyType, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
-                ser.m_documentDefaultNamespace = m_documentDefaultNamespace;
-                ser.SetNamespaceToOverrideEmptyNamespace(xnameKey.Namespace.IfEmptyThenNone());
-
+                var ser = NewInternalSerializer(keyType, xnameKey.Namespace.IfEmptyThenNone(), null);
                 keyValue = ser.DeserializeBase(baseElement.Element(xnameKey));
-                m_parsingErrors.AddRange(ser.ParsingErrors);
+                FinalizeNewSerializer(ser, false);
             }
 
             if (ReflectionUtils.IsBasicType(valueType))
@@ -2676,15 +2650,13 @@ namespace YAXLib
             }
             else
             {
-                var ser = new YAXSerializer(valueType, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
-                ser.m_documentDefaultNamespace = m_documentDefaultNamespace;
-                ser.SetNamespaceToOverrideEmptyNamespace(xnameValue.Namespace.IfEmptyThenNone());
+                var ser = NewInternalSerializer(valueType, xnameValue.Namespace.IfEmptyThenNone(), null);
                 valueValue = ser.DeserializeBase(baseElement.Element(xnameValue));
-                m_parsingErrors.AddRange(ser.ParsingErrors);
+                FinalizeNewSerializer(ser, false);
             }
 
             object pair = m_type.InvokeMember(string.Empty, 
-                System.Reflection.BindingFlags.CreateInstance, 
+                BindingFlags.CreateInstance, 
                 null, null, new object[] { keyValue, valueValue });
 
             return pair;
