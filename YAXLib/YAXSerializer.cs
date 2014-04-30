@@ -115,7 +115,12 @@ namespace YAXLib
         /// <summary>
         /// a collection of already serialized objects, kept for the sake of loop detection and preventing stack overflow exception
         /// </summary>
-        private List<Object> m_serializedObjects = new List<object>(); 
+        private Stack<Object> m_serializedStack;
+
+        /// <summary>
+        /// <c>true</c> if this instance is busy serializing objects, <c>false</c> otherwise.
+        /// </summary>
+        private bool m_isSerializing;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="YAXSerializer"/> class.
@@ -503,6 +508,10 @@ namespace YAXLib
         /// <returns></returns>
         private XDocument SerializeXDocument(object obj)
         {
+            // This method must be called by any public Serialize method
+            m_isSerializing = true;
+            if(m_serializedStack == null)
+                m_serializedStack = new Stack<object>();
             m_mainDocument = new XDocument();
             m_mainDocument.Add(SerializeBase(obj));
             return m_mainDocument;
@@ -559,7 +568,10 @@ namespace YAXLib
                 var ser = NewInternalSerializer(obj.GetType(), TypeNamespace, null);
                 var xdoc = ser.SerializeToXDocument(obj);
                 var elem = xdoc.Root;
-                FinalizeNewSerializer(ser, true);
+
+                // do not pop from stack because the new internal serializer was sufficient for the whole serialization 
+                // and this instance of serializer did not do anything extra
+                FinalizeNewSerializer(ser, importNamespaces: true, popFromSerializationStack: false);
                 elem.Name = m_udtWrapper.Alias;
                 
                 elem.AddAttributeNamespaceSafe(m_yaxLibNamespaceUri + m_trueTypeAttrName, obj.GetType().FullName, m_documentDefaultNamespace);
@@ -570,8 +582,19 @@ namespace YAXLib
             }
             else
             {
-                return SerializeBase(obj, m_udtWrapper.Alias);
+                // SerializeBase will add the object to the stack
+                var elem = SerializeBase(obj, m_udtWrapper.Alias);
+                if (!m_type.IsValueType)
+                    m_serializedStack.Pop();
+                Debug.Assert(m_serializedStack.Count == 0, "Serialization stack is not empty at the end of serialization");
+                return elem;
             }
+        }
+
+        private void PushObjectToSerializationStack(object obj)
+        {
+            if (!obj.GetType().IsValueType)
+                m_serializedStack.Push(obj);
         }
 
         private void FindDocumentDefaultNamespace()
@@ -603,6 +626,8 @@ namespace YAXLib
         /// serialization of the specified object</returns>
         private XElement SerializeBase(object obj, XName className)
         {
+            m_isSerializing = true; // this is done again here since internal serializers may not call public Serialize methods
+
             if (m_baseElement == null)
             {
                 m_baseElement = CreateElementWithNamespace(m_udtWrapper, className);
@@ -616,7 +641,7 @@ namespace YAXLib
 
             if (!m_type.IsValueType)
             {
-                var alreadySerializedObject = m_serializedObjects.FirstOrDefault(x => ReferenceEquals(x, obj));
+                var alreadySerializedObject = m_serializedStack.FirstOrDefault(x => ReferenceEquals(x, obj));
                 if (alreadySerializedObject != null)
                 {
                     // TODO: add otions to not throw the exception
@@ -625,7 +650,7 @@ namespace YAXLib
                 }
                 else
                 {
-                    m_serializedObjects.Add(obj);
+                    PushObjectToSerializationStack(obj);
                 }
             }
 
@@ -1477,6 +1502,8 @@ namespace YAXLib
         /// <returns>object containing the deserialized data</returns>
         private object DeserializeBase(XElement baseElement)
         {
+            m_isSerializing = false;
+
             if (baseElement == null)
             {
                 return m_desObject;
@@ -2494,7 +2521,7 @@ namespace YAXLib
         private YAXSerializer NewInternalSerializer(Type type, XNamespace namespaceToOverride, XElement insertionLocation)
         {
             var serializer = new YAXSerializer(type, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
-            serializer.m_serializedObjects = m_serializedObjects;
+            serializer.m_serializedStack = m_serializedStack;
             serializer.m_documentDefaultNamespace = m_documentDefaultNamespace;
             if(namespaceToOverride != null)
                 serializer.SetNamespaceToOverrideEmptyNamespace(namespaceToOverride);
@@ -2505,10 +2532,13 @@ namespace YAXLib
             return serializer;
         }
 
-        private void FinalizeNewSerializer(YAXSerializer serializer, bool importNamespaces)
+        private void FinalizeNewSerializer(YAXSerializer serializer, bool importNamespaces, bool popFromSerializationStack = true)
         {
             if (serializer == null)
                 return;
+
+            if (popFromSerializationStack && m_isSerializing && serializer.m_type != null && !serializer.m_type.IsValueType)
+                m_serializedStack.Pop();
 
             if(importNamespaces)
                 ImportNamespaces(serializer);
