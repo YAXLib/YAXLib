@@ -16,6 +16,7 @@ using NUnit.Framework;
 
 using YAXLib;
 using YAXLibTests.SampleClasses;
+using YAXLibTests.SampleClasses.SelfReferencingObjects;
 
 namespace YAXLibTests
 {
@@ -539,6 +540,13 @@ namespace YAXLibTests
         public void DelegatesAndFunctionPointersMustBeIgnored()
         {
             object obj = DelegateInstances.GetSampleInstance();
+            PerformTest(obj);
+        }
+
+        [Test]
+        public void RepetitiveReferencesAreNotLoop()
+        {
+            object obj = RepetitiveReferenceIsNotLoop.GetSampleInstance();
             PerformTest(obj);
         }
     }

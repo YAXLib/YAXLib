@@ -17,6 +17,7 @@ using YAXLib;
 using System.Threading;
 using System.Globalization;
 using YAXLibTests.SampleClasses;
+using YAXLibTests.SampleClasses.SelfReferencingObjects;
 
 namespace YAXLibTests
 {
@@ -1846,6 +1847,24 @@ namespace YAXLibTests
   <SomeNumber>12</SomeNumber>
 </DelegateInstances>";
 
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [Test]
+        public void RepetitiveReferencesAreNotLoop()
+        {
+            var ser = new YAXSerializer(typeof (RepetitiveReferenceIsNotLoop));
+            string result = ser.Serialize(RepetitiveReferenceIsNotLoop.GetSampleInstance());
+
+            const string expectedResult =
+@"<RepetitiveReferenceIsNotLoop>
+  <RefA>
+    <N>10</N>
+  </RefA>
+  <RefB>
+    <N>10</N>
+  </RefB>
+</RepetitiveReferenceIsNotLoop>";
             Assert.AreEqual(expectedResult, result);
         }
     }

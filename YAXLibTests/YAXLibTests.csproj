@@ -82,6 +82,7 @@
     <Compile Include="SampleClasses\PolymorphicSerialization\MultipleYaxTypeAttributesWithSameAlias.cs" />
     <Compile Include="SampleClasses\PolymorphicSerialization\MultipleYaxTypeAttributesWithSameType.cs" />
     <Compile Include="SampleClasses\RectangleDynamicKnownTypeSample.cs" />
+    <Compile Include="SampleClasses\SelfReferencingObjects\RepetitiveReferenceIsNotLoop.cs" />
     <Compile Include="SampleClasses\SelfReferencingObjects\SelfReferringReferrenceType.cs" />
     <Compile Include="SampleClasses\SingleLetterPropertyNames.cs" />
     <Compile Include="SampleClasses\YAXLibMetadataOverriding.cs" />
