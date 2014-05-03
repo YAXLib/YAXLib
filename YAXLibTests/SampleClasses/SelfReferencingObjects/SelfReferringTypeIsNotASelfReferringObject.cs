@@ -1,6 +1,5 @@
 ﻿namespace YAXLibTests.SampleClasses.SelfReferencingObjects
 {
-    [ShowInDemoApplication(SortKey = "_")]
     public class SelfReferringTypeIsNotASelfReferringObject
     {
         public int Data { get; set; }
@@ -16,7 +15,9 @@
             var first = new SelfReferringTypeIsNotASelfReferringObject {Data = 1};
             var second = new SelfReferringTypeIsNotASelfReferringObject {Data = 2};
             first.Next = second;
-
+            // this must be serialized fine, because there's no loop, although the type is a self referring type.
+            // However by setting, "second.Next = first;" It should not be serialized any more because it will cause a loop
+            
             return first;
         }
     }
