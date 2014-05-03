@@ -549,5 +549,12 @@ namespace YAXLibTests
             object obj = RepetitiveReferenceIsNotLoop.GetSampleInstance();
             PerformTest(obj);
         }
+
+        [Test]
+        public void SelfReferringTypeIsNotNecessarilyASelfReferringObject()
+        {
+            object obj = SelfReferringTypeIsNotASelfReferringObject.GetSampleInstance();
+            PerformTest(obj);
+        }
     }
 }

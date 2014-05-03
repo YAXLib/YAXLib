@@ -1867,5 +1867,23 @@ namespace YAXLibTests
 </RepetitiveReferenceIsNotLoop>";
             Assert.AreEqual(expectedResult, result);
         }
+
+        [Test]
+        public void SelfReferringTypeIsNotNecessarilyASelfReferringObject()
+        {
+            var ser = new YAXSerializer(typeof (SelfReferringTypeIsNotASelfReferringObject));
+            string result = ser.Serialize(SelfReferringTypeIsNotASelfReferringObject.GetSampleInstance());
+
+            const string expenctedResult =
+@"<SelfReferringTypeIsNotASelfReferringObject>
+  <Data>1</Data>
+  <Next>
+    <Data>2</Data>
+    <Next />
+  </Next>
+</SelfReferringTypeIsNotASelfReferringObject>";
+
+            Assert.AreEqual(expenctedResult, result);
+        }
     }
 }
