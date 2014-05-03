@@ -700,11 +700,6 @@ namespace YAXLib
 
                     object elementValue = member.GetValue(obj);
 
-                    if (elementValue != null && member.MemberType == m_type)
-                    {
-                        throw new YAXCannotSerializeSelfReferentialTypes(m_type);
-                    }
-
                     // make this flat true, so that we know that this object was not empty of fields
                     isAnythingFoundToSerialize = true;
 
@@ -1878,8 +1873,10 @@ namespace YAXLib
                     XElement xelem = XMLUtils.FindElement(elem, member.SerializationLocation, member.Alias);
                     if (xelem == null)
                     {
-                        if (!ReflectionUtils.IsBasicType(member.MemberType) && !member.IsTreatedAsCollection &&
-                            !member.IsTreatedAsDictionary)
+                        if (!ReflectionUtils.IsBasicType(member.MemberType) 
+                            && !member.IsTreatedAsCollection 
+                            && !member.IsTreatedAsDictionary
+                            && member.MemberType != m_type) // searching for same type objects will lead to infinite loops
                         {
                             // try to create a fake element 
                             XElement fakeElem = XMLUtils.CreateElement(elem, member.SerializationLocation, member.Alias);
