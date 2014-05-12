@@ -20,5 +20,12 @@
             
             return first;
         }
+
+        public static SelfReferringTypeIsNotASelfReferringObject GetSampleInstanceWithLoop()
+        {
+            var instance = GetSampleInstance();
+            instance.Next.Next = instance;
+            return instance;
+        }
     }
 }

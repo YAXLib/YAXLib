@@ -556,5 +556,13 @@ namespace YAXLibTests
             object obj = SelfReferringTypeIsNotASelfReferringObject.GetSampleInstance();
             PerformTest(obj);
         }
+
+        [Test]
+        public void IndirectSelfReferringTypeIsNotNecessarilyASelfReferringObject()
+        {
+            object obj = IndirectSelfReferringObject.GetSampleInstance();
+            PerformTest(obj);
+        }
+
     }
 }

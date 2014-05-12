@@ -1885,5 +1885,44 @@ namespace YAXLibTests
 
             Assert.AreEqual(expenctedResult, result);
         }
+
+        [Test]
+        public void SerializingASelfReferringObjectThrowsException()
+        {
+            Assert.Throws<YAXCannotSerializeSelfReferentialTypes>(() => 
+                {             
+                    var ser = new YAXSerializer(typeof(SelfReferringTypeIsNotASelfReferringObject));
+                    string result = ser.Serialize(SelfReferringTypeIsNotASelfReferringObject.GetSampleInstanceWithLoop());
+                });
+        }
+
+        [Test]
+        public void SerializingAnIndirectSelfReferringTypeWithougLoopMustPass()
+        {
+            var ser = new YAXSerializer(typeof (IndirectSelfReferringObject));
+            string result = ser.Serialize(IndirectSelfReferringObject.GetSampleInstance());
+
+            const string expectedResult =
+@"<IndirectSelfReferringObject>
+  <ParentDescription>I'm Parent</ParentDescription>
+  <Child>
+    <ChildDescription>I'm Child</ChildDescription>
+    <Parent />
+  </Child>
+</IndirectSelfReferringObject>";
+
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [Test]
+        public void SerializingAnIndirectSelfReferringObjectThrowsException()
+        {
+            Assert.Throws<YAXCannotSerializeSelfReferentialTypes>(() =>
+                {
+                    var ser = new YAXSerializer(typeof(IndirectSelfReferringObject));
+                    string result = ser.Serialize(IndirectSelfReferringObject.GetSampleInstanceWithLoop());
+                });
+        }
+
     }
 }

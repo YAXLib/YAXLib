@@ -3,7 +3,7 @@
 namespace YAXLibTests.SampleClasses.SelfReferencingObjects
 {
     [ShowInDemoApplication(SortKey = "_")]
-    public class SelfReferringReferrenceType
+    public class IndirectSelfReferringObject
     {
         public string ParentDescription { get; set; }
         public ChildReferrenceType Child { get; set; }
@@ -16,9 +16,9 @@ namespace YAXLibTests.SampleClasses.SelfReferencingObjects
             return sb.ToString();
         }
 
-        public static SelfReferringReferrenceType GetSampleInstance()
+        public static IndirectSelfReferringObject GetSampleInstance()
         {
-            var parent = new SelfReferringReferrenceType
+            var parent = new IndirectSelfReferringObject
             {
                 ParentDescription = "I'm Parent",
             };
@@ -27,18 +27,25 @@ namespace YAXLibTests.SampleClasses.SelfReferencingObjects
             var child = new ChildReferrenceType
             {
                 ChildDescription = "I'm Child",
-                Parent = parent
             };
 
             parent.Child = child;
+            //child.Parent = parent;
             return parent;
+        }
+
+        public static IndirectSelfReferringObject GetSampleInstanceWithLoop()
+        {
+            var instance = GetSampleInstance();
+            instance.Child.Parent = instance;
+            return instance;
         }
     }
 
     public class ChildReferrenceType
     {
         public string ChildDescription { get; set; }
-        public SelfReferringReferrenceType Parent { get; set; }
+        public IndirectSelfReferringObject Parent { get; set; }
 
         public override string ToString()
         {
