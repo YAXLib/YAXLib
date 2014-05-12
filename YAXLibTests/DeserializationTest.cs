@@ -1,4 +1,4 @@
-﻿// Copyright 2009 - 2010 Sina Iravanian - <sina@sinairv.com>
+﻿// Copyright 2009 - 2014 Sina Iravanian - <sina@sinairv.com>
 //
 // This source file(s) may be redistributed, altered and customized
 // by any means PROVIDING the authors name and all copyright
@@ -553,7 +553,7 @@ namespace YAXLibTests
         [Test]
         public void SelfReferringTypeIsNotNecessarilyASelfReferringObject()
         {
-            object obj = SelfReferringTypeIsNotASelfReferringObject.GetSampleInstance();
+            object obj = DirectSelfReferringObject.GetSampleInstance();
             PerformTest(obj);
         }
 
@@ -563,6 +563,55 @@ namespace YAXLibTests
             object obj = IndirectSelfReferringObject.GetSampleInstance();
             PerformTest(obj);
         }
+
+        [Test]
+        public void DeserializeIndirectSelfReferringObjectWhenDontSerializeCyclingReferencesIsSet()
+        {
+            var inst = IndirectSelfReferringObject.GetSampleInstanceWithLoop();
+
+            var ser = new YAXSerializer(typeof(IndirectSelfReferringObject), 
+                YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Error, YAXSerializationOptions.DontSerializeCyclingReferences);
+
+            string input = ser.Serialize(inst);
+
+            var deserializedInstance = (IndirectSelfReferringObject)ser.Deserialize(input);
+
+            Assert.That(deserializedInstance, Is.Not.Null);
+            Assert.IsNull(deserializedInstance.Child.Parent);
+        }
+
+        [Test]
+        public void DeserializeDirectSelfReferringObjectWhenDontSerializeCyclingReferencesIsSet()
+        {
+            var inst = DirectSelfReferringObject.GetSampleInstanceWithCycle();
+
+            var ser = new YAXSerializer(typeof(DirectSelfReferringObject),
+                YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Error, YAXSerializationOptions.DontSerializeCyclingReferences);
+
+            string input = ser.Serialize(inst);
+
+            var deserializedInstance = (DirectSelfReferringObject)ser.Deserialize(input);
+
+            Assert.That(deserializedInstance, Is.Not.Null);
+            Assert.IsNull(deserializedInstance.Next.Next);
+        }
+
+        [Test]
+        public void DeserializeDirectSelfReferringObjectWithSelfCycleWhenDontSerializeCyclingReferencesIsSet()
+        {
+            var inst = DirectSelfReferringObject.GetSampleInstanceWithSelfCycle();
+
+            var ser = new YAXSerializer(typeof(DirectSelfReferringObject),
+                YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Error, YAXSerializationOptions.DontSerializeCyclingReferences);
+
+            string input = ser.Serialize(inst);
+
+            var deserializedInstance = (DirectSelfReferringObject)ser.Deserialize(input);
+
+            Assert.That(deserializedInstance, Is.Not.Null);
+            Assert.IsNull(deserializedInstance.Next);
+        }
+
 
     }
 }

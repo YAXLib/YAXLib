@@ -49,31 +49,42 @@ namespace DemoApplication
 
         private void InitListOfClasses()
         {
-            var autoLoadTypes = typeof(Book).Assembly.GetTypes()
-                .Where(t => t.GetCustomAttributes(typeof(ShowInDemoApplicationAttribute), false).Any())
-                .OrderBy(t =>
-                {
-                    var attr = t.GetCustomAttributes(typeof(ShowInDemoApplicationAttribute), false)
-                        .FirstOrDefault()
-                        as ShowInDemoApplicationAttribute;
+            var autoLoadTypes = typeof (Book).Assembly.GetTypes()
+                .Where(t => t.GetCustomAttributes(typeof (ShowInDemoApplicationAttribute), false).Any())
+                .Select(t => new
+                             {
+                                 Type = t,
+                                 Attr = t.GetCustomAttributes(typeof (ShowInDemoApplicationAttribute), false)
+                                     .FirstOrDefault()
+                                     as ShowInDemoApplicationAttribute
+                             })
+                .Select(pair =>
+                        {
+                            string sortKey = pair.Type.Name;
+                            var attr = pair.Attr;
+                            if (attr != null && !String.IsNullOrEmpty(attr.SortKey))
+                                sortKey = attr.SortKey;
+                            string sampleInstanceMethod = "GetSampleInstance";
+                            if (attr != null && !String.IsNullOrEmpty(attr.GetSampleInstanceMethodName))
+                                sampleInstanceMethod = attr.GetSampleInstanceMethodName;
 
-                    if (attr != null && !String.IsNullOrEmpty(attr.SortKey))
-                        return attr.SortKey;
-                    return t.Name;
-                });
+                            return
+                                new {Type = pair.Type, SortKey = sortKey, SampleInstanceMethod = sampleInstanceMethod};
+                        }).OrderBy(pair => pair.SortKey);
 
             var sb = new StringBuilder();
-            foreach (Type type in autoLoadTypes)
+            foreach (var tuple in autoLoadTypes)
             {
                 try
                 {
-                    var method = type.GetMethod("GetSampleInstance", new Type[0]);
+                    var type = tuple.Type;
+                    var method = type.GetMethod(tuple.SampleInstanceMethod, new Type[0]);
                     var instance = method.Invoke(null, null);
                     lstSampleClasses.Items.Add(new ClassInfoListItem(type, instance));
                 }
                 catch
                 {
-                    sb.AppendLine(type.FullName);
+                    sb.AppendLine(tuple.Type.FullName);
                 }
             }
 

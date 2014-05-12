@@ -597,6 +597,14 @@ namespace YAXLib
                 m_serializedStack.Push(obj);
         }
 
+        private bool IgnoreCyclingReferrences
+        {
+            get
+            {
+                return (m_serializationOption & YAXSerializationOptions.DontSerializeCyclingReferences) == YAXSerializationOptions.DontSerializeCyclingReferences;
+            }
+        }
+
         private void FindDocumentDefaultNamespace()
         {
             if (m_udtWrapper.HasNamespace && String.IsNullOrEmpty(m_udtWrapper.NamespacePrefix))
@@ -644,9 +652,15 @@ namespace YAXLib
                 var alreadySerializedObject = m_serializedStack.FirstOrDefault(x => ReferenceEquals(x, obj));
                 if (alreadySerializedObject != null)
                 {
-                    // TODO: add otions to not throw the exception
+                    if (IgnoreCyclingReferrences)
+                    {
+                        // although we are not going to serialize anything, push the object to be picked up
+                        // by the pop statement right after serialization
+                        PushObjectToSerializationStack(obj);
+                        return m_baseElement;
+                    }
+
                     throw new YAXCannotSerializeSelfReferentialTypes(m_type);
-                    //return m_baseElement;
                 }
                 else
                 {

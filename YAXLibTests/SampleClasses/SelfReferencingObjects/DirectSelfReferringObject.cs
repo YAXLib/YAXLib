@@ -1,19 +1,19 @@
 ﻿namespace YAXLibTests.SampleClasses.SelfReferencingObjects
 {
-    public class SelfReferringTypeIsNotASelfReferringObject
+    public class DirectSelfReferringObject
     {
         public int Data { get; set; }
-        public SelfReferringTypeIsNotASelfReferringObject Next { get; set; }
+        public DirectSelfReferringObject Next { get; set; }
 
         public override string ToString()
         {
             return GeneralToStringProvider.GeneralToString(this);
         }
 
-        public static SelfReferringTypeIsNotASelfReferringObject GetSampleInstance()
+        public static DirectSelfReferringObject GetSampleInstance()
         {
-            var first = new SelfReferringTypeIsNotASelfReferringObject {Data = 1};
-            var second = new SelfReferringTypeIsNotASelfReferringObject {Data = 2};
+            var first = new DirectSelfReferringObject {Data = 1};
+            var second = new DirectSelfReferringObject {Data = 2};
             first.Next = second;
             // this must be serialized fine, because there's no loop, although the type is a self referring type.
             // However by setting, "second.Next = first;" It should not be serialized any more because it will cause a loop
@@ -21,10 +21,18 @@
             return first;
         }
 
-        public static SelfReferringTypeIsNotASelfReferringObject GetSampleInstanceWithLoop()
+        public static DirectSelfReferringObject GetSampleInstanceWithCycle()
         {
             var instance = GetSampleInstance();
             instance.Next.Next = instance;
+            return instance;
+        }
+
+        public static DirectSelfReferringObject GetSampleInstanceWithSelfCycle()
+        {
+            var instance = new DirectSelfReferringObject();
+            instance.Data = 1;
+            instance.Next = instance;
             return instance;
         }
     }

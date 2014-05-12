@@ -2,7 +2,6 @@
 
 namespace YAXLibTests.SampleClasses.SelfReferencingObjects
 {
-    [ShowInDemoApplication(SortKey = "_")]
     public class IndirectSelfReferringObject
     {
         public string ParentDescription { get; set; }

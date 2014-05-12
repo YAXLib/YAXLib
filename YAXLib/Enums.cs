@@ -8,6 +8,7 @@
 // LIABILITY FOR ANY DATA DAMAGE/LOSS THAT THIS PRODUCT MAY CAUSE.
 //-----------------------------------------------------------------------
 
+using System;
 namespace YAXLib
 {
     /// <summary>
@@ -55,17 +56,23 @@ namespace YAXLib
     /// <summary>
     /// Enumerates different serialization options which could be set at construction time.
     /// </summary>
+    [Flags]
     public enum YAXSerializationOptions
     {
         /// <summary>
-        /// Prevents serialization of null objects.
-        /// </summary>
-        DontSerializeNullObjects,
-
-        /// <summary>
         /// Serializes null objects also (the default)
         /// </summary>
-        SerializeNullObjects
+        SerializeNullObjects = 0,
+
+        /// <summary>
+        /// Prevents serialization of null objects.
+        /// </summary>
+        DontSerializeNullObjects = 1,
+
+        /// <summary>
+        /// Prevents serializing child objects that refer to a parent object which is already serialized, and hene causing a cycle or infinite loop
+        /// </summary>
+        DontSerializeCyclingReferences = 2,
     }
 
     /// <summary>

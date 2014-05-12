@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace YAXLibTests
 {
@@ -11,8 +8,11 @@ namespace YAXLibTests
         public ShowInDemoApplicationAttribute()
         {
             SortKey = null;
+            GetSampleInstanceMethodName = "GetSampleInstance";
         }
 
         public string SortKey { get; set; }
+
+        public string GetSampleInstanceMethodName { get; set; }
     }
 }

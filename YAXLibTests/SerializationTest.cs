@@ -1871,17 +1871,17 @@ namespace YAXLibTests
         [Test]
         public void SelfReferringTypeIsNotNecessarilyASelfReferringObject()
         {
-            var ser = new YAXSerializer(typeof (SelfReferringTypeIsNotASelfReferringObject));
-            string result = ser.Serialize(SelfReferringTypeIsNotASelfReferringObject.GetSampleInstance());
+            var ser = new YAXSerializer(typeof (DirectSelfReferringObject));
+            string result = ser.Serialize(DirectSelfReferringObject.GetSampleInstance());
 
             const string expenctedResult =
-@"<SelfReferringTypeIsNotASelfReferringObject>
+@"<DirectSelfReferringObject>
   <Data>1</Data>
   <Next>
     <Data>2</Data>
     <Next />
   </Next>
-</SelfReferringTypeIsNotASelfReferringObject>";
+</DirectSelfReferringObject>";
 
             Assert.AreEqual(expenctedResult, result);
         }
@@ -1891,8 +1891,8 @@ namespace YAXLibTests
         {
             Assert.Throws<YAXCannotSerializeSelfReferentialTypes>(() => 
                 {             
-                    var ser = new YAXSerializer(typeof(SelfReferringTypeIsNotASelfReferringObject));
-                    string result = ser.Serialize(SelfReferringTypeIsNotASelfReferringObject.GetSampleInstanceWithLoop());
+                    var ser = new YAXSerializer(typeof(DirectSelfReferringObject));
+                    string result = ser.Serialize(DirectSelfReferringObject.GetSampleInstanceWithCycle());
                 });
         }
 
@@ -1923,6 +1923,59 @@ namespace YAXLibTests
                     string result = ser.Serialize(IndirectSelfReferringObject.GetSampleInstanceWithLoop());
                 });
         }
+
+
+        [Test]
+        public void SerializingAnIndirectSelfReferringObjectMustPassWhenDontSerializeCyclingReferencesOptionIsSet()
+        {
+            var ser = new YAXSerializer(typeof(IndirectSelfReferringObject), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error, YAXSerializationOptions.DontSerializeCyclingReferences);
+            string result = ser.Serialize(IndirectSelfReferringObject.GetSampleInstanceWithLoop());
+
+            const string expectedResult =
+@"<IndirectSelfReferringObject>
+  <ParentDescription>I'm Parent</ParentDescription>
+  <Child>
+    <ChildDescription>I'm Child</ChildDescription>
+    <Parent />
+  </Child>
+</IndirectSelfReferringObject>";
+
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [Test]
+        public void SerializingDirectSelfReferringObjectMustPassWhenDontSerializeCyclingReferencesOptionIsSet()
+        {
+            var ser = new YAXSerializer(typeof(DirectSelfReferringObject), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error, YAXSerializationOptions.DontSerializeCyclingReferences);
+            string result = ser.Serialize(DirectSelfReferringObject.GetSampleInstanceWithCycle());
+
+            const string expectedResult =
+@"<DirectSelfReferringObject>
+  <Data>1</Data>
+  <Next>
+    <Data>2</Data>
+    <Next />
+  </Next>
+</DirectSelfReferringObject>";
+
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [Test]
+        public void SerializingDirectSelfReferringObjectWithSelfCycleMustPassWhenDontSerializeCyclingReferencesOptionIsSet()
+        {
+            var ser = new YAXSerializer(typeof(DirectSelfReferringObject), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error, YAXSerializationOptions.DontSerializeCyclingReferences);
+            string result = ser.Serialize(DirectSelfReferringObject.GetSampleInstanceWithSelfCycle());
+
+            const string expectedResult =
+@"<DirectSelfReferringObject>
+  <Data>1</Data>
+  <Next />
+</DirectSelfReferringObject>";
+
+            Assert.AreEqual(expectedResult, result);
+        }
+
 
     }
 }

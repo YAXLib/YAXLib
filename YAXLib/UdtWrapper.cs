@@ -217,7 +217,7 @@ namespace YAXLib
         {
             get
             {
-                return this.SerializationOption == YAXSerializationOptions.DontSerializeNullObjects;
+                return (SerializationOption & YAXSerializationOptions.DontSerializeNullObjects) == YAXSerializationOptions.DontSerializeNullObjects;
             }
         }
 

@@ -3,7 +3,6 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses.PolymorphicSerialization
 {
-    [ShowInDemoApplication(SortKey = "_")]
     public class GameScene
     {
         [YAXType(typeof(Sword))]
