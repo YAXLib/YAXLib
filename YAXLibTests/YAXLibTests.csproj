@@ -82,6 +82,7 @@
     <Compile Include="SampleClasses\PolymorphicSerialization\MultipleYaxTypeAttributesWithSameAlias.cs" />
     <Compile Include="SampleClasses\PolymorphicSerialization\MultipleYaxTypeAttributesWithSameType.cs" />
     <Compile Include="SampleClasses\RectangleDynamicKnownTypeSample.cs" />
+    <Compile Include="SampleClasses\SelfReferencingObjects\LazyLoadPropertiesCanCauseInfiniteLoop.cs" />
     <Compile Include="SampleClasses\SelfReferencingObjects\RepetitiveReferenceIsNotLoop.cs" />
     <Compile Include="SampleClasses\SelfReferencingObjects\IndirectSelfReferringObject.cs" />
     <Compile Include="SampleClasses\SelfReferencingObjects\DirectSelfReferringObject.cs" />
