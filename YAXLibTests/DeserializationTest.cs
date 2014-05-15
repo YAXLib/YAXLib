@@ -613,5 +613,14 @@ namespace YAXLibTests
         }
 
 
+        [Test]
+        public void InfiniteLoopCausedBySerializingCalculatedPropertiesCanBePreventedBySettingDontSerializePropertiesWithNoSetter()
+        {
+            var ser = new YAXSerializer(typeof(CalculatedPropertiesCanCauseInfiniteLoop), YAXSerializationOptions.DontSerializePropertiesWithNoSetter);
+            string result = ser.Serialize(CalculatedPropertiesCanCauseInfiniteLoop.GetSampleInstance());
+
+            var deserialzedInstance = ser.Deserialize(result) as CalculatedPropertiesCanCauseInfiniteLoop;
+            Assert.IsNotNull(deserialzedInstance);
+        }
     }
 }

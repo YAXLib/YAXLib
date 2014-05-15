@@ -1976,6 +1976,19 @@ namespace YAXLibTests
             Assert.AreEqual(expectedResult, result);
         }
 
+        [Test]
+        public void InfiniteLoopCausedBySerializingCalculatedPropertiesCanBePreventedBySettingDontSerializePropertiesWithNoSetter()
+        {
+            var ser = new YAXSerializer(typeof(CalculatedPropertiesCanCauseInfiniteLoop), YAXSerializationOptions.DontSerializePropertiesWithNoSetter);
+            string result = ser.Serialize(CalculatedPropertiesCanCauseInfiniteLoop.GetSampleInstance());
+
+            const string expectedResult =
+@"<CalculatedPropertiesCanCauseInfiniteLoop>
+  <Data>2.0</Data>
+</CalculatedPropertiesCanCauseInfiniteLoop>";
+
+            Assert.AreEqual(expectedResult, result);
+        }
 
     }
 }
