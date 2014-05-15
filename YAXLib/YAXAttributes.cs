@@ -672,7 +672,7 @@ namespace YAXLib
     }
 
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
-    public class YAXCollectionItemTypeAttribute : YAXBaseAttribute
+    internal class YAXCollectionItemTypeAttribute : YAXBaseAttribute
     {
         public Type Type { get; private set; }
 
@@ -685,7 +685,7 @@ namespace YAXLib
     }
 
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
-    public class YAXTypeAttribute : YAXBaseAttribute
+    internal class YAXTypeAttribute : YAXBaseAttribute
     {
         public Type Type { get; private set; }
 
