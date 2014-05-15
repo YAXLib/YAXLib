@@ -144,6 +144,7 @@ namespace DemoApplication
             {
                 object deserializedObject = null;
                 YAXSerializer serializer = new YAXSerializer(info.ClassType, exPolicy, defaultExType, serOption);
+                serializer.MaxRecursion = Convert.ToInt32(numMaxRecursion.Value);
 
                 if (openFromFile)
                     deserializedObject = serializer.DeserializeFromFile(fileName);
@@ -203,6 +204,7 @@ namespace DemoApplication
             try
             {
                 YAXSerializer serializer = new YAXSerializer(info.ClassType, exPolicy, defaultExType, serOption);
+                serializer.MaxRecursion = Convert.ToInt32(numMaxRecursion.Value);
 
                 if (saveToFile)
                     serializer.SerializeToFile(info.SampleObject, fileName);

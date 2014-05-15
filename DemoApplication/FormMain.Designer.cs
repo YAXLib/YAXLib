@@ -43,19 +43,22 @@
             this.comboErrorType = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.comboOptions = new System.Windows.Forms.ComboBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.rtbDeserializeOutput = new System.Windows.Forms.RichTextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.label7 = new System.Windows.Forms.Label();
-            this.comboOptions = new System.Windows.Forms.ComboBox();
+            this.numMaxRecursion = new System.Windows.Forms.NumericUpDown();
+            this.label8 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numMaxRecursion)).BeginInit();
             this.SuspendLayout();
             // 
             // btnSerialize
@@ -71,9 +74,9 @@
             // rtbXMLOutput
             // 
             this.rtbXMLOutput.AcceptsTab = true;
-            this.rtbXMLOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.rtbXMLOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.rtbXMLOutput.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtbXMLOutput.Location = new System.Drawing.Point(216, 19);
             this.rtbXMLOutput.Name = "rtbXMLOutput";
@@ -94,8 +97,8 @@
             // 
             // lstSampleClasses
             // 
-            this.lstSampleClasses.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.lstSampleClasses.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstSampleClasses.FormattingEnabled = true;
             this.lstSampleClasses.Location = new System.Drawing.Point(9, 19);
             this.lstSampleClasses.Name = "lstSampleClasses";
@@ -105,8 +108,8 @@
             // 
             // rtbParsingErrors
             // 
-            this.rtbParsingErrors.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.rtbParsingErrors.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.rtbParsingErrors.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtbParsingErrors.Location = new System.Drawing.Point(216, 348);
             this.rtbParsingErrors.Name = "rtbParsingErrors";
@@ -202,8 +205,10 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.label8);
+            this.groupBox1.Controls.Add(this.numMaxRecursion);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.comboOptions);
             this.groupBox1.Controls.Add(this.btnSerialize);
@@ -220,6 +225,24 @@
             this.groupBox1.TabIndex = 15;
             this.groupBox1.TabStop = false;
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(486, 55);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(41, 13);
+            this.label7.TabIndex = 16;
+            this.label7.Text = "Option:";
+            // 
+            // comboOptions
+            // 
+            this.comboOptions.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboOptions.FormattingEnabled = true;
+            this.comboOptions.Location = new System.Drawing.Point(533, 52);
+            this.comboOptions.Name = "comboOptions";
+            this.comboOptions.Size = new System.Drawing.Size(223, 21);
+            this.comboOptions.TabIndex = 15;
+            // 
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
@@ -231,9 +254,9 @@
             // 
             // rtbDeserializeOutput
             // 
-            this.rtbDeserializeOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.rtbDeserializeOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.rtbDeserializeOutput.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtbDeserializeOutput.Location = new System.Drawing.Point(6, 22);
             this.rtbDeserializeOutput.Name = "rtbDeserializeOutput";
@@ -285,23 +308,31 @@
             this.panel1.Size = new System.Drawing.Size(880, 107);
             this.panel1.TabIndex = 19;
             // 
-            // label7
+            // numMaxRecursion
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(486, 55);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(41, 13);
-            this.label7.TabIndex = 16;
-            this.label7.Text = "Option:";
+            this.numMaxRecursion.Location = new System.Drawing.Point(659, 19);
+            this.numMaxRecursion.Maximum = new decimal(new int[] {
+            999999999,
+            0,
+            0,
+            0});
+            this.numMaxRecursion.Name = "numMaxRecursion";
+            this.numMaxRecursion.Size = new System.Drawing.Size(97, 20);
+            this.numMaxRecursion.TabIndex = 17;
+            this.numMaxRecursion.Value = new decimal(new int[] {
+            300,
+            0,
+            0,
+            0});
             // 
-            // comboOptions
+            // label8
             // 
-            this.comboOptions.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboOptions.FormattingEnabled = true;
-            this.comboOptions.Location = new System.Drawing.Point(533, 52);
-            this.comboOptions.Name = "comboOptions";
-            this.comboOptions.Size = new System.Drawing.Size(155, 21);
-            this.comboOptions.TabIndex = 15;
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(572, 21);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(81, 13);
+            this.label8.TabIndex = 18;
+            this.label8.Text = "Max Recursion:";
             // 
             // FormMain
             // 
@@ -322,6 +353,7 @@
             this.splitContainer1.Panel2.PerformLayout();
             this.splitContainer1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.numMaxRecursion)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -351,6 +383,8 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox comboOptions;
+        private System.Windows.Forms.NumericUpDown numMaxRecursion;
+        private System.Windows.Forms.Label label8;
     }
 }
 
