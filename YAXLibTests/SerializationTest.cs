@@ -1990,5 +1990,45 @@ namespace YAXLibTests
             Assert.AreEqual(expectedResult, result);
         }
 
+        [Test]
+        public void MaxRecursionPreventsInfiniteLoop()
+        {
+            var ser = new YAXSerializer(typeof(CalculatedPropertiesCanCauseInfiniteLoop));
+            ser.MaxRecursion = 10;
+            string result = ser.Serialize(CalculatedPropertiesCanCauseInfiniteLoop.GetSampleInstance());
+
+            const string expectedResult =
+@"<CalculatedPropertiesCanCauseInfiniteLoop>
+  <Data>2.0</Data>
+  <Reciprocal>
+    <Data>0.5</Data>
+    <Reciprocal>
+      <Data>2</Data>
+      <Reciprocal>
+        <Data>0.5</Data>
+        <Reciprocal>
+          <Data>2</Data>
+          <Reciprocal>
+            <Data>0.5</Data>
+            <Reciprocal>
+              <Data>2</Data>
+              <Reciprocal>
+                <Data>0.5</Data>
+                <Reciprocal>
+                  <Data>2</Data>
+                  <Reciprocal />
+                </Reciprocal>
+              </Reciprocal>
+            </Reciprocal>
+          </Reciprocal>
+        </Reciprocal>
+      </Reciprocal>
+    </Reciprocal>
+  </Reciprocal>
+</CalculatedPropertiesCanCauseInfiniteLoop>";
+
+            Assert.AreEqual(expectedResult, result);
+        }
+
     }
 }
