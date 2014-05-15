@@ -222,6 +222,30 @@ namespace YAXLib
         }
 
         /// <summary>
+        /// Determines whether cycling referrences must be ignored, or an exception needs to be thrown
+        /// </summary>
+        public bool IgnoreCyclingReferrences
+        {
+            get
+            {
+                return (SerializationOption & YAXSerializationOptions.DontSerializeCyclingReferences) == YAXSerializationOptions.DontSerializeCyclingReferences;
+            }
+        }
+
+        /// <summary>
+        /// Determines whether properties with no setters should be serialized
+        /// </summary>
+        public bool DontSerializePropertiesWithNoSetter
+        {
+            get
+            {
+                return (SerializationOption & YAXSerializationOptions.DontSerializePropertiesWithNoSetter) == YAXSerializationOptions.DontSerializePropertiesWithNoSetter;
+            }
+        }
+
+
+
+        /// <summary>
         /// Gets a value indicating whether this instance wraps around a collection type.
         /// </summary>
         /// <value>

@@ -608,14 +608,6 @@ namespace YAXLib
                 m_serializedStack.Push(obj);
         }
 
-        private bool IgnoreCyclingReferrences
-        {
-            get
-            {
-                return (m_serializationOption & YAXSerializationOptions.DontSerializeCyclingReferences) == YAXSerializationOptions.DontSerializeCyclingReferences;
-            }
-        }
-
         private void FindDocumentDefaultNamespace()
         {
             if (m_udtWrapper.HasNamespace && String.IsNullOrEmpty(m_udtWrapper.NamespacePrefix))
@@ -645,7 +637,7 @@ namespace YAXLib
         /// serialization of the specified object</returns>
         private XElement SerializeBase(object obj, XName className)
         {
-            m_isSerializing = true; // this is done again here since internal serializers may not call public Serialize methods
+            m_isSerializing = true; // this is set once again here since internal serializers may not call public Serialize methods
 
             if (m_baseElement == null)
             {
@@ -663,7 +655,7 @@ namespace YAXLib
                 var alreadySerializedObject = m_serializedStack.FirstOrDefault(x => ReferenceEquals(x, obj));
                 if (alreadySerializedObject != null)
                 {
-                    if (IgnoreCyclingReferrences)
+                    if (m_udtWrapper.IgnoreCyclingReferrences)
                     {
                         // although we are not going to serialize anything, push the object to be picked up
                         // by the pop statement right after serialization
@@ -2791,6 +2783,7 @@ namespace YAXLib
                         if (prop.GetIndexParameters().Length > 0)
                             continue;
 
+                        // don't serialize delegates as well
                         if (ReflectionUtils.IsTypeEqualOrInheritedFromType(prop.PropertyType, typeof(Delegate)))
                             continue;
                     }
@@ -2800,7 +2793,7 @@ namespace YAXLib
                             continue;
 
                     var memInfo = new MemberWrapper(member, this);
-                    if (memInfo.IsAllowedToBeSerialized(typeWrapper.FieldsToSerialize))
+                    if (memInfo.IsAllowedToBeSerialized(typeWrapper.FieldsToSerialize, m_udtWrapper.DontSerializePropertiesWithNoSetter))
                     {
                         yield return memInfo;
                     }

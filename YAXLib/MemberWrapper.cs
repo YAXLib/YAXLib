@@ -638,8 +638,11 @@ namespace YAXLib
         /// <returns>
         /// <c>true</c> if this instance of <c>MemberWrapper</c> can be serialized; otherwise, <c>false</c>.
         /// </returns>
-        public bool IsAllowedToBeSerialized(YAXSerializationFields serializationFields)
+        public bool IsAllowedToBeSerialized(YAXSerializationFields serializationFields, bool dontSerializePropertiesWithNoSetter)
         {
+            if (dontSerializePropertiesWithNoSetter && m_isProperty && !m_propertyInfoInstance.CanWrite)
+                return false;
+
             if (serializationFields == YAXSerializationFields.AllFields)
                 return !IsAttributedAsDontSerialize;
             else if (serializationFields == YAXSerializationFields.AttributedFieldsOnly)

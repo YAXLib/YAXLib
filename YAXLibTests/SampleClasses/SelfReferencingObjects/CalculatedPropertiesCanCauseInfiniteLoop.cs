@@ -1,8 +1,10 @@
 ﻿using System;
+using YAXLib;
 
 namespace YAXLibTests.SampleClasses.SelfReferencingObjects
 {
     [ShowInDemoApplication(SortKey = "_")]
+    [YAXSerializableType(Options = YAXSerializationOptions.DontSerializePropertiesWithNoSetter | YAXSerializationOptions.SerializeNullObjects)]
     public class CalculatedPropertiesCanCauseInfiniteLoop
     {
         public decimal Data { get; set; }
@@ -26,7 +28,7 @@ namespace YAXLibTests.SampleClasses.SelfReferencingObjects
 
         public override string ToString()
         {
-            return GeneralToStringProvider.GeneralToString(this);
+            return String.Format("Data == {0}", Data);
         }
     }
 }
