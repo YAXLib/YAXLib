@@ -180,6 +180,7 @@ namespace YAXLib
             m_udtWrapper = TypeWrappersPool.Pool.GetTypeWrapper(m_type, this);
             if (m_udtWrapper.HasNamespace)
                 TypeNamespace = m_udtWrapper.Namespace;
+            MaxRecursion = DefaultMaxRecursion;
         }
 
         internal XNamespace TypeNamespace { get; set; }
@@ -326,6 +327,17 @@ namespace YAXLib
                 m_trueTypeAttrName = value;
             }
         }
+
+
+        private const int DefaultMaxRecursion = 300;
+
+        /// <summary>
+        /// Specifies the maximum serialization depth (default 300).
+        /// This roughly equals the maximum element depth of the resulting XML.
+        /// 0 means unlimited.
+        /// 1 means an empty XML tag with no content.
+        /// </summary>
+        public int MaxRecursion { get; set; }
 
         /// <summary>
         /// Serializes the specified object and returns a string containing the XML.
@@ -648,6 +660,12 @@ namespace YAXLib
                 var baseElem = new XElement(className, null);
                 m_baseElement.Add(baseElem);
                 m_baseElement = baseElem;
+            }
+
+            if (MaxRecursion == 1)
+            {
+                PushObjectToSerializationStack(obj);
+                return m_baseElement;
             }
 
             if (!m_type.IsValueType)
@@ -2535,6 +2553,7 @@ namespace YAXLib
         private YAXSerializer NewInternalSerializer(Type type, XNamespace namespaceToOverride, XElement insertionLocation)
         {
             var serializer = new YAXSerializer(type, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
+            serializer.MaxRecursion = MaxRecursion == 0 ? 0 : MaxRecursion - 1;
             serializer.m_serializedStack = m_serializedStack;
             serializer.m_documentDefaultNamespace = m_documentDefaultNamespace;
             if(namespaceToOverride != null)
