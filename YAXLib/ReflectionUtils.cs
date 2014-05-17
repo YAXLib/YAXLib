@@ -807,15 +807,7 @@ namespace YAXLib
 
         public static bool IsInstantiableCollection(Type colType)
         {
-            try
-            {
-                var col = colType.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0]);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            return colType.GetConstructor(Type.EmptyTypes) != null;
         }
 
         public static T InvokeGetProperty<T>(object srcObj, string propertyName)
