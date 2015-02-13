@@ -3,7 +3,7 @@
      Thanks go to CodePlex user [vincentbl](https://www.codeplex.com/site/users/view/vincentbl)
      For reporting and suggesting the fix for the issue.
 
-[2.13] May 15, 2014
+[2.13] May 18, 2014
    * Fixed a bug and added unit tests related to serializing path like aliases with one 
      letter (e.g., './B'). Thanks go to CodeProject user B.O.B. for reporting this bug.
    * Added `Bin/*.dll.mdb` to `.gitignore` as requested by [@silwol](https://github.com/silwol).
@@ -16,9 +16,11 @@
    * Significant improve in cycling object reference detection
    * Self Referring types are allowed as long as references do not create a loop
    * Added an option to ignore self referring objects instead of throwing exceptions
-   * Added an option not to serialize properties with no setter (will help in loop prevention, see `CalculatedPropertiesCanCauseInfiniteLoop` sample class for an example).
+   * Added an option not to serialize properties with no setter (will help in loop prevention, 
+     see `CalculatedPropertiesCanCauseInfiniteLoop` sample class for an example).
    * Added the `MaxRecursion` property to the serializer with a default value of 300. This will prevent loops.
-
+   * Minor bug fix on default constructor detection for collection classes.
+   
 [2.12] February 19, 2013
    * Added support for serialization of non-collection fields
      in objects derived from collection types/interfaces
