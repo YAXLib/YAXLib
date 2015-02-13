@@ -443,7 +443,18 @@ namespace YAXLib
 
         public static string ToXmlValue(this object self)
         {
-            return Convert.ToString((self ?? String.Empty), CultureInfo.InvariantCulture);
+          string typeName = self == null ? String.Empty : self.GetType().Name;
+
+          switch (typeName)
+          {
+            case "Double":
+              return ((double)self).ToString("R", CultureInfo.InvariantCulture);
+            case "Single":
+              return ((Single)self).ToString("R", CultureInfo.InvariantCulture);
+            case "BigInteger":
+              return ReflectionUtils.InvokeMethod(self, "ToString", "R", CultureInfo.InvariantCulture) as string;
+          }
+          return Convert.ToString((self ?? String.Empty), CultureInfo.InvariantCulture);
         }
 
         public static XAttribute AddAttributeNamespaceSafe(this XElement parent, XName attrName, object attrValue, XNamespace documentDefaultNamespace)

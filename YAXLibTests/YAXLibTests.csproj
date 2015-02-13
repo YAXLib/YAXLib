@@ -54,6 +54,7 @@
     <Compile Include="GeneralToString.cs" />
     <Compile Include="KnownTypeTests.cs" />
     <Compile Include="NamespaceTest.cs" />
+    <Compile Include="NumericMinMaxTests.cs" />
     <Compile Include="OverridingYAXLibMetadataTests.cs" />
     <Compile Include="PolymorphicSerializationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -909,19 +909,19 @@ namespace YAXLibTests
   </IntArray>
   <DoubleArray yaxlib:dims=""2,3,3"">
     <Double>2</Double>
-    <Double>0.666666666666667</Double>
+    <Double>0.66666666666666663</Double>
     <Double>0.4</Double>
     <Double>2</Double>
-    <Double>0.666666666666667</Double>
+    <Double>0.66666666666666663</Double>
     <Double>0.4</Double>
     <Double>2</Double>
-    <Double>0.666666666666667</Double>
+    <Double>0.66666666666666663</Double>
     <Double>0.4</Double>
     <Double>2</Double>
-    <Double>0.666666666666667</Double>
+    <Double>0.66666666666666663</Double>
     <Double>0.4</Double>
     <Double>4</Double>
-    <Double>1.33333333333333</Double>
+    <Double>1.3333333333333333</Double>
     <Double>0.8</Double>
     <Double>6</Double>
     <Double>2</Double>
