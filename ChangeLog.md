@@ -45,7 +45,7 @@
      attributes. The value to these attributes can then be 
      overridden by members instantiating them.
    * Unit tests all migrated to NUnit.
-   * Lots of thanks go to Asbjørn Ulsberg for migrating the unit-tests
+   * Lots of thanks go to AsbjÃ¸rn Ulsberg for migrating the unit-tests
      NUnit, reporting the above bugs, and providing failing unit-tests
      regarding the above bugs.
    * It is now allowed to change the constant values used by the library to
@@ -58,7 +58,7 @@
 
 [2.10.1] October 4, 2012
    * Allowing dashes to appear in name aliases
-     Thanks go to Asbjørn Ulsberg for fixing the issue and providing
+     Thanks go to AsbjÃ¸rn Ulsberg for fixing the issue and providing
      unit tests.
 
 [2.10] October 1, 2012
