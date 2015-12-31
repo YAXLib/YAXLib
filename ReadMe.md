@@ -178,3 +178,6 @@ Homepage: [www.sinairv.com](http://www.sinairv.com)
 Github: [github.com/sinairv](https://github.com/sinairv)
 
 Twitter: [@sinairv](http://www.twitter.com/sinairv)
+
+## License
+MIT. See [LICENSE.txt](LICENSE.txt)
