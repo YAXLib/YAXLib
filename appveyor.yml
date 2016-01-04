@@ -1,4 +1,4 @@
-version: 1.0.{build}
+version: 2.13.{build}
 build:
   project: YAXLib.2013.sln
   verbosity: minimal
