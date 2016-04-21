@@ -70,9 +70,10 @@ namespace YAXLib
         DontSerializeNullObjects = 1,
 
         /// <summary>
+        /// TODO: update the comment
         /// Prevents serialization of child objects that refer to a parent object which is already serialized, and hene causing a cycle or infinite loop
         /// </summary>
-        DontSerializeCyclingReferences = 2,
+        ThrowUponSerializingCyclingReferences = 2,
 
         /// <summary>
         /// Prevents serailization of properties with no setter 

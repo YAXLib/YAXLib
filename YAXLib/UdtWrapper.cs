@@ -224,11 +224,11 @@ namespace YAXLib
         /// <summary>
         /// Determines whether cycling referrences must be ignored, or an exception needs to be thrown
         /// </summary>
-        public bool IgnoreCyclingReferrences
+        public bool ThrowUponSerializingCyclingReferences
         {
             get
             {
-                return (SerializationOption & YAXSerializationOptions.DontSerializeCyclingReferences) == YAXSerializationOptions.DontSerializeCyclingReferences;
+                return (SerializationOption & YAXSerializationOptions.ThrowUponSerializingCyclingReferences) == YAXSerializationOptions.ThrowUponSerializingCyclingReferences;
             }
         }
 

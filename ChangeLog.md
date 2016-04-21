@@ -2,6 +2,11 @@
    * Fixed a bug with deserializing Double/Sinble/BigInteger Min and Max values. 
      Thanks go to CodePlex user [vincentbl](https://www.codeplex.com/site/users/view/vincentbl)
      For reporting and suggesting the fix for the issue.
+   * YAXLib will serialize `Type` and `RuntimeType` instances using their full name, avoiding 
+     the need to traverse too much objects with cycling references in memory
+   * Renamed constructor option `DontSerializeCyclingReferences` to `ThrowUponSerializingCyclingReferences`
+     and inverted its intention at the same time. This change will disable serializing cycling
+     references by default.
 
 [2.13] May 18, 2014
    * Fixed a bug and added unit tests related to serializing path like aliases with one 

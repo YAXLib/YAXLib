@@ -1887,11 +1887,11 @@ namespace YAXLibTests
         }
 
         [Test]
-        public void SerializingASelfReferringObjectThrowsException()
+        public void SerializingASelfReferringObjectThrowsException_WhenTheRelevantSerializationOptionIsSet()
         {
             Assert.Throws<YAXCannotSerializeSelfReferentialTypes>(() => 
                 {             
-                    var ser = new YAXSerializer(typeof(DirectSelfReferringObject));
+                    var ser = new YAXSerializer(typeof(DirectSelfReferringObject), YAXSerializationOptions.ThrowUponSerializingCyclingReferences);
                     string result = ser.Serialize(DirectSelfReferringObject.GetSampleInstanceWithCycle());
                 });
         }
@@ -1915,20 +1915,20 @@ namespace YAXLibTests
         }
 
         [Test]
-        public void SerializingAnIndirectSelfReferringObjectThrowsException()
+        public void SerializingAnIndirectSelfReferringObjectThrowsException_WhenTheRelevantOptionIsSet()
         {
             Assert.Throws<YAXCannotSerializeSelfReferentialTypes>(() =>
                 {
-                    var ser = new YAXSerializer(typeof(IndirectSelfReferringObject));
+                    var ser = new YAXSerializer(typeof(IndirectSelfReferringObject), YAXSerializationOptions.ThrowUponSerializingCyclingReferences);
                     string result = ser.Serialize(IndirectSelfReferringObject.GetSampleInstanceWithLoop());
                 });
         }
 
 
         [Test]
-        public void SerializingAnIndirectSelfReferringObjectMustPassWhenDontSerializeCyclingReferencesOptionIsSet()
+        public void SerializingAnIndirectSelfReferringObjectMustPassWhenThrowUponSerializingCyclingReferencesOptionIsNotSet()
         {
-            var ser = new YAXSerializer(typeof(IndirectSelfReferringObject), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error, YAXSerializationOptions.DontSerializeCyclingReferences);
+            var ser = new YAXSerializer(typeof(IndirectSelfReferringObject), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error);
             string result = ser.Serialize(IndirectSelfReferringObject.GetSampleInstanceWithLoop());
 
             const string expectedResult =
@@ -1944,9 +1944,19 @@ namespace YAXLibTests
         }
 
         [Test]
-        public void SerializingDirectSelfReferringObjectMustPassWhenDontSerializeCyclingReferencesOptionIsSet()
+        public void SerializingAnIndirectSelfReferringObjectMustThrowWhenThrowUponSerializingCyclingReferencesOptionIsSet()
         {
-            var ser = new YAXSerializer(typeof(DirectSelfReferringObject), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error, YAXSerializationOptions.DontSerializeCyclingReferences);
+            Assert.Throws<YAXCannotSerializeSelfReferentialTypes>(() =>
+            {
+                var ser = new YAXSerializer(typeof(IndirectSelfReferringObject), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error, YAXSerializationOptions.ThrowUponSerializingCyclingReferences);
+                string result = ser.Serialize(IndirectSelfReferringObject.GetSampleInstanceWithLoop());
+            });
+        }
+
+        [Test]
+        public void SerializingDirectSelfReferringObjectMustPassWhenThrowUponSerializingCyclingReferencesOptionIsNotSet()
+        {
+            var ser = new YAXSerializer(typeof(DirectSelfReferringObject), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error);
             string result = ser.Serialize(DirectSelfReferringObject.GetSampleInstanceWithCycle());
 
             const string expectedResult =
@@ -1962,9 +1972,21 @@ namespace YAXLibTests
         }
 
         [Test]
-        public void SerializingDirectSelfReferringObjectWithSelfCycleMustPassWhenDontSerializeCyclingReferencesOptionIsSet()
+        public void SerializingDirectSelfReferringObjectMustThrowWhenThrowUponSerializingCyclingReferencesOptionIsSet()
         {
-            var ser = new YAXSerializer(typeof(DirectSelfReferringObject), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error, YAXSerializationOptions.DontSerializeCyclingReferences);
+            Assert.Throws<YAXCannotSerializeSelfReferentialTypes>(() =>
+            {
+                var ser = new YAXSerializer(typeof (DirectSelfReferringObject),
+                    YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error,
+                    YAXSerializationOptions.ThrowUponSerializingCyclingReferences);
+                string result = ser.Serialize(DirectSelfReferringObject.GetSampleInstanceWithCycle());
+            });
+        }
+
+        [Test]
+        public void SerializingDirectSelfReferringObjectWithSelfCycleMustPassWhenThrowUponSerializingCyclingReferencesOptionIsNotSet()
+        {
+            var ser = new YAXSerializer(typeof(DirectSelfReferringObject), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error);
             string result = ser.Serialize(DirectSelfReferringObject.GetSampleInstanceWithSelfCycle());
 
             const string expectedResult =
@@ -1974,6 +1996,16 @@ namespace YAXLibTests
 </DirectSelfReferringObject>";
 
             Assert.AreEqual(expectedResult, result);
+        }
+
+        [Test]
+        public void SerializingDirectSelfReferringObjectWithSelfCycleMustThrowWhenThrowUponSerializingCyclingReferencesOptionIsSet()
+        {
+            Assert.Throws<YAXCannotSerializeSelfReferentialTypes>(() =>
+            {
+                var ser = new YAXSerializer(typeof(DirectSelfReferringObject), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error, YAXSerializationOptions.ThrowUponSerializingCyclingReferences);
+                string result = ser.Serialize(DirectSelfReferringObject.GetSampleInstanceWithSelfCycle());
+            });
         }
 
         [Test]
@@ -2028,6 +2060,37 @@ namespace YAXLibTests
 </CalculatedPropertiesCanCauseInfiniteLoop>";
 
             Assert.AreEqual(expectedResult, result);
+        }
+
+        [Test]
+        public void SerializeExceptionShouldNotThrowExceptions()
+        {
+            try
+            {
+                throw new ArgumentOutOfRangeException("index",
+                    new InvalidOperationException("Inner exception 1", 
+                        new ApplicationException("Inner Exception 2")));
+            }
+            catch (Exception ex)
+            {
+                var ser = new YAXSerializer(ex.GetType());
+                string exResult = ser.Serialize(ex);
+
+                var newEx= ser.Deserialize(exResult);
+
+                var declaringType = ex.TargetSite.DeclaringType;
+
+                var type = declaringType.GetType();
+                var serRuntimeType = new YAXSerializer(type);
+
+                string fullName = declaringType.AssemblyQualifiedName;
+                
+                string result = serRuntimeType.Serialize(declaringType);
+                Console.WriteLine(result);
+
+            }
+
+
         }
 
     }

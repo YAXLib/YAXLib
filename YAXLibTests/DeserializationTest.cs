@@ -565,12 +565,12 @@ namespace YAXLibTests
         }
 
         [Test]
-        public void DeserializeIndirectSelfReferringObjectWhenDontSerializeCyclingReferencesIsSet()
+        public void DeserializeIndirectSelfReferringObjectWhenThrowUponSerializingCyclingReferencesIsNotSet()
         {
             var inst = IndirectSelfReferringObject.GetSampleInstanceWithLoop();
 
             var ser = new YAXSerializer(typeof(IndirectSelfReferringObject), 
-                YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Error, YAXSerializationOptions.DontSerializeCyclingReferences);
+                YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Error);
 
             string input = ser.Serialize(inst);
 
@@ -581,12 +581,12 @@ namespace YAXLibTests
         }
 
         [Test]
-        public void DeserializeDirectSelfReferringObjectWhenDontSerializeCyclingReferencesIsSet()
+        public void DeserializeDirectSelfReferringObjectWhenDontThrowUponSerializingCyclingReferencesIsNotSet()
         {
             var inst = DirectSelfReferringObject.GetSampleInstanceWithCycle();
 
             var ser = new YAXSerializer(typeof(DirectSelfReferringObject),
-                YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Error, YAXSerializationOptions.DontSerializeCyclingReferences);
+                YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Error);
 
             string input = ser.Serialize(inst);
 
@@ -597,12 +597,12 @@ namespace YAXLibTests
         }
 
         [Test]
-        public void DeserializeDirectSelfReferringObjectWithSelfCycleWhenDontSerializeCyclingReferencesIsSet()
+        public void DeserializeDirectSelfReferringObjectWithSelfCycleWhenThrowUponSerializingCyclingReferencesIsNotSet()
         {
             var inst = DirectSelfReferringObject.GetSampleInstanceWithSelfCycle();
 
             var ser = new YAXSerializer(typeof(DirectSelfReferringObject),
-                YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Error, YAXSerializationOptions.DontSerializeCyclingReferences);
+                YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Error);
 
             string input = ser.Serialize(inst);
 

@@ -37,8 +37,10 @@ namespace YAXLib
             Add(new XElementKnownType());
             Add(new XAttributeKnownType());
             Add(new DbNullKnownType());
+            Add(new TypeKnownType());
             AddDynamicKnownType(new RectangleDynamicKnownType());
             AddDynamicKnownType(new ColorDynamicKnownType());
+            AddDynamicKnownType(new RuntimeTypeDynamicKnownType());
             AddDynamicKnownType(new DataTableDynamicKnownType());
             AddDynamicKnownType(new DataSetDynamicKnownType());
         }
@@ -292,6 +294,28 @@ namespace YAXLib
         }
     }
 
+    internal class RuntimeTypeDynamicKnownType : DynamicKnownType
+    {
+        public override string TypeName
+        {
+            get { return "System.RuntimeType"; }
+        }
+
+        public override void Serialize(object obj, XElement elem, XNamespace overridingNamespace)
+        {
+            Type objectType = obj.GetType();
+            if (objectType.FullName != TypeName)
+                throw new ArgumentException("Object type does not match the provided typename", "obj");
+
+            elem.Value = ReflectionUtils.InvokeGetProperty<string>(obj, "FullName");
+        }
+
+        public override object Deserialize(XElement elem, XNamespace overridingNamespace)
+        {
+            return ReflectionUtils.GetTypeByName(elem.Value);
+        }
+    }
+
     internal class DataTableDynamicKnownType : DynamicKnownType
     {
         public override string TypeName
@@ -464,4 +488,18 @@ namespace YAXLib
         }
     }
     #endregion
+
+    internal class TypeKnownType : KnownType<Type>
+    {
+        public override void Serialize(Type obj, XElement elem, XNamespace overridingNamespace)
+        {
+            if (obj != null)
+                elem.Value = obj.FullName;
+        }
+
+        public override Type Deserialize(XElement elem, XNamespace overridingNamespace)
+        {
+            return ReflectionUtils.GetTypeByName(elem.Value);
+        }
+    }
 }

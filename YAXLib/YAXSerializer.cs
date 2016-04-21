@@ -673,7 +673,7 @@ namespace YAXLib
                 var alreadySerializedObject = m_serializedStack.FirstOrDefault(x => ReferenceEquals(x, obj));
                 if (alreadySerializedObject != null)
                 {
-                    if (m_udtWrapper.IgnoreCyclingReferrences)
+                    if (!m_udtWrapper.ThrowUponSerializingCyclingReferences)
                     {
                         // although we are not going to serialize anything, push the object to be picked up
                         // by the pop statement right after serialization
