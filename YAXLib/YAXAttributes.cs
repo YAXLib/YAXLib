@@ -306,6 +306,15 @@ namespace YAXLib
     }
 
     /// <summary>
+    /// Prevents serialization of some field or property when null.
+    /// This attribute is applicable to fields and properties when null.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public class YAXDontSerializeIfNullAttribute : YAXBaseAttribute
+    {
+    }
+
+    /// <summary>
     /// Defines an alias for the field, property, class, or struct under 
     /// which it will be serialized. This attribute is applicable to fields, 
     /// properties, classes, and structs.

@@ -732,15 +732,21 @@ namespace YAXLib
                     // ignore this member if it is attributed as dont serialize
                     if (member.IsAttributedAsDontSerialize)
                         continue;
-
+                    
                     object elementValue = member.GetValue(obj);
 
                     // make this flat true, so that we know that this object was not empty of fields
                     isAnythingFoundToSerialize = true;
 
                     // ignore this member if it is null and we are not about to serialize null objects
-                    if (elementValue == null &&
+                    if (elementValue == null && 
                         m_udtWrapper.IsNotAllowdNullObjectSerialization)
+                    {
+                        continue;
+                    }
+
+                    if (elementValue == null &&
+                        member.IsAttributedAsDontSerializeIfNull)
                     {
                         continue;
                     }

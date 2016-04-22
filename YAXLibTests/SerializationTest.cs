@@ -557,6 +557,20 @@ namespace YAXLibTests
         }
 
         [Test]
+        public void NullableWithAttributeTest()
+        {
+            const string result =
+@"<!-- This exmaple shows the usage of nullable fields with an attribute blocking specific one. -->
+<NullableClassAttribute>
+  <Title>Inside C#</Title>
+  <PublishYear>2002</PublishYear>
+</NullableClassAttribute>";
+            var serializer = new YAXSerializer(typeof(NullableClassAttribute), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string got = serializer.Serialize(NullableClassAttribute.GetSampleInstance());
+            Assert.That(got, Is.EqualTo(result));
+        }
+
+        [Test]
         public void NullableSample2Test()
         {
             const string result =
