@@ -170,6 +170,22 @@ namespace YAXLibTests
         }
 
         [Test]
+        public void BookOrderTest()
+        {
+            const string result =
+@"<!-- This example demonstrates serailizing a very simple struct -->
+<BookClassWithOrdering>
+  <Author>R. S. Sutton &amp; A. G. Barto</Author>
+  <Title>Reinforcement Learning an Introduction</Title>
+  <Price>38.75</Price>
+  <PublishYear>1998</PublishYear>
+</BookClassWithOrdering>";
+            var serializer = new YAXSerializer(typeof(BookClassWithOrdering), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string got = serializer.Serialize(BookClassWithOrdering.GetSampleInstance());
+            Assert.That(got, Is.EqualTo(result));
+        }
+
+        [Test]
         public void WarehouseSimpleTest()
         {
             const string result =

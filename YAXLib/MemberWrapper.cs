@@ -97,6 +97,8 @@ namespace YAXLib
         /// <param name="callerSerializer">The caller serializer.</param>
         public MemberWrapper(MemberInfo memberInfo, YAXSerializer callerSerializer)
         {
+            Order = Int32.MaxValue;
+
             if (!(memberInfo.MemberType == MemberTypes.Property || memberInfo.MemberType == MemberTypes.Field))
                 throw new Exception("Member must be either property or field");
 
@@ -508,6 +510,7 @@ namespace YAXLib
 
         public bool PreservesWhitespace { get; private set; }
 
+        public int Order { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether this instance has a custom namespace
@@ -571,7 +574,6 @@ namespace YAXLib
         {
             return m_possibleRealTypes.FirstOrDefault(x => ReferenceEquals(x.Type, type));
         }
-
 
 
         // Public Methods
@@ -897,6 +899,10 @@ namespace YAXLib
             else if (attr is YAXDontSerializeIfNullAttribute)
             {
                 IsAttributedAsDontSerializeIfNull = true;
+            }
+            else if (attr is YAXElementOrder)
+            {
+                Order = (attr as YAXElementOrder).Order;
             }
             else
             {

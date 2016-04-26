@@ -29,24 +29,31 @@ namespace YAXLibTests
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
         }
 
-        private void GetTheTwoStrings(object obj, out string originalString, out string gottonString, out int errorCounts)
+        private void PerformTest(object obj)
+        {
+            PerformTestAndReturn(obj);
+        }
+
+        private object GetTheTwoStringsAndReturn(object obj, out string originalString, out string gottonString, out int errorCounts)
         {
             originalString = GeneralToStringProvider.GeneralToString(obj);
             var serializer = new YAXSerializer(obj.GetType(), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             object gottonObject = serializer.Deserialize(serializer.Serialize(obj));
             errorCounts = serializer.ParsingErrors.Count;
             gottonString = GeneralToStringProvider.GeneralToString(gottonObject);
+            return gottonObject;
         }
 
-        private void PerformTest(object obj)
+        private object PerformTestAndReturn(object obj)
         {
             string originalString, gottonString;
             int errorCounts;
-            GetTheTwoStrings(obj, out originalString, out gottonString, out errorCounts);
+            var result = GetTheTwoStringsAndReturn(obj, out originalString, out gottonString, out errorCounts);
             Assert.That(originalString, Is.Not.Null);
             Assert.That(gottonString, Is.Not.Null);
             Assert.That(gottonString, Is.EqualTo(originalString));
             Assert.That(errorCounts, Is.EqualTo(0));
+            return result;
         }
 
         [Test]
@@ -54,7 +61,6 @@ namespace YAXLibTests
         {
             PerformTest(666);
         }
-
 
         [Test]
         public void DesBookTest()
@@ -632,6 +638,25 @@ namespace YAXLibTests
             var deserialzedInstance = ser.Deserialize(result) as CalculatedPropertiesCanCauseInfiniteLoop;
             Assert.IsNotNull(deserialzedInstance);
             Assert.AreEqual(2.0M, deserialzedInstance.Data);
+        }
+
+        [Test]
+        public void OrderedDeserialization()
+        {
+            var obj = BookClassWithOrdering.GetSampleInstance();
+            obj = (BookClassWithOrdering)PerformTestAndReturn(obj);
+            var first = "";
+            var second = "";
+            var third = "";
+            var fourth = "";
+            obj.DecentralizationOrder.TryGetValue(0, out first);
+            obj.DecentralizationOrder.TryGetValue(1, out second);
+            obj.DecentralizationOrder.TryGetValue(2, out third);
+            obj.DecentralizationOrder.TryGetValue(3, out fourth);
+            Assert.AreEqual(first, "Author");
+            Assert.AreEqual(second, "Title");
+            Assert.AreEqual(third, "Price");
+            Assert.AreEqual(fourth, "PublishYear");
         }
     }
 }
