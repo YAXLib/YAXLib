@@ -288,6 +288,14 @@ namespace YAXLib
         public bool IsAttributedAsSerializable { get; private set; }
 
         /// <summary>
+        /// Gets a value indicating whether this instance is attributed as dont serialize when null.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance is attributed as dont serialize when null; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsAttributedAsDontSerializeIfNull { get; private set; }
+
+        /// <summary>
         /// Gets a value indicating whether this instance is serialized as an XML attribute.
         /// </summary>
         /// <value>
@@ -885,6 +893,10 @@ namespace YAXLib
                         alias, yaxColletionItemTypeAttr.Type.Name, m_memberInfo));
 
                 m_possibleCollectionItemRealTypes.Add(yaxColletionItemTypeAttr);
+            }
+            else if (attr is YAXDontSerializeIfNullAttribute)
+            {
+                IsAttributedAsDontSerializeIfNull = true;
             }
             else
             {

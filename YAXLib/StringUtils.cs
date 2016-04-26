@@ -160,7 +160,7 @@ namespace YAXLib
 
 
         /// <summary>
-        /// Exttracts the path and alias from location string.
+        /// Extracts the path and alias from location string.
         /// A pure path location string: level1/level2
         /// A location string augmented with alias: level1/level2#somename
         /// Here path is "level1/level2" and alias is "somename".
