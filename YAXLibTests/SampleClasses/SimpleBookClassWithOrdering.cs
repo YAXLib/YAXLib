@@ -8,7 +8,7 @@ namespace YAXLibTests.SampleClasses
 {
     [ShowInDemoApplication(SortKey = "003")]
 
-    [YAXComment("This example demonstrates serailizing a very simple struct")]
+    [YAXComment("This example demonstrates serailizing a very simple class, but with partial priority ordering.")]
     public class BookClassWithOrdering
     {
         private string _title;
@@ -19,7 +19,11 @@ namespace YAXLibTests.SampleClasses
 
         [YAXDontSerialize]
         public Dictionary<int, string> DecentralizationOrder = new Dictionary<int, string>();
-            
+
+        private string _review;
+        private string _publisher;
+        private string _editor;
+
         [YAXElementOrder(1)]
         public string Title
         {
@@ -42,7 +46,6 @@ namespace YAXLibTests.SampleClasses
             }
         }
 
-        [YAXElementOrder(3)]
         public int PublishYear
         {
             get { return _publishYear; }
@@ -53,7 +56,6 @@ namespace YAXLibTests.SampleClasses
             }
         }
 
-        [YAXElementOrder(2)]
         public double Price
         {
             get { return _price; }
@@ -61,6 +63,36 @@ namespace YAXLibTests.SampleClasses
             {
                 _price = value;
                 DecentralizationOrder.Add(currentElement++, "Price");
+            }
+        }
+
+        public string Review
+        {
+            get { return _review; }
+            set
+            {
+                _review = value; 
+                DecentralizationOrder.Add(currentElement++, "Review");
+            }
+        }
+
+        public string Publisher
+        {
+            get { return _publisher; }
+            set
+            {
+                _publisher = value; 
+                DecentralizationOrder.Add(currentElement++, "Publisher");
+            }
+        }
+
+        public string Editor
+        {
+            get { return _editor; }
+            set
+            {
+                _editor = value; 
+                DecentralizationOrder.Add(currentElement++, "Editor");
             }
         }
 
@@ -76,7 +108,10 @@ namespace YAXLibTests.SampleClasses
                 Title = "Reinforcement Learning an Introduction",
                 Author = "R. S. Sutton & A. G. Barto",
                 PublishYear = 1998,
-                Price = 38.75
+                Price = 38.75,
+                Publisher = "MIT Press",
+                Review = "This book is very good at being a book.",
+                Editor = "MIT Productions"
             };
         }
     }

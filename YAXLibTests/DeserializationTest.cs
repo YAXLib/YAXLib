@@ -618,7 +618,6 @@ namespace YAXLibTests
             Assert.IsNull(deserializedInstance.Next);
         }
 
-
         [Test]
         public void InfiniteLoopCausedBySerializingCalculatedPropertiesCanBePreventedBySettingDontSerializePropertiesWithNoSetter()
         {
@@ -649,14 +648,23 @@ namespace YAXLibTests
             var second = "";
             var third = "";
             var fourth = "";
+            var fifth = "";
+            var sixth = "";
+            var seventh = "";
             obj.DecentralizationOrder.TryGetValue(0, out first);
             obj.DecentralizationOrder.TryGetValue(1, out second);
             obj.DecentralizationOrder.TryGetValue(2, out third);
             obj.DecentralizationOrder.TryGetValue(3, out fourth);
+            obj.DecentralizationOrder.TryGetValue(4, out fifth);
+            obj.DecentralizationOrder.TryGetValue(5, out sixth);
+            obj.DecentralizationOrder.TryGetValue(6, out seventh);
             Assert.AreEqual(first, "Author");
             Assert.AreEqual(second, "Title");
-            Assert.AreEqual(third, "Price");
-            Assert.AreEqual(fourth, "PublishYear");
+            Assert.AreEqual(third, "PublishYear");
+            Assert.AreEqual(fourth, "Price");
+            Assert.AreEqual(fifth, "Review");
+            Assert.AreEqual(sixth, "Publisher");
+            Assert.AreEqual(seventh, "Editor");
         }
     }
 }

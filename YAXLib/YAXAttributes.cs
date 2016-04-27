@@ -307,9 +307,7 @@ namespace YAXLib
         /// </summary>
         /// <remarks>
         /// The element this applies to will be given priority in being serialized or deserialized
-        /// depending on the relative value compared to other elements with take on the given XML namespace. The namespace
-        /// will be added to the root XML element, with the given prefix in the form: 
-        ///     xmlns:prefix="namespace"
+        /// depending on the relative value compared to other child elements.
         /// </remarks>
         /// <param name="order">The priority of the element in serializing and deserializing.</param>
         public YAXElementOrder(int order)
@@ -323,8 +321,7 @@ namespace YAXLib
         /// <summary>
         /// The order used to prioritize serialization and deserialization.
         /// </summary>
-        public int Order
-        { get; private set; }
+        public int Order { get; private set; }
 
         #endregion
     }

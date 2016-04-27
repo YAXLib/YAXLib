@@ -510,7 +510,7 @@ namespace YAXLib
 
         public bool PreservesWhitespace { get; private set; }
 
-        public int Order { get; set; }
+        public int Order { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether this instance has a custom namespace
