@@ -2833,7 +2833,7 @@ namespace YAXLib
         /// <returns>the sequence of fields to be serialized for the serializer's underlying type.</returns>
         private IEnumerable<MemberWrapper> GetFieldsToBeSerialized()
         {
-            return GetFieldsToBeSerialized(m_udtWrapper);
+            return GetFieldsToBeSerialized(m_udtWrapper).OrderBy(t=>t.Order);
         }
 
         /// <summary>
