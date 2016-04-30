@@ -1,4 +1,4 @@
-[2.14] Feb 13, 2015
+[2.14] Apr 30, 2016
    * Fixed a bug with deserializing Double/Sinble/BigInteger Min and Max values. 
      Thanks go to CodePlex user [vincentbl](https://www.codeplex.com/site/users/view/vincentbl)
      For reporting and suggesting the fix for the issue.
@@ -7,7 +7,12 @@
    * Renamed constructor option `DontSerializeCyclingReferences` to `ThrowUponSerializingCyclingReferences`
      and inverted its intention at the same time. This change will disable serializing cycling
      references by default.
-
+   * Added `YAXElementOrder` attribute to specify order upon which peroperties/fields are serialized/deserialized
+     Thanks go to GitHub user [ACV](https://github.com/acvanzant) for developing this feature.
+   * Added `YAXDontSerializeIfNullAttribute` attribute to prevent serialization of a specific field
+     or property when their value is null.
+     Thanks go to GitHub user [ACV](https://github.com/acvanzant) for developing this feature.
+     
 [2.13] May 18, 2014
    * Fixed a bug and added unit tests related to serializing path like aliases with one 
      letter (e.g., './B'). Thanks go to CodeProject user B.O.B. for reporting this bug.

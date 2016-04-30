@@ -295,8 +295,7 @@ namespace YAXLib
     }
 
     /// <summary>
-    /// Prioritizes a field or property for serializing/deserializing.
-    /// Unattributed fields or properties will be serialized/deserialized after attributed ones.
+    /// Specifies the order upon which a field or property is serialized / deserialized.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class YAXElementOrder : YAXBaseAttribute
@@ -336,8 +335,8 @@ namespace YAXLib
     }
 
     /// <summary>
-    /// Prevents serialization of some field or property when null.
-    /// This attribute is applicable to fields and properties when null.
+    /// Prevents serialization of fields or properties when their value is null.
+    /// This attribute is applicable to fields and properties.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class YAXDontSerializeIfNullAttribute : YAXBaseAttribute
