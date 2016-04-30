@@ -2107,24 +2107,9 @@ namespace YAXLibTests
             catch (Exception ex)
             {
                 var ser = new YAXSerializer(ex.GetType());
-                string exResult = ser.Serialize(ex);
-
-                var newEx= ser.Deserialize(exResult);
-
-                var declaringType = ex.TargetSite.DeclaringType;
-
-                var type = declaringType.GetType();
-                var serRuntimeType = new YAXSerializer(type);
-
-                string fullName = declaringType.AssemblyQualifiedName;
-                
-                string result = serRuntimeType.Serialize(declaringType);
-                Console.WriteLine(result);
-
+                string exceptionSerialized = ser.Serialize(ex);
+                Assert.That(exceptionSerialized, Is.Not.Empty);
             }
-
-
         }
-
     }
 }
