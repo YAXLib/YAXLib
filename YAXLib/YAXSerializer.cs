@@ -1959,8 +1959,14 @@ namespace YAXLib
         {
             Type memberType = member.MemberType;
 
+            // when serializing collection with no containing element, then the real type attribute applies to the class
+            // containing the collection, not the collection itself. That's because the containing element of collection is not 
+            // serialized. In this case the flag `isRealTypeAttributeNotRelevant` is set to true.
+            bool isRealTypeAttributeNotRelevant = member.CollectionAttributeInstance != null
+                && member.CollectionAttributeInstance.SerializationType == YAXCollectionSerializationTypes.RecursiveWithNoContainingElement;
+
             // try to retrieve the real-type if specified
-            if (xelemValue != null)
+            if (xelemValue != null && !isRealTypeAttributeNotRelevant)
             {
                 XAttribute realTypeAttribute = xelemValue.Attribute_NamespaceSafe(m_yaxLibNamespaceUri + m_trueTypeAttrName, m_documentDefaultNamespace);
                 if (realTypeAttribute != null)

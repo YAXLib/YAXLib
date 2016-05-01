@@ -2194,7 +2194,5 @@ namespace YAXLibTests
 
             Assert.That(result, Is.EqualTo(expectedResult));
         }
-
-
     }
 }

@@ -17,6 +17,7 @@ using NUnit.Framework;
 
 using YAXLib;
 using YAXLibTests.SampleClasses;
+using YAXLibTests.SampleClasses.PolymorphicSerialization;
 using YAXLibTests.SampleClasses.SelfReferencingObjects;
 
 namespace YAXLibTests
@@ -667,5 +668,24 @@ namespace YAXLibTests
             Assert.AreEqual(sixth, "Publisher");
             Assert.AreEqual(seventh, "Editor");
         }
+
+        [Test]
+        public void DeserializingPolymorphicCollectionWithNoContainingElement()
+        {
+            var ser = new YAXSerializer(typeof(BaseContainer));
+            var container = new DerivedContainer
+            {
+                Items = new BaseItem[]
+                {
+                    new BaseItem { Data = "Some Data" }
+                }
+            };
+            string result = ser.Serialize(container); 
+            var deserialzedInstance = ser.Deserialize(result) as BaseContainer;
+
+            Assert.That(deserialzedInstance.Items[0].Data, Is.EqualTo("Some Data"));
+            Assert.That(deserialzedInstance.Items.Length, Is.EqualTo(1));
+        }
+
     }
 }
