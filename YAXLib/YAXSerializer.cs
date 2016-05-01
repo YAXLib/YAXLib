@@ -548,6 +548,9 @@ namespace YAXLib
         /// serialization of the specified object</returns>
         private XElement SerializeBase(object obj)
         {
+            if (obj == null)
+                return new XElement(m_udtWrapper.Alias);
+
             if (!m_type.IsInstanceOfType(obj))
                 throw new YAXObjectTypeMismatch(m_type, obj.GetType());
 
@@ -1331,26 +1334,28 @@ namespace YAXLib
         /// <returns>the enclosing XML element.</returns>
         private XElement AddObjectToElement(XElement elem, XName alias, object obj)
         {
-            UdtWrapper udt = TypeWrappersPool.Pool.GetTypeWrapper(obj.GetType(), this);
+            UdtWrapper udt = null;
+            if (obj != null)
+                udt = TypeWrappersPool.Pool.GetTypeWrapper(obj.GetType(), this);
 
-            if (alias == null)
+            if (alias == null && udt != null)
                 alias = udt.Alias.OverrideNsIfEmpty(TypeNamespace);
 
             XElement elemToAdd = null;
 
-            if (udt.IsTreatedAsDictionary)
+            if (udt != null && udt.IsTreatedAsDictionary)
             {
                 elemToAdd = MakeDictionaryElement(elem, alias, obj, null, null);
                 if(elemToAdd.Parent != elem)
                     elem.Add(elemToAdd);
             }
-            else if (udt.IsTreatedAsCollection)
+            else if (udt != null && udt.IsTreatedAsCollection)
             {
                 elemToAdd = MakeCollectionElement(elem, alias, obj, null, null);
                 if(elemToAdd.Parent != elem)
                     elem.Add(elemToAdd);
             }
-            else if (udt.IsEnum)
+            else if (udt != null && udt.IsEnum)
             {
                 bool alreadyAdded;
                 elemToAdd = MakeBaseElement(elem, alias, udt.EnumWrapper.GetAlias(obj), out alreadyAdded);
@@ -1384,14 +1389,10 @@ namespace YAXLib
             YAXCollectionAttribute collectionAttrInst, string format)
         {
             if (elementValue == null)
-            {
                 return new XElement(elementName);
-            }
 
             if (!(elementValue is IEnumerable))
-            {
                 throw new ArgumentException("elementValue must be an IEnumerable");
-            }
 
             // serialize other non-collection members
             var ser = NewInternalSerializer(elementValue.GetType(), elementName.Namespace, insertionLocation);
@@ -1419,11 +1420,10 @@ namespace YAXLib
             }
 
             Type colItemType = ReflectionUtils.GetCollectionItemType(elementValue.GetType());
+            UdtWrapper colItemsUdt = TypeWrappersPool.Pool.GetTypeWrapper(colItemType, this);
 
             if (serType == YAXCollectionSerializationTypes.Serially && !ReflectionUtils.IsBasicType(colItemType))
                 serType = YAXCollectionSerializationTypes.Recursive;
-
-            UdtWrapper colItemsUdt = TypeWrappersPool.Pool.GetTypeWrapper(colItemType, this);
 
             if (serType == YAXCollectionSerializationTypes.Serially && elemToAdd.IsEmpty)
             {
@@ -1468,12 +1468,19 @@ namespace YAXLib
                     
                     if(curElemName == null)
                     {
-                        UdtWrapper udt = TypeWrappersPool.Pool.GetTypeWrapper(obj.GetType(), this);
-                        curElemName = udt.Alias;
+                        if (obj != null)
+                        {
+                            UdtWrapper udt = TypeWrappersPool.Pool.GetTypeWrapper(obj.GetType(), this);
+                            curElemName = udt.Alias;
+                        }
+                        else
+                        {
+                            curElemName = colItemsUdt.Alias;
+                        }
                     }
 
-                    XElement itemElem = this.AddObjectToElement(elemToAdd, curElemName.OverrideNsIfEmpty(elementName.Namespace), objToAdd);
-                    if (!obj.GetType().EqualsOrIsNullableOf(colItemType))
+                    XElement itemElem = AddObjectToElement(elemToAdd, curElemName.OverrideNsIfEmpty(elementName.Namespace), objToAdd);
+                    if (obj != null && !obj.GetType().EqualsOrIsNullableOf(colItemType))
                     {
                         itemElem.AddAttributeNamespaceSafe(m_yaxLibNamespaceUri + m_trueTypeAttrName, obj.GetType().FullName, m_documentDefaultNamespace);
                         if (itemElem.Parent == null) // i.e., it has been removed, e.g., because all its members have been serialized outside the element

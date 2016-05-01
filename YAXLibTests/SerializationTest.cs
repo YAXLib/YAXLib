@@ -2111,5 +2111,90 @@ namespace YAXLibTests
                 Assert.That(exceptionSerialized, Is.Not.Empty);
             }
         }
+
+        [Test]
+        public void PolymorphicDictionaryWithValueAsNull()
+        {
+            var dict = new Dictionary<string, object>();
+            dict.Add("foo", null);
+            YAXSerializer serializer = new YAXSerializer(typeof(Dictionary<string, object>));
+            string result = serializer.Serialize(dict);
+
+            const string expectedResult = 
+@"<DictionaryOfStringObject>
+  <KeyValuePairOfStringObject>
+    <Key>foo</Key>
+    <Value />
+  </KeyValuePairOfStringObject>
+</DictionaryOfStringObject>";
+            Assert.That(result, Is.EqualTo(expectedResult));
+        }
+
+        [Test]
+        public void CollectionWithNullElements()
+        {
+            var list = new List<string>();
+            list.Add("1");
+            list.Add(null);
+            list.Add("3");
+            YAXSerializer serializer = new YAXSerializer(typeof(List<string>));
+            string result = serializer.Serialize(list);
+            const string @expectedResult = 
+@"<ListOfString>
+  <String>1</String>
+  <String />
+  <String>3</String>
+</ListOfString>";
+            Assert.That(result, Is.EqualTo(expectedResult));
+        }
+
+        [Test]
+        public void PolymorphicCollectionWithNullElements()
+        {
+            var list = new List<object>();
+            list.Add("1");
+            list.Add(null);
+            list.Add(3);
+
+            YAXSerializer serializer = new YAXSerializer(typeof(List<object>));
+            string result = serializer.Serialize(list);
+            const string expectedResult = 
+@"<ListOfObject xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
+  <String yaxlib:realtype=""System.String"">1</String>
+  <Object />
+  <Int32 yaxlib:realtype=""System.Int32"">3</Int32>
+</ListOfObject>";
+            Assert.That(result, Is.EqualTo(expectedResult));
+        }
+
+        [Test]
+        public void SerializingNullValues()
+        {
+            var book = new Book();
+            book.Price = 10;
+            book.Title = null;
+
+            var ser = new YAXSerializer(typeof(Book));
+            string result = ser.Serialize(null);
+            const string expectedResult = "<Book />";
+
+            Assert.That(result, Is.EqualTo(expectedResult));
+        }
+
+        [Test]
+        public void PolymorphicSerializationOfNullValues()
+        {
+            var book = new Book();
+            book.Price = 10;
+            book.Title = null;
+
+            var ser = new YAXSerializer(typeof(object));
+            string result = ser.Serialize(null);
+            const string expectedResult = "<Object />";
+
+            Assert.That(result, Is.EqualTo(expectedResult));
+        }
+
+
     }
 }
