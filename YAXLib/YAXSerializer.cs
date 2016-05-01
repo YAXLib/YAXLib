@@ -1468,15 +1468,7 @@ namespace YAXLib
                     
                     if(curElemName == null)
                     {
-                        if (obj != null)
-                        {
-                            UdtWrapper udt = TypeWrappersPool.Pool.GetTypeWrapper(obj.GetType(), this);
-                            curElemName = udt.Alias;
-                        }
-                        else
-                        {
-                            curElemName = colItemsUdt.Alias;
-                        }
+                        curElemName = colItemsUdt.Alias;
                     }
 
                     XElement itemElem = AddObjectToElement(elemToAdd, curElemName.OverrideNsIfEmpty(elementName.Namespace), objToAdd);

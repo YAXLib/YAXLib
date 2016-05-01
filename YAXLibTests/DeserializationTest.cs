@@ -687,5 +687,24 @@ namespace YAXLibTests
             Assert.That(deserialzedInstance.Items.Length, Is.EqualTo(1));
         }
 
+        [Test]
+        public void DeserializingPolymorphicCollectionWithPolymorphicItems()
+        {
+            var ser = new YAXSerializer(typeof(BaseContainer));
+            var container = new BaseContainer
+            {
+                Items = new BaseItem[]
+                {
+                    new DerivedItem { Data = "Some Data" }
+                }
+            };
+            string result = ser.Serialize(container); // This works correct
+            var deserialzedInstance = ser.Deserialize(result) as BaseContainer;
+
+            Assert.That(deserialzedInstance.Items[0], Is.InstanceOf<DerivedItem>());
+            Assert.That(deserialzedInstance.Items[0].Data, Is.EqualTo("Some Data"));
+            Assert.That(deserialzedInstance.Items.Length, Is.EqualTo(1));
+        }
+
     }
 }

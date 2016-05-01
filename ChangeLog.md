@@ -12,6 +12,8 @@
    * Added `YAXDontSerializeIfNullAttribute` attribute to prevent serialization of a specific field
      or property when their value is null.
      Thanks go to GitHub user [ACV](https://github.com/acvanzant) for developing this feature.
+   * Fixed bugs about `null` collection and dictionary values
+   * Fixed bugs about deserializing polymorphic collections when serialized with no containing element
      
 [2.13] May 18, 2014
    * Fixed a bug and added unit tests related to serializing path like aliases with one 

@@ -1059,19 +1059,19 @@ namespace YAXLibTests
     <StringInClass2>SingleRef</StringInClass2>
   </SingleRef>
   <ListOfSamples>
-    <Class1 yaxlib:realtype=""YAXLibTests.SampleClasses.Class1"">
+    <ISample yaxlib:realtype=""YAXLibTests.SampleClasses.Class1"">
       <IntInInterface>1</IntInInterface>
       <DoubleInClass1>1</DoubleInClass1>
-    </Class1>
-    <Class2 yaxlib:realtype=""YAXLibTests.SampleClasses.Class2"">
+    </ISample>
+    <ISample yaxlib:realtype=""YAXLibTests.SampleClasses.Class2"">
       <IntInInterface>2</IntInInterface>
       <StringInClass2>Class2</StringInClass2>
-    </Class2>
-    <Class3_1 yaxlib:realtype=""YAXLibTests.SampleClasses.Class3_1"">
+    </ISample>
+    <ISample yaxlib:realtype=""YAXLibTests.SampleClasses.Class3_1"">
       <StringInClass3_1>Class3_1</StringInClass3_1>
       <IntInInterface>3</IntInInterface>
       <DoubleInClass1>3</DoubleInClass1>
-    </Class3_1>
+    </ISample>
   </ListOfSamples>
   <DictSample2Int>
     <KeyValuePairOfISampleInt32>
@@ -1177,10 +1177,10 @@ namespace YAXLibTests
 @"<!-- This sample demonstrates serialization of non-generic collection classes -->
 <NonGenericCollectionsSample xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
   <ObjList Author_s_Name=""Charles"">
-    <Int32 yaxlib:realtype=""System.Int32"">1</Int32>
-    <Double yaxlib:realtype=""System.Double"">3</Double>
-    <String yaxlib:realtype=""System.String"">Hello</String>
-    <DateTime yaxlib:realtype=""System.DateTime"">03/04/2010 00:00:00</DateTime>
+    <Object yaxlib:realtype=""System.Int32"">1</Object>
+    <Object yaxlib:realtype=""System.Double"">3</Object>
+    <Object yaxlib:realtype=""System.String"">Hello</Object>
+    <Object yaxlib:realtype=""System.DateTime"">03/04/2010 00:00:00</Object>
     <Something>
       <Or>
         <Another>
@@ -1188,12 +1188,12 @@ namespace YAXLibTests
         </Another>
       </Or>
     </Something>
-    <Author yaxlib:realtype=""YAXLibTests.SampleClasses.Author"" />
+    <Object yaxlib:realtype=""YAXLibTests.SampleClasses.Author"" />
   </ObjList>
   <TheArrayList Author_s_Name=""Steve"">
-    <Int32 yaxlib:realtype=""System.Int32"">2</Int32>
-    <Double yaxlib:realtype=""System.Double"">8.5</Double>
-    <String yaxlib:realtype=""System.String"">Hi</String>
+    <Object yaxlib:realtype=""System.Int32"">2</Object>
+    <Object yaxlib:realtype=""System.Double"">8.5</Object>
+    <Object yaxlib:realtype=""System.String"">Hi</Object>
     <Something>
       <Or>
         <Another>
@@ -1201,7 +1201,7 @@ namespace YAXLibTests
         </Another>
       </Or>
     </Something>
-    <Author yaxlib:realtype=""YAXLibTests.SampleClasses.Author"" />
+    <Object yaxlib:realtype=""YAXLibTests.SampleClasses.Author"" />
   </TheArrayList>
   <TheHashtable>
 {0}
@@ -1209,56 +1209,56 @@ namespace YAXLibTests
 {2}
   </TheHashtable>
   <TheQueue>
-    <Int32 yaxlib:realtype=""System.Int32"">10</Int32>
-    <Int32 yaxlib:realtype=""System.Int32"">20</Int32>
-    <Int32 yaxlib:realtype=""System.Int32"">30</Int32>
+    <Object yaxlib:realtype=""System.Int32"">10</Object>
+    <Object yaxlib:realtype=""System.Int32"">20</Object>
+    <Object yaxlib:realtype=""System.Int32"">30</Object>
   </TheQueue>
   <TheStack>
-    <Int32 yaxlib:realtype=""System.Int32"">300</Int32>
-    <Int32 yaxlib:realtype=""System.Int32"">200</Int32>
-    <Int32 yaxlib:realtype=""System.Int32"">100</Int32>
+    <Object yaxlib:realtype=""System.Int32"">300</Object>
+    <Object yaxlib:realtype=""System.Int32"">200</Object>
+    <Object yaxlib:realtype=""System.Int32"">100</Object>
   </TheStack>
   <TheSortedList>
-    <DictionaryEntry yaxlib:realtype=""System.Collections.DictionaryEntry"">
+    <Object yaxlib:realtype=""System.Collections.DictionaryEntry"">
       <Key yaxlib:realtype=""System.Int32"">1</Key>
       <Value yaxlib:realtype=""System.Int32"">2</Value>
-    </DictionaryEntry>
-    <DictionaryEntry yaxlib:realtype=""System.Collections.DictionaryEntry"">
+    </Object>
+    <Object yaxlib:realtype=""System.Collections.DictionaryEntry"">
       <Key yaxlib:realtype=""System.Int32"">5</Key>
       <Value yaxlib:realtype=""System.Int32"">7</Value>
-    </DictionaryEntry>
-    <DictionaryEntry yaxlib:realtype=""System.Collections.DictionaryEntry"">
+    </Object>
+    <Object yaxlib:realtype=""System.Collections.DictionaryEntry"">
       <Key yaxlib:realtype=""System.Int32"">8</Key>
       <Value yaxlib:realtype=""System.Int32"">2</Value>
-    </DictionaryEntry>
+    </Object>
   </TheSortedList>
   <TheBitArray>
-    <Boolean yaxlib:realtype=""System.Boolean"">False</Boolean>
-    <Boolean yaxlib:realtype=""System.Boolean"">True</Boolean>
-    <Boolean yaxlib:realtype=""System.Boolean"">False</Boolean>
-    <Boolean yaxlib:realtype=""System.Boolean"">False</Boolean>
-    <Boolean yaxlib:realtype=""System.Boolean"">False</Boolean>
-    <Boolean yaxlib:realtype=""System.Boolean"">False</Boolean>
-    <Boolean yaxlib:realtype=""System.Boolean"">True</Boolean>
-    <Boolean yaxlib:realtype=""System.Boolean"">False</Boolean>
-    <Boolean yaxlib:realtype=""System.Boolean"">False</Boolean>
-    <Boolean yaxlib:realtype=""System.Boolean"">False</Boolean>
+    <Object yaxlib:realtype=""System.Boolean"">False</Object>
+    <Object yaxlib:realtype=""System.Boolean"">True</Object>
+    <Object yaxlib:realtype=""System.Boolean"">False</Object>
+    <Object yaxlib:realtype=""System.Boolean"">False</Object>
+    <Object yaxlib:realtype=""System.Boolean"">False</Object>
+    <Object yaxlib:realtype=""System.Boolean"">False</Object>
+    <Object yaxlib:realtype=""System.Boolean"">True</Object>
+    <Object yaxlib:realtype=""System.Boolean"">False</Object>
+    <Object yaxlib:realtype=""System.Boolean"">False</Object>
+    <Object yaxlib:realtype=""System.Boolean"">False</Object>
   </TheBitArray>
 </NonGenericCollectionsSample>";
 
-            string part1 = @"    <DictionaryEntry yaxlib:realtype=""System.Collections.DictionaryEntry"">
+            string part1 = @"    <Object yaxlib:realtype=""System.Collections.DictionaryEntry"">
       <Key yaxlib:realtype=""System.DateTime"">02/01/2009 00:00:00</Key>
       <Value yaxlib:realtype=""System.Int32"">7</Value>
-    </DictionaryEntry>";
+    </Object>";
 
-            string part2 = @"    <DictionaryEntry yaxlib:realtype=""System.Collections.DictionaryEntry"">
+            string part2 = @"    <Object yaxlib:realtype=""System.Collections.DictionaryEntry"">
       <Key yaxlib:realtype=""System.String"">Tom</Key>
       <Value yaxlib:realtype=""System.String"">Sam</Value>
-    </DictionaryEntry>";
-            string part3 = @"    <DictionaryEntry yaxlib:realtype=""System.Collections.DictionaryEntry"">
+    </Object>";
+            string part3 = @"    <Object yaxlib:realtype=""System.Collections.DictionaryEntry"">
       <Key yaxlib:realtype=""System.Double"">1</Key>
       <Value yaxlib:realtype=""System.String"">Tim</Value>
-    </DictionaryEntry>";
+    </Object>";
 
             string possibleResult1 = String.Format(result, part1, part2, part3);
             string possibleResult2 = String.Format(result, part1, part3, part2);
@@ -1586,9 +1586,9 @@ namespace YAXLibTests
 
             const string expectedResult =
 @"<Object xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"" yaxlib:realtype=""System.Collections.Generic.List`1[[System.Object, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"">
-  <Int32 yaxlib:realtype=""System.Int32"">1</Int32>
-  <Int32 yaxlib:realtype=""System.Int32"">2</Int32>
-  <Int32 yaxlib:realtype=""System.Int32"">3</Int32>
+  <Object yaxlib:realtype=""System.Int32"">1</Object>
+  <Object yaxlib:realtype=""System.Int32"">2</Object>
+  <Object yaxlib:realtype=""System.Int32"">3</Object>
 </Object>";
 
             Assert.That(xmlResult.StripTypeAssemblyVersion(), Is.EqualTo(expectedResult.StripTypeAssemblyVersion()));
@@ -2160,9 +2160,9 @@ namespace YAXLibTests
             string result = serializer.Serialize(list);
             const string expectedResult = 
 @"<ListOfObject xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
-  <String yaxlib:realtype=""System.String"">1</String>
+  <Object yaxlib:realtype=""System.String"">1</Object>
   <Object />
-  <Int32 yaxlib:realtype=""System.Int32"">3</Int32>
+  <Object yaxlib:realtype=""System.Int32"">3</Object>
 </ListOfObject>";
             Assert.That(result, Is.EqualTo(expectedResult));
         }
