@@ -2,11 +2,32 @@
 
 namespace YAXLibTests.SampleClasses
 {
+    public class AttributeInheritanceWithPropertyOverride : AttributeInheritance
+    {
+        public override string Gender { get { return "Female"; } }  // should inherit the base's YAXSerializeAs attribute
+
+        [YAXSerializeAs("CurrentAge")]   // should override the base's YAXSerializeAs attribute
+        public override double Age
+        {
+            get { return base.Age; }
+            set { base.Age = value; }
+        }
+
+        public static new AttributeInheritanceWithPropertyOverride GetSampleInstance()
+        {
+            return new AttributeInheritanceWithPropertyOverride()
+            {
+                Name = "Sally",
+                Age = 38.7
+            };
+        }
+    }
+
     [YAXSerializeAs("Child")]
     public class AttributeInheritance : AttributeInheritanceBase
     {
         [YAXSerializeAs("TheAge")]
-        public double Age { get; set; }
+        public virtual double Age { get; set; }
 
         public static AttributeInheritance GetSampleInstance()
         {
@@ -21,7 +42,6 @@ namespace YAXLibTests.SampleClasses
         {
             return GeneralToStringProvider.GeneralToString(this);
         }
-        
     }
 
     [YAXSerializeAs("Base")]
@@ -29,5 +49,8 @@ namespace YAXLibTests.SampleClasses
     {
         [YAXSerializeAs("TheName")]
         public string Name { get; set; }
+
+        [YAXSerializeAs("TheGender")]
+        public virtual string Gender { get { return "Unknown";  } }
     }
 }

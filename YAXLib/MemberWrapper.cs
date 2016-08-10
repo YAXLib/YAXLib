@@ -129,14 +129,14 @@ namespace YAXLib
             var attrsToProcessEarlier = new HashSet<Type> {typeof (YAXCustomSerializerAttribute), typeof (YAXCollectionAttribute)};
             foreach (var attrType in attrsToProcessEarlier)
             {
-                var customSerAttrs = m_memberInfo.GetCustomAttributes(attrType, true);
+                var customSerAttrs = Attribute.GetCustomAttributes(m_memberInfo, attrType, true);
                 foreach (var attr in customSerAttrs)
                 {
                     ProcessYaxAttribute(attr);
                 }
             }
 
-            foreach (var attr in m_memberInfo.GetCustomAttributes(true))
+            foreach (var attr in Attribute.GetCustomAttributes(m_memberInfo, true))
             {
                 // no need to preces, it has been proccessed earlier
                 if (attrsToProcessEarlier.Contains(attr.GetType()))
