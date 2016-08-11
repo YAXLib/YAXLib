@@ -1794,12 +1794,27 @@ namespace YAXLibTests
 @"<Child>
   <TheAge>30.2</TheAge>
   <TheName>John</TheName>
+  <TheGender>Unknown</TheGender>
 </Child>";
             var serializer = new YAXSerializer(typeof(AttributeInheritance), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(AttributeInheritance.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
 
+        [Test]
+        public void AttributeInheritanceWithPropertyOverrideTest()
+        {
+            const string result =
+@"<Child>
+  <TheGender>Female</TheGender>
+  <CurrentAge>38.7</CurrentAge>
+  <TheName>Sally</TheName>
+</Child>";
+            var serializer = new YAXSerializer(typeof(AttributeInheritanceWithPropertyOverride), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            string got = serializer.Serialize(AttributeInheritanceWithPropertyOverride.GetSampleInstance());
+            Assert.That(got, Is.EqualTo(result));
+        }
+        
         [Test]
         public void ListOfPolymorphicObjectsTest()
         {
