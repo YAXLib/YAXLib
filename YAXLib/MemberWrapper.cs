@@ -125,6 +125,12 @@ namespace YAXLib
 
             TreatErrorsAs = callerSerializer != null ? callerSerializer.DefaultExceptionType : YAXExceptionTypes.Error;
 
+            if (callerSerializer?.ShouldSerializeProcessor != null)
+            {
+                if (!callerSerializer.ShouldSerializeProcessor.ShouldSerialize(m_memberInfo))
+                    IsAttributedAsDontSerialize = true;
+            }
+
             // discovver YAXCustomSerializerAttributes earlier, because some other attributes depend on it
             var attrsToProcessEarlier = new HashSet<Type> {typeof (YAXCustomSerializerAttribute), typeof (YAXCollectionAttribute)};
             foreach (var attrType in attrsToProcessEarlier)
@@ -145,6 +151,7 @@ namespace YAXLib
                 if (attr is YAXBaseAttribute)
                     ProcessYaxAttribute(attr);
             }
+
 
             // now override some values from memeber-type-wrapper into member-wrapper
             // if member-type has collection attributes while the member itself does not have them, 

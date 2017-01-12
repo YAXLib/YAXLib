@@ -227,6 +227,8 @@ namespace YAXLib
             }
         }
 
+        public IShouldSerializeProcessor ShouldSerializeProcessor { get; set; } = null;
+
         /// <summary>
         /// Gets the exception handling policy.
         /// </summary>
@@ -2564,6 +2566,7 @@ namespace YAXLib
         private YAXSerializer NewInternalSerializer(Type type, XNamespace namespaceToOverride, XElement insertionLocation)
         {
             var serializer = new YAXSerializer(type, m_exceptionPolicy, m_defaultExceptionType, m_serializationOption);
+            serializer.ShouldSerializeProcessor = ShouldSerializeProcessor;
             serializer.MaxRecursion = MaxRecursion == 0 ? 0 : MaxRecursion - 1;
             serializer.m_serializedStack = m_serializedStack;
             serializer.m_documentDefaultNamespace = m_documentDefaultNamespace;
