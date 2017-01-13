@@ -125,24 +125,22 @@ namespace YAXLib
 
             TreatErrorsAs = callerSerializer != null ? callerSerializer.DefaultExceptionType : YAXExceptionTypes.Error;
 
-            if (callerSerializer?.ShouldSerializeProcessor != null)
-            {
-                if (!callerSerializer.ShouldSerializeProcessor.ShouldSerialize(m_memberInfo))
-                    IsAttributedAsDontSerialize = true;
-            }
+            Attribute[] attributes;
+            attributes = callerSerializer?.AttributesPreprocessor != null ? callerSerializer?.AttributesPreprocessor.PreProcessAttributes(m_memberInfo) : Attribute.GetCustomAttributes(m_memberInfo, true);
 
             // discovver YAXCustomSerializerAttributes earlier, because some other attributes depend on it
             var attrsToProcessEarlier = new HashSet<Type> {typeof (YAXCustomSerializerAttribute), typeof (YAXCollectionAttribute)};
             foreach (var attrType in attrsToProcessEarlier)
             {
-                var customSerAttrs = Attribute.GetCustomAttributes(m_memberInfo, attrType, true);
+
+                var customSerAttrs = attributes.Where(a => attrsToProcessEarlier.Contains(a.GetType()));
                 foreach (var attr in customSerAttrs)
                 {
                     ProcessYaxAttribute(attr);
                 }
             }
 
-            foreach (var attr in Attribute.GetCustomAttributes(m_memberInfo, true))
+            foreach (var attr in attributes)
             {
                 // no need to preces, it has been proccessed earlier
                 if (attrsToProcessEarlier.Contains(attr.GetType()))

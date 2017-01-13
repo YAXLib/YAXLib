@@ -73,7 +73,7 @@
   <ItemGroup>
     <Compile Include="Enums.cs" />
     <Compile Include="EnumWrapper.cs" />
-    <Compile Include="IShouldSerializeProcessor.cs" />
+    <Compile Include="IAttributesPreprocessor.cs" />
     <Compile Include="ICustomSerializer.cs" />
     <Compile Include="KnownTypes.cs" />
     <Compile Include="MemberWrapper.cs" />
