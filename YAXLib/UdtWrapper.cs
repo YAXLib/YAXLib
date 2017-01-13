@@ -89,7 +89,6 @@ namespace YAXLib
                 if (attr is YAXBaseAttribute)
                     ProcessYAXAttribute(attr);
             }
-
         }
 
         /// <summary>
@@ -399,7 +398,6 @@ namespace YAXLib
         /// the whole document).
         /// </remarks>
         public string NamespacePrefix { get; private set; }
-
 
 
         /// <summary>
