@@ -27,10 +27,14 @@ namespace YAXLibTests
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
         {
-            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-        }
+#if FXCORE
+			CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+#else
+			Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+#endif
+		}
 
-        [Test]
+		[Test]
         public void BasicTypeSerializationTest()
         {
             var objs = new object[] {123, 654.321, "SomeString", 24234L};
@@ -113,26 +117,44 @@ namespace YAXLibTests
         public void CultureChangeTest()
         {
             var curCulture = CultureInfo.CurrentCulture;
-
-            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("fr-FR");
-            var serializer = new YAXSerializer(typeof(CultureSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+#if FXCORE
+			CultureInfo.CurrentCulture = new CultureInfo("fr-FR");
+#else
+			Thread.CurrentThread.CurrentCulture = new CultureInfo("fr-FR");
+#endif
+			var serializer = new YAXSerializer(typeof(CultureSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string frResult = serializer.Serialize(CultureSample.GetSampleInstance());
 
-            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("fa-IR");
-            serializer = new YAXSerializer(typeof(CultureSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+#if FXCORE
+			CultureInfo.CurrentCulture = new CultureInfo("fa-FR");
+#else
+			Thread.CurrentThread.CurrentCulture = new CultureInfo("fa-IR");
+#endif
+
+			serializer = new YAXSerializer(typeof(CultureSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string faResult = serializer.Serialize(CultureSample.GetSampleInstance());
+#if FXCORE
+			CultureInfo.CurrentCulture = new CultureInfo("de-DE");
+#else
+			Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
+#endif
 
-            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("de-DE");
-            serializer = new YAXSerializer(typeof(CultureSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+			serializer = new YAXSerializer(typeof(CultureSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string deResult = serializer.Serialize(CultureSample.GetSampleInstance());
+#if FXCORE
+			CultureInfo.CurrentCulture = new CultureInfo("en-US");
+#else
+			Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+#endif
 
-            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
-            serializer = new YAXSerializer(typeof(CultureSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+			serializer = new YAXSerializer(typeof(CultureSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string usResult = serializer.Serialize(CultureSample.GetSampleInstance());
-
-            Thread.CurrentThread.CurrentCulture = curCulture;
-
-            Assert.That(faResult, Is.EqualTo(frResult), "Comparing FR and FA");
+#if FXCORE
+			CultureInfo.CurrentCulture = curCulture;
+#else
+			Thread.CurrentThread.CurrentCulture = curCulture;
+#endif
+			Assert.That(faResult, Is.EqualTo(frResult), "Comparing FR and FA");
             Assert.That(deResult, Is.EqualTo(faResult), "Comparing FA and DE");
             Assert.That(usResult, Is.EqualTo(deResult), "Comparing DE and US");
 
@@ -295,7 +317,7 @@ namespace YAXLibTests
             string got = serializer.Serialize(ProgrammingLanguage.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-
+#if !FXCORE
         [Test]
         public void ColorExampleTest()
         {
@@ -308,7 +330,7 @@ namespace YAXLibTests
             string got = serializer.Serialize(ColorExample.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-
+#endif
         [Test]
         public void MultiLevelClassTest()
         {
@@ -368,8 +390,8 @@ namespace YAXLibTests
 </FormattingExample>";
 
             result = String.Format(result,
-                FormattingExample.GetSampleInstance().CreationDate.ToLongDateString(),
-                FormattingExample.GetSampleInstance().ModificationDate.ToShortDateString()
+                FormattingExample.GetSampleInstance().CreationDate.ToString(),
+                FormattingExample.GetSampleInstance().ModificationDate.ToString()
                 );
 
             var serializer = new YAXSerializer(typeof(FormattingExample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
@@ -2117,7 +2139,7 @@ namespace YAXLibTests
             {
                 throw new ArgumentOutOfRangeException("index",
                     new InvalidOperationException("Inner exception 1", 
-                        new ApplicationException("Inner Exception 2")));
+                        new Exception("Inner Exception 2")));
             }
             catch (Exception ex)
             {

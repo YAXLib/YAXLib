@@ -1,0 +1,37 @@
+{
+    "version": "1.0.0-*",
+
+    "dependencies": {
+        "dotnet-test-nunit": "3.4.0-beta-3",
+        "Microsoft.DotNet.InternalAbstractions": "1.0.500-preview2-1-003177", /* Required for dotnet-test-nunit, manually added */
+        "NETStandard.Library": "1.6.1",
+        "NUnit": "3.6.0",
+        "System.Drawing.Primitives": "4.3.0",
+        "YAXLib": "1.0.0-*"
+    },
+
+    "testRunner": "nunit",
+
+    "frameworks": {
+        "netcoreapp1.0": {
+            "imports": "portable-net45+win8",
+            "dependencies": {
+                "Microsoft.NETCore.App": {
+                    "version": "1.0.0-*",
+                    "type": "platform"
+                }
+            }
+        }
+    },
+
+    "buildOptions": {
+        "define": [ "FXCORE" ],
+        "compile": {
+            "excludeFiles": [],
+            "exclude": [ "project.*.json" ]
+        },
+        "keyFile": "../Key/YAXLib.DevKey.snk",
+        "xmlDoc": false
+    }
+
+}

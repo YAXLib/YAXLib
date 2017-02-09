@@ -7,7 +7,8 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses.Namespace
 {
-    [YAXSerializeAs("MobilePhone")]
+#if !FXCORE
+	[YAXSerializeAs("MobilePhone")]
     public class CellPhone_CollectionNamespaceForAllItems
     {
         public string DeviceBrand { get; set; }
@@ -46,4 +47,5 @@ namespace YAXLibTests.SampleClasses.Namespace
             };
         }
     }
+#endif
 }

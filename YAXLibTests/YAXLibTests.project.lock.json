@@ -1,0 +1,94 @@
+{
+  "locked": false,
+  "version": 1,
+  "targets": {
+    ".NETFramework,Version=v4.0": {
+      "NUnit/3.6.0": {
+        "compile": {
+          "lib/net40/nunit.framework.dll": {}
+        },
+        "runtime": {
+          "lib/net40/nunit.framework.dll": {}
+        }
+      },
+      "NUnit3TestAdapter/3.7.0": {}
+    },
+    ".NETFramework,Version=v4.0/win": {
+      "NUnit/3.6.0": {
+        "compile": {
+          "lib/net40/nunit.framework.dll": {}
+        },
+        "runtime": {
+          "lib/net40/nunit.framework.dll": {}
+        }
+      },
+      "NUnit3TestAdapter/3.7.0": {}
+    },
+    ".NETFramework,Version=v4.0/win-anycpu": {
+      "NUnit/3.6.0": {
+        "compile": {
+          "lib/net40/nunit.framework.dll": {}
+        },
+        "runtime": {
+          "lib/net40/nunit.framework.dll": {}
+        }
+      },
+      "NUnit3TestAdapter/3.7.0": {}
+    }
+  },
+  "libraries": {
+    "NUnit/3.6.0": {
+      "sha512": "mqJP3DI3mE9YSx0o7R5loyIm0NnLJLSl2lmXn84gSkOmLWzlbrxS0oW/cCZF25tB+6Anday/mbkRUXmdvEvSCg==",
+      "type": "package",
+      "path": "NUnit/3.6.0",
+      "files": [
+        "CHANGES.txt",
+        "LICENSE.txt",
+        "NOTICES.txt",
+        "NUnit.3.6.0.nupkg.sha512",
+        "NUnit.nuspec",
+        "lib/MonoAndroid/nunit.framework.dll",
+        "lib/MonoAndroid/nunit.framework.xml",
+        "lib/Xamarin.iOS10/nunit.framework.dll",
+        "lib/Xamarin.iOS10/nunit.framework.xml",
+        "lib/net20/NUnit.System.Linq.dll",
+        "lib/net20/nunit.framework.dll",
+        "lib/net20/nunit.framework.xml",
+        "lib/net35/nunit.framework.dll",
+        "lib/net35/nunit.framework.xml",
+        "lib/net40/nunit.framework.dll",
+        "lib/net40/nunit.framework.xml",
+        "lib/net45/nunit.framework.dll",
+        "lib/net45/nunit.framework.xml",
+        "lib/netstandard1.6/nunit.framework.dll",
+        "lib/netstandard1.6/nunit.framework.xml",
+        "lib/portable-net45+win8+wp8+wpa81/nunit.framework.dll",
+        "lib/portable-net45+win8+wp8+wpa81/nunit.framework.xml"
+      ]
+    },
+    "NUnit3TestAdapter/3.7.0": {
+      "sha512": "bne2ti74G2Tqbq8iolG0rgVCerItqnJX0bfArUrmkv2p2WYPYZ6ECUXmLkmIl8tXu0F23GywCLJLCa/e5pJTWw==",
+      "type": "package",
+      "path": "NUnit3TestAdapter/3.7.0",
+      "files": [
+        "LICENSE.txt",
+        "NUnit3TestAdapter.3.7.0.nupkg.sha512",
+        "NUnit3TestAdapter.nuspec",
+        "tools/Mono.Cecil.Mdb.dll",
+        "tools/Mono.Cecil.Pdb.dll",
+        "tools/Mono.Cecil.Rocks.dll",
+        "tools/Mono.Cecil.dll",
+        "tools/NUnit3.TestAdapter.dll",
+        "tools/nunit.engine.api.dll",
+        "tools/nunit.engine.dll"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    "": [
+      "NUnit >= 3.6.0",
+      "NUnit3TestAdapter >= 3.7.0"
+    ],
+    ".NETFramework,Version=v4.0": []
+  }
+}

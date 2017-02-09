@@ -9,7 +9,8 @@ using YAXLibTests.SampleClasses;
 
 namespace YAXLibTests
 {
-    [TestFixture]
+#if !FXCORE
+	[TestFixture]
     public class KnownTypeTests
     {
         [Test]
@@ -176,4 +177,5 @@ namespace YAXLibTests
         }
 
     }
+#endif
 }

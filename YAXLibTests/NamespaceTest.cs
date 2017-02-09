@@ -107,8 +107,8 @@ namespace YAXLibTests
             string got = serializer.Serialize(CellPhone_MultiLevelMemberAndClassDifferentNamespaces.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-
-        [Test]
+#if !FXCORE
+		[Test]
         public void DictionaryNamespaceSerializationTest()
         {
             const string result = 
@@ -161,7 +161,7 @@ namespace YAXLibTests
             string got = serializer.Serialize(CellPhone_DictionaryNamespaceForAllItems.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-
+#endif
         [Test]
         public void CollectionNamespaceGoesThruRecursiveNoContainingElementSerializationTest()
         {
@@ -177,8 +177,8 @@ namespace YAXLibTests
             string got = serializer.Serialize(CellPhone_CollectionNamespaceGoesThruRecursiveNoContainingElement.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-
-        [Test]
+#if !FXCORE
+		[Test]
         public void CollectionNamespaceForAllItemsSerializationTest()
         {
             const string result =
@@ -199,7 +199,7 @@ namespace YAXLibTests
             string got = serializer.Serialize(CellPhone_CollectionNamespaceForAllItems.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-
+#endif
         [Test]
         public void YAXNamespaceOverridesImplicitNamespaceSerializationTest()
         {
@@ -336,7 +336,7 @@ namespace YAXLibTests
             Assert.That(deserialized, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
         }
-
+#if !FXCORE
         [Test]
         public void DictionaryNamespaceDeserializationTest()
         {
@@ -357,7 +357,7 @@ namespace YAXLibTests
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
 
         }
-
+#endif
         [Test]
         public void CollectionNamespaceGoesThruRecursiveNoContainingElementDeserializationTest()
         {
@@ -367,7 +367,7 @@ namespace YAXLibTests
             Assert.That(deserialized, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
         }
-
+#if !FXCORE
         [Test]
         public void CollectionNamespaceForAllItemsDeserializationTest()
         {
@@ -377,7 +377,7 @@ namespace YAXLibTests
             Assert.That(deserialized, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
         }
-
+#endif
         [Test]
         public void YAXNamespaceOverridesImplicitNamespaceDeserializationTest()
         {

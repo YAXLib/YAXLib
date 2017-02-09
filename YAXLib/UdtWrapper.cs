@@ -183,7 +183,7 @@ namespace YAXLib
         {
             get
             {
-                return m_udtType.IsEnum;
+                return m_udtType.IsEnum();
             }
         }
 
