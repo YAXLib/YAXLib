@@ -641,8 +641,13 @@
         </member>
         <member name="T:YAXLib.AppDomain">
             <summary>
-            Credits Michael Whelan. His source code is published on 
-            http://www.michael-whelan.net/replacing-appdomain-in-dotnet-core/
+            Implementation of AppDomain for .NetCore
+            </summary>
+        </member>
+        <member name="T:YAXLib.ReflectionBridgeExtensions">
+            <summary>
+            Provides extensions as a bridge for the differences 
+            between .Net Framework "Type" and .Net Core "TypeInfo".
             </summary>
         </member>
         <member name="T:YAXLib.ReflectionUtils">

@@ -1,5 +1,9 @@
 {
-    "version": "1.0.0-*",
+    "copyright": "Copyright © 2009-2017 - Sina Iravanian",
+    "title": "YAXLib",
+    "description": "Yet Another XML Serialization Library for the .NET Framework and .Net Core",
+    "authors": [ "Sina Iravanian", "axuno gGmbH", "Asbjørn Ulsberg", "Benjamin Pannell", "Julian Verdurmen" ],
+    "version": "2.15.0.0",
 
     "dependencies": {
         "Microsoft.Extensions.DependencyModel": "1.1.0",

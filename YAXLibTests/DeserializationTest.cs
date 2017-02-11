@@ -44,7 +44,8 @@ namespace YAXLibTests
         {
             originalString = GeneralToStringProvider.GeneralToString(obj);
             var serializer = new YAXSerializer(obj.GetType(), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
-            object gottonObject = serializer.Deserialize(serializer.Serialize(obj));
+	        var serResult = serializer.Serialize(obj);
+			object gottonObject = serializer.Deserialize(serResult);
             errorCounts = serializer.ParsingErrors.Count;
             gottonString = GeneralToStringProvider.GeneralToString(gottonObject);
             return gottonObject;

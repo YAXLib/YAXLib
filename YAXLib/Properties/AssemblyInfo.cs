@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("YAXLib")]
-[assembly: AssemblyDescription("Yet Another XML Serialization Library for the .NET Framework")]
+[assembly: AssemblyDescription("Yet Another XML Serialization Library for the .NET Framework and .Net Core")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Authors: Sina Iravanian, axuno gGmbH, Asbjørn Ulsberg, Benjamin Pannell, Julian Verdurmen")]
 [assembly: AssemblyProduct("YAXLib")]
-[assembly: AssemblyCopyright("Copyright ©  2009-2014 - Sina Iravanian")]
+[assembly: AssemblyCopyright("Copyright © 2009-2017 - Sina Iravanian")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,8 +32,8 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.14")]
-[assembly: AssemblyFileVersion("2.14")]
+[assembly: AssemblyVersion("2.15.0.0")]
+[assembly: AssemblyFileVersion("2.15.0.0")]
 
 [assembly: InternalsVisibleTo("YAXLibTests, PublicKey=" + 
     "0024000004800000940000000602000000240000525341310004000001000100d7f87eefee568e" +

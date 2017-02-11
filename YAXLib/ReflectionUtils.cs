@@ -800,11 +800,15 @@ namespace YAXLib
         public static bool IsPartOfNetFx(MemberInfo memberInfo)
         {
             string moduleName = memberInfo.Module.Name;
-            //memberInfo.Module.Assembly.
-
+			//memberInfo.Module.Assembly.
+#if FXCORE
+			//TODO: FXCORE: This simplification may not come close enough to the .Net Framework version!
+			return moduleName.StartsWith("System", StringComparison.OrdinalIgnoreCase) || moduleName.StartsWith("mscorlib", StringComparison.OrdinalIgnoreCase) || moduleName.StartsWith("Microsoft", StringComparison.OrdinalIgnoreCase);
+#else
             return moduleName.Equals("mscorlib.dll", StringComparison.OrdinalIgnoreCase)
                 || moduleName.Equals("System.dll", StringComparison.OrdinalIgnoreCase)
                 || moduleName.Equals("System.Core.dll", StringComparison.OrdinalIgnoreCase);
+#endif
         }
 
         public static bool IsInstantiableCollection(Type colType)
