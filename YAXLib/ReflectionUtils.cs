@@ -803,7 +803,7 @@ namespace YAXLib
 			//memberInfo.Module.Assembly.
 #if FXCORE
 			//TODO: FXCORE: This simplification may not come close enough to the .Net Framework version!
-			return moduleName.StartsWith("System", StringComparison.OrdinalIgnoreCase) || moduleName.StartsWith("mscorlib", StringComparison.OrdinalIgnoreCase) || moduleName.StartsWith("Microsoft", StringComparison.OrdinalIgnoreCase);
+			return moduleName.StartsWith("System.", StringComparison.OrdinalIgnoreCase) || moduleName.StartsWith("mscorlib.", StringComparison.OrdinalIgnoreCase) || moduleName.StartsWith("Microsoft", StringComparison.OrdinalIgnoreCase);
 #else
             return moduleName.Equals("mscorlib.dll", StringComparison.OrdinalIgnoreCase)
                 || moduleName.Equals("System.dll", StringComparison.OrdinalIgnoreCase)
