@@ -158,8 +158,9 @@ namespace YAXLib
             // then use those of the member-type
             if (m_collectionAttributeInstance == null && m_memberTypeWrapper.CollectionAttributeInstance != null)
                 m_collectionAttributeInstance = m_memberTypeWrapper.CollectionAttributeInstance;
+			m_memberInfo.GetCustomAttributes(true);
 
-            if (m_dictionaryAttributeInstance == null && m_memberTypeWrapper.DictionaryAttributeInstance != null)
+			if (m_dictionaryAttributeInstance == null && m_memberTypeWrapper.DictionaryAttributeInstance != null)
                 m_dictionaryAttributeInstance = m_memberTypeWrapper.DictionaryAttributeInstance;
         }
 

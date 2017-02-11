@@ -389,12 +389,12 @@ namespace YAXLibTests
   </SomeLogarithmExample>
 </FormattingExample>";
 
-            result = String.Format(result,
-                FormattingExample.GetSampleInstance().CreationDate.ToString(),
-                FormattingExample.GetSampleInstance().ModificationDate.ToString()
-                );
+			result = String.Format(result,
+				FormattingExample.GetSampleInstance().CreationDate.ToString("D"),
+				FormattingExample.GetSampleInstance().ModificationDate.ToString("d")
+				);
 
-            var serializer = new YAXSerializer(typeof(FormattingExample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+			var serializer = new YAXSerializer(typeof(FormattingExample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(FormattingExample.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
