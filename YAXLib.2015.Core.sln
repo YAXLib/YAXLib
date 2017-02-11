@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "YAXLib", "YAXLib\YAXLib.xproj", "{68FB7103-CACE-4038-A10B-3BED4213C8C2}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "YAXLib.NetCore", "YAXLib\YAXLib.NetCore.xproj", "{68FB7103-CACE-4038-A10B-3BED4213C8C2}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "YAXLibTests", "YAXLibTests\YAXLibTests.xproj", "{68FB7103-CACE-4038-A10B-3BED4213C8C3}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "YAXLibTests.NetCore", "YAXLibTests\YAXLibTests.NetCore.xproj", "{68FB7103-CACE-4038-A10B-3BED4213C8C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
