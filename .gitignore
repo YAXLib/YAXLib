@@ -6,8 +6,9 @@
 *.vshost.exe.manifest
 *.ncrunchproject
 *.ncrunchsolution
-*.project.lock.json
+*.lock.json
 *.tmp
+*.xlsx
 _ReSharper*/
 TestResults/
 **/[Bb]in/**
@@ -19,4 +20,4 @@ TestResults/
 !/packages/repositories.config
 YAXLibTests.VisualState.xml
 TestResult.xml
-/YAXLib/project.lock.json
+

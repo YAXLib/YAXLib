@@ -1,8 +1,8 @@
 {
-    "copyright": "Copyright © 2009-2017 - Sina Iravanian",
+    "copyright": "Copyright ï¿½ 2009-2017 - Sina Iravanian",
     "title": "YAXLibTests",
     "description": "Yet Another XML Serialization Library for the .NET Framework and .Net Core",
-    "authors": [ "Sina Iravanian", "axuno gGmbH", "Asbjørn Ulsberg", "Benjamin Pannell", "Julian Verdurmen" ],
+    "authors": [ "Sina Iravanian", "axuno gGmbH", "Asbjï¿½rn Ulsberg", "Benjamin Pannell", "Julian Verdurmen" ],
     "version": "2.15.0.0",
 
     "dependencies": {
