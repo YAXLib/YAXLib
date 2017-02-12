@@ -38,7 +38,7 @@ namespace YAXLib
 		OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 		SOFTWARE.
 		*/
-		public static AppDomain CurrentDomain { get; private set; }
+		internal static AppDomain CurrentDomain { get; private set; }
 
 		static AppDomain()
 		{
@@ -66,7 +66,7 @@ namespace YAXLib
 	/// Provides extensions as a bridge for the differences 
 	/// between .Net Framework "Type" and .Net Core "TypeInfo".
 	/// </summary>
-	public static class ReflectionBridgeExtensions
+	internal static class ReflectionBridgeExtensions
 	{
 		/*
 		MIT License
