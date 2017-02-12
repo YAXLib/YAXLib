@@ -1,8 +1,8 @@
 clone_folder: c:\xaxlib
-version: 2.13.{build}
+version: 2.15.{build}
 configuration: Release
 build:
-  project: YAXLib.2013.sln
+  project: YAXLib.2015.sln
   verbosity: minimal
 test_script:
   - nuget.exe install OpenCover -ExcludeVersion
