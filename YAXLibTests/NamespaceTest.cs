@@ -107,27 +107,27 @@ namespace YAXLibTests
             string got = serializer.Serialize(CellPhone_MultiLevelMemberAndClassDifferentNamespaces.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-#if !FXCORE
+
 		[Test]
         public void DictionaryNamespaceSerializationTest()
         {
-            const string result = 
+            const string result =
 @"<CellPhone_DictionaryNamespace xmlns:x1=""http://namespace.org/x1"" xmlns:p1=""namespace/for/prices/only"" xmlns=""http://namespace.org/nsmain"">
   <x1:TheName>HTC</x1:TheName>
   <OS>Windows Phone 8</OS>
   <p1:Prices>
-    <p1:KeyValuePairOfColorDouble>
-      <p1:Key>Red</p1:Key>
+    <p1:KeyValuePairOfStringDouble>
+      <p1:Key>red</p1:Key>
       <p1:Value>120</p1:Value>
-    </p1:KeyValuePairOfColorDouble>
-    <p1:KeyValuePairOfColorDouble>
-      <p1:Key>Blue</p1:Key>
+    </p1:KeyValuePairOfStringDouble>
+    <p1:KeyValuePairOfStringDouble>
+      <p1:Key>blue</p1:Key>
       <p1:Value>110</p1:Value>
-    </p1:KeyValuePairOfColorDouble>
-    <p1:KeyValuePairOfColorDouble>
-      <p1:Key>Black</p1:Key>
+    </p1:KeyValuePairOfStringDouble>
+    <p1:KeyValuePairOfStringDouble>
+      <p1:Key>black</p1:Key>
       <p1:Value>140</p1:Value>
-    </p1:KeyValuePairOfColorDouble>
+    </p1:KeyValuePairOfStringDouble>
   </p1:Prices>
 </CellPhone_DictionaryNamespace>";
             var serializer = new YAXSerializer(typeof(CellPhone_DictionaryNamespace), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
@@ -144,15 +144,15 @@ namespace YAXLibTests
   <OS>Android</OS>
   <p2:ThePrices>
     <p3:PricePair>
-      <p4:TheColor>Red</p4:TheColor>
+      <p4:TheColor>red</p4:TheColor>
       <p5:ThePrice>120</p5:ThePrice>
     </p3:PricePair>
     <p3:PricePair>
-      <p4:TheColor>Blue</p4:TheColor>
+      <p4:TheColor>blue</p4:TheColor>
       <p5:ThePrice>110</p5:ThePrice>
     </p3:PricePair>
     <p3:PricePair>
-      <p4:TheColor>Black</p4:TheColor>
+      <p4:TheColor>black</p4:TheColor>
       <p5:ThePrice>140</p5:ThePrice>
     </p3:PricePair>
   </p2:ThePrices>
@@ -161,7 +161,7 @@ namespace YAXLibTests
             string got = serializer.Serialize(CellPhone_DictionaryNamespaceForAllItems.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-#endif
+
         [Test]
         public void CollectionNamespaceGoesThruRecursiveNoContainingElementSerializationTest()
         {
@@ -177,7 +177,7 @@ namespace YAXLibTests
             string got = serializer.Serialize(CellPhone_CollectionNamespaceGoesThruRecursiveNoContainingElement.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-#if !FXCORE
+
 		[Test]
         public void CollectionNamespaceForAllItemsSerializationTest()
         {
@@ -189,9 +189,9 @@ namespace YAXLibTests
   <p1:AppName>Google+</p1:AppName>
   <p1:AppName>Google Play</p1:AppName>
   <cls:AvailableColors>
-    <p2:TheColor>Red</p2:TheColor>
-    <p2:TheColor>Black</p2:TheColor>
-    <p2:TheColor>White</p2:TheColor>
+    <p2:TheColor>red</p2:TheColor>
+    <p2:TheColor>black</p2:TheColor>
+    <p2:TheColor>white</p2:TheColor>
   </cls:AvailableColors>
   <mdls:AvailableModels>S1,MII,SXi,NoneSense</mdls:AvailableModels>
 </MobilePhone>";
@@ -199,7 +199,7 @@ namespace YAXLibTests
             string got = serializer.Serialize(CellPhone_CollectionNamespaceForAllItems.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-#endif
+
         [Test]
         public void YAXNamespaceOverridesImplicitNamespaceSerializationTest()
         {
@@ -336,7 +336,7 @@ namespace YAXLibTests
             Assert.That(deserialized, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
         }
-#if !FXCORE
+
         [Test]
         public void DictionaryNamespaceDeserializationTest()
         {
@@ -357,7 +357,7 @@ namespace YAXLibTests
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
 
         }
-#endif
+
         [Test]
         public void CollectionNamespaceGoesThruRecursiveNoContainingElementDeserializationTest()
         {
@@ -367,7 +367,7 @@ namespace YAXLibTests
             Assert.That(deserialized, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
         }
-#if !FXCORE
+
         [Test]
         public void CollectionNamespaceForAllItemsDeserializationTest()
         {
@@ -377,7 +377,7 @@ namespace YAXLibTests
             Assert.That(deserialized, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
         }
-#endif
+
         [Test]
         public void YAXNamespaceOverridesImplicitNamespaceDeserializationTest()
         {

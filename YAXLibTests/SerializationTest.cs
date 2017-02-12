@@ -24,7 +24,7 @@ namespace YAXLibTests
     [TestFixture]
     public class SerializationTest
     {
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void TestFixtureSetUp()
         {
 #if FXCORE

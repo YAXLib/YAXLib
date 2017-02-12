@@ -7,7 +7,6 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses.Namespace
 {
-#if !FXCORE
 	[YAXSerializeAs("MobilePhone")]
     public class CellPhone_CollectionNamespaceForAllItems
     {
@@ -22,7 +21,7 @@ namespace YAXLibTests.SampleClasses.Namespace
         [YAXNamespace("cls", "http://namespace.org/colorCol")]
         [YAXCollection(YAXCollectionSerializationTypes.Recursive,
             EachElementName = "{http://namespace.org/color}TheColor")]
-        public List<Color> AvailableColors { get; set; }
+        public List<string> AvailableColors { get; set; }
 
         [YAXNamespace("mdls", "http://namespace.org/modelCol")]
         [YAXCollection(YAXCollectionSerializationTypes.Serially,
@@ -42,10 +41,9 @@ namespace YAXLibTests.SampleClasses.Namespace
                 DeviceBrand = "Samsung Galaxy Nexus",
                 OS = "Android",
                 IntalledApps = new List<string> { "Google Map", "Google+", "Google Play" },
-                AvailableColors = new List<Color> { Color.Red, Color.Black, Color.White },
+                AvailableColors = new List<string> { "red", "black", "white" },
                 AvailableModels = new List<string> { "S1", "MII", "SXi", "NoneSense" }
             };
         }
     }
-#endif
 }

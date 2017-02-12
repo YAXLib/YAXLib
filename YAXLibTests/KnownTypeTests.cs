@@ -9,11 +9,12 @@ using YAXLibTests.SampleClasses;
 
 namespace YAXLibTests
 {
-#if !FXCORE
+
 	[TestFixture]
     public class KnownTypeTests
     {
-        [Test]
+#if !FXCORE
+		[Test]
         public void TestExtensionMethod()
         {
             var colorKnownType = new ColorDynamicKnownType();
@@ -52,8 +53,8 @@ namespace YAXLibTests
             var desCl3 = (Color)colorKnownType.Deserialize(elemRgbAndValueForRed, "");
             Assert.That(desCl3.ToArgb(), Is.EqualTo(Color.Red.ToArgb()));
         }
-
-        [Test]
+#endif
+		[Test]
         public void TestWrappers()
         {
             var typeToTest = typeof (TimeSpan);
@@ -62,10 +63,10 @@ namespace YAXLibTests
 
             Assert.That(typeWrapper.IsKnownType, Is.True);
         }
-
-        [Test]
+#if !FXCORE
+		[Test]
         public void TestSingleKnownTypeSerialization()
-        {
+       {
             var typeToTest = typeof(Color);
             var serializer = new YAXSerializer(typeToTest);
 
@@ -87,8 +88,8 @@ namespace YAXLibTests
 
             Assert.That(colStr2, Is.EqualTo(expectedCol2));
         }
-
-        [Test]
+#endif
+		[Test]
         public void TestSerializingNDeserializingNullKnownTypes()
         {
             var inst = ClassContainingXElement.GetSampleInstance();
@@ -127,8 +128,8 @@ namespace YAXLibTests
             string got = serializer.Serialize(RectangleDynamicKnownTypeSample.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-
-        [Test]
+#if !FXCORE
+		[Test]
         public void DataSetAndDataTableSerializationTest()
         {
             const string result =
@@ -175,7 +176,6 @@ namespace YAXLibTests
             string got = serializer.Serialize(DataSetAndDataTableKnownTypeSample.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-
-    }
 #endif
+	}
 }
