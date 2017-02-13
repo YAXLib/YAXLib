@@ -243,7 +243,17 @@ namespace YAXLib
             }
         }
 
-
+        /// <summary>
+        /// Never add YAXLib metadata attributes (e.g., 'yaxlib:realtype') to the serialized XML (even when they would be required for deserialization.)
+        /// Useful when generating XML intended for another system's consumption.
+        /// </summary>
+        public bool SuppressMetadataAttributes
+        {
+            get
+            {
+                return (SerializationOption & YAXSerializationOptions.SuppressMetadataAttributes) == YAXSerializationOptions.SuppressMetadataAttributes;
+            }
+        }
 
         /// <summary>
         /// Gets a value indicating whether this instance wraps around a collection type.
