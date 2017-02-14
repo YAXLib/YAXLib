@@ -25,11 +25,15 @@ namespace YAXLibTests
     [TestFixture]
     public class DeserializationTest
     {
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void TestFixtureSetUp()
         {
-            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-        }
+#if FXCORE
+			CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+#else
+			Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+#endif
+		}
 
         private void PerformTest(object obj)
         {
@@ -40,7 +44,8 @@ namespace YAXLibTests
         {
             originalString = GeneralToStringProvider.GeneralToString(obj);
             var serializer = new YAXSerializer(obj.GetType(), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
-            object gottonObject = serializer.Deserialize(serializer.Serialize(obj));
+	        var serResult = serializer.Serialize(obj);
+			object gottonObject = serializer.Deserialize(serResult);
             errorCounts = serializer.ParsingErrors.Count;
             gottonString = GeneralToStringProvider.GeneralToString(gottonObject);
             return gottonObject;
@@ -124,14 +129,14 @@ namespace YAXLibTests
             object obj = ProgrammingLanguage.GetSampleInstance();
             PerformTest(obj);
         }
-
-        [Test]
+#if !FXCORE
+		[Test]
         public void DesColorExampleTest()
         {
             object obj = ColorExample.GetSampleInstance();
             PerformTest(obj);
         }
-
+#endif
         [Test]
         public void DesMultiLevelClassTest()
         {
@@ -476,7 +481,7 @@ namespace YAXLibTests
             var obj = YAXLibTests.SampleClasses.RectangleDynamicKnownTypeSample.GetSampleInstance();
             PerformTest(obj);
         }
-
+#if !FXCORE
         [Test]
         public void DesDataSetAndDataTableDynamicKnownTypes()
         {
@@ -486,7 +491,7 @@ namespace YAXLibTests
             object gottonObject = serializer.Deserialize(serializer.Serialize(obj));
             Assert.That(obj.ToString(), Is.EqualTo(gottonObject.ToString()));
         }
-
+#endif
         [Test]
         public void AttributeForKeyInDictionaryPropertyTest()
         {

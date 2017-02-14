@@ -7,7 +7,7 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses.Namespace
 {
-    public class CellPhone_DictionaryNamespaceForAllItems
+	public class CellPhone_DictionaryNamespaceForAllItems
     {
         [YAXSerializeAs("{http://namespace.org/brand}Brand")]
         public string DeviceBrand { get; set; }
@@ -18,7 +18,7 @@ namespace YAXLibTests.SampleClasses.Namespace
         [YAXDictionary(EachPairName="{http://namespace.org/pricepair}PricePair",
             KeyName="{http://namespace.org/color}TheColor", 
             ValueName="{http://namespace.org/pricevalue}ThePrice")]
-        public Dictionary<Color, double> Prices { get; set; }
+        public Dictionary<string, double> Prices { get; set; }
 
         public override string ToString()
         {
@@ -27,7 +27,7 @@ namespace YAXLibTests.SampleClasses.Namespace
 
         public static CellPhone_DictionaryNamespaceForAllItems GetSampleInstance()
         {
-            var prices = new Dictionary<Color, double> { { Color.Red, 120 }, { Color.Blue, 110 }, { Color.Black, 140 } };
+            var prices = new Dictionary<string, double> { { "red", 120 }, { "blue", 110 }, { "black", 140 } };
             return new CellPhone_DictionaryNamespaceForAllItems 
             { 
                 DeviceBrand = "Samsung Galaxy Nexus",

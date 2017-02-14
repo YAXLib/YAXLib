@@ -8,9 +8,10 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
-    //[ShowInDemoApplication]
+#if !FXCORE
+	//[ShowInDemoApplication]
 
-    [YAXSerializeAs("root")]
+	[YAXSerializeAs("root")]
     public class Code4PublicThemesCollection : List<Theme>
     {
         public override string ToString()
@@ -263,7 +264,5 @@ namespace YAXLibTests.SampleClasses
         }
 
     }
-
-
-
+#endif
 }

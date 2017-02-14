@@ -129,17 +129,24 @@ namespace YAXLib
             var attrsToProcessEarlier = new HashSet<Type> {typeof (YAXCustomSerializerAttribute), typeof (YAXCollectionAttribute)};
             foreach (var attrType in attrsToProcessEarlier)
             {
-                var customSerAttrs = Attribute.GetCustomAttributes(m_memberInfo, attrType, true);
-                foreach (var attr in customSerAttrs)
+#if FXCORE
+				var customSerAttrs = m_memberInfo.GetCustomAttributes(attrType, true);
+#else
+				var customSerAttrs = Attribute.GetCustomAttributes(m_memberInfo, attrType, true);
+#endif
+				foreach (var attr in customSerAttrs)
                 {
                     ProcessYaxAttribute(attr);
                 }
             }
-
-            foreach (var attr in Attribute.GetCustomAttributes(m_memberInfo, true))
-            {
-                // no need to preces, it has been proccessed earlier
-                if (attrsToProcessEarlier.Contains(attr.GetType()))
+#if FXCORE
+			foreach (var attr in m_memberInfo.GetCustomAttributes(true))
+#else
+			foreach (var attr in Attribute.GetCustomAttributes(m_memberInfo, true))
+#endif
+			{
+				// no need to preces, it has been proccessed earlier
+				if (attrsToProcessEarlier.Contains(attr.GetType()))
                     continue;
 
                 if (attr is YAXBaseAttribute)
@@ -151,8 +158,9 @@ namespace YAXLib
             // then use those of the member-type
             if (m_collectionAttributeInstance == null && m_memberTypeWrapper.CollectionAttributeInstance != null)
                 m_collectionAttributeInstance = m_memberTypeWrapper.CollectionAttributeInstance;
+			m_memberInfo.GetCustomAttributes(true);
 
-            if (m_dictionaryAttributeInstance == null && m_memberTypeWrapper.DictionaryAttributeInstance != null)
+			if (m_dictionaryAttributeInstance == null && m_memberTypeWrapper.DictionaryAttributeInstance != null)
                 m_dictionaryAttributeInstance = m_memberTypeWrapper.DictionaryAttributeInstance;
         }
 
@@ -697,10 +705,11 @@ namespace YAXLib
         /// </summary>
         private void InitDefaultValue()
         {
-            if(MemberType.IsValueType)
-                DefaultValue = MemberType.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0]);
-            else
-                DefaultValue = null;
+	        if (MemberType.IsValueType())
+		        DefaultValue = Activator.CreateInstance(MemberType, new object[0]);
+				//DefaultValue = MemberType.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0]);
+	        else
+		        DefaultValue = null;
         }
 
         /// <summary>
