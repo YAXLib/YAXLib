@@ -1,0 +1,13 @@
+﻿{
+  "frameworks": {
+    "net40": {}
+  },
+  "runtimes": {
+    "win-anycpu": {},
+    "win": {}
+  },
+  "dependencies": {
+    "NUnit": "3.6.0",
+    "NUnit3TestAdapter": "3.7.0"
+  }
+}

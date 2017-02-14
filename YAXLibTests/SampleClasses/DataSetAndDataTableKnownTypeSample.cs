@@ -3,7 +3,8 @@ using System.Text;
 
 namespace YAXLibTests.SampleClasses
 {
-    public class DataSetAndDataTableKnownTypeSample
+#if !FXCORE
+	public class DataSetAndDataTableKnownTypeSample
     {
         public DataTable TheDataTable { get; set; }
 
@@ -60,4 +61,5 @@ namespace YAXLibTests.SampleClasses
 
         }
     }
+#endif
 }
