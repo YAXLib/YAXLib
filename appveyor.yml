@@ -6,7 +6,7 @@ build:
   verbosity: minimal
 test_script:
   - nuget.exe install OpenCover -ExcludeVersion
-  - OpenCover\tools\OpenCover.Console.exe -register:user -target:"nunit-console.exe" -targetargs:"\"c:\xaxlib\YAXLibTests\bin\Release\YAXLibTests.dll\" -noshadow"  -returntargetcode -filter:"+[YAXLib]*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:coverage.xml
+  - OpenCover\tools\OpenCover.Console.exe -register:user -target:"nunit3-console.exe" -targetargs:"\"c:\xaxlib\YAXLibTests\bin\Release\YAXLibTests.dll\" -noshadow"  -returntargetcode -filter:"+[YAXLib]*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:coverage.xml
   - "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%"
   - pip install codecov
   - codecov -f "coverage.xml"
