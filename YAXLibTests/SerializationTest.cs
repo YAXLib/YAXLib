@@ -126,7 +126,7 @@ namespace YAXLibTests
             string frResult = serializer.Serialize(CultureSample.GetSampleInstance());
 
 #if FXCORE
-			CultureInfo.CurrentCulture = new CultureInfo("fa-FR");
+			CultureInfo.CurrentCulture = new CultureInfo("fa-IR");
 #else
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("fa-IR");
 #endif
