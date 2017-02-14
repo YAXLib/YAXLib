@@ -2198,6 +2198,7 @@ namespace YAXLibTests
             catch (Exception ex)
             {
                 var ser = new YAXSerializer(ex.GetType());
+                ser.MaxRecursion = 10; //todo with the default (300), this takes ages. Even now if 10 this is a really large string
                 string exceptionSerialized = ser.Serialize(ex);
                 Assert.That(exceptionSerialized, Is.Not.Empty);
             }
