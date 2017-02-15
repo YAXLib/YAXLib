@@ -108,7 +108,7 @@ namespace YAXLibTests
             Assert.That(got, Is.EqualTo(result));
         }
 
-		[Test]
+        [Test]
         public void DictionaryNamespaceSerializationTest()
         {
             const string result =
@@ -178,7 +178,7 @@ namespace YAXLibTests
             Assert.That(got, Is.EqualTo(result));
         }
 
-		[Test]
+        [Test]
         public void CollectionNamespaceForAllItemsSerializationTest()
         {
             const string result =

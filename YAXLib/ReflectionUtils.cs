@@ -133,10 +133,10 @@ namespace YAXLib
 
                 name += "Of";
 
-	            foreach (var genType in type.GetGenericArguments())
-	            {
-		            name += GetTypeFriendlyName(genType);
-				}
+                foreach (var genType in type.GetGenericArguments())
+                {
+                    name += GetTypeFriendlyName(genType);
+                }
             }
             else if (type.IsArray)
             {
@@ -678,8 +678,8 @@ namespace YAXLib
 
             try
             {
-	            formattedObject = src.GetType().InvokeMethod("ToString", src, new object[] {format});
-	            //formattedObject = src.GetType().InvokeMember("ToString", BindingFlags.InvokeMethod, null, src, new object[] { format });
+                formattedObject = src.GetType().InvokeMethod("ToString", src, new object[] {format});
+                //formattedObject = src.GetType().InvokeMember("ToString", BindingFlags.InvokeMethod, null, src, new object[] { format });
             }
             catch
             {
@@ -800,10 +800,10 @@ namespace YAXLib
         public static bool IsPartOfNetFx(MemberInfo memberInfo)
         {
             string moduleName = memberInfo.Module.Name;
-			//memberInfo.Module.Assembly.
+        	//memberInfo.Module.Assembly.
 #if FXCORE
-			//TODO: FXCORE: This simplification may not come close enough to the .Net Framework version!
-			return moduleName.StartsWith("System.", StringComparison.OrdinalIgnoreCase) || moduleName.StartsWith("mscorlib.", StringComparison.OrdinalIgnoreCase) || moduleName.StartsWith("Microsoft", StringComparison.OrdinalIgnoreCase);
+        	//TODO: FXCORE: This simplification may not come close enough to the .Net Framework version!
+            return moduleName.StartsWith("System.", StringComparison.OrdinalIgnoreCase) || moduleName.StartsWith("mscorlib.", StringComparison.OrdinalIgnoreCase) || moduleName.StartsWith("Microsoft", StringComparison.OrdinalIgnoreCase);
 #else
             return moduleName.Equals("mscorlib.dll", StringComparison.OrdinalIgnoreCase)
                 || moduleName.Equals("System.dll", StringComparison.OrdinalIgnoreCase)
@@ -818,13 +818,13 @@ namespace YAXLib
 
         public static T InvokeGetProperty<T>(object srcObj, string propertyName)
         {
-	        return (T) srcObj.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance).GetValue(srcObj, null);
-	        //return (T)srcObj.GetType().InvokeMember(propertyName, BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance, null, srcObj, null);
+            return (T) srcObj.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance).GetValue(srcObj, null);
+            //return (T)srcObj.GetType().InvokeMember(propertyName, BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance, null, srcObj, null);
         }
 
         public static T InvokeIntIndexer<T>(object srcObj, string propertyName, int index)
         {
-			var pi = srcObj.GetType().GetProperty("Item", new [] { typeof(int) });
+            var pi = srcObj.GetType().GetProperty("Item", new [] { typeof(int) });
             return (T) pi.GetValue(srcObj, new object[] { index });
         }
 

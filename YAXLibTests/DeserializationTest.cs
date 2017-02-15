@@ -29,11 +29,11 @@ namespace YAXLibTests
         public void TestFixtureSetUp()
         {
 #if FXCORE
-			CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 #else
-			Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 #endif
-		}
+        }
 
         private void PerformTest(object obj)
         {
@@ -44,8 +44,8 @@ namespace YAXLibTests
         {
             originalString = GeneralToStringProvider.GeneralToString(obj);
             var serializer = new YAXSerializer(obj.GetType(), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
-	        var serResult = serializer.Serialize(obj);
-			object gottonObject = serializer.Deserialize(serResult);
+            var serResult = serializer.Serialize(obj);
+            object gottonObject = serializer.Deserialize(serResult);
             errorCounts = serializer.ParsingErrors.Count;
             gottonString = GeneralToStringProvider.GeneralToString(gottonObject);
             return gottonObject;
@@ -130,7 +130,7 @@ namespace YAXLibTests
             PerformTest(obj);
         }
 #if !FXCORE
-		[Test]
+        [Test]
         public void DesColorExampleTest()
         {
             object obj = ColorExample.GetSampleInstance();

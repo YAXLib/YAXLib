@@ -4,7 +4,7 @@ using System.Text;
 namespace YAXLibTests.SampleClasses
 {
 #if !FXCORE
-	public class DataSetAndDataTableKnownTypeSample
+    public class DataSetAndDataTableKnownTypeSample
     {
         public DataTable TheDataTable { get; set; }
 

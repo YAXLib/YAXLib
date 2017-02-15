@@ -10,11 +10,11 @@ using YAXLibTests.SampleClasses;
 namespace YAXLibTests
 {
 
-	[TestFixture]
+    [TestFixture]
     public class KnownTypeTests
     {
 #if !FXCORE
-		[Test]
+        [Test]
         public void TestExtensionMethod()
         {
             var colorKnownType = new ColorDynamicKnownType();
@@ -54,7 +54,7 @@ namespace YAXLibTests
             Assert.That(desCl3.ToArgb(), Is.EqualTo(Color.Red.ToArgb()));
         }
 #endif
-		[Test]
+        [Test]
         public void TestWrappers()
         {
             var typeToTest = typeof (TimeSpan);
@@ -64,7 +64,7 @@ namespace YAXLibTests
             Assert.That(typeWrapper.IsKnownType, Is.True);
         }
 #if !FXCORE
-		[Test]
+        [Test]
         public void TestSingleKnownTypeSerialization()
        {
             var typeToTest = typeof(Color);
@@ -89,7 +89,7 @@ namespace YAXLibTests
             Assert.That(colStr2, Is.EqualTo(expectedCol2));
         }
 #endif
-		[Test]
+        [Test]
         public void TestSerializingNDeserializingNullKnownTypes()
         {
             var inst = ClassContainingXElement.GetSampleInstance();
@@ -129,7 +129,7 @@ namespace YAXLibTests
             Assert.That(got, Is.EqualTo(result));
         }
 #if !FXCORE
-		[Test]
+        [Test]
         public void DataSetAndDataTableSerializationTest()
         {
             const string result =
@@ -177,5 +177,5 @@ namespace YAXLibTests
             Assert.That(got, Is.EqualTo(result));
         }
 #endif
-	}
+    }
 }

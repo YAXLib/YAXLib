@@ -9,9 +9,9 @@ using YAXLib;
 namespace YAXLibTests.SampleClasses
 {
 #if !FXCORE
-	//[ShowInDemoApplication]
+    //[ShowInDemoApplication]
 
-	[YAXSerializeAs("root")]
+    [YAXSerializeAs("root")]
     public class Code4PublicThemesCollection : List<Theme>
     {
         public override string ToString()

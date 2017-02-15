@@ -156,7 +156,6 @@
     <Compile Include="ShowInDemoApplicationAttribute.cs" />
     <Compile Include="StringExtensionsForTest.cs" />
     <Compile Include="StringUtilsTest.cs" />
-    <Compile Include="TestMethodLister.cs" />
     <Compile Include="XMLUtilsTest.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -12,7 +12,7 @@ namespace YAXLibTests
         {
             var ser = new YAXSerializer(typeof(MultipleYaxTypeAttributesWithSameType));
             var obj = new MultipleYaxTypeAttributesWithSameType();
-	        Assert.Throws<YAXPolymorphicException>(() => ser.Serialize(obj));
+            Assert.Throws<YAXPolymorphicException>(() => ser.Serialize(obj));
         }
 
         [Test]
@@ -20,7 +20,7 @@ namespace YAXLibTests
         {
             var ser = new YAXSerializer(typeof(MultipleYaxTypeAttributesWithSameAlias));
             var obj = new MultipleYaxTypeAttributesWithSameAlias();
-			Assert.Throws<YAXPolymorphicException>(() => ser.Serialize(obj));
-		}
+            Assert.Throws<YAXPolymorphicException>(() => ser.Serialize(obj));
+        }
     }
 }

@@ -8,7 +8,7 @@ using YAXLib;
 namespace YAXLibTests.SampleClasses.Namespace
 {
 
-	[YAXNamespace("http://namespace.org/nsmain")]
+    [YAXNamespace("http://namespace.org/nsmain")]
     public class CellPhone_DictionaryNamespace
     {
         [YAXSerializeAs("TheName")]

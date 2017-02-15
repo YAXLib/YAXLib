@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("YAXLibTests")]
 [assembly: AssemblyDescription("Yet Another XML Serialization Library for the .NET Framework and .Net Core")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Authors: Sina Iravanian, axuno gGmbH, Asbjørn Ulsberg, Benjamin Pannell, Julian Verdurmen")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("YAXLibTests")]
 [assembly: AssemblyCopyright("Copyright © 2009-2017 - Sina Iravanian")]
 [assembly: AssemblyTrademark("")]
