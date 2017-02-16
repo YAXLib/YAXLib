@@ -610,7 +610,7 @@ namespace YAXLib
             {
                 // SerializeBase will add the object to the stack
                 var elem = SerializeBase(obj, m_udtWrapper.Alias);
-                if (!m_type.IsValueType)
+                if (!m_type.IsValueType())
                     m_serializedStack.Pop();
                 Debug.Assert(m_serializedStack.Count == 0, "Serialization stack is not empty at the end of serialization");
                 return elem;
@@ -619,7 +619,7 @@ namespace YAXLib
 
         private void PushObjectToSerializationStack(object obj)
         {
-            if (!obj.GetType().IsValueType)
+            if (!obj.GetType().IsValueType())
                 m_serializedStack.Push(obj);
         }
 
@@ -671,7 +671,7 @@ namespace YAXLib
                 return m_baseElement;
             }
 
-            if (!m_type.IsValueType)
+            if (!m_type.IsValueType())
             {
                 var alreadySerializedObject = m_serializedStack.FirstOrDefault(x => ReferenceEquals(x, obj));
                 if (alreadySerializedObject != null)
@@ -1517,7 +1517,8 @@ namespace YAXLib
             }
             else if (ReflectionUtils.IsStringConvertibleIFormattable(value.GetType()))
             {
-                object elementValue = value.GetType().InvokeMember("ToString", BindingFlags.InvokeMethod, null, value, new object[0]);
+                var elementValue = value.GetType().InvokeMethod("ToString", value, new object[0]);
+        		//object elementValue = value.GetType().InvokeMember("ToString", BindingFlags.InvokeMethod, null, value, new object[0]);
                 return new XElement(name, elementValue);
             }
             else
@@ -1560,7 +1561,7 @@ namespace YAXLib
                 }
             }
 
-            if (m_type.IsGenericType && m_type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
+            if (m_type.IsGenericType() && m_type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
             {
                 return DeserializeKeyValuePair(baseElement);
             }
@@ -1588,10 +1589,8 @@ namespace YAXLib
             }
 
             object o;
-            if (m_desObject != null)
-                o = m_desObject;
-            else
-                o = m_type.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0]);
+            o = m_desObject ?? Activator.CreateInstance(m_type, new object[0]);
+        	// o = m_desObject ?? m_type.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0]);
 
             bool foundAnyOfMembers = false;
             foreach (var member in GetFieldsToBeSerialized())
@@ -1632,7 +1631,7 @@ namespace YAXLib
                         {
                             OnExceptionOccurred(new YAXAttributeMissingException(
                                 StringUtils.CombineLocationAndElementName(serializationLocation, member.Alias)),
-                                (!member.MemberType.IsValueType && m_udtWrapper.IsNotAllowdNullObjectSerialization) ? YAXExceptionTypes.Ignore : member.TreatErrorsAs);
+                                (!member.MemberType.IsValueType() && m_udtWrapper.IsNotAllowdNullObjectSerialization) ? YAXExceptionTypes.Ignore : member.TreatErrorsAs);
                         }
                     }
                     else
@@ -1649,7 +1648,7 @@ namespace YAXLib
                     {
                         OnExceptionOccurred(new YAXElementMissingException(
                                 serializationLocation),
-                                (!member.MemberType.IsValueType && m_udtWrapper.IsNotAllowdNullObjectSerialization) ? YAXExceptionTypes.Ignore : member.TreatErrorsAs);
+                                (!member.MemberType.IsValueType() && m_udtWrapper.IsNotAllowdNullObjectSerialization) ? YAXExceptionTypes.Ignore : member.TreatErrorsAs);
                     }
                     else
                     {
@@ -1666,7 +1665,7 @@ namespace YAXLib
                             else
                             {
                                 OnExceptionOccurred(new YAXElementValueMissingException(serializationLocation),
-                                    (!member.MemberType.IsValueType && m_udtWrapper.IsNotAllowdNullObjectSerialization) ? YAXExceptionTypes.Ignore : member.TreatErrorsAs);
+                                    (!member.MemberType.IsValueType() && m_udtWrapper.IsNotAllowdNullObjectSerialization) ? YAXExceptionTypes.Ignore : member.TreatErrorsAs);
                             }
                         }
                         else
@@ -1719,7 +1718,7 @@ namespace YAXLib
                         {
                             OnExceptionOccurred(new YAXElementMissingException(
                                 StringUtils.CombineLocationAndElementName(serializationLocation, member.Alias.OverrideNsIfEmpty(TypeNamespace))),
-                                (!member.MemberType.IsValueType && m_udtWrapper.IsNotAllowdNullObjectSerialization) ? YAXExceptionTypes.Ignore : member.TreatErrorsAs);
+                                (!member.MemberType.IsValueType() && m_udtWrapper.IsNotAllowdNullObjectSerialization) ? YAXExceptionTypes.Ignore : member.TreatErrorsAs);
                         }
                     }
                     else
@@ -1736,7 +1735,7 @@ namespace YAXLib
                 {
                     if (m_desObject == null) // i.e. if it was NOT resuming deserialization, set default value, otherwise existing value for the member is kept
                     {
-                        if (!member.MemberType.IsValueType && m_udtWrapper.IsNotAllowdNullObjectSerialization)
+                        if (!member.MemberType.IsValueType() && m_udtWrapper.IsNotAllowdNullObjectSerialization)
                         {
                             try
                             {
@@ -1764,7 +1763,7 @@ namespace YAXLib
                         }
                         else
                         {
-                            if (!member.MemberType.IsValueType)
+                            if (!member.MemberType.IsValueType())
                             {
                                 member.SetValue(o, null /*the value to be assigned */);
                             }
@@ -2250,7 +2249,8 @@ namespace YAXLib
                     object value = itemType.GetProperty("Value").GetValue(lstItem, null);
                     try
                     {
-                        colType.InvokeMember("Add", BindingFlags.InvokeMethod, null, dic, new[] { key, value });
+                        colType.InvokeMethod("Add", dic, new[] {key, value});
+                        //colType.InvokeMember("Add", BindingFlags.InvokeMethod, null, dic, new[] { key, value });
                     }
                     catch
                     {
@@ -2270,7 +2270,8 @@ namespace YAXLib
 
                     try
                     {
-                        colType.InvokeMember("Add", BindingFlags.InvokeMethod, null, col, new[] { key, value });
+                        colType.InvokeMethod("Add", col, new[] {key, value});
+                        //colType.InvokeMember("Add", BindingFlags.InvokeMethod, null, col, new[] { key, value });
                     }
                     catch
                     {
@@ -2294,7 +2295,8 @@ namespace YAXLib
                     }
                 }
 
-                object col = colType.InvokeMember(string.Empty, System.Reflection.BindingFlags.CreateInstance, null, null, new object[] { bArray });
+                var col = Activator.CreateInstance(colType, new object[] {bArray});
+                //object col = colType.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[] { bArray });
 
                 return col;
             }
@@ -2310,7 +2312,8 @@ namespace YAXLib
                 {
                     try
                     {
-                        colType.InvokeMember(additionMethodName, BindingFlags.InvokeMethod, null, col, new[] { lst[i] });
+                        colType.InvokeMethod(additionMethodName, col, new[] {lst[i]});
+                        //colType.InvokeMember(additionMethodName, BindingFlags.InvokeMethod, null, col, new[] { lst[i] });
                     }
                     catch
                     {
@@ -2328,7 +2331,7 @@ namespace YAXLib
                 object col = containerObj;
 
                 string additionMethodName = "Add";
-
+                
                 if (ReflectionUtils.IsTypeEqualOrInheritedFromType(colType, typeof(Queue)) ||
                     ReflectionUtils.IsTypeEqualOrInheritedFromType(colType, typeof(Queue<>)))
                 {
@@ -2343,7 +2346,7 @@ namespace YAXLib
                 {
                     try
                     {
-                        colType.InvokeMember(additionMethodName, BindingFlags.InvokeMethod, null, col, new object[] { lstItem });
+                        colType.InvokeMethod(additionMethodName, col, new object[] {lstItem});
                     }
                     catch
                     {
@@ -2548,7 +2551,8 @@ namespace YAXLib
 
                 try
                 {
-                    type.InvokeMember("Add", BindingFlags.InvokeMethod, null, dic, new object[] { key, value });
+                    type.InvokeMethod("Add", dic, new object[] {key, value});
+                    //type.InvokeMember("Add", BindingFlags.InvokeMethod, null, dic, new object[] { key, value });
                 }
                 catch
                 {
@@ -2581,7 +2585,7 @@ namespace YAXLib
             if (serializer == null)
                 return;
 
-            if (popFromSerializationStack && m_isSerializing && serializer.m_type != null && !serializer.m_type.IsValueType)
+            if (popFromSerializationStack && m_isSerializing && serializer.m_type != null && !serializer.m_type.IsValueType())
                 m_serializedStack.Pop();
 
             if(importNamespaces)
@@ -2703,10 +2707,7 @@ namespace YAXLib
             }
             else if (ReflectionUtils.IsStringConvertibleIFormattable(keyType))
             {
-                keyValue = keyType.InvokeMember(string.Empty, 
-                    BindingFlags.CreateInstance, 
-                    null, null, 
-                    new object[] { baseElement.Element(xnameKey).Value });
+                keyValue = Activator.CreateInstance(keyType, new object[] {baseElement.Element(xnameKey).Value});
             }
             else if (ReflectionUtils.IsCollectionType(keyType))
             {
@@ -2733,8 +2734,7 @@ namespace YAXLib
             }
             else if (ReflectionUtils.IsStringConvertibleIFormattable(valueType))
             {
-                valueValue = valueType.InvokeMember(string.Empty, BindingFlags.CreateInstance, 
-                    null, null, new object[] { baseElement.Element(xnameValue).Value });
+                valueValue = Activator.CreateInstance(valueType, new object[] { baseElement.Element(xnameValue).Value });
             }
             else if (ReflectionUtils.IsCollectionType(valueType))
             {
@@ -2748,47 +2748,44 @@ namespace YAXLib
                 FinalizeNewSerializer(ser, false);
             }
 
-            object pair = m_type.InvokeMember(string.Empty, 
-                BindingFlags.CreateInstance, 
-                null, null, new object[] { keyValue, valueValue });
-
+            var pair = Activator.CreateInstance(m_type, new [] { keyValue, valueValue });
             return pair;
         }
 
         private static object InvokeCustomDeserializerFromElement(Type customDeserType, XElement elemToDeser)
         {
-            object customDeserializer = customDeserType.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0]);
-            return customDeserType.InvokeMember("DeserializeFromElement", BindingFlags.InvokeMethod, null, customDeserializer, new object[] { elemToDeser });
+            var customDeserializer = Activator.CreateInstance(customDeserType, new object[0]);
+            return customDeserType.InvokeMethod("DeserializeFromElement", customDeserializer, new object[] {elemToDeser});
         }
 
         private static object InvokeCustomDeserializerFromAttribute(Type customDeserType, XAttribute attrToDeser)
         {
-            object customDeserializer = customDeserType.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0]);
-            return customDeserType.InvokeMember("DeserializeFromAttribute", BindingFlags.InvokeMethod, null, customDeserializer, new object[] { attrToDeser });
+            var customDeserializer = Activator.CreateInstance(customDeserType, new object[0]);
+            return customDeserType.InvokeMethod("DeserializeFromAttribute", customDeserializer, new object[] { attrToDeser });
         }
 
         private static object InvokeCustomDeserializerFromValue(Type customDeserType, string valueToDeser)
         {
-            object customDeserializer = customDeserType.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0]);
-            return customDeserType.InvokeMember("DeserializeFromValue", BindingFlags.InvokeMethod, null, customDeserializer, new object[] { valueToDeser });
+            var customDeserializer = Activator.CreateInstance(customDeserType, new object[0]);
+            return customDeserType.InvokeMethod("DeserializeFromValue", customDeserializer, new object[] { valueToDeser });
         }
 
         private static void InvokeCustomSerializerToElement(Type customSerType, object objToSerialize, XElement elemToFill)
         {
-            object customSerializer = customSerType.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0]);
-            customSerType.InvokeMember("SerializeToElement", BindingFlags.InvokeMethod, null, customSerializer, new[] { objToSerialize, elemToFill });
+            var customSerializer = Activator.CreateInstance(customSerType, new object[0]);
+            customSerType.InvokeMethod("SerializeToElement", customSerializer, new[] {objToSerialize, elemToFill});
         }
 
         private static void InvokeCustomSerializerToAttribute(Type customSerType, object objToSerialize, XAttribute attrToFill)
         {
-            object customSerializer = customSerType.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0]);
-            customSerType.InvokeMember("SerializeToAttribute", BindingFlags.InvokeMethod, null, customSerializer, new[] { objToSerialize, attrToFill });
+            var customSerializer = Activator.CreateInstance(customSerType, new object[0]);
+            customSerType.InvokeMethod("SerializeToAttribute", customSerializer, new[] { objToSerialize, attrToFill });
         }
 
         private static string InvokeCustomSerializerToValue(Type customSerType, object objToSerialize)
         {
-            object customSerializer = customSerType.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0]);
-            return (string) customSerType.InvokeMember("SerializeToValue", BindingFlags.InvokeMethod, null, customSerializer, new[] { objToSerialize });
+            var customSerializer = Activator.CreateInstance(customSerType, new object[0]);
+            return (string) customSerType.InvokeMethod("SerializeToValue", customSerializer, new[] {objToSerialize});
         }
 
         /// <summary>

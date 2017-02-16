@@ -129,14 +129,21 @@ namespace YAXLib
             var attrsToProcessEarlier = new HashSet<Type> {typeof (YAXCustomSerializerAttribute), typeof (YAXCollectionAttribute)};
             foreach (var attrType in attrsToProcessEarlier)
             {
+#if FXCORE
+                var customSerAttrs = m_memberInfo.GetCustomAttributes(attrType, true);
+#else
                 var customSerAttrs = Attribute.GetCustomAttributes(m_memberInfo, attrType, true);
+#endif
                 foreach (var attr in customSerAttrs)
                 {
                     ProcessYaxAttribute(attr);
                 }
             }
-
+#if FXCORE
+            foreach (var attr in m_memberInfo.GetCustomAttributes(true))
+#else
             foreach (var attr in Attribute.GetCustomAttributes(m_memberInfo, true))
+#endif
             {
                 // no need to preces, it has been proccessed earlier
                 if (attrsToProcessEarlier.Contains(attr.GetType()))
@@ -151,6 +158,7 @@ namespace YAXLib
             // then use those of the member-type
             if (m_collectionAttributeInstance == null && m_memberTypeWrapper.CollectionAttributeInstance != null)
                 m_collectionAttributeInstance = m_memberTypeWrapper.CollectionAttributeInstance;
+            m_memberInfo.GetCustomAttributes(true);
 
             if (m_dictionaryAttributeInstance == null && m_memberTypeWrapper.DictionaryAttributeInstance != null)
                 m_dictionaryAttributeInstance = m_memberTypeWrapper.DictionaryAttributeInstance;
@@ -240,7 +248,7 @@ namespace YAXLib
         /// Gets a value indicating whether this instance has comments.
         /// </summary>
         /// <value>
-        /// 	<c>true</c> if this instance has comments; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance has comments; otherwise, <c>false</c>.
         /// </value>
         public bool HasComment
         {
@@ -269,7 +277,7 @@ namespace YAXLib
         /// Gets a value indicating whether this instance is attributed as dont serialize.
         /// </summary>
         /// <value>
-        /// 	<c>true</c> if this instance is attributed as dont serialize; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance is attributed as dont serialize; otherwise, <c>false</c>.
         /// </value>
         public bool IsAttributedAsDontSerialize { get; private set; }
 
@@ -277,7 +285,7 @@ namespace YAXLib
         /// Gets a value indicating whether this instance is attributed as not-collection.
         /// </summary>
         /// <value>
-        /// 	<c>true</c> if this instance is attributed as not-collection; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance is attributed as not-collection; otherwise, <c>false</c>.
         /// </value>
         public bool IsAttributedAsNotCollection { get; private set; }
 
@@ -285,7 +293,7 @@ namespace YAXLib
         /// Gets a value indicating whether this instance is attributed as serializable.
         /// </summary>
         /// <value>
-        /// 	<c>true</c> if this instance is attributed as serializable; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance is attributed as serializable; otherwise, <c>false</c>.
         /// </value>
         public bool IsAttributedAsSerializable { get; private set; }
 
@@ -293,7 +301,7 @@ namespace YAXLib
         /// Gets a value indicating whether this instance is attributed as dont serialize when null.
         /// </summary>
         /// <value>
-        /// 	<c>true</c> if this instance is attributed as dont serialize when null; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance is attributed as dont serialize when null; otherwise, <c>false</c>.
         /// </value>
         public bool IsAttributedAsDontSerializeIfNull { get; private set; }
 
@@ -464,7 +472,7 @@ namespace YAXLib
         /// Gets a value indicating whether this instance is treated as a collection.
         /// </summary>
         /// <value>
-        /// 	<c>true</c> if this instance is treated as a collection; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance is treated as a collection; otherwise, <c>false</c>.
         /// </value>
         public bool IsTreatedAsCollection
         {
@@ -498,7 +506,7 @@ namespace YAXLib
         /// Gets a value indicating whether this instance has custom serializer.
         /// </summary>
         /// <value>
-        /// 	<c>true</c> if this instance has custom serializer; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance has custom serializer; otherwise, <c>false</c>.
         /// </value>
         public bool HasCustomSerializer 
         {
@@ -674,7 +682,7 @@ namespace YAXLib
             return m_memberInfo.ToString();
         }
 
-		// Private Methods 
+        // Private Methods 
 
         /// <summary>
         /// Initializes this instance of <c>MemberWrapper</c>.
@@ -697,8 +705,9 @@ namespace YAXLib
         /// </summary>
         private void InitDefaultValue()
         {
-            if(MemberType.IsValueType)
-                DefaultValue = MemberType.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0]);
+            if (MemberType.IsValueType())
+                DefaultValue = Activator.CreateInstance(MemberType, new object[0]);
+                //DefaultValue = MemberType.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0]);
             else
                 DefaultValue = null;
         }

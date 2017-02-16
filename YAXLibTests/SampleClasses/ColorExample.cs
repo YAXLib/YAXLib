@@ -7,6 +7,7 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
+#if !FXCORE
     [ShowInDemoApplication]
 
     [YAXComment("This example shows a technique for serializing classes without a default constructor")] 
@@ -48,4 +49,5 @@ namespace YAXLibTests.SampleClasses
             return new ColorExample();
         }
     }
+#endif
 }

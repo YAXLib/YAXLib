@@ -8,6 +8,7 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
+#if !FXCORE
     //[ShowInDemoApplication]
 
     [YAXSerializeAs("root")]
@@ -263,7 +264,5 @@ namespace YAXLibTests.SampleClasses
         }
 
     }
-
-
-
+#endif
 }

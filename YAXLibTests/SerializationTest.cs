@@ -24,10 +24,14 @@ namespace YAXLibTests
     [TestFixture]
     public class SerializationTest
     {
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void TestFixtureSetUp()
         {
+#if FXCORE
+            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+#else
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+#endif
         }
 
         [Test]
@@ -113,25 +117,43 @@ namespace YAXLibTests
         public void CultureChangeTest()
         {
             var curCulture = CultureInfo.CurrentCulture;
-
-            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("fr-FR");
+#if FXCORE
+            CultureInfo.CurrentCulture = new CultureInfo("fr-FR");
+#else
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("fr-FR");
+#endif
             var serializer = new YAXSerializer(typeof(CultureSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string frResult = serializer.Serialize(CultureSample.GetSampleInstance());
 
-            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("fa-IR");
+#if FXCORE
+            CultureInfo.CurrentCulture = new CultureInfo("fa-IR");
+#else
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("fa-IR");
+#endif
+
             serializer = new YAXSerializer(typeof(CultureSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string faResult = serializer.Serialize(CultureSample.GetSampleInstance());
+#if FXCORE
+            CultureInfo.CurrentCulture = new CultureInfo("de-DE");
+#else
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
+#endif
 
-            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("de-DE");
             serializer = new YAXSerializer(typeof(CultureSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string deResult = serializer.Serialize(CultureSample.GetSampleInstance());
+#if FXCORE
+            CultureInfo.CurrentCulture = new CultureInfo("en-US");
+#else
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+#endif
 
-            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
             serializer = new YAXSerializer(typeof(CultureSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string usResult = serializer.Serialize(CultureSample.GetSampleInstance());
-
+#if FXCORE
+            CultureInfo.CurrentCulture = curCulture;
+#else
             Thread.CurrentThread.CurrentCulture = curCulture;
-
+#endif
             Assert.That(faResult, Is.EqualTo(frResult), "Comparing FR and FA");
             Assert.That(deResult, Is.EqualTo(faResult), "Comparing FA and DE");
             Assert.That(usResult, Is.EqualTo(deResult), "Comparing DE and US");
@@ -295,7 +317,7 @@ namespace YAXLibTests
             string got = serializer.Serialize(ProgrammingLanguage.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-
+#if !FXCORE
         [Test]
         public void ColorExampleTest()
         {
@@ -308,7 +330,7 @@ namespace YAXLibTests
             string got = serializer.Serialize(ColorExample.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-
+#endif
         [Test]
         public void MultiLevelClassTest()
         {
@@ -368,8 +390,8 @@ namespace YAXLibTests
 </FormattingExample>";
 
             result = String.Format(result,
-                FormattingExample.GetSampleInstance().CreationDate.ToLongDateString(),
-                FormattingExample.GetSampleInstance().ModificationDate.ToShortDateString()
+                FormattingExample.GetSampleInstance().CreationDate.ToString("D"),
+                FormattingExample.GetSampleInstance().ModificationDate.ToString("d")
                 );
 
             var serializer = new YAXSerializer(typeof(FormattingExample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
@@ -395,6 +417,45 @@ namespace YAXLibTests
         [Test]
         public void MoreComplexExampleTest()
         {
+#if FXCORE
+            const string result =
+@"<!-- This example tries to show almost all features of YAXLib which were not shown before. -->
+<!-- FamousPoints - shows a dictionary with a non-primitive value member. -->
+<!-- IntEnumerable - shows serializing properties of type IEnumerable<> -->
+<!-- Students - shows the usage of YAXNotCollection attribute -->
+<MoreComplexExample xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
+  <FamousPoints>
+    <PointInfo PName=""Center"">
+      <ThePoint X=""0"" Y=""0"" />
+    </PointInfo>
+    <PointInfo PName=""Q1"">
+      <ThePoint X=""1"" Y=""1"" />
+    </PointInfo>
+    <PointInfo PName=""Q2"">
+      <ThePoint X=""-1"" Y=""1"" />
+    </PointInfo>
+  </FamousPoints>
+  <IntEnumerable yaxlib:realtype=""System.Collections.Generic.List`1[[System.Int32, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"">
+    <Int32>1</Int32>
+    <Int32>3</Int32>
+    <Int32>5</Int32>
+    <Int32>7</Int32>
+  </IntEnumerable>
+  <Students>
+    <Count>3</Count>
+    <Names>
+      <String>Ali</String>
+      <String>Dave</String>
+      <String>John</String>
+    </Names>
+    <Families>
+      <String>Alavi</String>
+      <String>Black</String>
+      <String>Doe</String>
+    </Families>
+  </Students>
+</MoreComplexExample>";
+#else
             const string result =
 @"<!-- This example tries to show almost all features of YAXLib which were not shown before. -->
 <!-- FamousPoints - shows a dictionary with a non-primitive value member. -->
@@ -432,6 +493,7 @@ namespace YAXLibTests
     </Families>
   </Students>
 </MoreComplexExample>";
+#endif
             var serializer = new YAXSerializer(typeof(MoreComplexExample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(MoreComplexExample.GetSampleInstance());
 
@@ -1561,14 +1623,21 @@ namespace YAXLibTests
             var lst = new List<int> {1, 2, 3};
             var ser = new YAXSerializer(typeof(object));
             string xmlResult = ser.Serialize(lst);
-
+#if FXCORE
+            const string expectedResult =
+@"<Object yaxlib:realtype=""System.Collections.Generic.List`1[[System.Int32, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
+  <Int32>1</Int32>
+  <Int32>2</Int32>
+  <Int32>3</Int32>
+</Object>";
+#else
             const string expectedResult = 
 @"<Object yaxlib:realtype=""System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
   <Int32>1</Int32>
   <Int32>2</Int32>
   <Int32>3</Int32>
 </Object>";
-
+#endif
             Assert.That(xmlResult.StripTypeAssemblyVersion(), Is.EqualTo(expectedResult.StripTypeAssemblyVersion()));
             var desObj = ser.Deserialize(xmlResult);
             Assert.That(desObj.GetType(), Is.EqualTo(lst.GetType()));
@@ -1583,14 +1652,21 @@ namespace YAXLibTests
             var lst = new List<object> { 1, 2, 3 };
             var ser = new YAXSerializer(typeof(object));
             string xmlResult = ser.Serialize(lst);
-
+#if FXCORE
+            const string expectedResult =
+@"<Object xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"" yaxlib:realtype=""System.Collections.Generic.List`1[[System.Object, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"">
+  <Object yaxlib:realtype=""System.Int32"">1</Object>
+  <Object yaxlib:realtype=""System.Int32"">2</Object>
+  <Object yaxlib:realtype=""System.Int32"">3</Object>
+</Object>";
+#else
             const string expectedResult =
 @"<Object xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"" yaxlib:realtype=""System.Collections.Generic.List`1[[System.Object, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"">
   <Object yaxlib:realtype=""System.Int32"">1</Object>
   <Object yaxlib:realtype=""System.Int32"">2</Object>
   <Object yaxlib:realtype=""System.Int32"">3</Object>
 </Object>";
-
+#endif
             Assert.That(xmlResult.StripTypeAssemblyVersion(), Is.EqualTo(expectedResult.StripTypeAssemblyVersion()));
             var desObj = ser.Deserialize(xmlResult);
             Assert.That(desObj.GetType(), Is.EqualTo(lst.GetType()));
@@ -2117,11 +2193,12 @@ namespace YAXLibTests
             {
                 throw new ArgumentOutOfRangeException("index",
                     new InvalidOperationException("Inner exception 1", 
-                        new ApplicationException("Inner Exception 2")));
+                        new Exception("Inner Exception 2")));
             }
             catch (Exception ex)
             {
                 var ser = new YAXSerializer(ex.GetType());
+                ser.MaxRecursion = 10; //todo with the default (300), this takes ages. Even now if 10 this is a really large string
                 string exceptionSerialized = ser.Serialize(ex);
                 Assert.That(exceptionSerialized, Is.Not.Empty);
             }

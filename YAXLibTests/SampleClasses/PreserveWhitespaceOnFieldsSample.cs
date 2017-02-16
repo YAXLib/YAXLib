@@ -32,7 +32,7 @@ namespace YAXLibTests.SampleClasses
             return new PreserveWhitespaceOnClassSample
                        {
                            Str1 = "       ", 
-                           Str2 = "  \t   ",
+                           Str2 = "         ",
                            Str3 = "         ",
                            Strings = new [] {"abc", "     ", "efg"},
                            StringDic = new Dictionary<string, int> {{"abc", 1}, {"    ", 2}, {"efg", 3}}
