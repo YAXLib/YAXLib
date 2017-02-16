@@ -79,6 +79,12 @@ namespace YAXLib
         /// Prevents serailization of properties with no setter 
         /// </summary>
         DontSerializePropertiesWithNoSetter = 4,
+
+        /// <summary>
+        /// Never add YAXLib metadata attributes (e.g., 'yaxlib:realtype') to the serialized XML (even when they would be required for deserialization.)
+        /// Useful when generating XML intended for another system's consumption.
+        /// </summary>
+        SuppressMetadataAttributes = 8
     }
 
     /// <summary>

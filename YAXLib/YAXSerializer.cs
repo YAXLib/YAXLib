@@ -599,9 +599,8 @@ namespace YAXLib
                 // and this instance of serializer did not do anything extra
                 FinalizeNewSerializer(ser, importNamespaces: true, popFromSerializationStack: false);
                 elem.Name = m_udtWrapper.Alias;
-                
-                elem.AddAttributeNamespaceSafe(m_yaxLibNamespaceUri + m_trueTypeAttrName, obj.GetType().FullName, m_documentDefaultNamespace);
-                RegisterYaxLibNamespace();
+
+                AddMetadataAttribute(elem, m_yaxLibNamespaceUri + m_trueTypeAttrName, obj.GetType().FullName, m_documentDefaultNamespace);
                 AddNamespacesToElement(elem);
 
                 return elem;
@@ -933,10 +932,7 @@ namespace YAXLib
                                     elemToAdd.Name = XName.Get(alias, elemToAdd.Name.Namespace.NamespaceName);
                                 }
                                 else
-                                {
-                                    elemToAdd.AddAttributeNamespaceSafe(m_yaxLibNamespaceUri + m_trueTypeAttrName, realType.FullName, m_documentDefaultNamespace);
-                                    RegisterYaxLibNamespace();
-                                }
+                                    AddMetadataAttribute(elemToAdd, m_yaxLibNamespaceUri + m_trueTypeAttrName, realType.FullName, m_documentDefaultNamespace);
                             }
 
                             if (moveDescOnly)// if only the descendants of the resulting element are going to be added ...
@@ -1008,11 +1004,6 @@ namespace YAXLib
                 RegisterNamespace(elemName.Namespace, null);
 
             return new XElement(elemName, null);
-        }
-
-        private void RegisterYaxLibNamespace()
-        {
-            RegisterNamespace(m_yaxLibNamespaceUri, m_yaxLibNamespacePrefix);
         }
 
         /// <summary>
@@ -1288,8 +1279,7 @@ namespace YAXLib
                             elemChild.Add(addedElem);
                         }
 
-                        addedElem.AddAttributeNamespaceSafe(m_yaxLibNamespaceUri + m_trueTypeAttrName, keyObj.GetType().FullName, m_documentDefaultNamespace);
-                        RegisterYaxLibNamespace();
+                        AddMetadataAttribute(addedElem, m_yaxLibNamespaceUri + m_trueTypeAttrName, keyObj.GetType().FullName, m_documentDefaultNamespace);
                     }
                 }
 
@@ -1313,8 +1303,7 @@ namespace YAXLib
                             elemChild.Add(addedElem);
                         }
 
-                        addedElem.AddAttributeNamespaceSafe(m_yaxLibNamespaceUri + m_trueTypeAttrName, valueObj.GetType().FullName, m_documentDefaultNamespace);
-                        RegisterYaxLibNamespace();
+                        AddMetadataAttribute(addedElem, m_yaxLibNamespaceUri + m_trueTypeAttrName, valueObj.GetType().FullName, m_documentDefaultNamespace);
                     }
                 }
 
@@ -1474,21 +1463,17 @@ namespace YAXLib
                     XElement itemElem = AddObjectToElement(elemToAdd, curElemName.OverrideNsIfEmpty(elementName.Namespace), objToAdd);
                     if (obj != null && !obj.GetType().EqualsOrIsNullableOf(colItemType))
                     {
-                        itemElem.AddAttributeNamespaceSafe(m_yaxLibNamespaceUri + m_trueTypeAttrName, obj.GetType().FullName, m_documentDefaultNamespace);
                         if (itemElem.Parent == null) // i.e., it has been removed, e.g., because all its members have been serialized outside the element
                             elemToAdd.Add(itemElem); // return it back, or undelete this item
 
-                        RegisterYaxLibNamespace();
+                        AddMetadataAttribute(itemElem, m_yaxLibNamespaceUri + m_trueTypeAttrName, obj.GetType().FullName, m_documentDefaultNamespace);
                     }
                 }
             }
 
             int[] arrayDims = ReflectionUtils.GetArrayDimensions(elementValue);
             if (arrayDims != null && arrayDims.Length > 1)
-            {
-                elemToAdd.AddAttributeNamespaceSafe(m_yaxLibNamespaceUri + m_dimsAttrName, StringUtils.GetArrayDimsString(arrayDims), m_documentDefaultNamespace);
-                RegisterYaxLibNamespace();
-            }
+                AddMetadataAttribute(elemToAdd, m_yaxLibNamespaceUri + m_dimsAttrName, StringUtils.GetArrayDimsString(arrayDims), m_documentDefaultNamespace);
 
             return elemToAdd;
         }
@@ -2836,6 +2821,15 @@ namespace YAXLib
         private IEnumerable<MemberWrapper> GetFieldsToBeSerialized()
         {
             return GetFieldsToBeSerialized(m_udtWrapper).OrderBy(t=>t.Order);
+        }
+
+        private void AddMetadataAttribute(XElement parent, XName attrName, object attrValue, XNamespace documentDefaultNamespace)
+        {
+            if (!m_udtWrapper.SuppressMetadataAttributes)
+            {
+                parent.AddAttributeNamespaceSafe(attrName, attrValue, documentDefaultNamespace);
+                RegisterNamespace(m_yaxLibNamespaceUri, m_yaxLibNamespacePrefix);
+            }
         }
 
         /// <summary>
