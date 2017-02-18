@@ -1,4 +1,4 @@
-# YAXLib: Yet Another XML Serialization Library for the .NET Framework
+# YAXLib: Yet Another XML Serialization Library for the .NET Framework and .NET Core
 
 [![Build status](https://ci.appveyor.com/api/projects/status/ggown5b8ha8wnpf1?svg=true)](https://ci.appveyor.com/project/SinaIravanian/yaxlib) [![codecov.io](https://codecov.io/github/sinairv/YAXLib/coverage.svg?branch=master)](https://codecov.io/github/sinairv/YAXLib?branch=master) [![NuGet](https://img.shields.io/nuget/v/YAXLib.svg)](https://www.nuget.org/packages/YAXLib/)
 
@@ -169,17 +169,20 @@ And this is the result of XML serialization:
 </Warehouse>
 ```
 
-## Contact
+## Contributors
 
-YAXLib is hosted on both [GitHub](https://github.com/sinairv/YAXLib) and [CodePlex](http://yaxlib.codeplex.com). Feel free to discuss about and fork it on either of these sites that you prefer. 
+* [Sina Iravanian](https://github.com/sinairv)
+* [Julian Verdurmen](https://github.com/304NotModified)
+* [axuno gGmbH](https://github.com/axunonb)
+* and many others. See [Change Log](https://github.com/sinairv/YAXLib/blob/master/ChangeLog.md) for the list of all the people who kindly contributed to YAXLib.
 
-Copyright (c) 2009 - 2016 Sina Iravanian and Contributors - Licenced under MIT 
+## Logo
 
-Homepage: [sinairv.github.io](http://sinairv.github.io)
+Logo designed by [axuno gGmbH](https://github.com/axunonb)
 
-Github: [github.com/sinairv](https://github.com/sinairv)
+## Website, Copyright, and License
 
-Twitter: [@sinairv](http://www.twitter.com/sinairv)
+YAXLib is hosted on [GitHub](https://github.com/sinairv/YAXLib).
 
-## License
-MIT. See [LICENSE.txt](LICENSE.txt)
+Copyright (c) 2009 - 2017 Sina Iravanian and Contributors - Licenced under [MIT](LICENSE.txt) 
+

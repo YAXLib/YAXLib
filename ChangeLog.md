@@ -1,3 +1,10 @@
+[2.15] Feb 18, 2017
+   * Added support for .NET Core. Huge thanks go to [axuno gGmbH](https://github.com/axunonb) for developing the support for .NET Core.
+   * YAXLib has a logo now! Huge thanks again to [axuno gGmbH](https://github.com/axunonb) for designing the logo.
+   * Option added to suppress meta data attributes. Turn on `SuppressMetadataAttributes` flag when
+     constructing the serializer. Note that this should only be used when not deserializing using YAXLib. 
+     Thanks go to GitHub user [superoctave2](https://github.com/superoctave2) for developing this feature.
+
 [2.14] Apr 30, 2016
    * Fixed a bug with deserializing Double/Sinble/BigInteger Min and Max values. 
      Thanks go to CodePlex user [vincentbl](https://www.codeplex.com/site/users/view/vincentbl)
