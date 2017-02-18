@@ -1,4 +1,4 @@
-![Logo/YAXLib_256x256.png]
+![YAXLib Logo](Logo/YAXLib_256x256.png)
 # YAXLib: Yet Another XML Serialization Library for the .NET Framework and .NET Core
 
 [![Build status](https://ci.appveyor.com/api/projects/status/ggown5b8ha8wnpf1?svg=true)](https://ci.appveyor.com/project/SinaIravanian/yaxlib) [![codecov.io](https://codecov.io/github/sinairv/YAXLib/coverage.svg?branch=master)](https://codecov.io/github/sinairv/YAXLib?branch=master) [![NuGet](https://img.shields.io/nuget/v/YAXLib.svg)](https://www.nuget.org/packages/YAXLib/)
