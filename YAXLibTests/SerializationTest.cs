@@ -1,4 +1,4 @@
-﻿// Copyright 2009 - 2010 Sina Iravanian - <sina@sinairv.com>
+// Copyright 2009 - 2010 Sina Iravanian - <sina@sinairv.com>
 //
 // This source file(s) may be redistributed, altered and customized
 // by any means PROVIDING the authors name and all copyright
