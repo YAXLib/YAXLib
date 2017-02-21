@@ -116,6 +116,7 @@ namespace YAXLibTests
         [Test]
         public void CultureChangeTest()
         {
+            // Save current culture
             var curCulture = CultureInfo.CurrentCulture;
 #if FXCORE
             CultureInfo.CurrentCulture = new CultureInfo("fr-FR");
@@ -123,40 +124,48 @@ namespace YAXLibTests
             Thread.CurrentThread.CurrentCulture = new CultureInfo("fr-FR");
 #endif
             var serializer = new YAXSerializer(typeof(CultureSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
-            string frResult = serializer.Serialize(CultureSample.GetSampleInstance());
+            var frSerResult = serializer.Serialize(CultureSample.GetSampleInstance());
 
 #if FXCORE
             CultureInfo.CurrentCulture = new CultureInfo("fa-IR");
 #else
             Thread.CurrentThread.CurrentCulture = new CultureInfo("fa-IR");
 #endif
+            var frDesResult = serializer.Deserialize(frSerResult) as CultureSample;
 
             serializer = new YAXSerializer(typeof(CultureSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
-            string faResult = serializer.Serialize(CultureSample.GetSampleInstance());
+            var faSerResult = serializer.Serialize(CultureSample.GetSampleInstance());
 #if FXCORE
             CultureInfo.CurrentCulture = new CultureInfo("de-DE");
 #else
             Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
 #endif
+            var faDesResult = serializer.Deserialize(faSerResult) as CultureSample;
 
             serializer = new YAXSerializer(typeof(CultureSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
-            string deResult = serializer.Serialize(CultureSample.GetSampleInstance());
+            var deSerResult = serializer.Serialize(CultureSample.GetSampleInstance());
 #if FXCORE
             CultureInfo.CurrentCulture = new CultureInfo("en-US");
 #else
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 #endif
+            var deDesResult = serializer.Deserialize(deSerResult) as CultureSample;
 
             serializer = new YAXSerializer(typeof(CultureSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
-            string usResult = serializer.Serialize(CultureSample.GetSampleInstance());
+            var usSerResult = serializer.Serialize(CultureSample.GetSampleInstance());
+            
+            // Restore current culture
 #if FXCORE
             CultureInfo.CurrentCulture = curCulture;
 #else
             Thread.CurrentThread.CurrentCulture = curCulture;
 #endif
-            Assert.That(faResult, Is.EqualTo(frResult), "Comparing FR and FA");
-            Assert.That(deResult, Is.EqualTo(faResult), "Comparing FA and DE");
-            Assert.That(usResult, Is.EqualTo(deResult), "Comparing DE and US");
+            var usDesResult = serializer.Deserialize(usSerResult) as CultureSample;
+
+            // serialization results
+            Assert.That(faSerResult, Is.EqualTo(frSerResult), "Comparing serialized FA and FR");
+            Assert.That(deSerResult, Is.EqualTo(faSerResult), "Comparing serialized DE and FA");
+            Assert.That(usSerResult, Is.EqualTo(deSerResult), "Comparing serialized US and DE");
 
             const string expected =
 @"<!-- This class contains fields that are vulnerable to culture changes! -->
@@ -171,8 +180,13 @@ namespace YAXLibTests
   <Dec1>192389183919123.18232131</Dec1>
   <Date1>10/11/2010 18:20:30</Date1>
 </CultureSample>";
+            Assert.That(expected, Is.EqualTo(usSerResult), "Checking US is as expected!");
 
-            Assert.That(expected, Is.EqualTo(usResult), "Checking US is as expected!");
+            // deserialization results
+            Assert.AreEqual(0, faDesResult?.CompareTo(frDesResult), "Comparing deserialized FA and FR");
+            Assert.AreEqual(0, deDesResult?.CompareTo(faDesResult), "Comparing deserialized DE and FA");
+            Assert.AreEqual(0, usDesResult?.CompareTo(deDesResult), "Comparing deserialized US and DE");
+            Assert.AreEqual(0, usDesResult?.CompareTo(CultureSample.GetSampleInstance()), "Comparing deserialized US and new instance");
         }
 
         [Test]
