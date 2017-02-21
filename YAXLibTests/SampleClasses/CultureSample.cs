@@ -45,11 +45,6 @@ namespace YAXLibTests.SampleClasses
             return GeneralToStringProvider.GeneralToString(this);
         }
 
-        public int CompareTo(object obj)
-        {
-            throw new NotImplementedException();
-        }
-
         public int CompareTo(CultureSample other)
         {
             if (ReferenceEquals(this, other)) return 0;
