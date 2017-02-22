@@ -1,11 +1,42 @@
-using System;
+﻿using System;
+using System.Linq;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
     [YAXComment("This class contains fields that are vulnerable to culture changes!")]
-    public class CultureSample : IComparable<CultureSample>
+    public class CultureSample
     {
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((CultureSample) obj);
+        }
+
+        protected bool Equals(CultureSample other)
+        {
+            if (Numbers.Where((t, i) => !t.Equals(other.Numbers[i])).Any()) { return false; }
+            return Number1.Equals(other.Number1) && Number2.Equals(other.Number2) && Number3.Equals(other.Number3) && Dec1 == other.Dec1 && Dec2 == other.Dec2 && Date1.Equals(other.Date1) && Date2.Equals(other.Date2);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = Number1.GetHashCode();
+                hashCode = (hashCode * 397) ^ Number2.GetHashCode();
+                hashCode = (hashCode * 397) ^ Number3.GetHashCode();
+                hashCode = (hashCode * 397) ^ (Numbers?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ Dec1.GetHashCode();
+                hashCode = (hashCode * 397) ^ Dec2.GetHashCode();
+                hashCode = (hashCode * 397) ^ Date1.GetHashCode();
+                hashCode = (hashCode * 397) ^ Date2.GetHashCode();
+                return hashCode;
+            }
+        }
+
         public double Number1 { get; set; }
 
         [YAXAttributeForClass]
@@ -43,31 +74,6 @@ namespace YAXLibTests.SampleClasses
         public override string ToString()
         {
             return GeneralToStringProvider.GeneralToString(this);
-        }
-
-        public int CompareTo(CultureSample other)
-        {
-            if (ReferenceEquals(this, other)) return 0;
-            if (ReferenceEquals(null, other)) return 1;
-            var numbersComparison = Numbers.Length.CompareTo(other.Numbers.Length);
-            if (numbersComparison != 0) return numbersComparison;
-            for (var i = 0; i < Numbers.Length; i++)
-            {
-                numbersComparison = Numbers[i].CompareTo(other.Numbers[i]);
-                if (numbersComparison != 0) return numbersComparison;
-            }
-            var number1Comparison = Number1.CompareTo(other.Number1);
-            if (number1Comparison != 0) return number1Comparison;
-            var number2Comparison = Number2.CompareTo(other.Number2);
-            if (number2Comparison != 0) return number2Comparison;
-            var number3Comparison = Number3.CompareTo(other.Number3);
-            if (number3Comparison != 0) return number3Comparison;
-            var dec1Comparison = Dec1.CompareTo(other.Dec1);
-            if (dec1Comparison != 0) return dec1Comparison;
-            var dec2Comparison = Dec2.CompareTo(other.Dec2);
-            if (dec2Comparison != 0) return dec2Comparison;
-            var date1Comparison = Date1.CompareTo(other.Date1);
-            return date1Comparison != 0 ? date1Comparison : Date2.CompareTo(other.Date2);
         }
     }
 }
