@@ -116,7 +116,7 @@ namespace YAXLibTests
         [TestCase("", "fr-FR")]
         [TestCase("fr-FR", "en-US")]
         [TestCase("de-DE", "")]
-        [TestCase("fr-IA", "en-US")]
+        [TestCase("fa-IR", "en-US")]
         [TestCase("en-US", "")]
         public void CultureChangeTest(string cultName1, string cultName2)
         {
