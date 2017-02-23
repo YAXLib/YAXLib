@@ -359,21 +359,11 @@ namespace YAXLib
         public static DateTime ParseDateTimeTimeZoneSafe(string str, IFormatProvider formatProvider)
         {
             DateTimeOffset dto;
-            if (!DateTimeOffset.TryParse(str, out dto))
+            if (!DateTimeOffset.TryParse(str, formatProvider, System.Globalization.DateTimeStyles.None, out dto))
             {
                 return DateTime.MinValue;
             }
-
-            if (dto.Offset == TimeSpan.Zero)
-            {
-                return dto.UtcDateTime;
-            }
-            else
-            {
-                return dto.DateTime;
-            }
+            return dto.Offset == TimeSpan.Zero ? dto.UtcDateTime : dto.DateTime;
         }
-
-
     }
 }
