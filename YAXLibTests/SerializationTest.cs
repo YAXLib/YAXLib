@@ -255,6 +255,17 @@ namespace YAXLibTests
             string got = serializer.Serialize(WarehouseWithArray.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
+        
+        [Test]
+        public void DictionaryWithNullValue()
+        {
+            const string theKey = "TheKey";
+            var d = new Dictionary<string, object>() {{ theKey, null}};
+            var serializer = new YAXSerializer(typeof(Dictionary<string, object>), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var got = serializer.Serialize(d);
+            var gotDes = serializer.Deserialize(got) as Dictionary<string, object>;
+            Assert.AreEqual(d[theKey], gotDes[theKey]);
+        }
 
         [Test]
         public void WarehouseWithDictionaryTest()
