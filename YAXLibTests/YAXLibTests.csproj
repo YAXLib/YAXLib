@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DeserializationTest.cs" />
+    <Compile Include="EqualsHelpers.cs" />
     <Compile Include="GeneralToString.cs" />
     <Compile Include="KnownTypeTests.cs" />
     <Compile Include="NamespaceTest.cs" />
