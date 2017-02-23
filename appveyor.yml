@@ -1,5 +1,5 @@
 clone_folder: c:\xaxlib
-version: 2.13.{build}
+version: 2.15.{build}
 
 build_script:
 - ps: nuget restore YAXLib.2015.Core.sln -verbosity quiet
