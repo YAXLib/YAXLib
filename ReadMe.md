@@ -179,7 +179,7 @@ And this is the result of XML serialization:
 
 ## Logo
 
-Logo designed by [axuno gGmbH](https://github.com/axunonb)
+Logo designed by [axuno gGmbH](https://github.com/axuno)
 
 ## Website, Copyright, and License
 
