@@ -105,15 +105,6 @@ namespace YAXLib
 #endif
         }
 
-        public static bool IsSealed(this Type type)
-        {
-#if FXCORE
-            return type.GetTypeInfo().IsSealed;
-#else
-            return type.IsSealed;
-#endif
-        }
-
         public static bool IsAbstract(this Type type)
         {
 #if FXCORE
@@ -148,42 +139,6 @@ namespace YAXLib
 #else
             return type.IsPrimitive;
 #endif
-        }
-
-        public static bool IsPublic(this Type type)
-        {
-#if FXCORE
-            return type.GetTypeInfo().IsPublic;
-#else
-            return type.IsPublic;
-#endif
-        }
-
-        public static bool IsNestedPublic(this Type type)
-        {
-#if FXCORE
-            return type.GetTypeInfo().IsNestedPublic;
-#else
-            return type.IsNestedPublic;
-#endif
-        }
-
-        public static bool IsFromLocalAssembly(this Type type)
-        {
-            var assemblyName = type.GetAssembly().GetName().FullName;
-            try
-            {
-#if FXCORE
-                Assembly.Load(new AssemblyName { Name = assemblyName });
-#else
-                Assembly.Load(assemblyName);
-#endif
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
         }
 
         public static bool IsGenericType(this Type type)
@@ -231,51 +186,12 @@ namespace YAXLib
 #endif
         }
 
-        public static T GetPropertyValue<T>(this Type type, string propertyName, object target)
-        {
-#if FXCORE
-            PropertyInfo property = type.GetTypeInfo().GetProperty(propertyName, typeof(T));
-            return (T)property.GetValue(target);
-#else
-            return (T) type.InvokeMember(propertyName, BindingFlags.GetProperty, null, target, null);
-#endif
-        }
-
-        public static  PropertyInfo GetProperty(this Type type, string name, Type returnType)
-        {
-#if FXCORE
-            return type.GetTypeInfo().GetProperty(name, returnType);
-#else
-            return type.GetProperty(name, returnType);
-#endif
-        }
-
         public static PropertyInfo GetProperty(this Type type, string name, Type[] types)
         {
 #if FXCORE
             return type.GetTypeInfo().GetProperty(name, types);
 #else
             return type.GetProperty(name, types);
-#endif
-        }
-
-        public static void SetPropertyValue(this Type type, string propertyName, object target, object value)
-        {
-#if FXCORE
-            PropertyInfo property = type.GetTypeInfo().GetProperty(propertyName);
-            property.SetValue(target, value);
-#else
-            type.InvokeMember(propertyName, BindingFlags.SetProperty, null, target, new object[] { value });
-#endif
-        }
-
-        public static void SetFieldValue(this Type type, string fieldName, object target, object value)
-        {
-#if FXCORE
-            FieldInfo field = type.GetTypeInfo().GetField(fieldName);
-            field.SetValue(target, value);
-#else
-            type.InvokeMember(fieldName, BindingFlags.SetField, null, target, new object[] { value });
 #endif
         }
 
@@ -336,36 +252,10 @@ namespace YAXLib
         }
 
 #if FXCORE
-        public static IEnumerable<MethodInfo> GetMethods(this Type someType)
-        {
-            var t = someType;
-            while (t != null)
-            {
-                var ti = t.GetTypeInfo();
-                foreach (var m in ti.GetMethods())
-                    yield return m;
-                t = ti.BaseType;
-            }
-        }
-
-        public static bool IsSubclassOf(this Type type, Type c)
-        {
-            return type.GetTypeInfo().IsSubclassOf(c);
-        }
-
-        public static Attribute[] GetCustomAttributes(this Type type)
-        {
-            return type.GetTypeInfo().GetCustomAttributes().ToArray();
-        }
 
         public static Attribute[] GetCustomAttributes(this Type type, bool inherit)
         {
             return type.GetTypeInfo().GetCustomAttributes(inherit).ToArray();
-        }
-
-        public static Attribute[] GetCustomAttributes(this Type type, Type attributeType, bool inherit)
-        {
-            return type.GetTypeInfo().GetCustomAttributes(attributeType, inherit).Cast<Attribute>().ToArray();
         }
 #endif
     }
