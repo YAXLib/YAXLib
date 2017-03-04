@@ -239,10 +239,28 @@ namespace YAXLibTests
         {
             const string theKey = "TheKey";
             var d = new Dictionary<string, object>() {{ theKey, null}};
-            var serializer = new YAXSerializer(typeof(Dictionary<string, object>), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(Dictionary<string, object>), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.DontSerializeNullObjects);
             var got = serializer.Serialize(d);
             var gotDes = serializer.Deserialize(got) as Dictionary<string, object>;
             Assert.AreEqual(d[theKey], gotDes[theKey]);
+        }
+
+        /// <summary>
+        /// Even if we set SerializeNullObjects
+        /// </summary>
+        [Test]
+        public void DictionaryWithNullValueShouldNotCrash()
+        {
+            const string theKey = "TheKey";
+            var d = new Dictionary<string, object>() { { theKey, null } };
+            var serializer = new YAXSerializer(typeof(Dictionary<string, object>), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var got = serializer.Serialize(d);
+            Assert.AreEqual(@"<DictionaryOfStringObject>
+  <KeyValuePairOfStringObject>
+    <Key>TheKey</Key>
+    <Value />
+  </KeyValuePairOfStringObject>
+</DictionaryOfStringObject>", got);
         }
 
         [Test]

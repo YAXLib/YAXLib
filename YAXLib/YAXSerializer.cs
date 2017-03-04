@@ -560,7 +560,7 @@ namespace YAXLib
             if (m_udtWrapper.IsTreatedAsDictionary)
             {
                 var elemResult = MakeDictionaryElement(null, m_udtWrapper.Alias, obj, 
-                    m_udtWrapper.DictionaryAttributeInstance, m_udtWrapper.CollectionAttributeInstance);
+                    m_udtWrapper.DictionaryAttributeInstance, m_udtWrapper.CollectionAttributeInstance, m_udtWrapper.IsNotAllowdNullObjectSerialization);
                 if (m_udtWrapper.PreservesWhitespace)
                     XMLUtils.AddPreserveSpaceAttribute(elemResult);
                 if (elemResult.Parent == null)
@@ -1100,7 +1100,7 @@ namespace YAXLib
             XElement elemToAdd;
             if (member.IsTreatedAsDictionary)
             {
-                elemToAdd = MakeDictionaryElement(insertionLocation, member.Alias.OverrideNsIfEmpty(TypeNamespace), elementValue, member.DictionaryAttributeInstance, member.CollectionAttributeInstance);
+                elemToAdd = MakeDictionaryElement(insertionLocation, member.Alias.OverrideNsIfEmpty(TypeNamespace), elementValue, member.DictionaryAttributeInstance, member.CollectionAttributeInstance, member.IsAttributedAsDontSerializeIfNull);
                 if (member.CollectionAttributeInstance != null &&
                     member.CollectionAttributeInstance.SerializationType == YAXCollectionSerializationTypes.RecursiveWithNoContainingElement &&
                     !elemToAdd.HasAttributes)
@@ -1137,16 +1137,12 @@ namespace YAXLib
         /// <param name="elementValue">The element value, corresponding to a dictionary object.</param>
         /// <param name="dicAttrInst">reference to the dictionary attribute instance.</param>
         /// <param name="collectionAttrInst">reference to collection attribute instance.</param>
+        /// <param name="serializationOption"></param>
         /// <returns>
         /// an instance of <c>XElement</c> which contains the dictionary object
         /// serialized properly
         /// </returns>
-        private XElement MakeDictionaryElement(
-            XElement insertionLocation,
-            XName elementName,
-            object elementValue,
-            YAXDictionaryAttribute dicAttrInst,
-            YAXCollectionAttribute collectionAttrInst)
+        private XElement MakeDictionaryElement(XElement insertionLocation, XName elementName, object elementValue, YAXDictionaryAttribute dicAttrInst, YAXCollectionAttribute collectionAttrInst, bool dontSerializeNull)
         {
             if (elementValue == null)
             {
@@ -1291,7 +1287,7 @@ namespace YAXLib
                 {
                     elemChild.AddXmlContent(valueObj);
                 }
-                else
+                else if (!(valueObj == null && dontSerializeNull))
                 {
                     XElement addedElem = AddObjectToElement(elemChild, valueAlias, valueObj);
                     if (!areValueOfSameType)
@@ -1334,7 +1330,7 @@ namespace YAXLib
 
             if (udt != null && udt.IsTreatedAsDictionary)
             {
-                elemToAdd = MakeDictionaryElement(elem, alias, obj, null, null);
+                elemToAdd = MakeDictionaryElement(elem, alias, obj, null, null, udt.IsNotAllowdNullObjectSerialization);
                 if(elemToAdd.Parent != elem)
                     elem.Add(elemToAdd);
             }
