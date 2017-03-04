@@ -653,6 +653,7 @@ namespace YAXLib
         /// Determines whether this instance of <c>MemberWrapper</c> can be serialized.
         /// </summary>
         /// <param name="serializationFields">The serialization fields.</param>
+        /// <param name="dontSerializePropertiesWithNoSetter">Skip serialization of fields which doesn't have a setter.</param>
         /// <returns>
         /// <c>true</c> if this instance of <c>MemberWrapper</c> can be serialized; otherwise, <c>false</c>.
         /// </returns>
