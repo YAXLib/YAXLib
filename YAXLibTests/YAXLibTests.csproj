@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="DeserializationTest.cs" />
     <Compile Include="EqualsHelpers.cs" />
+    <Compile Include="ExceptionTests.cs" />
     <Compile Include="GeneralToString.cs" />
     <Compile Include="KnownTypeTests.cs" />
     <Compile Include="NamespaceTest.cs" />
@@ -65,6 +66,8 @@
     <Compile Include="SampleClasses\AudioSample.cs" />
     <Compile Include="SampleClasses\BookClassTestingSerializeAsValue.cs" />
     <Compile Include="SampleClasses\ClassContainingXElement.cs" />
+    <Compile Include="SampleClasses\ClassWithDuplicateYaxAttribute.cs" />
+    <Compile Include="SampleClasses\ClassWithDuplicateYaxValue.cs" />
     <Compile Include="SampleClasses\Code4PublicTheme.cs" />
     <Compile Include="SampleClasses\CollectionOfInterfacesSample.cs" />
     <Compile Include="SampleClasses\CollectionSeriallyAsAttribute.cs" />
