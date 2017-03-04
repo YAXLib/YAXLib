@@ -47,5 +47,15 @@ namespace YAXLibTests
             StringAssert.Contains("'ClassWithDuplicateYaxAttribute'", ex.Message);
         }
 
+        [Test]
+        public void YAXAttributeAlreadyExistsExceptionTest2()
+        {
+            Assert.Throws<YAXAttributeAlreadyExistsException>(() =>
+            {
+                var serializer = new YAXSerializer(typeof(ClassWithDuplicateYaxAttribute2), YAXExceptionHandlingPolicies.ThrowErrorsOnly);
+                serializer.Serialize(new ClassWithDuplicateYaxAttribute2());
+            });
+        }
+
     }
 }

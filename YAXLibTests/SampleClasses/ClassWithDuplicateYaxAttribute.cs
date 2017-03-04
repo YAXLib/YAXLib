@@ -25,4 +25,16 @@ namespace YAXLibTests.SampleClasses
             };
         }
     }
+
+
+    class ClassWithDuplicateYaxAttribute2
+    {
+        [YAXSerializeAs("test")]
+        public string Test1 { get; set; }
+
+        [YAXSerializeAs("test")]
+        public string Test2 { get; set; }
+
+      
+    }
 }
