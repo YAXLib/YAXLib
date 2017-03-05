@@ -222,6 +222,7 @@ namespace YAXLib
     /// Raised when the element value corresponding to some property is not present in the given XML file, when deserializing.
     /// This exception is raised during deserialization.
     /// </summary>
+    [Obsolete("unused - will be removed in Yax 3")]
     public class YAXElementValueAlreadyExistsException : YAXException
     {
         #region Constructors
@@ -593,6 +594,7 @@ namespace YAXLib
     /// Raised when an object cannot be formatted with the format string provided.
     /// This exception is raised during serialization.
     /// </summary>
+    [Obsolete("unused - will be removed in Yax 3")]
     public class YAXInvalidFormatProvided : YAXException
     {
         #region Constructors
