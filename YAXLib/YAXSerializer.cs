@@ -1137,7 +1137,7 @@ namespace YAXLib
         /// <param name="elementValue">The element value, corresponding to a dictionary object.</param>
         /// <param name="dicAttrInst">reference to the dictionary attribute instance.</param>
         /// <param name="collectionAttrInst">reference to collection attribute instance.</param>
-        /// <param name="serializationOption"></param>
+        /// <param name="dontSerializeNull">Don't serialize <c>null</c> values.</param>
         /// <returns>
         /// an instance of <c>XElement</c> which contains the dictionary object
         /// serialized properly
@@ -1573,7 +1573,6 @@ namespace YAXLib
             o = m_desObject ?? Activator.CreateInstance(m_type, new object[0]);
         	// o = m_desObject ?? m_type.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0]);
 
-            bool foundAnyOfMembers = false;
             foreach (var member in GetFieldsToBeSerialized())
             {
                 if (!member.CanWrite)
@@ -1617,7 +1616,6 @@ namespace YAXLib
                     }
                     else
                     {
-                        foundAnyOfMembers = true;
                         elemValue = attr.Value;
                         xattrValue = attr;
                     }
@@ -1651,7 +1649,6 @@ namespace YAXLib
                         }
                         else
                         {
-                            foundAnyOfMembers = true;
                             elemValue = values[0].Value;
                             values[0].Remove();
                         }
@@ -1670,7 +1667,6 @@ namespace YAXLib
                             {
                                 elem = baseElement;
                                 canContinue = true;
-                                foundAnyOfMembers = true;
                             }
                             else
                             {
@@ -1688,7 +1684,6 @@ namespace YAXLib
                                 if (AtLeastOneOfMembersExists(fakeElem, member.MemberType))
                                 {
                                     canContinue = true;
-                                    foundAnyOfMembers = true;
                                     elem = fakeElem;
                                     elemValue = elem.Value;
                                 }
@@ -1704,7 +1699,6 @@ namespace YAXLib
                     }
                     else
                     {
-                        foundAnyOfMembers = true;
                         elemValue = elem.Value;
                     }
 
@@ -1787,8 +1781,6 @@ namespace YAXLib
                 else if (elemValue != null)
                 {
                     RetreiveElementValue(o, member, elemValue, xelemValue);
-                    if (createdFakeElement && !m_exceptionOccurredDuringMemberDeserialization)
-                        foundAnyOfMembers = true;
                 }
 
                 if (createdFakeElement && xelemValue != null)
@@ -1804,9 +1796,6 @@ namespace YAXLib
                 }
             }
 
-            //// if an empty element was given and non of its members have been retreived then return null, not an instance
-            //if (!foundAnyOfMembers && !baseElement.HasElements && !baseElement.HasAttributes && baseElement.IsEmpty)
-            //    return null;
 
             return o;
         }

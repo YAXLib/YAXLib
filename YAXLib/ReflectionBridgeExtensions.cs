@@ -45,6 +45,10 @@ namespace YAXLib
             CurrentDomain = new AppDomain();
         }
 
+        /// <summary>
+        /// Get all assemblies
+        /// </summary>
+        /// <returns></returns>
         public Assembly[] GetAssemblies()
         {
             var assemblies = new List<Assembly>();
@@ -209,7 +213,6 @@ namespace YAXLib
         {
 #if FXCORE
             Type[] argTypes = null;
-            dynamic x = null;
             if (arg != null)
             {
                 argTypes = new Type[arg.Length];
