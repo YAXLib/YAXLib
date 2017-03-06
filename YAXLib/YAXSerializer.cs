@@ -954,7 +954,7 @@ namespace YAXLib
                                 {
                                     if (ReflectionUtils.IsBasicType(member.MemberType))
                                     {
-                                        existingElem.SetValue(elementValue);
+                                        existingElem.SetValue(elementValue ?? string.Empty);
                                     }
                                     else
                                     {

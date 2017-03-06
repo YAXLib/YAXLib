@@ -30,9 +30,11 @@ namespace YAXLibTests.SampleClasses
     class ClassWithDuplicateYaxAttribute2
     {
         [YAXSerializeAs("test")]
+        [YAXAttributeForClass]
         public string Test1 { get; set; }
 
         [YAXSerializeAs("test")]
+        [YAXAttributeForClass]
         public string Test2 { get; set; }
 
       
