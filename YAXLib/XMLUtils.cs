@@ -358,7 +358,7 @@ namespace YAXLib
         {
             XElement elem = CreateElement(baseElement, location, elemName);
             if (elem != null)
-                elem.SetValue(elemValue);
+                elem.SetValue(elemValue ?? string.Empty);
             return elem;
         }
 
