@@ -375,7 +375,7 @@ namespace YAXLib
             {
                 if (dst.Attribute(attr.Name) != null)
                 {
-                    throw new YAXAttributeAlreadyExistsException(attr.Name.ToString());
+                    continue;
                 }
 
                 dst.Add(attr);
