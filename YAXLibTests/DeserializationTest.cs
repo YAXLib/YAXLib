@@ -35,6 +35,12 @@ namespace YAXLibTests
 #endif
         }
 
+        [SetUp]
+        public void Init()
+        {
+            YAXSerializer.CurrentCulture = CultureInfo.InvariantCulture;
+        }
+
         private void PerformTest(object obj)
         {
             PerformTestAndReturn(obj);
@@ -730,5 +736,38 @@ namespace YAXLibTests
             Assert.That(deserialzedInstance.Items.Length, Is.EqualTo(1));
         }
 
+
+        [Test]
+        public void PtBr()
+        {
+            var ptbr = new PtBr
+            {
+                Name = "João da Silva Sabiá",
+                Age = 18,
+                BirthDate = new DateTime(2017, 12, 1, 11, 59, 59),
+                DecimalMoney = 1203.88m,
+                LongMoney = 53,
+                SchoolFirstDay = null,
+
+            };
+
+            YAXSerializer.CurrentCulture = CultureInfo.GetCultureInfo("pt-br");
+
+            var ser = new YAXSerializer(typeof(PtBr));
+
+            var result = ser.Serialize(ptbr);
+
+            var deserialzedInstance = ser.Deserialize(result) as PtBr;
+
+            
+
+            Assert.That(deserialzedInstance.Name, Is.EqualTo(ptbr.Name));
+            Assert.That(deserialzedInstance.Age, Is.EqualTo(ptbr.Age));
+            Assert.That(deserialzedInstance.BirthDate, Is.EqualTo(ptbr.BirthDate));
+            Assert.That(deserialzedInstance.DecimalMoney, Is.EqualTo(ptbr.DecimalMoney));
+            Assert.That(deserialzedInstance.LongMoney, Is.EqualTo(ptbr.LongMoney));
+            Assert.That(deserialzedInstance.SchoolFirstDay, Is.EqualTo(ptbr.SchoolFirstDay));
+
+        }
     }
 }

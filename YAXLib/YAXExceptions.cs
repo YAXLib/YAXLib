@@ -121,7 +121,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "An attribute with this name already exists: '{0}'.", this.AttrName);
+                return String.Format(YAXSerializer.CurrentCulture, "An attribute with this name already exists: '{0}'.", this.AttrName);
             }
         }
 
@@ -166,7 +166,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "No attributes with this name found: '{0}'.", this.AttributeName);
+                return String.Format(YAXSerializer.CurrentCulture, "No attributes with this name found: '{0}'.", this.AttributeName);
             }
         }
 
@@ -211,7 +211,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "Element with the given name does not contain text values: '{0}'.", this.ElementName);
+                return String.Format(YAXSerializer.CurrentCulture, "Element with the given name does not contain text values: '{0}'.", this.ElementName);
             }
         }
 
@@ -257,7 +257,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "Element with the given name already has value: '{0}'.", this.ElementName);
+                return String.Format(YAXSerializer.CurrentCulture, "Element with the given name already has value: '{0}'.", this.ElementName);
             }
         }
 
@@ -303,7 +303,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "No elements with this name found: '{0}'.", this.ElementName);
+                return String.Format(YAXSerializer.CurrentCulture, "No elements with this name found: '{0}'.", this.ElementName);
             }
         }
 
@@ -358,7 +358,7 @@ namespace YAXLib
             get
             {
                 return String.Format(
-                    CultureInfo.CurrentCulture,
+                    YAXSerializer.CurrentCulture,
                     "The format of the value specified for the property '{0}' is not proper: '{1}'.",
                     this.ElementName,
                     this.BadInput);
@@ -407,7 +407,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "Could not assign to the property '{0}'.", this.PropertyName);
+                return String.Format(YAXSerializer.CurrentCulture, "Could not assign to the property '{0}'.", this.PropertyName);
             }
         }
 
@@ -461,7 +461,7 @@ namespace YAXLib
             get
             {
                 return String.Format(
-                    CultureInfo.CurrentCulture,
+                    YAXSerializer.CurrentCulture,
                     "Could not add object ('{0}') to the collection ('{1}').",
                     this.ObjectToAdd,
                     this.PropertyName);
@@ -518,7 +518,7 @@ namespace YAXLib
             get
             {
                 return String.Format(
-                    CultureInfo.CurrentCulture,
+                    YAXSerializer.CurrentCulture,
                     "Could not assign the default value specified ('{0}') for the property '{1}'.",
                     this.TheDefaultValue,
                     this.PropertyName);
@@ -580,7 +580,7 @@ namespace YAXLib
 
                 if (this.innerException != null)
                 {
-                    msg += String.Format(CultureInfo.CurrentCulture, "\r\nMore Details:\r\n{0}", this.innerException.Message);
+                    msg += String.Format(YAXSerializer.CurrentCulture, "\r\nMore Details:\r\n{0}", this.innerException.Message);
                 }
 
                 return msg;
@@ -637,7 +637,7 @@ namespace YAXLib
             get
             {
                 return String.Format(
-                    CultureInfo.CurrentCulture,
+                    YAXSerializer.CurrentCulture,
                     "Could not format objects of type '{0}' with the format string '{1}'",
                     this.ObjectType.Name,
                     this.Format);
@@ -684,7 +684,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "Self Referential types ('{0}') cannot be serialized.", this.SelfReferentialType.FullName);
+                return String.Format(YAXSerializer.CurrentCulture, "Self Referential types ('{0}') cannot be serialized.", this.SelfReferentialType.FullName);
             }
         }
 
@@ -737,7 +737,7 @@ namespace YAXLib
             get
             {
                 return String.Format(
-                   CultureInfo.CurrentCulture,
+                   YAXSerializer.CurrentCulture,
                    "Expected an object of type '{0}' but received an object of type '{1}'.",
                    this.ExpectedType.Name,
                    this.ReceivedType.Name);

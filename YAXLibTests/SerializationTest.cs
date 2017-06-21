@@ -30,13 +30,23 @@ namespace YAXLibTests
 #else
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 #endif
+
+           
         }
+
+
+        [SetUp]
+        public void Init()
+        {
+            YAXSerializer.CurrentCulture = CultureInfo.InvariantCulture;
+        }
+
 
         [Test]
         public void BasicTypeSerializationTest()
         {
-            var objs = new object[] {123, 654.321, "SomeString", 24234L};
-            var types = new [] {typeof (int), typeof (double), typeof (string), typeof (long)};
+            var objs = new object[] { 123, 654.321, "SomeString", 24234L };
+            var types = new[] { typeof(int), typeof(double), typeof(string), typeof(long) };
             var serializedResults = new[] { "<Int32>123</Int32>", "<Double>654.321</Double>", "<String>SomeString</String>", "<Int64>24234</Int64>" };
 
             for (int i = 0; i < objs.Length; i++)
@@ -233,12 +243,12 @@ namespace YAXLibTests
             string got = serializer.Serialize(WarehouseWithArray.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-        
+
         [Test]
         public void DictionaryWithNullValue()
         {
             const string theKey = "TheKey";
-            var d = new Dictionary<string, object>() {{ theKey, null}};
+            var d = new Dictionary<string, object>() { { theKey, null } };
             var serializer = new YAXSerializer(typeof(Dictionary<string, object>), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.DontSerializeNullObjects);
             var got = serializer.Serialize(d);
             var gotDes = serializer.Deserialize(got) as Dictionary<string, object>;
@@ -625,7 +635,7 @@ namespace YAXLibTests
   </SomeDic>
 </GUIDTest>", g1.ToString(), g2.ToString(), g3.ToString(), g4.ToString());
             var serializer = new YAXSerializer(typeof(GUIDTest), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
-            string got = serializer.Serialize(GUIDTest.GetSampleInstance(g1,g2,g3,g4));
+            string got = serializer.Serialize(GUIDTest.GetSampleInstance(g1, g2, g3, g4));
             Assert.That(got, Is.EqualTo(result));
         }
 
@@ -1396,10 +1406,10 @@ namespace YAXLibTests
             Assert.That(got, Is.EqualTo(result));
         }
 
-        [Test] 
+        [Test]
         public void SerializingPathAndAliasTogetherTest()
         {
-            const string result = 
+            const string result =
 @"<PathAndAliasAssignmentSample>
   <Title value=""Inside C#"" />
   <Price value=""30.5"" />
@@ -1492,7 +1502,7 @@ namespace YAXLibTests
             var initialInstance = ClassContainingXElement.GetSampleInstance();
             string initialInstanceString = initialInstance.ToString();
 
-            var ser = new YAXSerializer(typeof (ClassContainingXElement), YAXExceptionHandlingPolicies.DoNotThrow,
+            var ser = new YAXSerializer(typeof(ClassContainingXElement), YAXExceptionHandlingPolicies.DoNotThrow,
                                         YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
 
             var initialXmlSer = ser.Serialize(initialInstance);
@@ -1615,7 +1625,7 @@ namespace YAXLibTests
             var ser = new YAXSerializer(typeof(object));
             string xmlResult = ser.Serialize(content);
 
-            string expectedResult = 
+            string expectedResult =
 @"<Object yaxlib:realtype=""System.String"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">this is just a simple test</Object>";
 
             Assert.That(xmlResult, Is.EqualTo(expectedResult));
@@ -1627,7 +1637,7 @@ namespace YAXLibTests
         [Test]
         public void PolymorphicSerializationThroughListTest()
         {
-            var lst = new List<int> {1, 2, 3};
+            var lst = new List<int> { 1, 2, 3 };
             var ser = new YAXSerializer(typeof(object));
             string xmlResult = ser.Serialize(lst);
 #if FXCORE
@@ -1638,7 +1648,7 @@ namespace YAXLibTests
   <Int32>3</Int32>
 </Object>";
 #else
-            const string expectedResult = 
+            const string expectedResult =
 @"<Object yaxlib:realtype=""System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
   <Int32>1</Int32>
   <Int32>2</Int32>
@@ -1762,7 +1772,7 @@ namespace YAXLibTests
             var dictionary = DictionarySample.GetSampleInstance();
             var ser = new YAXSerializer(typeof(DictionarySample));
             string result = ser.Serialize(dictionary);
-            
+
             const string expectedResult =
 @"<TheItems xmlns=""http://example.com/"">
   <TheItem TheKey=""key1"">00000001-0002-0003-0405-060708090a0b</TheItem>
@@ -1897,13 +1907,13 @@ namespace YAXLibTests
             string got = serializer.Serialize(AttributeInheritanceWithPropertyOverride.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-        
+
         [Test]
         public void ListOfPolymorphicObjectsTest()
         {
             var ser = new YAXSerializer(typeof(PolymorphicSampleList));
             string result = ser.Serialize(PolymorphicSampleList.GetSampleInstance());
-            
+
             const string expectedResult =
 @"<samples xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
   <sample yaxlib:realtype=""YAXLibTests.SampleClasses.PolymorphicOneSample"" />
@@ -1915,7 +1925,7 @@ namespace YAXLibTests
         [Test]
         public void OneLetterPathTest()
         {
-            var ser = new YAXSerializer(typeof (OneLetterAlias));
+            var ser = new YAXSerializer(typeof(OneLetterAlias));
             string result = ser.Serialize(OneLetterAlias.GetSampleInstance());
 
             const string expectedResult =
@@ -1930,7 +1940,7 @@ namespace YAXLibTests
         [Test]
         public void IndexerPropertiesAreNotSerialized()
         {
-            var ser = new YAXSerializer(typeof (IndexerSample));
+            var ser = new YAXSerializer(typeof(IndexerSample));
             string result = ser.Serialize(IndexerSample.GetSampleInstance());
 
             const string expectedResult =
@@ -1945,7 +1955,7 @@ namespace YAXLibTests
         [Test]
         public void SingleLetterPropertyNamesAreSerializedProperly()
         {
-            var ser = new YAXSerializer(typeof (SingleLetterPropertyNames));
+            var ser = new YAXSerializer(typeof(SingleLetterPropertyNames));
             string result = ser.Serialize(SingleLetterPropertyNames.GetSampleInstance());
 
             const string expectedResult =
@@ -1970,10 +1980,10 @@ namespace YAXLibTests
         [Test]
         public void DelegatesAndFunctionPointersMustBeIgnored()
         {
-            var ser = new YAXSerializer(typeof (DelegateInstances));
+            var ser = new YAXSerializer(typeof(DelegateInstances));
             string result = ser.Serialize(DelegateInstances.GetSampleInstance());
 
-            const string expectedResult = 
+            const string expectedResult =
 @"<DelegateInstances>
   <SomeNumber>12</SomeNumber>
 </DelegateInstances>";
@@ -1984,7 +1994,7 @@ namespace YAXLibTests
         [Test]
         public void RepetitiveReferencesAreNotLoop()
         {
-            var ser = new YAXSerializer(typeof (RepetitiveReferenceIsNotLoop));
+            var ser = new YAXSerializer(typeof(RepetitiveReferenceIsNotLoop));
             string result = ser.Serialize(RepetitiveReferenceIsNotLoop.GetSampleInstance());
 
             const string expectedResult =
@@ -2002,7 +2012,7 @@ namespace YAXLibTests
         [Test]
         public void SelfReferringTypeIsNotNecessarilyASelfReferringObject()
         {
-            var ser = new YAXSerializer(typeof (DirectSelfReferringObject));
+            var ser = new YAXSerializer(typeof(DirectSelfReferringObject));
             string result = ser.Serialize(DirectSelfReferringObject.GetSampleInstance());
 
             const string expenctedResult =
@@ -2020,8 +2030,8 @@ namespace YAXLibTests
         [Test]
         public void SerializingASelfReferringObjectThrowsException_WhenTheRelevantSerializationOptionIsSet()
         {
-            Assert.Throws<YAXCannotSerializeSelfReferentialTypes>(() => 
-                {             
+            Assert.Throws<YAXCannotSerializeSelfReferentialTypes>(() =>
+                {
                     var ser = new YAXSerializer(typeof(DirectSelfReferringObject), YAXSerializationOptions.ThrowUponSerializingCyclingReferences);
                     string result = ser.Serialize(DirectSelfReferringObject.GetSampleInstanceWithCycle());
                 });
@@ -2030,7 +2040,7 @@ namespace YAXLibTests
         [Test]
         public void SerializingAnIndirectSelfReferringTypeWithougLoopMustPass()
         {
-            var ser = new YAXSerializer(typeof (IndirectSelfReferringObject));
+            var ser = new YAXSerializer(typeof(IndirectSelfReferringObject));
             string result = ser.Serialize(IndirectSelfReferringObject.GetSampleInstance());
 
             const string expectedResult =
@@ -2107,7 +2117,7 @@ namespace YAXLibTests
         {
             Assert.Throws<YAXCannotSerializeSelfReferentialTypes>(() =>
             {
-                var ser = new YAXSerializer(typeof (DirectSelfReferringObject),
+                var ser = new YAXSerializer(typeof(DirectSelfReferringObject),
                     YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error,
                     YAXSerializationOptions.ThrowUponSerializingCyclingReferences);
                 string result = ser.Serialize(DirectSelfReferringObject.GetSampleInstanceWithCycle());
@@ -2199,7 +2209,7 @@ namespace YAXLibTests
             try
             {
                 throw new ArgumentOutOfRangeException("index",
-                    new InvalidOperationException("Inner exception 1", 
+                    new InvalidOperationException("Inner exception 1",
                         new Exception("Inner Exception 2")));
             }
             catch (Exception ex)
@@ -2219,7 +2229,7 @@ namespace YAXLibTests
             YAXSerializer serializer = new YAXSerializer(typeof(Dictionary<string, object>));
             string result = serializer.Serialize(dict);
 
-            const string expectedResult = 
+            const string expectedResult =
 @"<DictionaryOfStringObject>
   <KeyValuePairOfStringObject>
     <Key>foo</Key>
@@ -2238,7 +2248,7 @@ namespace YAXLibTests
             list.Add("3");
             YAXSerializer serializer = new YAXSerializer(typeof(List<string>));
             string result = serializer.Serialize(list);
-            const string @expectedResult = 
+            const string @expectedResult =
 @"<ListOfString>
   <String>1</String>
   <String />
@@ -2257,7 +2267,7 @@ namespace YAXLibTests
 
             YAXSerializer serializer = new YAXSerializer(typeof(List<object>));
             string result = serializer.Serialize(list);
-            const string expectedResult = 
+            const string expectedResult =
 @"<ListOfObject xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
   <Object yaxlib:realtype=""System.String"">1</Object>
   <Object />
@@ -2292,6 +2302,40 @@ namespace YAXLibTests
             const string expectedResult = "<Object />";
 
             Assert.That(result, Is.EqualTo(expectedResult));
+        }
+
+        [Test]
+        public void PtBr()
+        {
+            var ptbr = new PtBr
+            {
+                Name = "João da Silva Sabiá",
+                Age = 18,
+                BirthDate = new DateTime(2017, 12, 1, 11, 59, 59),
+                DecimalMoney = 1203.88m,
+                LongMoney = 53,
+                SchoolFirstDay = null,
+
+            };
+
+            YAXSerializer.CurrentCulture = CultureInfo.GetCultureInfo("pt-br");
+
+            var ser = new YAXSerializer(typeof(PtBr));
+
+            var result = ser.Serialize(ptbr);
+
+            const string expectedResult =
+@"<PtBr>
+  <Name>João da Silva Sabiá</Name>
+  <BirthDate>01/12/2017 11:59:59</BirthDate>
+  <SchoolFirstDay />
+  <Age>18</Age>
+  <DecimalMoney>1203,88</DecimalMoney>
+  <LongMoney>53</LongMoney>
+</PtBr>";
+
+            Assert.That(result, Is.EqualTo(expectedResult));
+
         }
     }
 }

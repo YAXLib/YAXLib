@@ -124,7 +124,7 @@ namespace YAXLib
                 int backqIndex = name.IndexOf('`');
                 if (backqIndex == 0)
                 {
-                    throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "Bad type name: {0}", name));
+                    throw new InvalidOperationException(String.Format(YAXSerializer.CurrentCulture, "Bad type name: {0}", name));
                 }
                 else if (backqIndex > 0)
                 {
@@ -141,7 +141,7 @@ namespace YAXLib
             else if (type.IsArray)
             {
                 Type t = type.GetElementType();
-                name = String.Format(CultureInfo.InvariantCulture, "Array{0}Of{1}", type.GetArrayRank(), GetTypeFriendlyName(t));
+                name = String.Format(YAXSerializer.CurrentCulture, "Array{0}Of{1}", type.GetArrayRank(), GetTypeFriendlyName(t));
             }
 
             return name;
@@ -708,12 +708,12 @@ namespace YAXLib
             }
             else if (dstType == typeof(DateTime))
             {
-                convertedObj = StringUtils.ParseDateTimeTimeZoneSafe(value.ToString(), CultureInfo.InvariantCulture);
+                convertedObj = StringUtils.ParseDateTimeTimeZoneSafe(value.ToString(), YAXSerializer.CurrentCulture);
             }
             else if (dstType == typeof(decimal))
             {
                 // to fix the asymetry of used locales for this type between serialization and deseralization
-                convertedObj = Convert.ChangeType(value, dstType, CultureInfo.InvariantCulture);
+                convertedObj = Convert.ChangeType(value, dstType, YAXSerializer.CurrentCulture);
             }
             else if (dstType == typeof(bool))
             {
@@ -745,7 +745,7 @@ namespace YAXLib
                     return ConvertBasicType(value, nullableType);
                 }
 
-                IFormatProvider ifProvider = CultureInfo.InvariantCulture;
+                IFormatProvider ifProvider = YAXSerializer.CurrentCulture;
                 convertedObj = Convert.ChangeType(value, dstType, ifProvider);
             }
 

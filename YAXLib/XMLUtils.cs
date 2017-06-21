@@ -449,13 +449,13 @@ namespace YAXLib
           switch (typeName)
           {
             case "Double":
-              return ((double)self).ToString("R", CultureInfo.InvariantCulture);
+              return ((double)self).ToString("R", YAXSerializer.CurrentCulture);
             case "Single":
-              return ((Single)self).ToString("R", CultureInfo.InvariantCulture);
+              return ((Single)self).ToString("R", YAXSerializer.CurrentCulture);
             case "BigInteger":
-              return ReflectionUtils.InvokeMethod(self, "ToString", "R", CultureInfo.InvariantCulture) as string;
+              return ReflectionUtils.InvokeMethod(self, "ToString", "R", YAXSerializer.CurrentCulture) as string;
           }
-          return Convert.ToString((self ?? String.Empty), CultureInfo.InvariantCulture);
+          return Convert.ToString((self ?? String.Empty), YAXSerializer.CurrentCulture);
         }
 
         public static XAttribute AddAttributeNamespaceSafe(this XElement parent, XName attrName, object attrValue, XNamespace documentDefaultNamespace)
