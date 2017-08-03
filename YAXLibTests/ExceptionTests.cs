@@ -33,7 +33,30 @@ namespace YAXLibTests
         }
 
         [Test]
-        public void YAXBadlyFormedInputTest()
+        public void YAXBadlyFormedInputWithLineNumbersTest()
+        {
+            const string bookXml =
+                @"<!-- This example demonstrates serailizing a very simple class -->
+<Book>
+  <Title>Inside C#</Title>
+  <Author>Tom Archer &amp; Andrew Whitechapel</Author>
+  <PublishYear>2002</PublishYear>
+  <Price>BADDATA</Price>
+</Book>";
+
+            var ex = Assert.Throws<YAXBadlyFormedInput>(() =>
+            {
+                var serializer = new YAXSerializer(typeof(Book), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error, YAXSerializationOptions.DisplayLineInfoInExceptions);
+                serializer.Deserialize(bookXml);
+            });
+            Assert.True(ex.HasLineInfo);
+            Assert.AreEqual(6, ex.LineNumber);
+            Assert.AreEqual(4, ex.LinePosition);
+            StringAssert.Contains("The format of the value specified for the property", ex.Message);
+        }
+
+        [Test]
+        public void YAXBadlyFormedInputWithoutLineNumbersTest()
         {
             const string bookXml =
                 @"<!-- This example demonstrates serailizing a very simple class -->
@@ -49,12 +72,11 @@ namespace YAXLibTests
                 var serializer = new YAXSerializer(typeof(Book), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error);
                 serializer.Deserialize(bookXml);
             });
-            Assert.True(ex.HasLineInfo);
-            Assert.AreEqual(6, ex.LineNumber);
-            Assert.AreEqual(4, ex.LinePosition);
+            Assert.False(ex.HasLineInfo);
+            Assert.AreEqual(0, ex.LineNumber);
+            Assert.AreEqual(0, ex.LinePosition);
             StringAssert.Contains("The format of the value specified for the property", ex.Message);
         }
-
 
         [Test]
         public void YAXObjectTypeMismatchExceptionTest()

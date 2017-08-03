@@ -84,7 +84,13 @@ namespace YAXLib
         /// Never add YAXLib metadata attributes (e.g., 'yaxlib:realtype') to the serialized XML (even when they would be required for deserialization.)
         /// Useful when generating XML intended for another system's consumption.
         /// </summary>
-        SuppressMetadataAttributes = 8
+        SuppressMetadataAttributes = 8,
+
+        /// <summary>
+        /// Provides line number and position (where available) in deserialization exceptions.
+        /// Enabling this may have a performance impact
+        /// </summary> 
+        DisplayLineInfoInExceptions = 16
     }
 
     /// <summary>

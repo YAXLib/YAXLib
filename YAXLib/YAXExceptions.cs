@@ -75,11 +75,12 @@ namespace YAXLib
         /// </summary>
         public int LinePosition { get; private set; }
 
-
-        /// <inheritdoc />
-        public override string Message => HasLineInfo
-            ? string.Format(CultureInfo.CurrentCulture, "Error at line {0}, position {1}", LineNumber, LinePosition)
-            : "Error";
+        /// <summary>
+        /// Position string for use in error message
+        /// </summary>
+        protected string LineInfoMessage => HasLineInfo
+            ? string.Format(CultureInfo.CurrentCulture, " (line {0}, position {1})", LineNumber, LinePosition)
+            : string.Empty;
     }
 
     /// <summary>
@@ -214,7 +215,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "{0}: No attributes with this name found: '{1}'.", base.Message, this.AttributeName);
+                return String.Format(CultureInfo.CurrentCulture, "No attributes with this name found: '{0}'{1}.", this.AttributeName, this.LineInfoMessage);
             }
         }
 
@@ -261,7 +262,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "{0}: Element with the given name does not contain text values: '{1}'.", base.Message, this.ElementName);
+                return String.Format(CultureInfo.CurrentCulture, "Element with the given name does not contain text values: '{0}'{1}.", this.ElementName, this.LineInfoMessage);
             }
         }
 
@@ -309,7 +310,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "{0}: Element with the given name already has value: '{1}'.", base.Message, this.ElementName);
+                return String.Format(CultureInfo.CurrentCulture, "Element with the given name already has value: '{0}'{1}.", this.ElementName, this.LineInfoMessage);
             }
         }
 
@@ -357,7 +358,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "{0}: No elements with this name found: '{1}'.", base.Message, this.ElementName);
+                return String.Format(CultureInfo.CurrentCulture, "No elements with this name found: '{0}'{1}.", this.ElementName, this.LineInfoMessage);
             }
         }
 
@@ -415,10 +416,10 @@ namespace YAXLib
             {
                 return String.Format(
                     CultureInfo.CurrentCulture,
-                    "{0}: The format of the value specified for the property '{1}' is not proper: '{2}'.",
-                    base.Message,
+                    "The format of the value specified for the property '{0}' is not proper: '{1}'{2}.",                    
                     this.ElementName,
-                    this.BadInput);
+                    this.BadInput, 
+                    this.LineInfoMessage);
             }
         }
 
@@ -466,7 +467,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "{0}: Could not assign to the property '{1}'.", base.Message, this.PropertyName);
+                return String.Format(CultureInfo.CurrentCulture, "Could not assign to the property '{0}'{1}.", this.PropertyName, this.LineInfoMessage);
             }
         }
 
@@ -523,10 +524,10 @@ namespace YAXLib
             {
                 return String.Format(
                     CultureInfo.CurrentCulture,
-                    "{0}: Could not add object ('{1}') to the collection ('{2}').",
-                    base.Message,
+                    "Could not add object ('{0}') to the collection ('{1}'){2}.",                    
                     this.ObjectToAdd,
-                    this.PropertyName);
+                    this.PropertyName, 
+                    this.LineInfoMessage);
             }
         }
 
@@ -583,10 +584,10 @@ namespace YAXLib
             {
                 return String.Format(
                     CultureInfo.CurrentCulture,
-                    "{0}: Could not assign the default value specified ('{1}') for the property '{2}'.",
-                    base.Message,
+                    "Could not assign the default value specified ('{0}') for the property '{1}'{2}.",                    
                     this.TheDefaultValue,
-                    this.PropertyName);
+                    this.PropertyName, 
+                    this.LineInfoMessage);
             }
         }
 

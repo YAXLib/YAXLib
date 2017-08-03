@@ -407,7 +407,7 @@ namespace YAXLib
             {
                 using (TextReader tr = new StringReader(input))
                 {
-                    var xdoc = XDocument.Load(tr, LoadOptions.SetLineInfo);
+                    var xdoc = XDocument.Load(tr, GetXmlLoadOptions());
                     var baseElement = xdoc.Root;
                     FindDocumentDefaultNamespace();
                     return DeserializeBase(baseElement);
@@ -429,7 +429,7 @@ namespace YAXLib
         {
             try
             {
-                XDocument xdoc = XDocument.Load(xmlReader, LoadOptions.SetLineInfo);
+                XDocument xdoc = XDocument.Load(xmlReader, GetXmlLoadOptions());
                 XElement baseElement = xdoc.Root;
                 FindDocumentDefaultNamespace();
                 return DeserializeBase(baseElement);
@@ -450,7 +450,7 @@ namespace YAXLib
         {
             try
             {
-                XDocument xdoc = XDocument.Load(textReader, LoadOptions.SetLineInfo);
+                XDocument xdoc = XDocument.Load(textReader, GetXmlLoadOptions());
                 XElement baseElement = xdoc.Root;
                 FindDocumentDefaultNamespace();
                 return DeserializeBase(baseElement);
@@ -2816,6 +2816,20 @@ namespace YAXLib
                 RegisterNamespace(m_yaxLibNamespaceUri, m_yaxLibNamespacePrefix);
             }
         }
+
+        /// <summary>
+        /// Generates XDocument LoadOptions from SerializationOption
+        /// </summary>
+        private LoadOptions GetXmlLoadOptions()
+        {
+            LoadOptions options = LoadOptions.None;
+            if (m_serializationOption.HasFlag(YAXSerializationOptions.DisplayLineInfoInExceptions))
+            {
+                options |= LoadOptions.SetLineInfo;
+            }
+            return options;
+        }
+
 
         /// <summary>
         /// Called when an exception occurs inside the library. It applies the exception handling policies.
