@@ -200,7 +200,7 @@ namespace YAXLibTests.SampleClasses
             if (TryParseColor(attrib.Value, out color))
                 return color;
 
-            throw new YAXBadlyFormedInput(attrib.Name.ToString(), attrib.Value);
+            throw new YAXBadlyFormedInput(attrib.Name.ToString(), attrib.Value, attrib);
         }
 
         public Color DeserializeFromElement(XElement element)
@@ -209,7 +209,7 @@ namespace YAXLibTests.SampleClasses
             if (TryParseColor(element.Value, out color))
                 return color;
 
-            throw new YAXBadlyFormedInput(element.Name.ToString(), element.Value);
+            throw new YAXBadlyFormedInput(element.Name.ToString(), element.Value, element);
         }
 
         public Color DeserializeFromValue(string value)
@@ -218,7 +218,7 @@ namespace YAXLibTests.SampleClasses
             if (TryParseColor(value, out color))
                 return color;
 
-            throw new YAXBadlyFormedInput("[SomeValue]", value);
+            throw new YAXBadlyFormedInput("[SomeValue]", value, null);
         }
 
                     public static string ColorTo8CharString(Color color)

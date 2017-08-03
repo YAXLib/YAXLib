@@ -10,6 +10,8 @@
 
 using System;
 using System.Globalization;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace YAXLib
 {
@@ -37,9 +39,53 @@ namespace YAXLib
     }
 
     /// <summary>
+    /// Base class for all deserialization exceptions, which contains line and position info
+    /// </summary>
+    public class YAXDeserializationException : YAXException
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="YAXDeserializationException"/> class.
+        /// </summary>
+        /// <param name="lineInfo">IXmlLineInfo derived object, e.g. XElement, XAttribute containing line info</param>
+        public YAXDeserializationException(IXmlLineInfo lineInfo)
+        {
+            if (lineInfo != null &&
+                lineInfo.HasLineInfo())
+            {
+                HasLineInfo = true;
+                LineNumber = lineInfo.LineNumber;
+                LinePosition = lineInfo.LinePosition;
+            }
+
+        }
+
+        /// <summary>
+        /// Gets whether the exception has line information
+        /// Note: if this is unexpectedly false, then most likely you need to specify LoadOptions.SetLineInfo on document load
+        /// </summary>
+        public bool HasLineInfo { get; private set; }
+
+        /// <summary>
+        /// Gets the line number on which the exception occurred
+        /// </summary>
+        public int LineNumber { get; private set; }
+
+        /// <summary>
+        /// Gets the position at which the exception occurred
+        /// </summary>
+        public int LinePosition { get; private set; }
+
+
+        /// <inheritdoc />
+        public override string Message => HasLineInfo
+            ? string.Format(CultureInfo.CurrentCulture, "Error at line {0}, position {1}", LineNumber, LinePosition)
+            : "Error";
+    }
+
+    /// <summary>
     /// Raised when the location of serialization specified cannot be
     /// created or cannot be read from.
-    /// This exception is raised during serialization and deserialization
+    /// This exception is raised during serialization
     /// </summary>
     public class YAXBadLocationException : YAXException
     {
@@ -51,7 +97,7 @@ namespace YAXLib
         /// <param name="location">The location.</param>
         public YAXBadLocationException(string location)
         {
-
+            Location = location;
         }
 
         #endregion
@@ -75,7 +121,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format("The location specified cannot be read from or written to: {0}", this.Location);
+                return String.Format(CultureInfo.CurrentCulture, "The location specified cannot be read from or written to: {0}", this.Location);
             }
         }
 
@@ -132,7 +178,7 @@ namespace YAXLib
     /// Raised when the attribute corresponding to some property is not present in the given XML file, when deserializing.
     /// This exception is raised during deserialization.
     /// </summary>
-    public class YAXAttributeMissingException : YAXException
+    public class YAXAttributeMissingException : YAXDeserializationException
     {
         #region Constructors
 
@@ -140,7 +186,9 @@ namespace YAXLib
         /// Initializes a new instance of the <see cref="YAXAttributeMissingException"/> class.
         /// </summary>
         /// <param name="attrName">Name of the attribute.</param>
-        public YAXAttributeMissingException(string attrName)
+        /// <param name="lineInfo">IXmlLineInfo derived object, e.g. XElement, XAttribute containing line info</param>
+        public YAXAttributeMissingException(string attrName, IXmlLineInfo lineInfo) : 
+            base(lineInfo)
         {
             this.AttributeName = attrName;
         }
@@ -166,7 +214,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "No attributes with this name found: '{0}'.", this.AttributeName);
+                return String.Format(CultureInfo.CurrentCulture, "{0}: No attributes with this name found: '{1}'.", base.Message, this.AttributeName);
             }
         }
 
@@ -177,7 +225,7 @@ namespace YAXLib
     /// Raised when the element value corresponding to some property is not present in the given XML file, when deserializing.
     /// This exception is raised during deserialization.
     /// </summary>
-    public class YAXElementValueMissingException : YAXException
+    public class YAXElementValueMissingException : YAXDeserializationException
     {
         #region Constructors
 
@@ -185,7 +233,9 @@ namespace YAXLib
         /// Initializes a new instance of the <see cref="YAXAttributeMissingException"/> class.
         /// </summary>
         /// <param name="elementName">Name of the element.</param>
-        public YAXElementValueMissingException(string elementName)
+        /// <param name="lineInfo">IXmlLineInfo derived object, e.g. XElement, XAttribute containing line info</param>
+        public YAXElementValueMissingException(string elementName, IXmlLineInfo lineInfo)
+            : base(lineInfo)
         {
             this.ElementName = elementName;
         }
@@ -211,7 +261,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "Element with the given name does not contain text values: '{0}'.", this.ElementName);
+                return String.Format(CultureInfo.CurrentCulture, "{0}: Element with the given name does not contain text values: '{1}'.", base.Message, this.ElementName);
             }
         }
 
@@ -223,7 +273,7 @@ namespace YAXLib
     /// This exception is raised during deserialization.
     /// </summary>
     [Obsolete("unused - will be removed in Yax 3")]
-    public class YAXElementValueAlreadyExistsException : YAXException
+    public class YAXElementValueAlreadyExistsException : YAXDeserializationException
     {
         #region Constructors
 
@@ -231,7 +281,9 @@ namespace YAXLib
         /// Initializes a new instance of the <see cref="YAXAttributeMissingException"/> class.
         /// </summary>
         /// <param name="elementName">Name of the element.</param>
-        public YAXElementValueAlreadyExistsException(string elementName)
+        /// <param name="lineInfo">IXmlLineInfo derived object, e.g. XElement, XAttribute containing line info</param>
+        public YAXElementValueAlreadyExistsException(string elementName, IXmlLineInfo lineInfo) :
+            base(lineInfo)
         {
             this.ElementName = elementName;
         }
@@ -257,7 +309,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "Element with the given name already has value: '{0}'.", this.ElementName);
+                return String.Format(CultureInfo.CurrentCulture, "{0}: Element with the given name already has value: '{1}'.", base.Message, this.ElementName);
             }
         }
 
@@ -269,7 +321,7 @@ namespace YAXLib
     /// Raised when the element corresponding to some property is not present in the given XML file, when deserializing.
     /// This exception is raised during deserialization.
     /// </summary>
-    public class YAXElementMissingException : YAXException
+    public class YAXElementMissingException : YAXDeserializationException
     {
         #region Constructors
 
@@ -277,7 +329,9 @@ namespace YAXLib
         /// Initializes a new instance of the <see cref="YAXElementMissingException"/> class.
         /// </summary>
         /// <param name="elemName">Name of the element.</param>
-        public YAXElementMissingException(string elemName)
+        /// <param name="lineInfo">IXmlLineInfo derived object, e.g. XElement, XAttribute containing line info</param>
+        public YAXElementMissingException(string elemName, IXmlLineInfo lineInfo) :
+            base(lineInfo)
         {
             this.ElementName = elemName;
         }
@@ -303,7 +357,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "No elements with this name found: '{0}'.", this.ElementName);
+                return String.Format(CultureInfo.CurrentCulture, "{0}: No elements with this name found: '{1}'.", base.Message, this.ElementName);
             }
         }
 
@@ -315,7 +369,7 @@ namespace YAXLib
     /// converted to the type of the property.
     /// This exception is raised during deserialization.
     /// </summary>
-    public class YAXBadlyFormedInput : YAXException
+    public class YAXBadlyFormedInput : YAXDeserializationException
     {
         #region Constructors
 
@@ -324,7 +378,9 @@ namespace YAXLib
         /// </summary>
         /// <param name="elemName">Name of the element.</param>
         /// <param name="badInput">The value of the input which could not be converted to the type of the property.</param>
-        public YAXBadlyFormedInput(string elemName, string badInput)
+        /// <param name="lineInfo">IXmlLineInfo derived object, e.g. XElement, XAttribute containing line info</param>
+        public YAXBadlyFormedInput(string elemName, string badInput, IXmlLineInfo lineInfo)
+            : base(lineInfo)
         {
             this.ElementName = elemName;
             this.BadInput = badInput;
@@ -359,7 +415,8 @@ namespace YAXLib
             {
                 return String.Format(
                     CultureInfo.CurrentCulture,
-                    "The format of the value specified for the property '{0}' is not proper: '{1}'.",
+                    "{0}: The format of the value specified for the property '{1}' is not proper: '{2}'.",
+                    base.Message,
                     this.ElementName,
                     this.BadInput);
             }
@@ -373,7 +430,7 @@ namespace YAXLib
     /// assigned to the property.
     /// This exception is raised during deserialization.
     /// </summary>
-    public class YAXPropertyCannotBeAssignedTo : YAXException
+    public class YAXPropertyCannotBeAssignedTo : YAXDeserializationException
     {
         #region Constructors
 
@@ -381,7 +438,9 @@ namespace YAXLib
         /// Initializes a new instance of the <see cref="YAXPropertyCannotBeAssignedTo"/> class.
         /// </summary>
         /// <param name="propName">Name of the property.</param>
-        public YAXPropertyCannotBeAssignedTo(string propName)
+        /// <param name="lineInfo">IXmlLineInfo derived object, e.g. XElement, XAttribute containing line info</param>        
+        public YAXPropertyCannotBeAssignedTo(string propName, IXmlLineInfo lineInfo) :
+            base(lineInfo)
         {
             this.PropertyName = propName;
         }
@@ -407,7 +466,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "Could not assign to the property '{0}'.", this.PropertyName);
+                return String.Format(CultureInfo.CurrentCulture, "{0}: Could not assign to the property '{1}'.", base.Message, this.PropertyName);
             }
         }
 
@@ -418,7 +477,7 @@ namespace YAXLib
     /// Raised when some member of the collection in the input XML, cannot be added to the collection object.
     /// This exception is raised during deserialization.
     /// </summary>
-    public class YAXCannotAddObjectToCollection : YAXException
+    public class YAXCannotAddObjectToCollection : YAXDeserializationException
     {
         #region Constructors
 
@@ -427,7 +486,9 @@ namespace YAXLib
         /// </summary>
         /// <param name="propName">Name of the property.</param>
         /// <param name="obj">The object that could not be added to the collection.</param>
-        public YAXCannotAddObjectToCollection(string propName, object obj)
+        /// <param name="lineInfo">IXmlLineInfo derived object, e.g. XElement, XAttribute containing line info</param>
+        public YAXCannotAddObjectToCollection(string propName, object obj, IXmlLineInfo lineInfo) : 
+            base(lineInfo)
         {
             this.PropertyName = propName;
             this.ObjectToAdd = obj;
@@ -462,7 +523,8 @@ namespace YAXLib
             {
                 return String.Format(
                     CultureInfo.CurrentCulture,
-                    "Could not add object ('{0}') to the collection ('{1}').",
+                    "{0}: Could not add object ('{1}') to the collection ('{2}').",
+                    base.Message,
                     this.ObjectToAdd,
                     this.PropertyName);
             }
@@ -475,7 +537,7 @@ namespace YAXLib
     /// Raised when the default value specified by the <c>YAXErrorIfMissedAttribute</c> could not be assigned to the property.
     /// This exception is raised during deserialization.
     /// </summary>
-    public class YAXDefaultValueCannotBeAssigned : YAXException
+    public class YAXDefaultValueCannotBeAssigned : YAXDeserializationException
     {
         #region Constructors
 
@@ -484,7 +546,9 @@ namespace YAXLib
         /// </summary>
         /// <param name="propName">Name of the property.</param>
         /// <param name="defaultValue">The default value which caused the problem.</param>
-        public YAXDefaultValueCannotBeAssigned(string propName, object defaultValue)
+        /// <param name="lineInfo">IXmlLineInfo derived object, e.g. XElement, XAttribute containing line info</param>
+        public YAXDefaultValueCannotBeAssigned(string propName, object defaultValue, IXmlLineInfo lineInfo) : 
+            base(lineInfo)
         {
             this.PropertyName = propName;
             this.TheDefaultValue = defaultValue;
@@ -519,7 +583,8 @@ namespace YAXLib
             {
                 return String.Format(
                     CultureInfo.CurrentCulture,
-                    "Could not assign the default value specified ('{0}') for the property '{1}'.",
+                    "{0}: Could not assign the default value specified ('{1}') for the property '{2}'.",
+                    base.Message,
                     this.TheDefaultValue,
                     this.PropertyName);
             }
@@ -549,15 +614,15 @@ namespace YAXLib
         /// Initializes a new instance of the <see cref="YAXBadlyFormedXML"/> class.
         /// </summary>
         /// <param name="innerException">The inner exception.</param>
-        public YAXBadlyFormedXML(Exception innerException)
+        public YAXBadlyFormedXML(Exception innerException) 
         {
             this.innerException = innerException;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="YAXBadlyFormedXML"/> class.
-        /// </summary>
-        public YAXBadlyFormedXML()
+        /// </summary>       
+        public YAXBadlyFormedXML() 
         {
         }
 
@@ -649,7 +714,7 @@ namespace YAXLib
 
     /// <summary>
     /// Raised when trying to serialize self-referential types. This exception cannot be turned off.
-    /// This exception is raised during deserialization.
+    /// This exception is raised during serialization.
     /// </summary>
     public class YAXCannotSerializeSelfReferentialTypes : YAXException
     {
