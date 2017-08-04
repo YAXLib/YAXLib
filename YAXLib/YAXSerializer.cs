@@ -1719,7 +1719,7 @@ namespace YAXLib
                             catch
                             {
                                 OnExceptionOccurred(
-                                    new YAXDefaultValueCannotBeAssigned(member.Alias.LocalName, member.DefaultValue, (IXmlLineInfo)xattrValue ?? xelemValue ?? baseElement),
+                                    new YAXDefaultValueCannotBeAssigned(member.Alias.LocalName, member.DefaultValue, xattrValue ?? xelemValue ?? baseElement as IXmlLineInfo),
                                     m_defaultExceptionType);
                             }
                         }
@@ -1732,7 +1732,7 @@ namespace YAXLib
                             catch
                             {
                                 OnExceptionOccurred(
-                                    new YAXDefaultValueCannotBeAssigned(member.Alias.LocalName, member.DefaultValue, (IXmlLineInfo)xattrValue ?? xelemValue ?? baseElement),
+                                    new YAXDefaultValueCannotBeAssigned(member.Alias.LocalName, member.DefaultValue, xattrValue ?? xelemValue ?? baseElement as IXmlLineInfo),
                                     m_defaultExceptionType);
                             }
                         }
@@ -1775,7 +1775,7 @@ namespace YAXLib
                     }
                     catch
                     {
-                        OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias.LocalName, (IXmlLineInfo)xattrValue ?? xelemValue ?? baseElement), m_defaultExceptionType);
+                        OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias.LocalName, xattrValue ?? xelemValue ?? baseElement as IXmlLineInfo), m_defaultExceptionType);
                     }
                 }
                 else if (elemValue != null)

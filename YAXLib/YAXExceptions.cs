@@ -187,6 +187,15 @@ namespace YAXLib
         /// Initializes a new instance of the <see cref="YAXAttributeMissingException"/> class.
         /// </summary>
         /// <param name="attrName">Name of the attribute.</param>
+        public YAXAttributeMissingException(string attrName) :
+            this(attrName, null)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="YAXAttributeMissingException"/> class.
+        /// </summary>
+        /// <param name="attrName">Name of the attribute.</param>
         /// <param name="lineInfo">IXmlLineInfo derived object, e.g. XElement, XAttribute containing line info</param>
         public YAXAttributeMissingException(string attrName, IXmlLineInfo lineInfo) : 
             base(lineInfo)
@@ -229,6 +238,15 @@ namespace YAXLib
     public class YAXElementValueMissingException : YAXDeserializationException
     {
         #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="YAXAttributeMissingException"/> class.
+        /// </summary>
+        /// <param name="elementName">Name of the element.</param>
+        public YAXElementValueMissingException(string elementName) :
+            this(elementName, null)
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="YAXAttributeMissingException"/> class.
@@ -282,6 +300,15 @@ namespace YAXLib
         /// Initializes a new instance of the <see cref="YAXAttributeMissingException"/> class.
         /// </summary>
         /// <param name="elementName">Name of the element.</param>
+        public YAXElementValueAlreadyExistsException(string elementName) :
+            this(elementName, null)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="YAXAttributeMissingException"/> class.
+        /// </summary>
+        /// <param name="elementName">Name of the element.</param>
         /// <param name="lineInfo">IXmlLineInfo derived object, e.g. XElement, XAttribute containing line info</param>
         public YAXElementValueAlreadyExistsException(string elementName, IXmlLineInfo lineInfo) :
             base(lineInfo)
@@ -330,6 +357,15 @@ namespace YAXLib
         /// Initializes a new instance of the <see cref="YAXElementMissingException"/> class.
         /// </summary>
         /// <param name="elemName">Name of the element.</param>
+        public YAXElementMissingException(string elemName) :
+            this(elemName, null)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="YAXElementMissingException"/> class.
+        /// </summary>
+        /// <param name="elemName">Name of the element.</param>
         /// <param name="lineInfo">IXmlLineInfo derived object, e.g. XElement, XAttribute containing line info</param>
         public YAXElementMissingException(string elemName, IXmlLineInfo lineInfo) :
             base(lineInfo)
@@ -373,6 +409,16 @@ namespace YAXLib
     public class YAXBadlyFormedInput : YAXDeserializationException
     {
         #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="YAXBadlyFormedInput"/> class.
+        /// </summary>
+        /// <param name="elemName">Name of the element.</param>
+        /// <param name="badInput">The value of the input which could not be converted to the type of the property.</param>
+        public YAXBadlyFormedInput(string elemName, string badInput)
+            : this(elemName, badInput, null)
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="YAXBadlyFormedInput"/> class.
@@ -438,6 +484,15 @@ namespace YAXLib
         /// <summary>
         /// Initializes a new instance of the <see cref="YAXPropertyCannotBeAssignedTo"/> class.
         /// </summary>
+        /// <param name="propName">Name of the property.</param>      
+        public YAXPropertyCannotBeAssignedTo(string propName) :
+            this(propName, null)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="YAXPropertyCannotBeAssignedTo"/> class.
+        /// </summary>
         /// <param name="propName">Name of the property.</param>
         /// <param name="lineInfo">IXmlLineInfo derived object, e.g. XElement, XAttribute containing line info</param>        
         public YAXPropertyCannotBeAssignedTo(string propName, IXmlLineInfo lineInfo) :
@@ -481,6 +536,16 @@ namespace YAXLib
     public class YAXCannotAddObjectToCollection : YAXDeserializationException
     {
         #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="YAXCannotAddObjectToCollection"/> class.
+        /// </summary>
+        /// <param name="propName">Name of the property.</param>
+        /// <param name="obj">The object that could not be added to the collection.</param>
+        public YAXCannotAddObjectToCollection(string propName, object obj) :
+            this(propName, obj, null)
+        {            
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="YAXCannotAddObjectToCollection"/> class.
@@ -541,6 +606,16 @@ namespace YAXLib
     public class YAXDefaultValueCannotBeAssigned : YAXDeserializationException
     {
         #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="YAXDefaultValueCannotBeAssigned"/> class.
+        /// </summary>
+        /// <param name="propName">Name of the property.</param>
+        /// <param name="defaultValue">The default value which caused the problem.</param>
+        public YAXDefaultValueCannotBeAssigned(string propName, object defaultValue) :
+            this(propName, defaultValue, null)
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="YAXDefaultValueCannotBeAssigned"/> class.
