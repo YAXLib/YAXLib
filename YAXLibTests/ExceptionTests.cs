@@ -93,5 +93,68 @@ namespace YAXLibTests
             StringAssert.Contains("'ClassWithDuplicateYaxAttribute'", ex.Message);
         }
 
+
+        [Test]
+        public void YAXElementValueMissingWithLineNumbersTest()
+        {
+            const string bookXml =
+                @"<!-- This example demonstrates serailizing a very simple class -->
+<Book>
+  <Title>Inside C#</Title>
+  <Author>Tom Archer &amp; Andrew Whitechapel</Author>
+  <PublishYear>2002</PublishYear>
+</Book>";
+
+            var ex = Assert.Throws<YAXElementValueMissingException>(() =>
+            {
+                var serializer = new YAXSerializer(typeof(BookClassTesgingSerializeAsValue), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error, YAXSerializationOptions.DisplayLineInfoInExceptions);
+                serializer.Deserialize(bookXml);
+            });
+            Assert.True(ex.HasLineInfo);
+            Assert.AreEqual(2, ex.LineNumber);
+            Assert.AreEqual(2, ex.LinePosition);
+        }
+
+        [Test]
+        public void YAXElementMissingWithLineNumbersTest()
+        {
+            const string collectionXml =
+@"<!-- This example demonstrates serailizing a very simple class -->
+<CollectionSeriallyAsAttribute>
+  <Info names=""John Doe, Jane, Sina, Mike, Rich"" />
+  <Location>
+    <Countries> Iran,Australia,United States of America, France</Countries>
+  </Location>
+</CollectionSeriallyAsAttribute> ";
+
+            var ex = Assert.Throws<YAXElementMissingException>(() =>
+            {
+                var serializer = new YAXSerializer(typeof(CollectionSeriallyAsAttribute), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error, YAXSerializationOptions.DisplayLineInfoInExceptions);
+                serializer.Deserialize(collectionXml);
+            });
+            Assert.True(ex.HasLineInfo);
+            Assert.AreEqual(2, ex.LineNumber);
+            Assert.AreEqual(2, ex.LinePosition);
+        }
+        
+        [Test]
+        public void YAXDefaultValueCannotBeAssignedWithLineNumbersTest()
+        {
+            const string bookXml =
+                @"<Book>
+  <Title>Inside C#</Title>
+  <Author>Tom Archer &amp; Andrew Whitechapel</Author>
+  <PublishYear>2002</PublishYear>
+</Book>";
+
+            var ex = Assert.Throws<YAXDefaultValueCannotBeAssigned>(() =>
+            {
+                var serializer = new YAXSerializer(typeof(BookWithBadDefaultValue), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error, YAXSerializationOptions.DisplayLineInfoInExceptions);
+                serializer.Deserialize(bookXml);
+            });
+            Assert.True(ex.HasLineInfo);
+            Assert.AreEqual(1, ex.LineNumber);
+            Assert.AreEqual(2, ex.LinePosition);
+        }
     }
 }

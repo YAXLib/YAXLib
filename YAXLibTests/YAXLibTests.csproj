@@ -91,6 +91,7 @@
     <Compile Include="SampleClasses\SelfReferencingObjects\RepetitiveReferenceIsNotLoop.cs" />
     <Compile Include="SampleClasses\SelfReferencingObjects\IndirectSelfReferringObject.cs" />
     <Compile Include="SampleClasses\SelfReferencingObjects\DirectSelfReferringObject.cs" />
+    <Compile Include="SampleClasses\SimpleBookClassWithBadDefaultValue.cs" />
     <Compile Include="SampleClasses\SimpleBookClassWithOrdering.cs" />
     <Compile Include="SampleClasses\SingleLetterPropertyNames.cs" />
     <Compile Include="SampleClasses\YAXLibMetadataOverriding.cs" />
