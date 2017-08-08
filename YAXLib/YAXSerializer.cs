@@ -415,7 +415,7 @@ namespace YAXLib
             }
             catch (XmlException ex)
             {
-                OnExceptionOccurred(new YAXBadlyFormedXML(ex), m_defaultExceptionType);
+                OnExceptionOccurred(new YAXBadlyFormedXML(ex, ex.LineNumber, ex.LinePosition), m_defaultExceptionType);
                 return null;
             }
         }
@@ -436,7 +436,7 @@ namespace YAXLib
             }
             catch (XmlException ex)
             {
-                OnExceptionOccurred(new YAXBadlyFormedXML(ex), m_defaultExceptionType);
+                OnExceptionOccurred(new YAXBadlyFormedXML(ex, ex.LineNumber, ex.LinePosition), m_defaultExceptionType);
                 return null;
             }
         }
@@ -457,7 +457,7 @@ namespace YAXLib
             }
             catch (XmlException ex)
             {
-                OnExceptionOccurred(new YAXBadlyFormedXML(ex), m_defaultExceptionType);
+                OnExceptionOccurred(new YAXBadlyFormedXML(ex, ex.LineNumber, ex.LinePosition), m_defaultExceptionType);
                 return null;
             }
         }
@@ -478,7 +478,7 @@ namespace YAXLib
             }
             catch (XmlException ex)
             {
-                OnExceptionOccurred(new YAXBadlyFormedXML(ex), m_defaultExceptionType);
+                OnExceptionOccurred(new YAXBadlyFormedXML(ex, ex.LineNumber, ex.LinePosition), m_defaultExceptionType);
                 return null;
             }
         }
@@ -496,7 +496,7 @@ namespace YAXLib
             }
             catch (XmlException ex)
             {
-                OnExceptionOccurred(new YAXBadlyFormedXML(ex), m_defaultExceptionType);
+                OnExceptionOccurred(new YAXBadlyFormedXML(ex, ex.LineNumber, ex.LinePosition), m_defaultExceptionType);
                 return null;
             }
         }

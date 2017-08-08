@@ -60,6 +60,18 @@ namespace YAXLib
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="YAXDeserializationException"/> class.
+        /// </summary>
+        /// <param name="lineNumber">The line number on which the error occurred</param>
+        /// <param name="linePosition">The line position on which the error occurred</param>
+        public YAXDeserializationException(int lineNumber, int linePosition)
+        {
+            HasLineInfo = true;
+            LineNumber = lineNumber;
+            LinePosition = linePosition;            
+        }
+
+        /// <summary>
         /// Gets whether the exception has line information
         /// Note: if this is unexpectedly false, then most likely you need to specify LoadOptions.SetLineInfo on document load
         /// </summary>
@@ -79,7 +91,7 @@ namespace YAXLib
         /// Position string for use in error message
         /// </summary>
         protected string LineInfoMessage => HasLineInfo
-            ? string.Format(CultureInfo.CurrentCulture, " (line {0}, position {1})", LineNumber, LinePosition)
+            ? string.Format(CultureInfo.CurrentCulture, " Line {0}, position {1}.", LineNumber, LinePosition)
             : string.Empty;
     }
 
@@ -224,7 +236,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "No attributes with this name found: '{0}'{1}.", this.AttributeName, this.LineInfoMessage);
+                return String.Format(CultureInfo.CurrentCulture, "No attributes with this name found: '{0}'.{1}", this.AttributeName, this.LineInfoMessage);
             }
         }
 
@@ -280,7 +292,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "Element with the given name does not contain text values: '{0}'{1}.", this.ElementName, this.LineInfoMessage);
+                return String.Format(CultureInfo.CurrentCulture, "Element with the given name does not contain text values: '{0}'.{1}", this.ElementName, this.LineInfoMessage);
             }
         }
 
@@ -337,7 +349,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "Element with the given name already has value: '{0}'{1}.", this.ElementName, this.LineInfoMessage);
+                return String.Format(CultureInfo.CurrentCulture, "Element with the given name already has value: '{0}'.{1}", this.ElementName, this.LineInfoMessage);
             }
         }
 
@@ -394,7 +406,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "No elements with this name found: '{0}'{1}.", this.ElementName, this.LineInfoMessage);
+                return String.Format(CultureInfo.CurrentCulture, "No elements with this name found: '{0}'.{1}", this.ElementName, this.LineInfoMessage);
             }
         }
 
@@ -462,7 +474,7 @@ namespace YAXLib
             {
                 return String.Format(
                     CultureInfo.CurrentCulture,
-                    "The format of the value specified for the property '{0}' is not proper: '{1}'{2}.",                    
+                    "The format of the value specified for the property '{0}' is not proper: '{1}'.{2}",                    
                     this.ElementName,
                     this.BadInput, 
                     this.LineInfoMessage);
@@ -522,7 +534,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "Could not assign to the property '{0}'{1}.", this.PropertyName, this.LineInfoMessage);
+                return String.Format(CultureInfo.CurrentCulture, "Could not assign to the property '{0}'.{1}", this.PropertyName, this.LineInfoMessage);
             }
         }
 
@@ -589,7 +601,7 @@ namespace YAXLib
             {
                 return String.Format(
                     CultureInfo.CurrentCulture,
-                    "Could not add object ('{0}') to the collection ('{1}'){2}.",                    
+                    "Could not add object ('{0}') to the collection ('{1}').{2}",                    
                     this.ObjectToAdd,
                     this.PropertyName, 
                     this.LineInfoMessage);
@@ -659,7 +671,7 @@ namespace YAXLib
             {
                 return String.Format(
                     CultureInfo.CurrentCulture,
-                    "Could not assign the default value specified ('{0}') for the property '{1}'{2}.",                    
+                    "Could not assign the default value specified ('{0}') for the property '{1}'.{2}",                    
                     this.TheDefaultValue,
                     this.PropertyName, 
                     this.LineInfoMessage);
@@ -673,7 +685,7 @@ namespace YAXLib
     /// Raised when the XML input does not follow standard XML formatting rules.
     /// This exception is raised during deserialization.
     /// </summary>
-    public class YAXBadlyFormedXML : YAXException
+    public class YAXBadlyFormedXML : YAXDeserializationException
     {
         #region Fields
 
@@ -690,7 +702,20 @@ namespace YAXLib
         /// Initializes a new instance of the <see cref="YAXBadlyFormedXML"/> class.
         /// </summary>
         /// <param name="innerException">The inner exception.</param>
+        /// <param name="lineNumber">The line number on which the error occurred</param>
+        /// <param name="linePosition">The line position on which the error occurred</param>
+        public YAXBadlyFormedXML(Exception innerException, int lineNumber, int linePosition)
+            : base(lineNumber, linePosition)
+        {
+            this.innerException = innerException;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="YAXBadlyFormedXML"/> class.
+        /// </summary>
+        /// <param name="innerException">The inner exception.</param>
         public YAXBadlyFormedXML(Exception innerException) 
+            : base(null)
         {
             this.innerException = innerException;
         }
@@ -699,6 +724,7 @@ namespace YAXLib
         /// Initializes a new instance of the <see cref="YAXBadlyFormedXML"/> class.
         /// </summary>       
         public YAXBadlyFormedXML() 
+            : this(null)
         {
         }
 
@@ -717,7 +743,7 @@ namespace YAXLib
         {
             get
             {
-                string msg = "The input xml file is not properly formatted!";
+                string msg = string.Format(CultureInfo.CurrentCulture, "The input xml file is not properly formatted!{0}", this.LineInfoMessage);
 
                 if (this.innerException != null)
                 {

@@ -23,14 +23,28 @@ namespace YAXLibTests
         [Test]
         public void YAXBadlyFormedXMLTest()
         {
+            string badXml = @"<!-- This example demonstrates serailizing a very simple class -->
+<Book>
+  <Title>Inside C#</Title>
+  <Author>Tom Archer &amp; Andrew Whitechapel</Author>
+  <PublishYear>2002</PublishYear>
+  <Price>BADDATA<Price>
+</Book>";
+
             var ex = Assert.Throws<YAXBadlyFormedXML>(() =>
             {
                 var serializer = new YAXSerializer(typeof(Book), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error);
-                serializer.Deserialize("some garbage!");
+                serializer.Deserialize(badXml);
             });
 
+            // YAXBadlyFormedXML exception doesn't need YAXSerializationOptions.DisplayLineInfoInExceptions to get the line numbers
+            Assert.True(ex.HasLineInfo);
+            Assert.AreEqual(7, ex.LineNumber);
+            Assert.AreEqual(3, ex.LinePosition);
             StringAssert.Contains("not properly formatted", ex.Message);
+            
         }
+        
 
         [Test]
         public void YAXBadlyFormedInputWithLineNumbersTest()
@@ -156,5 +170,6 @@ namespace YAXLibTests
             Assert.AreEqual(1, ex.LineNumber);
             Assert.AreEqual(2, ex.LinePosition);
         }
+        
     }
 }
