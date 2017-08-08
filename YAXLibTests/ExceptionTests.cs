@@ -176,7 +176,10 @@ namespace YAXLibTests
         {
             var testName = "Test";
 
-            Exception ex = Assert.Throws<YAXBadLocationException>(() => throw new YAXBadLocationException(testName));
+            Exception ex = Assert.Throws<YAXBadLocationException>(() =>
+            {
+                throw new YAXBadLocationException(testName);
+            });
             StringAssert.Contains(testName, ex.Message);
         }
 
@@ -184,7 +187,10 @@ namespace YAXLibTests
         public void YAXAttributeAlreadyExistsExceptionLegacyConstructor()
         {
             var testName = "Test";
-            var ex = Assert.Throws<YAXAttributeAlreadyExistsException>(() => throw new YAXAttributeAlreadyExistsException(testName));
+            var ex = Assert.Throws<YAXAttributeAlreadyExistsException>(() =>
+            {
+                throw new YAXAttributeAlreadyExistsException(testName);
+            });
             StringAssert.Contains(testName, ex.Message);
         }
 
@@ -192,7 +198,10 @@ namespace YAXLibTests
         public void YAXAttributeMissingExceptionLegacyConstructor()
         {
             var testName = "Test";
-            var ex = Assert.Throws<YAXAttributeMissingException>(() => throw new YAXAttributeMissingException(testName));
+            var ex = Assert.Throws<YAXAttributeMissingException>(() =>
+            {
+                throw new YAXAttributeMissingException(testName);
+            });
             StringAssert.Contains(testName, ex.Message);
         }
 
@@ -200,7 +209,10 @@ namespace YAXLibTests
         public void YAXElementValueMissingExceptionLegacyConstructor()
         {
             var testName = "Test";
-            var ex = Assert.Throws<YAXElementValueMissingException>(() => throw new YAXElementValueMissingException(testName));
+            var ex = Assert.Throws<YAXElementValueMissingException>(() =>
+            {
+                throw new YAXElementValueMissingException(testName);
+            });
             StringAssert.Contains(testName, ex.Message);
         }
 
@@ -208,7 +220,10 @@ namespace YAXLibTests
         public void YAXElementValueAlreadyExistsExceptionLegacyConstructor()
         {
             var testName = "Test";
-            var ex = Assert.Throws<YAXElementValueAlreadyExistsException>(() => throw new YAXElementValueAlreadyExistsException(testName));
+            var ex = Assert.Throws<YAXElementValueAlreadyExistsException>(() =>
+            {
+                throw new YAXElementValueAlreadyExistsException(testName);
+            });
             StringAssert.Contains(testName, ex.Message);
         }
 
@@ -216,7 +231,10 @@ namespace YAXLibTests
         public void YAXElementMissingExceptionLegacyConstructor()
         {
             var testName = "Test";
-            var ex = Assert.Throws<YAXElementMissingException>(() => throw new YAXElementMissingException(testName));
+            var ex = Assert.Throws<YAXElementMissingException>(() =>
+            {
+                throw new YAXElementMissingException(testName);
+            });
             StringAssert.Contains(testName, ex.Message);
         }
 
@@ -225,7 +243,10 @@ namespace YAXLibTests
         {
             var testName = "Test";
             var testInput = "BadInput";
-            var ex = Assert.Throws<YAXBadlyFormedInput>(() => throw new YAXBadlyFormedInput(testName, testInput));
+            var ex = Assert.Throws<YAXBadlyFormedInput>(() =>
+            {
+                throw new YAXBadlyFormedInput(testName, testInput);
+            });
             StringAssert.Contains(testName, ex.Message);
             StringAssert.Contains(testInput, ex.Message);
         }
@@ -234,7 +255,10 @@ namespace YAXLibTests
         public void YAXPropertyCannotBeAssignedToLegacyConstructor()
         {
             var testName = "Test";
-            var ex = Assert.Throws<YAXPropertyCannotBeAssignedTo>(() => throw new YAXPropertyCannotBeAssignedTo(testName));
+            var ex = Assert.Throws<YAXPropertyCannotBeAssignedTo>(() =>
+            {
+                throw new YAXPropertyCannotBeAssignedTo(testName);
+            });
             StringAssert.Contains(testName, ex.Message);
         }
 
@@ -243,7 +267,10 @@ namespace YAXLibTests
         {
             var testName = "Test";
             var testValue = 1;
-            var ex = Assert.Throws<YAXCannotAddObjectToCollection>(() => throw new YAXCannotAddObjectToCollection(testName, testValue));
+            var ex = Assert.Throws<YAXCannotAddObjectToCollection>(() =>
+            {
+                throw new YAXCannotAddObjectToCollection(testName, testValue);
+            });
             StringAssert.Contains(testName, ex.Message);
             StringAssert.Contains(testValue.ToString(), ex.Message);
         }
@@ -253,7 +280,10 @@ namespace YAXLibTests
         {
             var testName = "Test";
             var testValue = 1;
-            var ex = Assert.Throws<YAXDefaultValueCannotBeAssigned>(() => throw new YAXDefaultValueCannotBeAssigned(testName, testValue));
+            var ex = Assert.Throws<YAXDefaultValueCannotBeAssigned>(() =>
+            {
+                throw new YAXDefaultValueCannotBeAssigned(testName, testValue);
+            });
             StringAssert.Contains(testName, ex.Message);
             StringAssert.Contains(testValue.ToString(), ex.Message);
         }
@@ -262,7 +292,10 @@ namespace YAXLibTests
         public void YAXBadlyFormedXMLLegacyConstructor()
         {
             var testName = "Test";
-            var ex = Assert.Throws<YAXBadlyFormedXML>(() => throw new YAXBadlyFormedXML(new Exception(testName)));
+            var ex = Assert.Throws<YAXBadlyFormedXML>(() =>
+            {
+                throw new YAXBadlyFormedXML(new Exception(testName));
+            });
             StringAssert.Contains(testName, ex.Message);
         }
 
@@ -271,7 +304,10 @@ namespace YAXLibTests
         {
             var testInput = "BadInput";
             var testType = typeof(string);
-            var ex = Assert.Throws<YAXInvalidFormatProvided>(() => throw new YAXInvalidFormatProvided(testType, testInput));
+            var ex = Assert.Throws<YAXInvalidFormatProvided>(() =>
+            {
+                throw new YAXInvalidFormatProvided(testType, testInput);
+            });
             StringAssert.Contains(testType.Name, ex.Message);
             StringAssert.Contains(testInput, ex.Message);
         }
@@ -280,7 +316,10 @@ namespace YAXLibTests
         public void YAXCannotSerializeSelfReferentialTypesLegacyConstructor()
         {
             var testType = typeof(string);
-            var ex = Assert.Throws<YAXCannotSerializeSelfReferentialTypes>(() => throw new YAXCannotSerializeSelfReferentialTypes(testType));
+            var ex = Assert.Throws<YAXCannotSerializeSelfReferentialTypes>(() =>
+            {
+                throw new YAXCannotSerializeSelfReferentialTypes(testType);
+            });
             StringAssert.Contains(testType.Name, ex.Message);
         }
 
@@ -289,7 +328,10 @@ namespace YAXLibTests
         {
             var testType = typeof(string);
             var testType2 = typeof(int);
-            var ex = Assert.Throws<YAXObjectTypeMismatch>(() => throw new YAXObjectTypeMismatch(testType, testType2));
+            var ex = Assert.Throws<YAXObjectTypeMismatch>(() =>
+            {
+                throw new YAXObjectTypeMismatch(testType, testType2);
+            });
             StringAssert.Contains(testType.Name, ex.Message);
             StringAssert.Contains(testType2.Name, ex.Message);
         }
@@ -298,7 +340,10 @@ namespace YAXLibTests
         public void YAXPolymorphicExceptionLegacyConstructor()
         {
             var testName = "Test";
-            var ex = Assert.Throws<YAXPolymorphicException>(() => throw new YAXPolymorphicException(testName));
+            var ex = Assert.Throws<YAXPolymorphicException>(() =>
+            {
+                throw new YAXPolymorphicException(testName);
+            });
             StringAssert.Contains(testName, ex.Message);
 
         }
