@@ -23,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>6</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -32,6 +33,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
+    <LangVersion>6</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -91,6 +93,7 @@
     <Compile Include="SampleClasses\SelfReferencingObjects\RepetitiveReferenceIsNotLoop.cs" />
     <Compile Include="SampleClasses\SelfReferencingObjects\IndirectSelfReferringObject.cs" />
     <Compile Include="SampleClasses\SelfReferencingObjects\DirectSelfReferringObject.cs" />
+    <Compile Include="SampleClasses\SimpleBookClassWithBadDefaultValue.cs" />
     <Compile Include="SampleClasses\SimpleBookClassWithOrdering.cs" />
     <Compile Include="SampleClasses\SingleLetterPropertyNames.cs" />
     <Compile Include="SampleClasses\YAXLibMetadataOverriding.cs" />

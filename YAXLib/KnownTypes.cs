@@ -219,7 +219,7 @@ namespace YAXLib
             var elemHeight = elem.Element(this.GetXName("Height", overridingNamespace));
 
             if (elemHeight == null || elemWidth == null || elemTop == null || elemLeft == null)
-                throw new YAXElementMissingException(elem.Name + ":[Left|Top|Width|Height]");
+                throw new YAXElementMissingException(elem.Name + ":[Left|Top|Width|Height]", elem);
 
             return Activator.CreateInstance(Type,  
                         Int32.Parse(elemLeft.Value),
@@ -452,7 +452,7 @@ namespace YAXLib
                 TimeSpan timeSpanResult;
                 if (!TimeSpan.TryParse(strTimeSpanString, out timeSpanResult))
                 {
-                    throw new YAXBadlyFormedInput(elem.Name.ToString(), elem.Value);
+                    throw new YAXBadlyFormedInput(elem.Name.ToString(), elem.Value, elem);
                 }
                 return timeSpanResult;
             }
@@ -462,7 +462,7 @@ namespace YAXLib
                 long ticks;
                 if (!Int64.TryParse(strTicks, out ticks))
                 {
-                    throw new YAXBadlyFormedInput("Ticks", elemTicks.Value);
+                    throw new YAXBadlyFormedInput("Ticks", elemTicks.Value, elemTicks);
                 }
                 return new TimeSpan(ticks);
             }
