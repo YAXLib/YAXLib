@@ -374,6 +374,14 @@ namespace YAXLib
         #endregion
     }
 
+    /// <summary> 
+    /// Mark  the Single Instance of the class.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public class YAXSerializeAsSingleInstance : YAXBaseAttribute
+    {
+    }
+
     /// <summary>
     /// Makes a property or field to appear as a child element 
     /// for another element. This attribute is applicable to fields and properties.

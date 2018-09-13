@@ -1569,9 +1569,43 @@ namespace YAXLib
                 return ReflectionUtils.ConvertBasicType(baseElement.Value, m_type);
             }
 
-            object o;
-            o = m_desObject ?? Activator.CreateInstance(m_type, new object[0]);
-        	// o = m_desObject ?? m_type.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0]);
+            object o = null;
+            if (m_type.GetConstructor(System.Type.EmptyTypes) == null)
+            {
+                if (o == null)
+                {
+                    var pi = m_type.GetProperties()
+                                   .Where(pro =>
+                                      pro.GetCustomAttributes(typeof(YAXSerializeAsSingleInstance), inherit: false).Count() > 0
+                                   ).SingleOrDefault();
+                    if (pi != null)
+                    {
+                        o = pi.GetValue(null, null);
+                    }
+                }
+
+                if (o == null)
+                {
+                    var fdi = m_type.GetFields()
+                                    .Where(fd =>
+                                       fd.GetCustomAttributes(typeof(YAXSerializeAsSingleInstance), inherit: false).Count() > 0
+                                     ).SingleOrDefault();
+                    if (fdi != null)
+                    {
+                        o = fdi.GetValue(null);
+                    }
+                }
+
+                if (o == null)
+                {
+                    throw new System.MissingMethodException();
+                }
+            }
+            else
+            {
+                o = m_desObject ?? Activator.CreateInstance(m_type, new object[0]);
+            }
+            // o = m_desObject ?? m_type.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0]);
 
             foreach (var member in GetFieldsToBeSerialized())
             {
