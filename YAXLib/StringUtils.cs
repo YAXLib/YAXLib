@@ -28,7 +28,7 @@ namespace YAXLib
         public static string RefineLocationString(string elemAddr)
         {
             elemAddr = elemAddr.Trim(' ', '\t', '\r', '\n', '\v', '/', '\\');
-            if (String.IsNullOrEmpty(elemAddr))
+            if (string.IsNullOrEmpty(elemAddr))
                 return ".";
 
             // replace all back-slaches to slash
@@ -199,7 +199,7 @@ namespace YAXLib
         /// <returns>a bigger location string formed by combining a location string and an element name.</returns>
         public static string CombineLocationAndElementName(string location, XName elemName)
         {
-            return String.Format("{0}/{1}", location, elemName);
+            return string.Format("{0}/{1}", location, elemName);
         }
 
         /// <summary>
@@ -310,7 +310,7 @@ namespace YAXLib
             foreach (string strDim in strDims)
             {
                 int dim;
-                if (Int32.TryParse(strDim, out dim))
+                if (int.TryParse(strDim, out dim))
                     lst.Add(dim);
             }
 

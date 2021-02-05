@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
@@ -40,13 +38,13 @@ namespace YAXLibTests.SampleClasses
 
     public class FirstLevelClass
     {
-        public String ID { get; set; }
+        public string ID { get; set; }
 
         public SecondLevelClass Second { get; set; }
     }
 
     public class SecondLevelClass
     {
-        public String SecondID { get; set; }
+        public string SecondID { get; set; }
     }
 }

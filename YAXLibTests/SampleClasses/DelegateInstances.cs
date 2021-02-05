@@ -27,7 +27,7 @@ namespace YAXLibTests.SampleClasses
         {
             return new DelegateInstances
                    {
-                        Delegate2 = (n, d) => String.Format("Hey n:{0}, d:{1}", n, d),
+                        Delegate2 = (n, d) => string.Format("Hey n:{0}, d:{1}", n, d),
                         SomeFunc = () => "Some",
                         SomeAction = () => Console.WriteLine("I'm doing something"),
                         SomeNumber = 12

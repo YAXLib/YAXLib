@@ -11,7 +11,6 @@
 using System;
 using System.Globalization;
 using System.Xml;
-using System.Xml.Linq;
 
 namespace YAXLib
 {
@@ -75,17 +74,17 @@ namespace YAXLib
         /// Gets whether the exception has line information
         /// Note: if this is unexpectedly false, then most likely you need to specify LoadOptions.SetLineInfo on document load
         /// </summary>
-        public bool HasLineInfo { get; private set; }
+        public bool HasLineInfo { get; }
 
         /// <summary>
         /// Gets the line number on which the exception occurred
         /// </summary>
-        public int LineNumber { get; private set; }
+        public int LineNumber { get; }
 
         /// <summary>
         /// Gets the position at which the exception occurred
         /// </summary>
-        public int LinePosition { get; private set; }
+        public int LinePosition { get; }
 
         /// <summary>
         /// Position string for use in error message
@@ -121,7 +120,7 @@ namespace YAXLib
         /// Gets or sets the bad location which caused the exception
         /// </summary>
         /// <value>The location.</value>
-        public string Location { get; private set; }
+        public string Location { get; }
 
         /// <summary>
         /// Gets a message that describes the current exception.
@@ -134,7 +133,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "The location specified cannot be read from or written to: {0}", this.Location);
+                return string.Format(CultureInfo.CurrentCulture, "The location specified cannot be read from or written to: {0}", this.Location);
             }
         }
 
@@ -167,7 +166,7 @@ namespace YAXLib
         /// Gets the name of the attribute.
         /// </summary>
         /// <value>The name of the attribute.</value>
-        public string AttrName { get; private set; }
+        public string AttrName { get; }
 
         /// <summary>
         /// Gets a message that describes the current exception.
@@ -180,7 +179,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "An attribute with this name already exists: '{0}'.", this.AttrName);
+                return string.Format(CultureInfo.CurrentCulture, "An attribute with this name already exists: '{0}'.", this.AttrName);
             }
         }
 
@@ -223,7 +222,7 @@ namespace YAXLib
         /// Gets the name of the attribute.
         /// </summary>
         /// <value>The name of the attribute.</value>
-        public string AttributeName { get; private set; }
+        public string AttributeName { get; }
 
         /// <summary>
         /// Gets a message that describes the current exception.
@@ -236,7 +235,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "No attributes with this name found: '{0}'.{1}", this.AttributeName, this.LineInfoMessage);
+                return string.Format(CultureInfo.CurrentCulture, "No attributes with this name found: '{0}'.{1}", this.AttributeName, this.LineInfoMessage);
             }
         }
 
@@ -279,7 +278,7 @@ namespace YAXLib
         /// Gets the name of the attribute.
         /// </summary>
         /// <value>The name of the attribute.</value>
-        public string ElementName { get; private set; }
+        public string ElementName { get; }
 
         /// <summary>
         /// Gets a message that describes the current exception.
@@ -292,7 +291,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "Element with the given name does not contain text values: '{0}'.{1}", this.ElementName, this.LineInfoMessage);
+                return string.Format(CultureInfo.CurrentCulture, "Element with the given name does not contain text values: '{0}'.{1}", this.ElementName, this.LineInfoMessage);
             }
         }
 
@@ -336,7 +335,7 @@ namespace YAXLib
         /// Gets the name of the attribute.
         /// </summary>
         /// <value>The name of the attribute.</value>
-        public string ElementName { get; private set; }
+        public string ElementName { get; }
 
         /// <summary>
         /// Gets a message that describes the current exception.
@@ -349,7 +348,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "Element with the given name already has value: '{0}'.{1}", this.ElementName, this.LineInfoMessage);
+                return string.Format(CultureInfo.CurrentCulture, "Element with the given name already has value: '{0}'.{1}", this.ElementName, this.LineInfoMessage);
             }
         }
 
@@ -393,7 +392,7 @@ namespace YAXLib
         /// Gets or the name of the element.
         /// </summary>
         /// <value>The name of the element.</value>
-        public string ElementName { get; private set; }
+        public string ElementName { get; }
 
         /// <summary>
         /// Gets a message that describes the current exception.
@@ -406,7 +405,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "No elements with this name found: '{0}'.{1}", this.ElementName, this.LineInfoMessage);
+                return string.Format(CultureInfo.CurrentCulture, "No elements with this name found: '{0}'.{1}", this.ElementName, this.LineInfoMessage);
             }
         }
 
@@ -453,13 +452,13 @@ namespace YAXLib
         /// Gets the name of the element.
         /// </summary>
         /// <value>The name of the element.</value>
-        public string ElementName { get; private set; }
+        public string ElementName { get; }
 
         /// <summary>
         /// Gets the value of the input which could not be converted to the type of the property.
         /// </summary>
         /// <value>The value of the input which could not be converted to the type of the property.</value>
-        public string BadInput { get; private set; }
+        public string BadInput { get; }
 
         /// <summary>
         /// Gets a message that describes the current exception.
@@ -472,7 +471,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(
+                return string.Format(
                     CultureInfo.CurrentCulture,
                     "The format of the value specified for the property '{0}' is not proper: '{1}'.{2}",                    
                     this.ElementName,
@@ -521,7 +520,7 @@ namespace YAXLib
         /// Gets the name of the property.
         /// </summary>
         /// <value>The name of the property.</value>
-        public string PropertyName { get; private set; }
+        public string PropertyName { get; }
 
         /// <summary>
         /// Gets a message that describes the current exception.
@@ -534,7 +533,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "Could not assign to the property '{0}'.{1}", this.PropertyName, this.LineInfoMessage);
+                return string.Format(CultureInfo.CurrentCulture, "Could not assign to the property '{0}'.{1}", this.PropertyName, this.LineInfoMessage);
             }
         }
 
@@ -580,13 +579,13 @@ namespace YAXLib
         /// Gets the name of the property.
         /// </summary>
         /// <value>The name of the property.</value>
-        public string PropertyName { get; private set; }
+        public string PropertyName { get; }
 
         /// <summary>
         /// Gets the object that could not be added to the collection.
         /// </summary>
         /// <value>the object that could not be added to the collection.</value>
-        public object ObjectToAdd { get; private set; }
+        public object ObjectToAdd { get; }
 
         /// <summary>
         /// Gets a message that describes the current exception.
@@ -599,7 +598,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(
+                return string.Format(
                     CultureInfo.CurrentCulture,
                     "Could not add object ('{0}') to the collection ('{1}').{2}",                    
                     this.ObjectToAdd,
@@ -650,13 +649,13 @@ namespace YAXLib
         /// Gets the name of the property.
         /// </summary>
         /// <value>The name of the property.</value>
-        public string PropertyName { get; private set; }
+        public string PropertyName { get; }
 
         /// <summary>
         /// Gets the default value which caused the problem.
         /// </summary>
         /// <value>The default value which caused the problem.</value>
-        public object TheDefaultValue { get; private set; }
+        public object TheDefaultValue { get; }
 
         /// <summary>
         /// Gets a message that describes the current exception.
@@ -669,7 +668,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(
+                return string.Format(
                     CultureInfo.CurrentCulture,
                     "Could not assign the default value specified ('{0}') for the property '{1}'.{2}",                    
                     this.TheDefaultValue,
@@ -747,7 +746,7 @@ namespace YAXLib
 
                 if (this.innerException != null)
                 {
-                    msg += String.Format(CultureInfo.CurrentCulture, "\r\nMore Details:\r\n{0}", this.innerException.Message);
+                    msg += string.Format(CultureInfo.CurrentCulture, "{0}More Details:{1}{2}", Environment.NewLine, this.innerException.Message, Environment.NewLine);
                 }
 
                 return msg;
@@ -785,13 +784,13 @@ namespace YAXLib
         /// Gets the type of the field to serialize
         /// </summary>
         /// <value>The type of the field to serialize.</value>
-        public Type ObjectType { get; private set; }
+        public Type ObjectType { get; }
 
         /// <summary>
         /// Gets the format string.
         /// </summary>
         /// <value>The format string.</value>
-        public string Format { get; private set; }
+        public string Format { get; }
 
         /// <summary>
         /// Gets a message that describes the current exception.
@@ -803,7 +802,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(
+                return string.Format(
                     CultureInfo.CurrentCulture,
                     "Could not format objects of type '{0}' with the format string '{1}'",
                     this.ObjectType.Name,
@@ -839,7 +838,7 @@ namespace YAXLib
         /// Gets the self-referential type that caused the problem.
         /// </summary>
         /// <value>The type of the self-referential type that caused the problem.</value>
-        public Type SelfReferentialType { get; private set; }
+        public Type SelfReferentialType { get; }
 
         /// <summary>
         /// Gets a message that describes the current exception.
@@ -851,7 +850,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(CultureInfo.CurrentCulture, "Self Referential types ('{0}') cannot be serialized.", this.SelfReferentialType.FullName);
+                return string.Format(CultureInfo.CurrentCulture, "Self Referential types ('{0}') cannot be serialized.", this.SelfReferentialType.FullName);
             }
         }
 
@@ -885,13 +884,13 @@ namespace YAXLib
         /// Gets the expected type.
         /// </summary>
         /// <value>The expected type.</value>
-        public Type ExpectedType { get; private set; }
+        public Type ExpectedType { get; }
 
         /// <summary>
         /// Gets the type of the object which did not match the expected type.
         /// </summary>
         /// <value>The type of the object which did not match the expected type.</value>
-        public Type ReceivedType { get; private set; }
+        public Type ReceivedType { get; }
 
         /// <summary>
         /// Gets a message that describes the current exception.
@@ -903,7 +902,7 @@ namespace YAXLib
         {
             get
             {
-                return String.Format(
+                return string.Format(
                    CultureInfo.CurrentCulture,
                    "Expected an object of type '{0}' but received an object of type '{1}'.",
                    this.ExpectedType.Name,

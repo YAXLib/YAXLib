@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YAXLib", "YAXLib\YAXLib.csproj", "{88FE2B93-905D-4EF6-83D6-9CD756B7C2D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YAXLibTests", "YAXLibTests\YAXLibTests.csproj", "{F458F686-6739-4DAE-9F0D-5CA81E32DE6F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoApplication", "DemoApplication\DemoApplication.csproj", "{1B0E95CE-4996-4A63-906E-3C9565D1482F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{88FE2B93-905D-4EF6-83D6-9CD756B7C2D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88FE2B93-905D-4EF6-83D6-9CD756B7C2D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88FE2B93-905D-4EF6-83D6-9CD756B7C2D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88FE2B93-905D-4EF6-83D6-9CD756B7C2D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F458F686-6739-4DAE-9F0D-5CA81E32DE6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F458F686-6739-4DAE-9F0D-5CA81E32DE6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F458F686-6739-4DAE-9F0D-5CA81E32DE6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F458F686-6739-4DAE-9F0D-5CA81E32DE6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B0E95CE-4996-4A63-906E-3C9565D1482F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B0E95CE-4996-4A63-906E-3C9565D1482F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B0E95CE-4996-4A63-906E-3C9565D1482F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B0E95CE-4996-4A63-906E-3C9565D1482F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

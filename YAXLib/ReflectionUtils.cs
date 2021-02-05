@@ -11,7 +11,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Globalization;
 using System.Collections;
 using System.Reflection;
@@ -33,7 +32,7 @@ namespace YAXLib
         /// </returns>
         public static bool IsBasicType(Type t)
         {
-            if (t == typeof(string) || t.IsPrimitive() || t.IsEnum() || t == typeof(DateTime) || t == typeof(decimal) ||
+            if (t == typeof(string) || t.IsPrimitive || t.IsEnum || t == typeof(DateTime) || t == typeof(decimal) ||
                 t == typeof(Guid))
             {
                 return true;
@@ -119,12 +118,12 @@ namespace YAXLib
             }
 
             string name = type.Name;
-            if (type.IsGenericType())
+            if (type.IsGenericType)
             {
                 int backqIndex = name.IndexOf('`');
                 if (backqIndex == 0)
                 {
-                    throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, "Bad type name: {0}", name));
+                    throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, "Bad type name: {0}", name));
                 }
                 else if (backqIndex > 0)
                 {
@@ -141,7 +140,7 @@ namespace YAXLib
             else if (type.IsArray)
             {
                 Type t = type.GetElementType();
-                name = String.Format(CultureInfo.InvariantCulture, "Array{0}Of{1}", type.GetArrayRank(), GetTypeFriendlyName(t));
+                name = string.Format(CultureInfo.InvariantCulture, "Array{0}Of{1}", type.GetArrayRank(), GetTypeFriendlyName(t));
             }
 
             return name;
@@ -161,7 +160,7 @@ namespace YAXLib
                 throw new ArgumentNullException("type");
             }
 
-            if (type.IsGenericType())
+            if (type.IsGenericType)
             {
                 foreach (Type genType in type.GetGenericArguments())
                 {
@@ -213,11 +212,11 @@ namespace YAXLib
         public static bool IsDerivedFromGenericInterfaceType(Type givenType, Type genericInterfaceType, out Type genericType)
         {
             genericType = null;
-            if ((givenType.IsClass() || givenType.IsValueType()) && !givenType.IsAbstract())
+            if ((givenType.IsClass || givenType.IsValueType) && !givenType.IsAbstract)
             {
                 foreach (Type interfaceType in givenType.GetInterfaces())
                 {
-                    if (interfaceType.IsGenericType() &&
+                    if (interfaceType.IsGenericType &&
                         interfaceType.GetGenericTypeDefinition() == genericInterfaceType)
                     {
                         Type[] genArgs = interfaceType.GetGenericArguments();
@@ -253,7 +252,7 @@ namespace YAXLib
 
             bool isNongenericEnumerable = false;
 
-            if (type.IsInterface() && type.IsGenericType() && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            if (type.IsInterface && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
             {
                 seqType = type.GetGenericArguments()[0];
                 return true;
@@ -261,7 +260,7 @@ namespace YAXLib
 
             foreach (Type interfaceType in type.GetInterfaces())
             {
-                if (interfaceType.IsGenericType() &&
+                if (interfaceType.IsGenericType &&
                     interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                 {
                     Type[] genArgs = interfaceType.GetGenericArguments();
@@ -308,14 +307,14 @@ namespace YAXLib
         public static bool IsIList(Type type)
         {
             // a direct reference to the interface itself is also OK.
-            if (type.IsInterface() && type.GetGenericTypeDefinition() == typeof(IList<>))
+            if (type.IsInterface && type.GetGenericTypeDefinition() == typeof(IList<>))
             {
                 return true;
             }
 
             foreach (Type interfaceType in type.GetInterfaces())
             {
-                if (interfaceType.IsGenericType() &&
+                if (interfaceType.IsGenericType &&
                     interfaceType.GetGenericTypeDefinition() == typeof(IList<>))
                 {
                     return true;
@@ -338,7 +337,7 @@ namespace YAXLib
             itemType = typeof(object);
 
             // a direct reference to the interface itself is also OK.
-            if (type.IsInterface() && type.GetGenericTypeDefinition() == typeof(ICollection<>))
+            if (type.IsInterface && type.GetGenericTypeDefinition() == typeof(ICollection<>))
             {
                 itemType = type.GetGenericArguments()[0];
                 return true;
@@ -346,7 +345,7 @@ namespace YAXLib
 
             foreach (Type interfaceType in type.GetInterfaces())
             {
-                if (interfaceType.IsGenericType() &&
+                if (interfaceType.IsGenericType &&
                     interfaceType.GetGenericTypeDefinition() == typeof(ICollection<>))
                 {
                     itemType = interfaceType.GetGenericArguments()[0];
@@ -372,7 +371,7 @@ namespace YAXLib
             valueType = typeof(object);
 
             // a direct reference to the interface itself is also OK.
-            if (type.IsInterface() && type.IsGenericType() && type.GetGenericTypeDefinition() == typeof(IDictionary<,>))
+            if (type.IsInterface && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IDictionary<,>))
             {
                 Type[] genArgs = type.GetGenericArguments();
                 keyType = genArgs[0];
@@ -382,7 +381,7 @@ namespace YAXLib
 
             foreach (Type interfaceType in type.GetInterfaces())
             {
-                if (interfaceType.IsGenericType() &&
+                if (interfaceType.IsGenericType &&
                     interfaceType.GetGenericTypeDefinition() == typeof(IDictionary<,>))
                 {
                     Type[] genArgs = interfaceType.GetGenericArguments();
@@ -471,12 +470,12 @@ namespace YAXLib
             if (type == baseType)
                 return true;
 
-            bool isTypeGenDef = type.IsGenericTypeDefinition();
-            bool isBaseGenDef = baseType.IsGenericTypeDefinition();
+            bool isTypeGenDef = type.IsGenericTypeDefinition;
+            bool isBaseGenDef = baseType.IsGenericTypeDefinition;
             Type[] typeGenArgs = null;
             Type[] baseGenArgs = null;
 
-            if (type.IsGenericType())
+            if (type.IsGenericType)
             {
                 if (isBaseGenDef)
                 {
@@ -492,7 +491,7 @@ namespace YAXLib
                 }
             }
 
-            if (baseType.IsGenericType())
+            if (baseType.IsGenericType)
             {
                 if (isTypeGenDef)
                 {
@@ -524,7 +523,7 @@ namespace YAXLib
                 }
             }
 
-            if (baseType.IsInterface())
+            if (baseType.IsInterface)
             {
                 foreach (var iface in type.GetInterfaces())
                 {
@@ -535,13 +534,13 @@ namespace YAXLib
             }
             else
             {
-                Type curBaseType = type.BaseType();
+                Type curBaseType = type.BaseType;
                 while (curBaseType != null)
                 {
                     if (curBaseType.Name == baseType.Name)
                         return true;
 
-                    curBaseType = curBaseType.BaseType();
+                    curBaseType = curBaseType.BaseType;
                 }
 
                 return false;
@@ -558,7 +557,7 @@ namespace YAXLib
         /// </returns>
         public static bool IsNullable(Type type, out Type valueType)
         {
-            if (type.IsGenericType() && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
                 valueType = type.GetGenericArguments()[0];
                 return true;
@@ -701,7 +700,7 @@ namespace YAXLib
         public static object ConvertBasicType(object value, Type dstType)
         {
             object convertedObj = null;
-            if (dstType.IsEnum())
+            if (dstType.IsEnum)
             {
                 UdtWrapper typeWrapper = TypeWrappersPool.Pool.GetTypeWrapper(dstType, null);
                 convertedObj = typeWrapper.EnumWrapper.ParseAlias(value.ToString());
@@ -725,7 +724,7 @@ namespace YAXLib
                 else
                 {
                     int boolIntValue = 0;
-                    if (Int32.TryParse(strValue, out boolIntValue))
+                    if (int.TryParse(strValue, out boolIntValue))
                         convertedObj = boolIntValue == 0 ? false : true;
                     else
                         throw new Exception("The specified value is not recognized as boolean: " + strValue);
@@ -740,7 +739,7 @@ namespace YAXLib
                 Type nullableType;
                 if (IsNullable(dstType, out nullableType))
                 {
-                    if (value == null || value.ToString() == String.Empty)
+                    if (value == null || value.ToString() == string.Empty)
                         return null;
                     return ConvertBasicType(value, nullableType);
                 }
@@ -799,16 +798,12 @@ namespace YAXLib
 
         public static bool IsPartOfNetFx(MemberInfo memberInfo)
         {
-            string moduleName = memberInfo.Module.Name;
-        	//memberInfo.Module.Assembly.
-#if FXCORE
-        	//TODO: FXCORE: This simplification may not come close enough to the .Net Framework version!
-            return moduleName.StartsWith("System.", StringComparison.OrdinalIgnoreCase) || moduleName.StartsWith("mscorlib.", StringComparison.OrdinalIgnoreCase) || moduleName.StartsWith("Microsoft", StringComparison.OrdinalIgnoreCase);
-#else
-            return moduleName.Equals("mscorlib.dll", StringComparison.OrdinalIgnoreCase)
-                || moduleName.Equals("System.dll", StringComparison.OrdinalIgnoreCase)
-                || moduleName.Equals("System.Core.dll", StringComparison.OrdinalIgnoreCase);
-#endif
+            object[] attributes = memberInfo.Module.Assembly.GetCustomAttributes(typeof(AssemblyCompanyAttribute), true);
+            if (attributes.Length == 0)
+                return false;
+
+            var attribute = (AssemblyCompanyAttribute)attributes[0];
+            return attribute.Company != null && attribute.Company.Equals("Microsoft Corporation", StringComparison.OrdinalIgnoreCase);
         }
 
         public static bool IsInstantiableCollection(Type colType)

@@ -71,7 +71,7 @@ namespace YAXLibTests.SampleClasses
 
         public override string ToString()
         {
-            return String.Format("({0}, {1})", X, Y);
+            return string.Format("({0}, {1})", X, Y);
         }
     }
 
@@ -85,19 +85,19 @@ namespace YAXLibTests.SampleClasses
 
         public string GetAt(int i)
         {
-            return String.Format("{0}, {1}", Families[i], Names[i]);
+            return string.Format("{0}, {1}", Families[i], Names[i]);
         }
 
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.AppendLine(String.Format("Count = {0}", Count));
-            sb.AppendLine(String.Format("Names: "));
+            sb.AppendLine(string.Format("Count = {0}", Count));
+            sb.AppendLine(string.Format("Names: "));
             foreach (string str in Names)
                 sb.Append(str + "  ");
 
-            sb.AppendLine(String.Format("Families: "));
+            sb.AppendLine(string.Format("Families: "));
             foreach (string str in Families)
                 sb.Append(str + "  ");
 

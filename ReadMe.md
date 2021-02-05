@@ -1,11 +1,16 @@
 ![YAXLib Logo](Logo/YAXLib_256x256.png)
 # YAXLib: Yet Another XML Serialization Library for the .NET Framework and .NET Core
 
-[![Build status](https://ci.appveyor.com/api/projects/status/ggown5b8ha8wnpf1/branch/master?svg=true)](https://ci.appveyor.com/project/SinaIravanian/yaxlib/branch/master) [![codecov.io](https://codecov.io/github/sinairv/YAXLib/coverage.svg?branch=master)](https://codecov.io/github/sinairv/YAXLib?branch=master) [![NuGet](https://img.shields.io/nuget/v/YAXLib.svg)](https://www.nuget.org/packages/YAXLib/)
+[![NuGet](https://img.shields.io/nuget/v/YAXLib.Redux)](https://www.nuget.org/packages/YAXLib.Redux/)
 
-*YAXLib* is a flexible XML serialization library that lets developers design freely the XML file structure, choose among private and public fields to be serialized, and serialize all known collection classes and arrays (single-dimensional, multi-dimensional, and jagged arrays) in the .NET Framework. 
+### This is an updated and maintained version of the original *YAXLib* by [sinairv/YAXLib](https://github.com/sinairv/YAXLib)
+It now targets `netstandard2.0` and has been tested under Microsoft Windows using .NET Framework 4.8 / .NET 5 and Linux using .NET 5.
 
-*YAXLib* can be used as a powerful XML parser or generator, that exploits the object to XML mapping in the class definitions themselves. 
+#### PRs are welcome!
+
+*YAXLib* is a flexible XML serialization library that lets developers design freely the XML file structure, choose among private and public fields to be serialized, and serialize all known collection classes and arrays (single-dimensional, multi-dimensional, and jagged arrays) in the .NET Framework.
+
+*YAXLib* can be used as a powerful XML parser or generator, that exploits the object to XML mapping in the class definitions themselves.
 
 The exception handling policies and its missing data recovery capabilities makes *YAXLib* a reliable tool for XML configuration storage and retrieval.
 
@@ -25,7 +30,7 @@ The exception handling policies and its missing data recovery capabilities makes
 * Allowing the programmer to add comments for the elements in the XML result
 * and more ...
 
-See the accompanied demo application for an example of each functionality. 
+See the accompanied demo application for an example of each functionality.
 
 ## Documentation
 
@@ -37,7 +42,7 @@ To play with sample classes, open one of the solution files (based on version of
 
 To install *YAXLib*, run the following command in the *Package Manager Console*:
 
-    PM> Install-Package YAXLib
+    PM> Install-Package YAXLib.Redux
 
 ## A Quick Introduction
 
@@ -183,7 +188,7 @@ Logo designed by [axuno gGmbH](https://github.com/axuno)
 
 ## Website, Copyright, and License
 
-YAXLib is hosted on [GitHub](https://github.com/sinairv/YAXLib).
+YAXLib is hosted on [GitHub](https://github.com/MhpSoftware/YAXLib.Redux).
 
 Copyright (c) 2009 - 2017 Sina Iravanian and Contributors - Licenced under [MIT](LICENSE.txt) 
 

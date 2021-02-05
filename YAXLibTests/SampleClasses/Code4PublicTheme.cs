@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
-#if !FXCORE
     //[ShowInDemoApplication]
 
     [YAXSerializeAs("root")]
@@ -223,7 +221,7 @@ namespace YAXLibTests.SampleClasses
 
                     public static string ColorTo8CharString(Color color)
         {
-            string str = String.Format("{0:X}", color.ToArgb());
+            string str = string.Format("{0:X}", color.ToArgb());
 
             var sb = new StringBuilder();
             for(int i = 0; i < 8 - str.Length; ++i)
@@ -253,7 +251,7 @@ namespace YAXLibTests.SampleClasses
                 strColor = strColor.Substring(1);
             
             int n;
-            if (Int32.TryParse(strColor, System.Globalization.NumberStyles.HexNumber, null, out n))
+            if (int.TryParse(strColor, System.Globalization.NumberStyles.HexNumber, null, out n))
             {
                 color = Color.FromArgb(n);
                 // sets the alpha value to 255
@@ -264,5 +262,4 @@ namespace YAXLibTests.SampleClasses
         }
 
     }
-#endif
 }

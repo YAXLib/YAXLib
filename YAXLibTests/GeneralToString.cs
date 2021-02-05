@@ -10,7 +10,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.Collections;
@@ -31,14 +30,14 @@ namespace YAXLibTests
             StringBuilder sb = new StringBuilder();
             if (collectionInstance == null)
             {
-                if(String.IsNullOrEmpty(propName))
+                if(string.IsNullOrEmpty(propName))
                     sb.AppendLayerFormatLine(layer, "[null]");
                 else
                     sb.AppendLayerFormatLine(layer, "{0}: [null]", propName);
             }
             else
             {
-                if (!String.IsNullOrEmpty(propName))
+                if (!string.IsNullOrEmpty(propName))
                 {
                     string strSize = "";
                     if (collectionInstance.GetType().IsArray)
@@ -52,7 +51,7 @@ namespace YAXLibTests
                                 ars.Append("*");
                             ars.Append(ar.GetLength(i));
                         }
-                        strSize = String.Format("[size: {0}]", ars.ToString());
+                        strSize = string.Format("[size: {0}]", ars.ToString());
                     }
 
                     sb.AppendLayerFormatLine(layer, "{0}: {1}", propName, strSize);
@@ -80,14 +79,14 @@ namespace YAXLibTests
             StringBuilder sb = new StringBuilder();
             if (dicInstance == null)
             {
-                if (String.IsNullOrEmpty(propName))
+                if (string.IsNullOrEmpty(propName))
                     sb.AppendLayerFormatLine(layer, "[null]");
                 else
                     sb.AppendLayerFormatLine(layer, "{0}: [null]", propName);
             }
             else
             {
-                if (!String.IsNullOrEmpty(propName))
+                if (!string.IsNullOrEmpty(propName))
                     sb.AppendLayerFormatLine(layer, "{0}:", propName);
 
                 foreach (object pair in dicInstance as IEnumerable)
@@ -145,14 +144,14 @@ namespace YAXLibTests
             StringBuilder sb = new StringBuilder();
             if (dicInstance == null)
             {
-                if(String.IsNullOrEmpty(propName))
+                if(string.IsNullOrEmpty(propName))
                     sb.AppendLayerFormatLine(layer, "[null]");
                 else
                     sb.AppendLayerFormatLine(layer, "{0}: [null]", propName);
             }
             else
             {
-                if (!String.IsNullOrEmpty(propName))
+                if (!string.IsNullOrEmpty(propName))
                     sb.AppendLayerFormatLine(layer, "{0}:", propName);
 
                 Type keyType, valueType;
@@ -313,7 +312,7 @@ namespace YAXLibTests
 
         private static bool IsDictionary(Type type)
         {
-            if (type.IsGenericType())
+            if (type.IsGenericType)
                 type = type.GetGenericTypeDefinition();
 
             if (type == typeof(Dictionary<,>))
@@ -338,7 +337,7 @@ namespace YAXLibTests
 
             foreach (Type interfaceType in type.GetInterfaces())
             {
-                if (interfaceType.IsGenericType() &&
+                if (interfaceType.IsGenericType &&
                     interfaceType.GetGenericTypeDefinition() == typeof(IDictionary<,>))
                 {
                     Type[] genArgs = interfaceType.GetGenericArguments();
@@ -395,7 +394,7 @@ namespace YAXLibTests
             if (IsArray(type)) 
                 return true;
 
-            if (type.IsGenericType())
+            if (type.IsGenericType)
                 type = type.GetGenericTypeDefinition();
 
             if (type == typeof(List<>) || type == typeof(HashSet<>) || type == typeof(IEnumerable<>))
@@ -460,11 +459,11 @@ namespace YAXLibTests
         {
             Type itemType = typeof(object);
 
-            if (type.IsInterface() && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            if (type.IsInterface && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
             {
                 itemType = type.GetGenericArguments()[0];
             }
-            else if (type.IsInterface() && type == typeof(IEnumerable))
+            else if (type.IsInterface && type == typeof(IEnumerable))
             {
                 itemType = typeof(object);
             }
@@ -472,7 +471,7 @@ namespace YAXLibTests
             {
                 foreach (Type interfaceType in type.GetInterfaces())
                 {
-                    if (interfaceType.IsGenericType() &&
+                    if (interfaceType.IsGenericType &&
                         interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                     {
                         itemType = interfaceType.GetGenericArguments()[0];
@@ -498,7 +497,7 @@ namespace YAXLibTests
         /// <param name="t">The type</param>
         private static bool IsBasicType(Type t)
         {
-            if (t == typeof(string) || t.IsPrimitive() || t.IsEnum() || t == typeof(DateTime) || t == typeof(decimal))
+            if (t == typeof(string) || t.IsPrimitive || t.IsEnum || t == typeof(DateTime) || t == typeof(decimal))
                 return true;
             else
                 return false;
@@ -513,7 +512,7 @@ namespace YAXLibTests
         /// </returns>
         private static bool IsArray(Type t)
         {
-            return (t.BaseType() == typeof(System.Array));
+            return (t.BaseType == typeof(System.Array));
         }
 
         /// <summary>
@@ -533,7 +532,7 @@ namespace YAXLibTests
 
             bool isNongenericEnumerable = false;
 
-            if (type.IsInterface() && type.IsGenericType() && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            if (type.IsInterface && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
             {
                 seqType = type.GetGenericArguments()[0];
                 return true;
@@ -541,7 +540,7 @@ namespace YAXLibTests
 
             foreach (Type interfaceType in type.GetInterfaces())
             {
-                if (interfaceType.IsGenericType() &&
+                if (interfaceType.IsGenericType &&
                     interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                 {
                     Type[] genArgs = interfaceType.GetGenericArguments();
@@ -575,7 +574,7 @@ namespace YAXLibTests
 
         public static StringBuilder AppendLayerFormat(this StringBuilder sb, int layer, string format, params object[] args)
         {
-            string strToAppend = String.Format(format, args);
+            string strToAppend = string.Format(format, args);
             return sb.AppendFormat("{0}{1}", GetLayerPrefix(layer), strToAppend);
         }
 

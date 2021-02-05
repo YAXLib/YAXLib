@@ -1,8 +1,5 @@
 ﻿using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using YAXLib;
 using YAXLibTests.SampleClasses;
 
@@ -49,7 +46,7 @@ namespace YAXLibTests
         {
             var ser = new YAXSerializer(typeof(YAXLibMetadataOverridingWithNamespace));
 
-            ser.YaxLibNamespacePrefix = String.Empty;
+            ser.YaxLibNamespacePrefix = string.Empty;
             ser.YaxLibNamespaceUri = "http://namespace.org/sample";
             ser.DimentionsAttributeName = "dm";
             ser.RealTypeAttributeName = "type";

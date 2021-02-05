@@ -97,7 +97,7 @@ namespace YAXLib
         /// <param name="callerSerializer">The caller serializer.</param>
         public MemberWrapper(MemberInfo memberInfo, YAXSerializer callerSerializer)
         {
-            Order = Int32.MaxValue;
+            Order = int.MaxValue;
 
             if (!(memberInfo.MemberType == MemberTypes.Property || memberInfo.MemberType == MemberTypes.Field))
                 throw new Exception("Member must be either property or field");
@@ -129,21 +129,15 @@ namespace YAXLib
             var attrsToProcessEarlier = new HashSet<Type> {typeof (YAXCustomSerializerAttribute), typeof (YAXCollectionAttribute)};
             foreach (var attrType in attrsToProcessEarlier)
             {
-#if FXCORE
-                var customSerAttrs = m_memberInfo.GetCustomAttributes(attrType, true);
-#else
                 var customSerAttrs = Attribute.GetCustomAttributes(m_memberInfo, attrType, true);
-#endif
+
                 foreach (var attr in customSerAttrs)
                 {
                     ProcessYaxAttribute(attr);
                 }
             }
-#if FXCORE
-            foreach (var attr in m_memberInfo.GetCustomAttributes(true))
-#else
+
             foreach (var attr in Attribute.GetCustomAttributes(m_memberInfo, true))
-#endif
             {
                 // no need to preces, it has been proccessed earlier
                 if (attrsToProcessEarlier.Contains(attr.GetType()))
@@ -706,9 +700,9 @@ namespace YAXLib
         /// </summary>
         private void InitDefaultValue()
         {
-            if (MemberType.IsValueType())
-                DefaultValue = Activator.CreateInstance(MemberType, new object[0]);
-                //DefaultValue = MemberType.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0]);
+            if (MemberType.IsValueType)
+                DefaultValue = Activator.CreateInstance(MemberType, new object[0]); 
+            //DefaultValue = MemberType.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0]);
             else
                 DefaultValue = null;
         }
@@ -722,12 +716,12 @@ namespace YAXLib
             if (attr is YAXCommentAttribute) 
             {
                 string comment = (attr as YAXCommentAttribute).Comment;
-                if (!String.IsNullOrEmpty(comment))
+                if (!string.IsNullOrEmpty(comment))
                 {
                     string[] comments = comment.Split(new [] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
                     for (int i = 0; i < comments.Length; i++)
                     {
-                        comments[i] = String.Format(" {0} ", comments[i].Trim());
+                        comments[i] = string.Format(" {0} ", comments[i].Trim());
                     }
 
                     this.Comment = comments;
@@ -768,7 +762,7 @@ namespace YAXLib
                     StringUtils.ExttractPathAndAliasFromLocationString((attr as YAXAttributeForAttribute).Parent, out path, out alias);
                     
                     SerializationLocation = path;
-                    if (!String.IsNullOrEmpty(alias))
+                    if (!string.IsNullOrEmpty(alias))
                         Alias = StringUtils.RefineSingleElement(alias);
                 }
             }
@@ -780,7 +774,7 @@ namespace YAXLib
                 StringUtils.ExttractPathAndAliasFromLocationString((attr as YAXElementForAttribute).Parent, out path, out alias);
 
                 SerializationLocation = path;
-                if (!String.IsNullOrEmpty(alias))
+                if (!string.IsNullOrEmpty(alias))
                     Alias = StringUtils.RefineSingleElement(alias);
             }
             else if (attr is YAXValueForAttribute)
@@ -795,7 +789,7 @@ namespace YAXLib
                     StringUtils.ExttractPathAndAliasFromLocationString((attr as YAXValueForAttribute).Parent, out path, out alias);
 
                     SerializationLocation = path;
-                    if (!String.IsNullOrEmpty(alias))
+                    if (!string.IsNullOrEmpty(alias))
                         Alias = StringUtils.RefineSingleElement(alias);
                 }
             }
@@ -878,10 +872,10 @@ namespace YAXLib
                 }
 
                 if(m_possibleRealTypes.Any(x => x.Type == yaxTypeAttr.Type))
-                    throw new YAXPolymorphicException(String.Format("The type \"{0}\" for field/property \"{1}\" has already been defined through another attribute.", yaxTypeAttr.Type.Name, m_memberInfo));
+                    throw new YAXPolymorphicException(string.Format("The type \"{0}\" for field/property \"{1}\" has already been defined through another attribute.", yaxTypeAttr.Type.Name, m_memberInfo));
 
                 if (alias != null && m_possibleRealTypes.Any(x => alias.Equals(x.Alias, StringComparison.Ordinal)))
-                    throw new YAXPolymorphicException(String.Format("The alias \"{0}\" given to type \"{1}\" for field/property \"{2}\" has already been given to another type through another attribute.",
+                    throw new YAXPolymorphicException(string.Format("The alias \"{0}\" given to type \"{1}\" for field/property \"{2}\" has already been given to another type through another attribute.",
                         alias, yaxTypeAttr.Type.Name, m_memberInfo));
 
                 m_possibleRealTypes.Add(yaxTypeAttr);
@@ -898,10 +892,10 @@ namespace YAXLib
                 }
 
                 if (m_possibleCollectionItemRealTypes.Any(x => x.Type == yaxColletionItemTypeAttr.Type))
-                    throw new YAXPolymorphicException(String.Format("The collection-item type \"{0}\" for collection \"{1}\" has already been defined through another attribute.", yaxColletionItemTypeAttr.Type.Name, m_memberInfo));
+                    throw new YAXPolymorphicException(string.Format("The collection-item type \"{0}\" for collection \"{1}\" has already been defined through another attribute.", yaxColletionItemTypeAttr.Type.Name, m_memberInfo));
 
                 if (alias != null && m_possibleCollectionItemRealTypes.Any(x => alias.Equals(x.Alias, StringComparison.Ordinal)))
-                    throw new YAXPolymorphicException(String.Format("The alias \"{0}\" given to collection-item type \"{1}\" for field/property \"{2}\" has already been given to another type through another attribute.",
+                    throw new YAXPolymorphicException(string.Format("The alias \"{0}\" given to collection-item type \"{1}\" for field/property \"{2}\" has already been given to another type through another attribute.",
                         alias, yaxColletionItemTypeAttr.Type.Name, m_memberInfo));
 
                 m_possibleCollectionItemRealTypes.Add(yaxColletionItemTypeAttr);

@@ -178,13 +178,15 @@ namespace YAXLib
         /// The namespace path
         /// </summary>
         public string Namespace
-        { get; private set; }
+        { get;
+        }
 
         /// <summary>
         /// The xml prefix used for the namespace
         /// </summary>
         public string Prefix
-        { get; private set; }
+        { get;
+        }
 
         #endregion
 
@@ -320,7 +322,7 @@ namespace YAXLib
         /// <summary>
         /// The order used to prioritize serialization and deserialization.
         /// </summary>
-        public int Order { get; private set; }
+        public int Order { get; }
 
         #endregion
     }
@@ -669,7 +671,7 @@ namespace YAXLib
         /// Gets the alias for the enum member.
         /// </summary>
         /// <value>The alias for the enum member.</value>
-        public string Alias { get; private set; }
+        public string Alias { get; }
 
         #endregion
     }
@@ -695,7 +697,7 @@ namespace YAXLib
         /// Gets or sets the type of the custom serializer.
         /// </summary>
         /// <value>The type of the custom serializer.</value>
-        public Type CustomSerializerType { get; private set; }
+        public Type CustomSerializerType { get; }
     }
 
     /// <summary>
@@ -712,7 +714,7 @@ namespace YAXLib
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
     internal class YAXCollectionItemTypeAttribute : YAXBaseAttribute
     {
-        public Type Type { get; private set; }
+        public Type Type { get; }
 
         public string Alias { get; set; }
 
@@ -725,7 +727,7 @@ namespace YAXLib
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
     internal class YAXTypeAttribute : YAXBaseAttribute
     {
-        public Type Type { get; private set; }
+        public Type Type { get; }
 
         public string Alias { get; set; }
 

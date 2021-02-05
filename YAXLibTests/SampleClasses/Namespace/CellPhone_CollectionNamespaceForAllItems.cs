@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses.Namespace
@@ -27,7 +24,7 @@ namespace YAXLibTests.SampleClasses.Namespace
         [YAXCollection(YAXCollectionSerializationTypes.Serially,
             EachElementName = "{http://namespace.org/color}TheModel", // should be ignored
             IsWhiteSpaceSeparator=false, SeparateBy=",")]
-        public List<String> AvailableModels { get; set; }
+        public List<string> AvailableModels { get; set; }
 
         public override string ToString()
         {

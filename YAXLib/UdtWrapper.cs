@@ -183,7 +183,7 @@ namespace YAXLib
         {
             get
             {
-                return m_udtType.IsEnum();
+                return m_udtType.IsEnum;
             }
         }
 
@@ -474,12 +474,12 @@ namespace YAXLib
             if (attr is YAXCommentAttribute)
             {
                 string comment = (attr as YAXCommentAttribute).Comment;
-                if(!String.IsNullOrEmpty(comment))
+                if(!string.IsNullOrEmpty(comment))
                 {
                     string[] comments = comment.Split(new [] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
                     for(int i = 0; i < comments.Length; i++)
                     {
-                        comments[i] = String.Format(" {0} ", comments[i].Trim());
+                        comments[i] = string.Format(" {0} ", comments[i].Trim());
                     }
 
                     this.Comment = comments;

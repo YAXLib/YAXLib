@@ -16,9 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Xml.Linq;
-using System.Diagnostics;
 
 namespace YAXLib
 {
@@ -222,10 +220,10 @@ namespace YAXLib
                 throw new YAXElementMissingException(elem.Name + ":[Left|Top|Width|Height]", elem);
 
             return Activator.CreateInstance(Type,  
-                        Int32.Parse(elemLeft.Value),
-                        Int32.Parse(elemTop.Value),
-                        Int32.Parse(elemWidth.Value),
-                        Int32.Parse(elemHeight.Value));
+                        int.Parse(elemLeft.Value),
+                        int.Parse(elemTop.Value),
+                        int.Parse(elemWidth.Value),
+                        int.Parse(elemHeight.Value));
         }
     }
 
@@ -275,18 +273,18 @@ namespace YAXLib
             int a = 255, r, g = 0, b = 0;
 
             var elemA = elem.Element(this.GetXName("A", overridingNamespace));
-            if (elemA != null && !Int32.TryParse(elemA.Value, out a))
+            if (elemA != null && !int.TryParse(elemA.Value, out a))
                 a = 0;
 
-            if (!Int32.TryParse(elemR.Value, out r))
+            if (!int.TryParse(elemR.Value, out r))
                 r = 0;
 
             var elemG = elem.Element(this.GetXName("G", overridingNamespace));
-            if (elemG != null && !Int32.TryParse(elemG.Value, out g))
+            if (elemG != null && !int.TryParse(elemG.Value, out g))
                 g = 0;
 
             var elemB = elem.Element(this.GetXName("B", overridingNamespace));
-            if (elemB != null && !Int32.TryParse(elemB.Value, out b))
+            if (elemB != null && !int.TryParse(elemB.Value, out b))
                 b = 0;
 
             var result = ReflectionUtils.InvokeStaticMethod(Type, "FromArgb", a, r, g, b);
@@ -460,7 +458,7 @@ namespace YAXLib
             {
                 string strTicks = elemTicks.Value;
                 long ticks;
-                if (!Int64.TryParse(strTicks, out ticks))
+                if (!long.TryParse(strTicks, out ticks))
                 {
                     throw new YAXBadlyFormedInput("Ticks", elemTicks.Value, elemTicks);
                 }
@@ -481,7 +479,7 @@ namespace YAXLib
 
         public override DBNull Deserialize(XElement elem, XNamespace overridingNamespace)
         {
-            if (String.IsNullOrEmpty(elem.Value))
+            if (string.IsNullOrEmpty(elem.Value))
                 return null;
             else
                 return DBNull.Value;

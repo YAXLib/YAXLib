@@ -115,7 +115,7 @@ namespace YAXLib
 
             this.listExceptions.ForEach(pair =>
             {
-                sb.AppendLine(String.Format(CultureInfo.CurrentCulture, "{0,-8} : {1}", pair.Value, pair.Key.Message));
+                sb.AppendLine(string.Format(CultureInfo.CurrentCulture, "{0,-8} : {1}", pair.Value, pair.Key.Message));
                 sb.AppendLine();
             });
 

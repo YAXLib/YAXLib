@@ -1,0 +1,19 @@
+<Project>
+
+  <PropertyGroup>
+    <Product>YAXLib</Product>
+    <Company>MHP Software GmbH</Company>
+    <Authors>Sina Iravanian and Contributors</Authors>
+    <Copyright>Copyright © 2009-2017 - Sina Iravanian</Copyright>
+    <RepositoryUrl>https://github.com/MhpSoftware/YAXLib.Redux.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <Version>2.20.0</Version>
+    <AssemblyVersion>2.20.0</AssemblyVersion>
+    <FileVersion>2.20.0</FileVersion>
+    <LangVersion>latest</LangVersion>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <Deterministic>true</Deterministic>
+    <Features>strict</Features>
+  </PropertyGroup>
+
+</Project>

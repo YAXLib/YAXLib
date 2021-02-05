@@ -10,9 +10,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Reflection;
 
 namespace YAXLib
 {
@@ -37,7 +35,7 @@ namespace YAXLib
         /// <param name="t">The enum type.</param>
         public EnumWrapper(Type t)
         {
-            if (!t.IsEnum())
+            if (!t.IsEnum)
                 throw new ArithmeticException();
 
             m_enumType = t;

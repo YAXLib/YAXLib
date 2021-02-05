@@ -12,7 +12,6 @@ using System;
 using System.Xml.Linq;
 using System.Globalization;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 
 namespace YAXLib
@@ -444,18 +443,18 @@ namespace YAXLib
 
         public static string ToXmlValue(this object self)
         {
-          string typeName = self == null ? String.Empty : self.GetType().Name;
+          string typeName = self == null ? string.Empty : self.GetType().Name;
 
           switch (typeName)
           {
             case "Double":
               return ((double)self).ToString("R", CultureInfo.InvariantCulture);
             case "Single":
-              return ((Single)self).ToString("R", CultureInfo.InvariantCulture);
+              return ((float)self).ToString("R", CultureInfo.InvariantCulture);
             case "BigInteger":
               return ReflectionUtils.InvokeMethod(self, "ToString", "R", CultureInfo.InvariantCulture) as string;
           }
-          return Convert.ToString((self ?? String.Empty), CultureInfo.InvariantCulture);
+          return Convert.ToString((self ?? string.Empty), CultureInfo.InvariantCulture);
         }
 
         public static XAttribute AddAttributeNamespaceSafe(this XElement parent, XName attrName, object attrValue, XNamespace documentDefaultNamespace)
@@ -521,7 +520,7 @@ namespace YAXLib
 
         public static bool IsEmpty(this XNamespace self)
         {
-            return self != null && !String.IsNullOrEmpty(self.NamespaceName.Trim());
+            return self != null && !string.IsNullOrEmpty(self.NamespaceName.Trim());
         }
 
         public static XNamespace IfEmptyThen(this XNamespace self, XNamespace next)

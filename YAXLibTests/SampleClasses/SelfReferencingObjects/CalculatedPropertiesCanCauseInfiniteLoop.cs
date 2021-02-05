@@ -25,7 +25,7 @@ namespace YAXLibTests.SampleClasses.SelfReferencingObjects
 
         public override string ToString()
         {
-            return String.Format("Data == {0}", Data);
+            return string.Format("Data == {0}", Data);
         }
     }
 }

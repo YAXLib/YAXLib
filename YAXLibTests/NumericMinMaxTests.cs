@@ -22,7 +22,7 @@ namespace YAXLibTests
                 var deseredInstance = ser.Deserialize(xml);
                 Assert.AreEqual(d, deseredInstance);
 
-                d = Double.MaxValue;
+                d = double.MaxValue;
                 xml = ser.Serialize(d);
                 deseredInstance = ser.Deserialize(xml);
                     // Causes a System.OverflowException {"Value was either too large or too small for a Double."}
@@ -41,7 +41,7 @@ namespace YAXLibTests
             {
                 var ser = new YAXSerializer(typeof (double), YAXExceptionHandlingPolicies.ThrowErrorsOnly,
                     YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
-                double d = Double.MinValue;
+                double d = double.MinValue;
                 var xml = ser.Serialize(d);
                 var deseredInstance = ser.Deserialize(xml);
                 Assert.AreEqual(d, deseredInstance);
@@ -59,7 +59,7 @@ namespace YAXLibTests
             {
                 var ser = new YAXSerializer(typeof (float), YAXExceptionHandlingPolicies.ThrowErrorsOnly,
                     YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
-                float f = Single.MaxValue;
+                float f = float.MaxValue;
                 var xml = ser.Serialize(f);
                 var deseredInstance = ser.Deserialize(xml);
                 Assert.AreEqual(f, deseredInstance);
@@ -77,7 +77,7 @@ namespace YAXLibTests
             {
                 var ser = new YAXSerializer(typeof (float), YAXExceptionHandlingPolicies.ThrowErrorsOnly,
                     YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
-                float f = Single.MinValue;
+                float f = float.MinValue;
                 var xml = ser.Serialize(f);
                 var deseredInstance = ser.Deserialize(xml);
                 Assert.AreEqual(f, deseredInstance);

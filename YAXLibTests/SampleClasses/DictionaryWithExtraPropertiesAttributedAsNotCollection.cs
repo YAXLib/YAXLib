@@ -27,7 +27,7 @@ namespace YAXLibTests.SampleClasses
         public override string ToString()
         {
             return GeneralToStringProvider.GeneralToString(this)
-                   + String.Format("Prop1: {0}, Prop2: {1}", Prop1, Prop2);
+                   + string.Format("Prop1: {0}, Prop2: {1}", Prop1, Prop2);
         }
 
     }

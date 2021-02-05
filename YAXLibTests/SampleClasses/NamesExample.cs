@@ -1,6 +1,4 @@
-﻿using YAXLib;
-
-namespace YAXLibTests.SampleClasses
+﻿namespace YAXLibTests.SampleClasses
 {
     public class NamesExample
     {

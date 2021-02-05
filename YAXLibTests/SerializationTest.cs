@@ -25,11 +25,7 @@ namespace YAXLibTests
         [OneTimeSetUp]
         public void TestFixtureSetUp()
         {
-#if FXCORE
-            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
-#else
-            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-#endif
+          CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
         }
 
         [Test]
@@ -133,18 +129,12 @@ namespace YAXLibTests
   <Dec1>192389183919123.18232131</Dec1>
   <Date1>10/11/2010 18:20:30</Date1>
 </CultureSample>";
-#if FXCORE
+            
             CultureInfo.CurrentCulture = new CultureInfo(cultName1);
-#else
-            Thread.CurrentThread.CurrentCulture = new CultureInfo(cultName1);
-#endif
             var serializer = new YAXSerializer(typeof(CultureSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             var serResult = serializer.Serialize(CultureSample.GetSampleInstance());
-#if FXCORE
+            
             CultureInfo.CurrentCulture = new CultureInfo(cultName2);
-#else
-            Thread.CurrentThread.CurrentCulture = new CultureInfo(cultName2);
-#endif
             serializer = new YAXSerializer(typeof(CultureSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             var desResult = serializer.Deserialize(serResult) as CultureSample;
 
@@ -324,7 +314,7 @@ namespace YAXLibTests
             string got = serializer.Serialize(ProgrammingLanguage.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-#if !FXCORE
+        
         [Test]
         public void ColorExampleTest()
         {
@@ -337,7 +327,7 @@ namespace YAXLibTests
             string got = serializer.Serialize(ColorExample.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-#endif
+        
         [Test]
         public void MultiLevelClassTest()
         {
@@ -396,7 +386,7 @@ namespace YAXLibTests
   </SomeLogarithmExample>
 </FormattingExample>";
 
-            result = String.Format(result,
+            result = string.Format(result,
                 FormattingExample.GetSampleInstance().CreationDate.ToString("D"),
                 FormattingExample.GetSampleInstance().ModificationDate.ToString("d")
                 );
@@ -424,7 +414,7 @@ namespace YAXLibTests
         [Test]
         public void MoreComplexExampleTest()
         {
-#if FXCORE
+#if NETCOREAPP
             const string result =
 @"<!-- This example tries to show almost all features of YAXLib which were not shown before. -->
 <!-- FamousPoints - shows a dictionary with a non-primitive value member. -->
@@ -605,7 +595,7 @@ namespace YAXLibTests
             Guid g3 = Guid.NewGuid();
             Guid g4 = Guid.NewGuid();
 
-            string result = String.Format(
+            string result = string.Format(
 @"<!-- This example shows serialization and deserialization of GUID obejcts -->
 <GUIDTest>
   <StandaloneGuid>{3}</StandaloneGuid>
@@ -997,8 +987,8 @@ namespace YAXLibTests
         [Test]
         public void MultiDimArraySampleTest()
         {
-            const string result =
-@"<!-- This example shows serialization of multi-dimensional, -->
+          const string result =
+            @"<!-- This example shows serialization of multi-dimensional, -->
 <!-- and jagged arrays -->
 <MultiDimArraySample xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
   <IntArray yaxlib:dims=""2,3"">
@@ -1009,7 +999,32 @@ namespace YAXLibTests
     <Int32>3</Int32>
     <Int32>4</Int32>
   </IntArray>
-  <DoubleArray yaxlib:dims=""2,3,3"">
+" +
+#if NETCOREAPP
+// https://devblogs.microsoft.com/dotnet/floating-point-parsing-and-formatting-improvements-in-net-core-3-0/
+ @"  <DoubleArray yaxlib:dims=""2,3,3"">
+    <Double>2</Double>
+    <Double>0.6666666666666666</Double>
+    <Double>0.4</Double>
+    <Double>2</Double>
+    <Double>0.6666666666666666</Double>
+    <Double>0.4</Double>
+    <Double>2</Double>
+    <Double>0.6666666666666666</Double>
+    <Double>0.4</Double>
+    <Double>2</Double>
+    <Double>0.6666666666666666</Double>
+    <Double>0.4</Double>
+    <Double>4</Double>
+    <Double>1.3333333333333333</Double>
+    <Double>0.8</Double>
+    <Double>6</Double>
+    <Double>2</Double>
+    <Double>1.2</Double>
+  </DoubleArray>
+" +
+#else
+ @"  <DoubleArray yaxlib:dims=""2,3,3"">
     <Double>2</Double>
     <Double>0.66666666666666663</Double>
     <Double>0.4</Double>
@@ -1029,7 +1044,9 @@ namespace YAXLibTests
     <Double>2</Double>
     <Double>1.2</Double>
   </DoubleArray>
-  <JaggedArray>
+" +
+#endif
+@"  <JaggedArray>
     <Array1OfInt32>
       <Int32>1</Int32>
       <Int32>2</Int32>
@@ -1329,23 +1346,23 @@ namespace YAXLibTests
       <Value yaxlib:realtype=""System.String"">Tim</Value>
     </Object>";
 
-            string possibleResult1 = String.Format(result, part1, part2, part3);
-            string possibleResult2 = String.Format(result, part1, part3, part2);
-            string possibleResult3 = String.Format(result, part2, part1, part3);
-            string possibleResult4 = String.Format(result, part2, part3, part1);
-            string possibleResult5 = String.Format(result, part3, part1, part2);
-            string possibleResult6 = String.Format(result, part3, part2, part1);
+            string possibleResult1 = string.Format(result, part1, part2, part3);
+            string possibleResult2 = string.Format(result, part1, part3, part2);
+            string possibleResult3 = string.Format(result, part2, part1, part3);
+            string possibleResult4 = string.Format(result, part2, part3, part1);
+            string possibleResult5 = string.Format(result, part3, part1, part2);
+            string possibleResult6 = string.Format(result, part3, part2, part1);
 
             var serializer = new YAXSerializer(typeof(NonGenericCollectionsSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             string got = serializer.Serialize(NonGenericCollectionsSample.GetSampleInstance());
             //result.ShouldEqualWithDiff(got, DiffStyle.Minimal);
 
-            bool result1Match = String.Equals(got, possibleResult1, StringComparison.Ordinal);
-            bool result2Match = String.Equals(got, possibleResult2, StringComparison.Ordinal);
-            bool result3Match = String.Equals(got, possibleResult3, StringComparison.Ordinal);
-            bool result4Match = String.Equals(got, possibleResult4, StringComparison.Ordinal);
-            bool result5Match = String.Equals(got, possibleResult5, StringComparison.Ordinal);
-            bool result6Match = String.Equals(got, possibleResult6, StringComparison.Ordinal);
+            bool result1Match = string.Equals(got, possibleResult1, StringComparison.Ordinal);
+            bool result2Match = string.Equals(got, possibleResult2, StringComparison.Ordinal);
+            bool result3Match = string.Equals(got, possibleResult3, StringComparison.Ordinal);
+            bool result4Match = string.Equals(got, possibleResult4, StringComparison.Ordinal);
+            bool result5Match = string.Equals(got, possibleResult5, StringComparison.Ordinal);
+            bool result6Match = string.Equals(got, possibleResult6, StringComparison.Ordinal);
 
             Assert.That(result1Match || result2Match || result3Match || result4Match || result5Match || result6Match, Is.True);
         }
@@ -1630,7 +1647,7 @@ namespace YAXLibTests
             var lst = new List<int> {1, 2, 3};
             var ser = new YAXSerializer(typeof(object));
             string xmlResult = ser.Serialize(lst);
-#if FXCORE
+#if NETCOREAPP
             const string expectedResult =
 @"<Object yaxlib:realtype=""System.Collections.Generic.List`1[[System.Int32, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
   <Int32>1</Int32>
@@ -1659,7 +1676,7 @@ namespace YAXLibTests
             var lst = new List<object> { 1, 2, 3 };
             var ser = new YAXSerializer(typeof(object));
             string xmlResult = ser.Serialize(lst);
-#if FXCORE
+#if NETCOREAPP
             const string expectedResult =
 @"<Object xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"" yaxlib:realtype=""System.Collections.Generic.List`1[[System.Object, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"">
   <Object yaxlib:realtype=""System.Int32"">1</Object>
