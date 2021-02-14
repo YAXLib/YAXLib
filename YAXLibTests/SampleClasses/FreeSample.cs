@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
 
 namespace YAXLibTests.SampleClasses
 {
@@ -9,12 +10,11 @@ namespace YAXLibTests.SampleClasses
 
         public static FreeSample GetSampleInstance()
         {
-
             return new FreeSample
-                       {
-                           BoundViewID = 17,
-                           SomeDecimalNumber = 12948923849238402394
-                       };
+            {
+                BoundViewID = 17,
+                SomeDecimalNumber = 12948923849238402394
+            };
         }
 
 
@@ -22,6 +22,5 @@ namespace YAXLibTests.SampleClasses
         {
             return GeneralToStringProvider.GeneralToString(this);
         }
-
     }
 }

@@ -1,12 +1,5 @@
-﻿// Copyright 2009 Sina Iravanian - <sina@sinairv.com>
-//
-// This source file(s) may be redistributed, altered and customized
-// by any means PROVIDING the authors name and all copyright
-// notices remain intact.
-// THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED. USE IT AT YOUR OWN RISK. THE AUTHOR ACCEPTS NO
-// LIABILITY FOR ANY DATA DAMAGE/LOSS THAT THIS PRODUCT MAY CAUSE.
-//-----------------------------------------------------------------------
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
 
 // The KnownDotNetTypes class is replaced by KnownTypes class.
 // The new design for KnownTypes is adopted from Tomanu's YAXLib fork
@@ -16,19 +9,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Xml.Linq;
-using System.Diagnostics;
 
 namespace YAXLib
 {
     /// <summary>
-    /// Provides serialization and deserialization methods for some known .NET built-in types.
+    ///     Provides serialization and deserialization methods for some known .NET built-in types.
     /// </summary>
     internal class KnownTypes
     {
         private static readonly Dictionary<Type, IKnownType> s_dictKnownTypes = new Dictionary<Type, IKnownType>();
-        private static readonly Dictionary<string, IKnownType> s_dictDynamicKnownTypes = new Dictionary<string, IKnownType>();
+
+        private static readonly Dictionary<string, IKnownType> s_dictDynamicKnownTypes =
+            new Dictionary<string, IKnownType>();
 
         static KnownTypes()
         {
@@ -36,7 +29,9 @@ namespace YAXLib
             Add(new TimeSpanKnownType());
             Add(new XElementKnownType());
             Add(new XAttributeKnownType());
+#if !NETSTANDARD1_6
             Add(new DbNullKnownType());
+#endif
             Add(new TypeKnownType());
             AddDynamicKnownType(new RectangleDynamicKnownType());
             AddDynamicKnownType(new ColorDynamicKnownType());
@@ -62,24 +57,20 @@ namespace YAXLib
 
         public static void Serialize(object obj, XElement elem, XNamespace overridingNamespace)
         {
-            if(obj == null)
+            if (obj == null)
                 return;
 
             if (s_dictKnownTypes.ContainsKey(obj.GetType()))
-            {
                 s_dictKnownTypes[obj.GetType()].Serialize(obj, elem, overridingNamespace);
-            }
-            else if(s_dictDynamicKnownTypes.ContainsKey(obj.GetType().FullName))
-            {
+            else if (s_dictDynamicKnownTypes.ContainsKey(obj.GetType().FullName))
                 s_dictDynamicKnownTypes[obj.GetType().FullName].Serialize(obj, elem, overridingNamespace);
-            }
         }
 
         public static object Deserialize(XElement elem, Type type, XNamespace overridingNamespace)
         {
-            if(s_dictKnownTypes.ContainsKey(type))
+            if (s_dictKnownTypes.ContainsKey(type))
                 return s_dictKnownTypes[type].Deserialize(elem, overridingNamespace);
-            if(s_dictDynamicKnownTypes.ContainsKey(type.FullName))
+            if (s_dictDynamicKnownTypes.ContainsKey(type.FullName))
                 return s_dictDynamicKnownTypes[type.FullName].Deserialize(elem, overridingNamespace);
             return null;
         }
@@ -88,7 +79,12 @@ namespace YAXLib
     internal interface IKnownType
     {
         /// <summary>
-        /// Serializes the specified object int the specified XML element.
+        ///     Gets the underlying known type.
+        /// </summary>
+        Type Type { get; }
+
+        /// <summary>
+        ///     Serializes the specified object int the specified XML element.
         /// </summary>
         /// <param name="obj">The object to serialize.</param>
         /// <param name="elem">The XML element.</param>
@@ -96,17 +92,12 @@ namespace YAXLib
         void Serialize(object obj, XElement elem, XNamespace overridingNamespace);
 
         /// <summary>
-        /// Deserializes the specified XML element to the known type.
+        ///     Deserializes the specified XML element to the known type.
         /// </summary>
         /// <param name="elem">The XML element to deserialize object from.</param>
         /// <param name="overridingNamespace">The namespace the element belongs to.</param>
         /// <returns>The deserialized object</returns>
         object Deserialize(XElement elem, XNamespace overridingNamespace);
-
-        /// <summary>
-        /// Gets the underlying known type.
-        /// </summary>
-        Type Type { get; }
     }
 
     internal static class KnownTypeExtensions
@@ -115,46 +106,24 @@ namespace YAXLib
         {
             if (overridingNamespace.IsEmpty())
                 return XName.Get(name, overridingNamespace.NamespaceName);
-            else
-                return XName.Get(name);
+            return XName.Get(name);
         }
-
-
     }
 
     /// <summary>
-    /// Interface for predefined serializers and deserializers for some known dot-net types.
+    ///     Interface for predefined serializers and deserializers for some known dot-net types.
     /// </summary>
     /// <typeparam name="T">The underlying known type</typeparam>
     internal abstract class KnownType<T> : IKnownType
     {
         /// <summary>
-        /// Serializes the specified object int the specified XML element.
+        ///     Gets the underlying known type.
         /// </summary>
-        /// <param name="obj">The object to serialize.</param>
-        /// <param name="elem">The XML element.</param>
-        /// <param name="overridingNamespace">The namespace the element belongs to.</param>
-        public abstract void Serialize(T obj, XElement elem, XNamespace overridingNamespace);
-
-        /// <summary>
-        /// Deserializes the specified XML element to the known type.
-        /// </summary>
-        /// <param name="elem">The XML element to deserialize object from.</param>
-        /// <param name="overridingNamespace">The namespace the element belongs to.</param>
-        /// <returns>The deserialized object</returns>
-        public abstract T Deserialize(XElement elem, XNamespace overridingNamespace);
-
-        /// <summary>
-        /// Gets the underlying known type.
-        /// </summary>
-        public Type Type 
-        { 
-            get { return typeof (T); }
-        }
+        public Type Type => typeof(T);
 
         void IKnownType.Serialize(object obj, XElement elem, XNamespace overridingNamespace)
         {
-            Serialize((T)obj, elem, overridingNamespace);
+            Serialize((T) obj, elem, overridingNamespace);
         }
 
         object IKnownType.Deserialize(XElement baseElement, XNamespace overridingNamespace)
@@ -162,11 +131,28 @@ namespace YAXLib
             return Deserialize(baseElement, overridingNamespace);
         }
 
+        /// <summary>
+        ///     Serializes the specified object int the specified XML element.
+        /// </summary>
+        /// <param name="obj">The object to serialize.</param>
+        /// <param name="elem">The XML element.</param>
+        /// <param name="overridingNamespace">The namespace the element belongs to.</param>
+        public abstract void Serialize(T obj, XElement elem, XNamespace overridingNamespace);
+
+        /// <summary>
+        ///     Deserializes the specified XML element to the known type.
+        /// </summary>
+        /// <param name="elem">The XML element to deserialize object from.</param>
+        /// <param name="overridingNamespace">The namespace the element belongs to.</param>
+        /// <returns>The deserialized object</returns>
+        public abstract T Deserialize(XElement elem, XNamespace overridingNamespace);
     }
 
     internal abstract class DynamicKnownType : IKnownType
     {
         private Type _type;
+
+        public abstract string TypeName { get; }
 
         public Type Type
         {
@@ -178,31 +164,25 @@ namespace YAXLib
             }
         }
 
-        public abstract string TypeName { get; }
-
         public abstract void Serialize(object obj, XElement elem, XNamespace overridingNamespace);
 
         public abstract object Deserialize(XElement elem, XNamespace overridingNamespace);
-
     }
 
     internal class RectangleDynamicKnownType : DynamicKnownType
     {
-        public override string TypeName
-        {
-            get { return "System.Drawing.Rectangle"; }
-        }
+        public override string TypeName => "System.Drawing.Rectangle";
 
         public override void Serialize(object obj, XElement elem, XNamespace overridingNamespace)
         {
-            Type objectType = obj.GetType();
+            var objectType = obj.GetType();
             if (objectType.FullName != TypeName)
                 throw new ArgumentException("Object type does not match the provided typename", "obj");
 
             var left = ReflectionUtils.InvokeGetProperty<int>(obj, "Left");
             var top = ReflectionUtils.InvokeGetProperty<int>(obj, "Top");
             var width = ReflectionUtils.InvokeGetProperty<int>(obj, "Width");
-            var height = ReflectionUtils.InvokeGetProperty<int>(obj, "Height"); 
+            var height = ReflectionUtils.InvokeGetProperty<int>(obj, "Height");
 
             elem.Add(
                 new XElement(this.GetXName("Left", overridingNamespace), left),
@@ -221,29 +201,26 @@ namespace YAXLib
             if (elemHeight == null || elemWidth == null || elemTop == null || elemLeft == null)
                 throw new YAXElementMissingException(elem.Name + ":[Left|Top|Width|Height]", elem);
 
-            return Activator.CreateInstance(Type,  
-                        Int32.Parse(elemLeft.Value),
-                        Int32.Parse(elemTop.Value),
-                        Int32.Parse(elemWidth.Value),
-                        Int32.Parse(elemHeight.Value));
+            return Activator.CreateInstance(Type,
+                int.Parse(elemLeft.Value),
+                int.Parse(elemTop.Value),
+                int.Parse(elemWidth.Value),
+                int.Parse(elemHeight.Value));
         }
     }
 
     internal class ColorDynamicKnownType : DynamicKnownType
     {
-        public override string TypeName
-        {
-            get { return "System.Drawing.Color"; }
-        }
+        public override string TypeName => "System.Drawing.Color";
 
         public override void Serialize(object obj, XElement elem, XNamespace overridingNamespace)
         {
-            Type objectType = obj.GetType();
+            var objectType = obj.GetType();
             if (objectType.FullName != TypeName)
                 throw new ArgumentException("Object type does not match the provided typename", "obj");
 
             var isKnownColor = ReflectionUtils.InvokeGetProperty<bool>(obj, "IsKnownColor");
-            if(isKnownColor)
+            if (isKnownColor)
             {
                 var colorName = ReflectionUtils.InvokeGetProperty<string>(obj, "Name");
                 elem.Value = colorName;
@@ -267,26 +244,26 @@ namespace YAXLib
             var elemR = elem.Element(this.GetXName("R", overridingNamespace));
             if (elemR == null)
             {
-                string colorName = elem.Value;
-                var colorByName = ReflectionUtils.InvokeStaticMethod(Type, "FromName", new object[] {colorName});
+                var colorName = elem.Value;
+                var colorByName = ReflectionUtils.InvokeStaticMethod(Type, "FromName", colorName);
                 return colorByName;
             }
 
             int a = 255, r, g = 0, b = 0;
 
             var elemA = elem.Element(this.GetXName("A", overridingNamespace));
-            if (elemA != null && !Int32.TryParse(elemA.Value, out a))
+            if (elemA != null && !int.TryParse(elemA.Value, out a))
                 a = 0;
 
-            if (!Int32.TryParse(elemR.Value, out r))
+            if (!int.TryParse(elemR.Value, out r))
                 r = 0;
 
             var elemG = elem.Element(this.GetXName("G", overridingNamespace));
-            if (elemG != null && !Int32.TryParse(elemG.Value, out g))
+            if (elemG != null && !int.TryParse(elemG.Value, out g))
                 g = 0;
 
             var elemB = elem.Element(this.GetXName("B", overridingNamespace));
-            if (elemB != null && !Int32.TryParse(elemB.Value, out b))
+            if (elemB != null && !int.TryParse(elemB.Value, out b))
                 b = 0;
 
             var result = ReflectionUtils.InvokeStaticMethod(Type, "FromArgb", a, r, g, b);
@@ -296,14 +273,11 @@ namespace YAXLib
 
     internal class RuntimeTypeDynamicKnownType : DynamicKnownType
     {
-        public override string TypeName
-        {
-            get { return "System.RuntimeType"; }
-        }
+        public override string TypeName => "System.RuntimeType";
 
         public override void Serialize(object obj, XElement elem, XNamespace overridingNamespace)
         {
-            Type objectType = obj.GetType();
+            var objectType = obj.GetType();
             if (objectType.FullName != TypeName)
                 throw new ArgumentException("Object type does not match the provided typename", "obj");
 
@@ -318,10 +292,7 @@ namespace YAXLib
 
     internal class DataTableDynamicKnownType : DynamicKnownType
     {
-        public override string TypeName
-        {
-            get { return "System.Data.DataTable"; }
-        }
+        public override string TypeName => "System.Data.DataTable";
 
         public override void Serialize(object obj, XElement elem, XNamespace overridingNamespace)
         {
@@ -330,7 +301,7 @@ namespace YAXLib
                 var dsType = ReflectionUtils.GetTypeByName("System.Data.DataSet");
                 var ds = Activator.CreateInstance(dsType);
                 var dsTables = ReflectionUtils.InvokeGetProperty<object>(ds, "Tables");
-                var dtCopy = ReflectionUtils.InvokeMethod(obj, "Copy", new object[0]);
+                var dtCopy = ReflectionUtils.InvokeMethod(obj, "Copy");
                 ReflectionUtils.InvokeMethod(dsTables, "Add", dtCopy);
                 ReflectionUtils.InvokeMethod(ds, "WriteXml", xw);
             }
@@ -355,6 +326,7 @@ namespace YAXLib
                     var copyDt = ReflectionUtils.InvokeMethod(dsTablesZero, "Copy");
                     return copyDt;
                 }
+
                 return null;
             }
         }
@@ -362,10 +334,7 @@ namespace YAXLib
 
     internal class DataSetDynamicKnownType : DynamicKnownType
     {
-        public override string TypeName
-        {
-            get { return "System.Data.DataSet"; }
-        }
+        public override string TypeName => "System.Data.DataSet";
 
         public override void Serialize(object obj, XElement elem, XNamespace overridingNamespace)
         {
@@ -401,10 +370,7 @@ namespace YAXLib
     {
         public override void Serialize(XElement obj, XElement elem, XNamespace overridingNamespace)
         {
-            if (obj != null)
-            {
-                elem.Add(obj);
-            }
+            if (obj != null) elem.Add(obj);
         }
 
         public override XElement Deserialize(XElement elem, XNamespace overridingNamespace)
@@ -421,10 +387,7 @@ namespace YAXLib
     {
         public override void Serialize(XAttribute obj, XElement elem, XNamespace overridingNamespace)
         {
-            if(obj != null)
-            {
-                elem.Add(obj);
-            }
+            if (obj != null) elem.Add(obj);
         }
 
         public override XAttribute Deserialize(XElement elem, XNamespace overridingNamespace)
@@ -436,6 +399,7 @@ namespace YAXLib
     #endregion
 
     #region TimeSpan
+
     internal class TimeSpanKnownType : KnownType<TimeSpan>
     {
         public override void Serialize(TimeSpan timeSpan, XElement elem, XNamespace overridingNamespace)
@@ -448,29 +412,25 @@ namespace YAXLib
             var elemTicks = elem.Element(this.GetXName("Ticks", overridingNamespace));
             if (elemTicks == null)
             {
-                string strTimeSpanString = elem.Value;
+                var strTimeSpanString = elem.Value;
                 TimeSpan timeSpanResult;
                 if (!TimeSpan.TryParse(strTimeSpanString, out timeSpanResult))
-                {
                     throw new YAXBadlyFormedInput(elem.Name.ToString(), elem.Value, elem);
-                }
                 return timeSpanResult;
             }
-            else
-            {
-                string strTicks = elemTicks.Value;
-                long ticks;
-                if (!Int64.TryParse(strTicks, out ticks))
-                {
-                    throw new YAXBadlyFormedInput("Ticks", elemTicks.Value, elemTicks);
-                }
-                return new TimeSpan(ticks);
-            }
+
+            var strTicks = elemTicks.Value;
+            long ticks;
+            if (!long.TryParse(strTicks, out ticks)) throw new YAXBadlyFormedInput("Ticks", elemTicks.Value, elemTicks);
+            return new TimeSpan(ticks);
         }
     }
+
     #endregion
 
     #region DBNull
+
+#if !NETSTANDARD1_6
     internal class DbNullKnownType : KnownType<DBNull>
     {
         public override void Serialize(DBNull obj, XElement elem, XNamespace overridingNamespace)
@@ -481,12 +441,13 @@ namespace YAXLib
 
         public override DBNull Deserialize(XElement elem, XNamespace overridingNamespace)
         {
-            if (String.IsNullOrEmpty(elem.Value))
+            if (string.IsNullOrEmpty(elem.Value))
                 return null;
-            else
-                return DBNull.Value;
+            return DBNull.Value;
         }
     }
+#endif
+
     #endregion
 
     internal class TypeKnownType : KnownType<Type>

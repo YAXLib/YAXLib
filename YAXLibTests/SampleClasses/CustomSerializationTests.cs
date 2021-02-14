@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
+using System;
 using System.Text;
-using YAXLib;
 using System.Xml.Linq;
+using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
@@ -45,10 +46,10 @@ namespace YAXLibTests.SampleClasses
                 BoldLength = 3
             };
 
-            return new CustomSerializationTests()
+            return new CustomSerializationTests
             {
                 Title = "Important Note",
-                Message = message,
+                Message = message
             };
         }
     }
@@ -64,9 +65,9 @@ namespace YAXLibTests.SampleClasses
 
         public void SerializeToElement(Message objectToSerialize, XElement elemToFill)
         {
-            string message = objectToSerialize.MessageText;
-            string beforeBold = message.Substring(0, objectToSerialize.BoldIndex);
-            string afterBold = message.Substring(objectToSerialize.BoldIndex + objectToSerialize.BoldLength);
+            var message = objectToSerialize.MessageText;
+            var beforeBold = message.Substring(0, objectToSerialize.BoldIndex);
+            var afterBold = message.Substring(objectToSerialize.BoldIndex + objectToSerialize.BoldLength);
 
             elemToFill.Add(new XText(beforeBold));
             elemToFill.Add(new XElement("b", objectToSerialize.BoldContent));
@@ -89,20 +90,19 @@ namespace YAXLibTests.SampleClasses
 
         public Message DeserializeFromElement(XElement element)
         {
-            string wholeMessage = "";
-            int boldIndex = -1;
-            int boldLength = -1;
-            string boldContent = "";
+            var wholeMessage = "";
+            var boldIndex = -1;
+            var boldLength = -1;
+            var boldContent = "";
 
-            foreach (XNode node in element.Nodes())
-            {
+            foreach (var node in element.Nodes())
                 if (node is XText)
                 {
                     wholeMessage += (node as XText).Value;
                 }
                 else if (node is XElement)
                 {
-                    XElement boldElement = node as XElement;
+                    var boldElement = node as XElement;
                     if (boldElement.Name.ToString() == "b")
                     {
                         boldContent = boldElement.Value;
@@ -111,9 +111,8 @@ namespace YAXLibTests.SampleClasses
                         wholeMessage += boldContent;
                     }
                 }
-            }
 
-            return new Message()
+            return new Message
             {
                 MessageText = wholeMessage,
                 BoldContent = boldContent,
@@ -128,7 +127,6 @@ namespace YAXLibTests.SampleClasses
         }
 
         #endregion
-
     }
 
     public class CustomTitleSerializer : ICustomSerializer<string>
@@ -152,13 +150,11 @@ namespace YAXLibTests.SampleClasses
 
         private string RetreiveValue(string str)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
-            for (int i = 0; i < str.Length; i++)
-            {
+            for (var i = 0; i < str.Length; i++)
                 if (i % 2 == 0)
                     sb.Append(str[i]);
-            }
 
             return sb.ToString();
         }
@@ -184,12 +180,9 @@ namespace YAXLibTests.SampleClasses
 
         private string CreateMixedValue(string str)
         {
-            StringBuilder sb = new StringBuilder(2 * str.Length);
+            var sb = new StringBuilder(2 * str.Length);
 
-            for (int i = 0; i < str.Length; i++)
-            {
-                sb.Append(str[i] + ".");
-            }
+            for (var i = 0; i < str.Length; i++) sb.Append(str[i] + ".");
 
             return sb.ToString();
         }

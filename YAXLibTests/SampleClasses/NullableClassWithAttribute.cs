@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
     [ShowInDemoApplication]
-
     [YAXComment("This exmaple shows the usage of nullable fields with an attribute blocking specific one.")]
     public class NullableClassAttribute
     {
         public string Title { get; set; }
         public int PublishYear { get; set; }
 
-        [YAXDontSerializeIfNull]
-        public int? PurchaseYear { get; set; }
+        [YAXDontSerializeIfNull] public int? PurchaseYear { get; set; }
 
         public override string ToString()
         {
@@ -24,7 +21,7 @@ namespace YAXLibTests.SampleClasses
 
         public static NullableClassAttribute GetSampleInstance()
         {
-            return new NullableClassAttribute()
+            return new NullableClassAttribute
             {
                 Title = "Inside C#",
                 PublishYear = 2002,

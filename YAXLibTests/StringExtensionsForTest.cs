@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
 using System.Text.RegularExpressions;
 
 namespace YAXLibTests
@@ -11,7 +10,7 @@ namespace YAXLibTests
         public static string StripTypeAssemblyVersion(this string str)
         {
             const string pattern = @"\,\s+Version\=\d+(\.\d+)*\,\s+Culture=\b\w+\b\,\s+PublicKeyToken\=\b\w+\b";
-            return Regex.Replace(str, pattern, String.Empty);
+            return Regex.Replace(str, pattern, string.Empty);
         }
     }
 }

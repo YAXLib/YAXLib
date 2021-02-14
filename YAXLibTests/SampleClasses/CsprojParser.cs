@@ -1,7 +1,7 @@
-﻿using System;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
@@ -35,22 +35,20 @@ namespace YAXLibTests.SampleClasses
     [YAXSerializeAs("Project")]
     public class ProjectBuildDefinition
     {
-        [YAXAttributeForClass]
-        public string ToolsVersion { get; set; }
+        [YAXAttributeForClass] public string ToolsVersion { get; set; }
 
-        [YAXAttributeForClass]
-        public string DefaultTargets { get; set; }
+        [YAXAttributeForClass] public string DefaultTargets { get; set; }
 
         [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement,
             EachElementName = "PropertyGroup")]
         public List<PropertyGroup> PropertyGroups { get; set; }
 
         [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement,
-           EachElementName = "ItemGroup")]
+            EachElementName = "ItemGroup")]
         public List<ItemGroup> ItemGroups { get; set; }
 
         [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement,
-           EachElementName = "Import")]
+            EachElementName = "Import")]
         public List<ImportItem> ImportItems { get; set; }
     }
 
@@ -93,7 +91,7 @@ namespace YAXLibTests.SampleClasses
 
     public class ItemGroup
     {
-        [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement, 
+        [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement,
             EachElementName = "Reference")]
         public List<ReferenceItem> ReferenceItems { get; set; }
     }
@@ -102,8 +100,7 @@ namespace YAXLibTests.SampleClasses
     [YAXSerializeAs("Reference")]
     public class ReferenceItem
     {
-        [YAXAttributeForClass]
-        public string Include { get; set; }
+        [YAXAttributeForClass] public string Include { get; set; }
 
         public string HintPath { get; set; }
         public string RequiredTargetFramework { get; set; }
@@ -113,8 +110,6 @@ namespace YAXLibTests.SampleClasses
     [YAXSerializeAs("Import")]
     public class ImportItem
     {
-        [YAXAttributeForClass()]
-        public string Project { get; set; }
+        [YAXAttributeForClass] public string Project { get; set; }
     }
-
 }

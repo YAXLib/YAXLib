@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
     [ShowInDemoApplication]
-
     [YAXComment("How multi-line comments are serialized as multiple XML comments")]
     public class MultipleCommentsTest
     {
@@ -25,7 +23,7 @@ namespace YAXLibTests.SampleClasses
 
         public static MultipleCommentsTest GetSampleInstance()
         {
-            return new MultipleCommentsTest() { SomeInt = 10 };
+            return new MultipleCommentsTest {SomeInt = 10};
         }
     }
 }

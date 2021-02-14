@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses.Namespace
@@ -22,8 +20,8 @@ namespace YAXLibTests.SampleClasses.Namespace
         {
             var parent1 = new Class1Parent
             {
-                Child1 = new Class1Child 
-                { 
+                Child1 = new Class1Child
+                {
                     Field1 = "Field1",
                     Field2 = "Field2"
                 }
@@ -37,7 +35,6 @@ namespace YAXLibTests.SampleClasses.Namespace
                     Value2 = "Value2",
                     Value3 = "Value3",
                     Value4 = "Value4"
-
                 }
             };
 
@@ -80,5 +77,4 @@ namespace YAXLibTests.SampleClasses.Namespace
 
         public string Value4 { get; set; }
     }
-
 }

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses.Namespace
@@ -26,7 +24,7 @@ namespace YAXLibTests.SampleClasses.Namespace
             return new CellPhone_YAXNamespaceOverridesImplicitNamespace
             {
                 DeviceBrand = "Samsung Galaxy S II",
-                OS = "Android 2",
+                OS = "Android 2"
             };
         }
     }

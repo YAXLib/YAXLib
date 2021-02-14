@@ -1,11 +1,9 @@
 clone_folder: c:\xaxlib
-version: 2.15.{build}
+version: 2.16.{build}
 
 build_script:
 - ps: dotnet restore --verbosity quiet
-- ps: msbuild YAXLib.2015.Core.sln /verbosity:minimal /t:rebuild /p:configuration=release
-- ps: nuget restore YAXLib.2015.sln -verbosity quiet
-- ps: msbuild YAXLib.2015.sln /verbosity:minimal /t:rebuild /p:configuration=release
+- ps: msbuild YAXLib.sln /verbosity:minimal /t:rebuild /p:configuration=release
 
 test_script:
   - dotnet test YAXLibTests

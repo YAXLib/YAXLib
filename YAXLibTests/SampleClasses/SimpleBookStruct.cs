@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
-    [ShowInDemoApplication(SortKey="002")]
-
+    [ShowInDemoApplication(SortKey = "002")]
     [YAXComment("This example demonstrates serailizing a very simple struct")]
     public struct BookStruct
     {
@@ -23,7 +21,7 @@ namespace YAXLibTests.SampleClasses
 
         public static BookStruct GetSampleInstance()
         {
-            return new BookStruct()
+            return new BookStruct
             {
                 Title = "Reinforcement Learning an Introduction",
                 Author = "R. S. Sutton & A. G. Barto",

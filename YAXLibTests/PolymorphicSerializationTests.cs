@@ -1,4 +1,7 @@
-﻿using NUnit.Framework;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
+using NUnit.Framework;
 using YAXLib;
 using YAXLibTests.SampleClasses.PolymorphicSerialization;
 

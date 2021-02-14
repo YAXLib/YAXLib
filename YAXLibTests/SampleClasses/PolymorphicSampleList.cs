@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
+using System.Collections.Generic;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
@@ -24,7 +27,7 @@ namespace YAXLibTests.SampleClasses
             var samples = new PolymorphicSampleList
             {
                 new PolymorphicOneSample(),
-                new PolymorphicTwoSample(),
+                new PolymorphicTwoSample()
             };
             return samples;
         }
@@ -42,9 +45,9 @@ namespace YAXLibTests.SampleClasses
         public static PolymorphicSampleListAsMember GetSampleInstance()
         {
             return new PolymorphicSampleListAsMember
-                       {
-                           SampleList = PolymorphicSampleList.GetSampleInstance()
-                       };
+            {
+                SampleList = PolymorphicSampleList.GetSampleInstance()
+            };
         }
 
         public override string ToString()

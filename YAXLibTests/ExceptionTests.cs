@@ -1,18 +1,22 @@
-﻿using System;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
+using System;
 using NUnit.Framework;
 using YAXLib;
 using YAXLibTests.SampleClasses;
 
 namespace YAXLibTests
 {
-    class ExceptionTests
+    internal class ExceptionTests
     {
         [Test]
         public void YAXAttributeAlreadyExistsExceptionTest()
         {
             var ex = Assert.Throws<YAXAttributeAlreadyExistsException>(() =>
             {
-                var serializer = new YAXSerializer(typeof(ClassWithDuplicateYaxAttribute), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error);
+                var serializer = new YAXSerializer(typeof(ClassWithDuplicateYaxAttribute),
+                    YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error);
                 serializer.Serialize(ClassWithDuplicateYaxAttribute.GetSampleInstance());
             });
 
@@ -23,7 +27,7 @@ namespace YAXLibTests
         [Test]
         public void YAXBadlyFormedXMLTest()
         {
-            string badXml = @"<!-- This example demonstrates serailizing a very simple class -->
+            var badXml = @"<!-- This example demonstrates serailizing a very simple class -->
 <Book>
   <Title>Inside C#</Title>
   <Author>Tom Archer &amp; Andrew Whitechapel</Author>
@@ -33,7 +37,8 @@ namespace YAXLibTests
 
             var ex = Assert.Throws<YAXBadlyFormedXML>(() =>
             {
-                var serializer = new YAXSerializer(typeof(Book), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error);
+                var serializer = new YAXSerializer(typeof(Book), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
+                    YAXExceptionTypes.Error);
                 serializer.Deserialize(badXml);
             });
 
@@ -42,9 +47,8 @@ namespace YAXLibTests
             Assert.AreEqual(7, ex.LineNumber);
             Assert.AreEqual(3, ex.LinePosition);
             StringAssert.Contains("not properly formatted", ex.Message);
-            
         }
-        
+
 
         [Test]
         public void YAXBadlyFormedInputWithLineNumbersTest()
@@ -60,7 +64,8 @@ namespace YAXLibTests
 
             var ex = Assert.Throws<YAXBadlyFormedInput>(() =>
             {
-                var serializer = new YAXSerializer(typeof(Book), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error, YAXSerializationOptions.DisplayLineInfoInExceptions);
+                var serializer = new YAXSerializer(typeof(Book), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
+                    YAXExceptionTypes.Error, YAXSerializationOptions.DisplayLineInfoInExceptions);
                 serializer.Deserialize(bookXml);
             });
             Assert.True(ex.HasLineInfo);
@@ -83,7 +88,8 @@ namespace YAXLibTests
 
             var ex = Assert.Throws<YAXBadlyFormedInput>(() =>
             {
-                var serializer = new YAXSerializer(typeof(Book), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error);
+                var serializer = new YAXSerializer(typeof(Book), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
+                    YAXExceptionTypes.Error);
                 serializer.Deserialize(bookXml);
             });
             Assert.False(ex.HasLineInfo);
@@ -121,7 +127,9 @@ namespace YAXLibTests
 
             var ex = Assert.Throws<YAXElementValueMissingException>(() =>
             {
-                var serializer = new YAXSerializer(typeof(BookClassTesgingSerializeAsValue), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error, YAXSerializationOptions.DisplayLineInfoInExceptions);
+                var serializer = new YAXSerializer(typeof(BookClassTesgingSerializeAsValue),
+                    YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error,
+                    YAXSerializationOptions.DisplayLineInfoInExceptions);
                 serializer.Deserialize(bookXml);
             });
             Assert.True(ex.HasLineInfo);
@@ -133,7 +141,7 @@ namespace YAXLibTests
         public void YAXElementMissingWithLineNumbersTest()
         {
             const string collectionXml =
-@"<!-- This example demonstrates serailizing a very simple class -->
+                @"<!-- This example demonstrates serailizing a very simple class -->
 <CollectionSeriallyAsAttribute>
   <Info names=""John Doe, Jane, Sina, Mike, Rich"" />
   <Location>
@@ -143,14 +151,16 @@ namespace YAXLibTests
 
             var ex = Assert.Throws<YAXElementMissingException>(() =>
             {
-                var serializer = new YAXSerializer(typeof(CollectionSeriallyAsAttribute), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error, YAXSerializationOptions.DisplayLineInfoInExceptions);
+                var serializer = new YAXSerializer(typeof(CollectionSeriallyAsAttribute),
+                    YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error,
+                    YAXSerializationOptions.DisplayLineInfoInExceptions);
                 serializer.Deserialize(collectionXml);
             });
             Assert.True(ex.HasLineInfo);
             Assert.AreEqual(2, ex.LineNumber);
             Assert.AreEqual(2, ex.LinePosition);
         }
-        
+
         [Test]
         public void YAXDefaultValueCannotBeAssignedWithLineNumbersTest()
         {
@@ -163,7 +173,9 @@ namespace YAXLibTests
 
             var ex = Assert.Throws<YAXDefaultValueCannotBeAssigned>(() =>
             {
-                var serializer = new YAXSerializer(typeof(BookWithBadDefaultValue), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error, YAXSerializationOptions.DisplayLineInfoInExceptions);
+                var serializer = new YAXSerializer(typeof(BookWithBadDefaultValue),
+                    YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error,
+                    YAXSerializationOptions.DisplayLineInfoInExceptions);
                 serializer.Deserialize(bookXml);
             });
             Assert.True(ex.HasLineInfo);
@@ -176,10 +188,8 @@ namespace YAXLibTests
         {
             var testName = "Test";
 
-            Exception ex = Assert.Throws<YAXBadLocationException>(() =>
-            {
-                throw new YAXBadLocationException(testName);
-            });
+            Exception ex =
+                Assert.Throws<YAXBadLocationException>(() => { throw new YAXBadLocationException(testName); });
             StringAssert.Contains(testName, ex.Message);
         }
 
@@ -243,10 +253,7 @@ namespace YAXLibTests
         {
             var testName = "Test";
             var testInput = "BadInput";
-            var ex = Assert.Throws<YAXBadlyFormedInput>(() =>
-            {
-                throw new YAXBadlyFormedInput(testName, testInput);
-            });
+            var ex = Assert.Throws<YAXBadlyFormedInput>(() => { throw new YAXBadlyFormedInput(testName, testInput); });
             StringAssert.Contains(testName, ex.Message);
             StringAssert.Contains(testInput, ex.Message);
         }
@@ -287,15 +294,12 @@ namespace YAXLibTests
             StringAssert.Contains(testName, ex.Message);
             StringAssert.Contains(testValue.ToString(), ex.Message);
         }
-        
+
         [Test]
         public void YAXBadlyFormedXMLLegacyConstructor()
         {
             var testName = "Test";
-            var ex = Assert.Throws<YAXBadlyFormedXML>(() =>
-            {
-                throw new YAXBadlyFormedXML(new Exception(testName));
-            });
+            var ex = Assert.Throws<YAXBadlyFormedXML>(() => { throw new YAXBadlyFormedXML(new Exception(testName)); });
             StringAssert.Contains(testName, ex.Message);
         }
 
@@ -340,12 +344,8 @@ namespace YAXLibTests
         public void YAXPolymorphicExceptionLegacyConstructor()
         {
             var testName = "Test";
-            var ex = Assert.Throws<YAXPolymorphicException>(() =>
-            {
-                throw new YAXPolymorphicException(testName);
-            });
+            var ex = Assert.Throws<YAXPolymorphicException>(() => { throw new YAXPolymorphicException(testName); });
             StringAssert.Contains(testName, ex.Message);
-
         }
     }
 }

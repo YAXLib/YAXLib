@@ -1,43 +1,35 @@
-﻿// Copyright 2009 - 2010 Sina Iravanian - <sina@sinairv.com>
-//
-// This source file(s) may be redistributed, altered and customized
-// by any means PROVIDING the authors name and all copyright
-// notices remain intact.
-// THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED. USE IT AT YOUR OWN RISK. THE AUTHOR ACCEPTS NO
-// LIABILITY FOR ANY DATA DAMAGE/LOSS THAT THIS PRODUCT MAY CAUSE.
-//-----------------------------------------------------------------------
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
 
 using System;
-using System.Xml.Linq;
-using System.Globalization;
 using System.Collections.Generic;
-using System.Text;
+using System.Globalization;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace YAXLib
 {
     /// <summary>
-    /// Provides utility methods for manipulating XML.
-    /// There are four methods for each unit. UnitExists, FindUnit, CanCreateUnit, CreateUnit
-    /// Units are: Location, Element, and Attribute
+    ///     Provides utility methods for manipulating XML.
+    ///     There are four methods for each unit. UnitExists, FindUnit, CanCreateUnit, CreateUnit
+    ///     Units are: Location, Element, and Attribute
     /// </summary>
     internal static class XMLUtils
     {
         /// <summary>
-        /// Determines whether the location specified exists in the given XML element.
+        ///     Determines whether the location specified exists in the given XML element.
         /// </summary>
         /// <param name="baseElement">The XML element.</param>
         /// <param name="location">The location string.</param>
         /// <returns>a value indicating whether the location specified exists in the given XML element</returns>
         public static bool LocationExists(XElement baseElement, string location)
         {
-            XElement newLoc = FindLocation(baseElement, location);
+            var newLoc = FindLocation(baseElement, location);
             return newLoc != null;
         }
 
         /// <summary>
-        /// Finds the location specified in the given XML element specified.
+        ///     Finds the location specified in the given XML element specified.
         /// </summary>
         /// <param name="baseElement">The XML element.</param>
         /// <param name="location">The location string.</param>
@@ -49,12 +41,10 @@ namespace YAXLib
 
             var locSteps = location.SplitPathNamespaceSafe();
 
-            XElement currentLocation = baseElement;
-            foreach (string loc in locSteps)
-            {
+            var currentLocation = baseElement;
+            foreach (var loc in locSteps)
                 if (loc == ".")
                 {
-                    continue;
                 }
                 else if (loc == "..")
                 {
@@ -73,29 +63,26 @@ namespace YAXLib
                     if (currentLocation == null)
                         break;
                 }
-            }
 
             return currentLocation;
         }
 
         /// <summary>
-        /// Determines whether the specified location can be created in the specified XML element.
+        ///     Determines whether the specified location can be created in the specified XML element.
         /// </summary>
         /// <param name="baseElement">The XML element.</param>
         /// <param name="location">The location string.</param>
         /// <returns>
-        /// <c>true</c> if the specified location can be created in the specified XML element; otherwise, <c>false</c>.
+        ///     <c>true</c> if the specified location can be created in the specified XML element; otherwise, <c>false</c>.
         /// </returns>
         public static bool CanCreateLocation(XElement baseElement, string location)
         {
             var locSteps = location.SplitPathNamespaceSafe();
 
-            XElement currentLocation = baseElement;
-            foreach (string loc in locSteps)
-            {
+            var currentLocation = baseElement;
+            foreach (var loc in locSteps)
                 if (loc == ".")
                 {
-                    continue;
                 }
                 else if (loc == "..")
                 {
@@ -114,13 +101,12 @@ namespace YAXLib
                     if (currentLocation == null)
                         return true;
                 }
-            }
 
             return true;
         }
 
         /// <summary>
-        /// Creates and returns XML element corresponding to the sepcified location in the given XML element.
+        ///     Creates and returns XML element corresponding to the sepcified location in the given XML element.
         /// </summary>
         /// <param name="baseElement">The XML element.</param>
         /// <param name="location">The location string.</param>
@@ -129,12 +115,10 @@ namespace YAXLib
         {
             var locSteps = location.SplitPathNamespaceSafe();
 
-            XElement currentLocation = baseElement;
-            foreach (string loc in locSteps)
-            {
+            var currentLocation = baseElement;
+            foreach (var loc in locSteps)
                 if (loc == ".")
                 {
-                    continue;
                 }
                 else if (loc == "..")
                 {
@@ -162,19 +146,20 @@ namespace YAXLib
                         currentLocation = newLoc;
                     }
                 }
-            }
 
             return currentLocation;
         }
 
         /// <summary>
-        /// Determines whether the attribute with the given name located in the given location string exists in the given XML element.
+        ///     Determines whether the attribute with the given name located in the given location string exists in the given XML
+        ///     element.
         /// </summary>
         /// <param name="baseElement">The XML element.</param>
         /// <param name="location">The location string.</param>
         /// <param name="attrName">Name of the attribute.</param>
         /// <returns>
-        /// a value indicating whether the attribute with the given name located in the given location string exists in the given XML element.
+        ///     a value indicating whether the attribute with the given name located in the given location string exists in the
+        ///     given XML element.
         /// </returns>
         public static bool AttributeExists(XElement baseElement, string location, XName attrName)
         {
@@ -182,16 +167,18 @@ namespace YAXLib
         }
 
         /// <summary>
-        /// Finds the attribute with the given name located in the given location string in the given XML element.
+        ///     Finds the attribute with the given name located in the given location string in the given XML element.
         /// </summary>
         /// <param name="baseElement">The XML element.</param>
         /// <param name="location">The location string.</param>
         /// <param name="attrName">Name of the attribute.</param>
-        /// <returns>a value indicating whether the attribute with the given name located in 
-        /// the given location string in the given XML element has been found.</returns>
+        /// <returns>
+        ///     a value indicating whether the attribute with the given name located in
+        ///     the given location string in the given XML element has been found.
+        /// </returns>
         public static XAttribute FindAttribute(XElement baseElement, string location, XName attrName)
         {
-            XElement newLoc = FindLocation(baseElement, location);
+            var newLoc = FindLocation(baseElement, location);
             if (newLoc == null)
                 return null;
 
@@ -202,36 +189,29 @@ namespace YAXLib
 
             if (newAttrName.Namespace.IsEmpty())
                 return newLoc.Attribute(newAttrName);
-            else
-                return newLoc.Attribute_NamespaceNeutral(newAttrName);
+            return newLoc.Attribute_NamespaceNeutral(newAttrName);
         }
 
         /// <summary>
-        /// Determines whether the attribute with the given name can be created in the location 
-        /// specified by the given location string in the given XML element.
+        ///     Determines whether the attribute with the given name can be created in the location
+        ///     specified by the given location string in the given XML element.
         /// </summary>
         /// <param name="baseElement">The XML element.</param>
         /// <param name="location">The location string.</param>
         /// <param name="attrName">Name of the attribute.</param>
         /// <returns>
-        /// <c>true</c> if the attribute with the given name can be created in the location 
-        /// specified by the given location string in the given XML element; otherwise, <c>false</c>.
+        ///     <c>true</c> if the attribute with the given name can be created in the location
+        ///     specified by the given location string in the given XML element; otherwise, <c>false</c>.
         /// </returns>
         public static bool CanCreateAttribute(XElement baseElement, string location, XName attrName)
         {
-            XElement newLoc = FindLocation(baseElement, location);
+            var newLoc = FindLocation(baseElement, location);
             if (newLoc == null) //if the location does not exist
             {
                 if (CanCreateLocation(baseElement, location)) // see if you can create the location
-                {
                     // if you can create the location you can create the attribute too
                     return true;
-                }
-                else
-                {
-                    // if you can't create the location you can't create the attribute either
-                    return false;
-                }
+                return false;
             }
 
             var newAttrName = attrName;
@@ -242,34 +222,32 @@ namespace YAXLib
             // check if the attribute does not exist
             if (newAttrName.Namespace.IsEmpty())
                 return newLoc.Attribute(newAttrName) == null;
-            else
-                return newLoc.Attribute_NamespaceNeutral(newAttrName) == null;
+            return newLoc.Attribute_NamespaceNeutral(newAttrName) == null;
         }
 
         /// <summary>
-        /// Creates and returns the attribute with the given name in the location 
-        /// specified by the given location string in the given XML element.
+        ///     Creates and returns the attribute with the given name in the location
+        ///     specified by the given location string in the given XML element.
         /// </summary>
         /// <param name="baseElement">The XML element.</param>
         /// <param name="location">The location string.</param>
         /// <param name="attrName">Name of the attribute.</param>
         /// <param name="attrValue">The value to be assigned to the attribute.</param>
         /// <param name="documentDefaultNamespace">The default namespace.</param>
-        /// <returns>returns the attribute with the given name in the location 
-        /// specified by the given location string in the given XML element.</returns>
-        public static XAttribute CreateAttribute(XElement baseElement, string location, XName attrName, object attrValue, XNamespace documentDefaultNamespace)
+        /// <returns>
+        ///     returns the attribute with the given name in the location
+        ///     specified by the given location string in the given XML element.
+        /// </returns>
+        public static XAttribute CreateAttribute(XElement baseElement, string location, XName attrName,
+            object attrValue, XNamespace documentDefaultNamespace)
         {
-            XElement newLoc = FindLocation(baseElement, location);
+            var newLoc = FindLocation(baseElement, location);
             if (newLoc == null)
             {
                 if (CanCreateLocation(baseElement, location))
-                {
                     newLoc = CreateLocation(baseElement, location);
-                }
                 else
-                {
                     return null;
-                }
             }
 
             // check if the attribute does not exist
@@ -289,42 +267,46 @@ namespace YAXLib
         }
 
         /// <summary>
-        /// Finds the element with the given name located in the given location string in the given XML element.
+        ///     Finds the element with the given name located in the given location string in the given XML element.
         /// </summary>
         /// <param name="baseElement">The XML element.</param>
         /// <param name="location">The location string.</param>
         /// <param name="elemName">Name of the element.</param>
-        /// <returns>a value indicating whether the element with the given name located in 
-        /// the given location string in the given XML element has been found</returns>
+        /// <returns>
+        ///     a value indicating whether the element with the given name located in
+        ///     the given location string in the given XML element has been found
+        /// </returns>
         public static XElement FindElement(XElement baseElement, string location, XName elemName)
         {
             return FindLocation(baseElement, StringUtils.CombineLocationAndElementName(location, elemName));
         }
 
         /// <summary>
-        /// Determines whether the XML element with the given name located in the 
-        /// given location string in the given XML element exists.
+        ///     Determines whether the XML element with the given name located in the
+        ///     given location string in the given XML element exists.
         /// </summary>
         /// <param name="baseElement">The XML element.</param>
         /// <param name="location">The location string.</param>
         /// <param name="elemName">Name of the element.</param>
-        /// <returns>a value indicating whether the XML element with the given name located in the 
-        /// given location string in the given XML element exists</returns>
+        /// <returns>
+        ///     a value indicating whether the XML element with the given name located in the
+        ///     given location string in the given XML element exists
+        /// </returns>
         public static bool ElementExists(XElement baseElement, string location, XName elemName)
         {
             return FindElement(baseElement, location, elemName) != null;
         }
 
         /// <summary>
-        /// Determines whether the XML element with the given name located in the 
-        /// given location string in the given XML element can be created
+        ///     Determines whether the XML element with the given name located in the
+        ///     given location string in the given XML element can be created
         /// </summary>
         /// <param name="baseElement">The XML element.</param>
         /// <param name="location">The location string.</param>
         /// <param name="elemName">Name of the element.</param>
         /// <returns>
-        /// <c>true</c> if the XML element with the given name located in the given 
-        /// location string in the given XML element can be created; otherwise, <c>false</c>.
+        ///     <c>true</c> if the XML element with the given name located in the given
+        ///     location string in the given XML element can be created; otherwise, <c>false</c>.
         /// </returns>
         public static bool CanCreateElement(XElement baseElement, string location, XName elemName)
         {
@@ -332,67 +314,67 @@ namespace YAXLib
         }
 
         /// <summary>
-        /// Creates and returns the XML element with the given name located in the 
-        /// given location string in the given XML element.
+        ///     Creates and returns the XML element with the given name located in the
+        ///     given location string in the given XML element.
         /// </summary>
         /// <param name="baseElement">The parent XML element.</param>
         /// <param name="location">The location string.</param>
         /// <param name="elemName">Name of the element to create.</param>
-        /// <returns>returns the XML element with the given name located in the 
-        /// given location string in the given XML element</returns>
+        /// <returns>
+        ///     returns the XML element with the given name located in the
+        ///     given location string in the given XML element
+        /// </returns>
         public static XElement CreateElement(XElement baseElement, string location, XName elemName)
         {
             return CreateLocation(baseElement, StringUtils.CombineLocationAndElementName(location, elemName));
         }
 
         /// <summary>
-        /// Creates and returns the XML element with the given name located in the 
-        /// given location string in the given XML element.
+        ///     Creates and returns the XML element with the given name located in the
+        ///     given location string in the given XML element.
         /// </summary>
         /// <param name="baseElement">The parent XML element.</param>
         /// <param name="location">The location string.</param>
         /// <param name="elemName">Name of the element to create.</param>
         /// <param name="elemValue">The element value to be assigned to the created element.</param>
-        /// <returns>returns the XML element with the given name located in the 
-        /// given location string in the given XML element.</returns>
+        /// <returns>
+        ///     returns the XML element with the given name located in the
+        ///     given location string in the given XML element.
+        /// </returns>
         public static XElement CreateElement(XElement baseElement, string location, XName elemName, object elemValue)
         {
-            XElement elem = CreateElement(baseElement, location, elemName);
+            var elem = CreateElement(baseElement, location, elemName);
             if (elem != null)
                 elem.SetValue(elemValue);
             return elem;
         }
 
         /// <summary>
-        /// Moves all the children of src (including all its elements and attributes) to the 
-        /// destination element, dst.
+        ///     Moves all the children of src (including all its elements and attributes) to the
+        ///     destination element, dst.
         /// </summary>
         /// <param name="src">The source element.</param>
         /// <param name="dst">The destination element.</param>
         public static void MoveDescendants(XElement src, XElement dst)
         {
-            foreach (XAttribute attr in src.Attributes())
+            foreach (var attr in src.Attributes())
             {
                 if (dst.Attribute(attr.Name) != null)
-                {
                     throw new YAXAttributeAlreadyExistsException(attr.Name.ToString());
-                }
 
                 dst.Add(attr);
             }
 
-            foreach (XNode elem in src.Nodes())
-            {
-                dst.Add(elem);
-            }
+            foreach (var elem in src.Nodes()) dst.Add(elem);
         }
 
         /// <summary>
-        /// Determines whether the specified element has neither any child attributes nor any child elements.
+        ///     Determines whether the specified element has neither any child attributes nor any child elements.
         /// </summary>
         /// <param name="elem">The element.</param>
         /// <returns>
-        /// <c>true</c> if the specified element has neither any child attributes nor any child elements; otherwise, <c>false</c>.
+        ///     <c>true</c> if the specified element has neither any child attributes nor any child elements; otherwise,
+        ///     <c>false</c>.
         /// </returns>
         public static bool IsElementCompletelyEmpty(XElement elem)
         {
@@ -400,23 +382,22 @@ namespace YAXLib
         }
 
         /// <summary>
-        /// Decodes the XML escape sequences into normal string
+        ///     Decodes the XML escape sequences into normal string
         /// </summary>
         /// <param name="str">The string to decode.</param>
         /// <returns></returns>
         public static string DecodeXMLString(string str)
         {
             if (str.IndexOf('&') >= 0)
-            {
-                return str.Replace("&lt;", "<").Replace("&gt;", ">").Replace("&quot;", "\"").Replace("&apos;", "'").Replace("&amp;", "&");
-                // Make sure that &amp; is the final replace so that sequences such as &amp;gt; do not get corrupted
-            }
+                return str.Replace("&lt;", "<").Replace("&gt;", ">").Replace("&quot;", "\"").Replace("&apos;", "'")
+                    .Replace("&amp;", "&");
+            // Make sure that &amp; is the final replace so that sequences such as &amp;gt; do not get corrupted
 
             return str;
         }
 
         /// <summary>
-        /// Adds the 'xml:space="preserve"' attribute to the specified element.
+        ///     Adds the 'xml:space="preserve"' attribute to the specified element.
         /// </summary>
         /// <param name="element">Element to add the 'xml:space="preserve"' attribute to</param>
         /// <returns></returns>
@@ -425,59 +406,62 @@ namespace YAXLib
             element.AddAttributeNamespaceSafe(XNamespace.Xml + "space", "preserve", null);
             return element;
         }
-        
+
         public static string GetRandomPrefix(this XElement self)
         {
-            var q = self.Attributes().Where(xa => xa.Name.Namespace == XNamespace.Xmlns).Select(xa => xa.Name.LocalName).ToArray();
+            var q = self.Attributes().Where(xa => xa.Name.Namespace == XNamespace.Xmlns).Select(xa => xa.Name.LocalName)
+                .ToArray();
             var setPrefixes = new HashSet<string>(q);
 
-            string prefix = "p";
+            var prefix = "p";
 
-            for(int i = 1; i <= 10000; i++)
-            {
+            for (var i = 1; i <= 10000; i++)
                 if (!setPrefixes.Contains(prefix + i))
                     return prefix + i;
-            }
 
             throw new InvalidOperationException("Cannot create a unique random prefix");
         }
 
         public static string ToXmlValue(this object self)
         {
-          string typeName = self == null ? String.Empty : self.GetType().Name;
+            var typeName = self == null ? string.Empty : self.GetType().Name;
 
-          switch (typeName)
-          {
-            case "Double":
-              return ((double)self).ToString("R", CultureInfo.InvariantCulture);
-            case "Single":
-              return ((Single)self).ToString("R", CultureInfo.InvariantCulture);
-            case "BigInteger":
-              return ReflectionUtils.InvokeMethod(self, "ToString", "R", CultureInfo.InvariantCulture) as string;
-          }
-          return Convert.ToString((self ?? String.Empty), CultureInfo.InvariantCulture);
+            switch (typeName)
+            {
+                case "Double":
+                    return ((double) self).ToString("R", CultureInfo.InvariantCulture);
+                case "Single":
+                    return ((float) self).ToString("R", CultureInfo.InvariantCulture);
+                case "BigInteger":
+                    return ReflectionUtils.InvokeMethod(self, "ToString", "R", CultureInfo.InvariantCulture) as string;
+            }
+
+            return Convert.ToString(self ?? string.Empty, CultureInfo.InvariantCulture);
         }
 
-        public static XAttribute AddAttributeNamespaceSafe(this XElement parent, XName attrName, object attrValue, XNamespace documentDefaultNamespace)
+        public static XAttribute AddAttributeNamespaceSafe(this XElement parent, XName attrName, object attrValue,
+            XNamespace documentDefaultNamespace)
         {
             var newAttrName = attrName;
 
             if (newAttrName.Namespace == documentDefaultNamespace)
-                    newAttrName = newAttrName.RemoveNamespace();
+                newAttrName = newAttrName.RemoveNamespace();
 
             var newAttr = new XAttribute(newAttrName, attrValue.ToXmlValue());
             parent.Add(newAttr);
             return newAttr;
         }
 
-        public static XAttribute Attribute_NamespaceSafe(this XElement parent, XName attrName, XNamespace documentDefaultNamespace)
+        public static XAttribute Attribute_NamespaceSafe(this XElement parent, XName attrName,
+            XNamespace documentDefaultNamespace)
         {
-            if(attrName.Namespace == documentDefaultNamespace)
+            if (attrName.Namespace == documentDefaultNamespace)
                 attrName = attrName.RemoveNamespace();
             return parent.Attribute(attrName);
         }
 
-        public static IEnumerable<XAttribute> Attributes_NamespaceSafe(this XElement parent, XName attrName, XNamespace documentDefaultNamespace)
+        public static IEnumerable<XAttribute> Attributes_NamespaceSafe(this XElement parent, XName attrName,
+            XNamespace documentDefaultNamespace)
         {
             if (attrName.Namespace == documentDefaultNamespace)
                 attrName = attrName.RemoveNamespace();
@@ -492,11 +476,10 @@ namespace YAXLib
 
         public static string GetXmlContent(this XElement self)
         {
-            XText[] values = self.Nodes().OfType<XText>().ToArray();
+            var values = self.Nodes().OfType<XText>().ToArray();
             if (values.Length > 0)
                 return values[0].Value;
-            else 
-                return null;
+            return null;
         }
 
         public static XAttribute Attribute_NamespaceNeutral(this XElement parent, XName name)
@@ -521,7 +504,7 @@ namespace YAXLib
 
         public static bool IsEmpty(this XNamespace self)
         {
-            return self != null && !String.IsNullOrEmpty(self.NamespaceName.Trim());
+            return self != null && !string.IsNullOrEmpty(self.NamespaceName.Trim());
         }
 
         public static XNamespace IfEmptyThen(this XNamespace self, XNamespace next)
@@ -539,17 +522,14 @@ namespace YAXLib
         {
             if (self.Namespace.IsEmpty())
                 return self;
-            else if (ns.IsEmpty())
+            if (ns.IsEmpty())
                 return ns + self.LocalName;
-            else
-                return self;
+            return self;
         }
 
         public static XName RemoveNamespace(this XName self)
         {
             return XName.Get(self.LocalName);
         }
-
-
     }
 }

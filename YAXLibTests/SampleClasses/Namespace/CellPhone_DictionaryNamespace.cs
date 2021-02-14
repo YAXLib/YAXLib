@@ -1,13 +1,11 @@
-﻿using System;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses.Namespace
 {
-
     [YAXNamespace("http://namespace.org/nsmain")]
     public class CellPhone_DictionaryNamespace
     {
@@ -27,7 +25,7 @@ namespace YAXLibTests.SampleClasses.Namespace
 
         public static CellPhone_DictionaryNamespace GetSampleInstance()
         {
-            var prices = new Dictionary<string, double> { { "red", 120 }, { "blue", 110 }, { "black", 140 } };
+            var prices = new Dictionary<string, double> {{"red", 120}, {"blue", 110}, {"black", 140}};
 
             return new CellPhone_DictionaryNamespace
             {

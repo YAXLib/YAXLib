@@ -1,9 +1,12 @@
-﻿using System.Data;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
+using System.Data;
 using System.Text;
 
 namespace YAXLibTests.SampleClasses
 {
-#if !FXCORE
+#if !NETSTANDARD
     public class DataSetAndDataTableKnownTypeSample
     {
         public DataTable TheDataTable { get; set; }
@@ -36,7 +39,7 @@ namespace YAXLibTests.SampleClasses
             dataTable2.Rows.Add("two", 2, 2.5);
 
             var dataSet = new DataSet("MyDataSet");
-            dataSet.Tables.AddRange(new[] { dataTable1, dataTable2 });
+            dataSet.Tables.AddRange(new[] {dataTable1, dataTable2});
 
             return new DataSetAndDataTableKnownTypeSample
             {
@@ -49,16 +52,15 @@ namespace YAXLibTests.SampleClasses
         {
             var sb = new StringBuilder();
             sb.AppendLine(TheDataTable == null
-                              ? "TheDataTable: null"
-                              : string.Format("TheDataTable: {0} rows", TheDataTable.Rows.Count));
+                ? "TheDataTable: null"
+                : string.Format("TheDataTable: {0} rows", TheDataTable.Rows.Count));
 
             sb.AppendLine(TheDataSet == null
-                              ? "TheDataSet: null"
-                              : string.Format("TheDataSet: {0} tables, {1} rows in the 0th table",
-                                              TheDataSet.Tables.Count, TheDataSet.Tables[0].Rows.Count));
+                ? "TheDataSet: null"
+                : string.Format("TheDataSet: {0} tables, {1} rows in the 0th table",
+                    TheDataSet.Tables.Count, TheDataSet.Tables[0].Rows.Count));
 
             return sb.ToString();
-
         }
     }
 #endif

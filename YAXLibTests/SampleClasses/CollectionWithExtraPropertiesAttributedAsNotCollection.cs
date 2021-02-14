@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
+using System.Collections.Generic;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
@@ -11,7 +14,8 @@ namespace YAXLibTests.SampleClasses
 
         public static CollectionWithExtraPropertiesAttributedAsNotCollection GetSampleInstance()
         {
-            var instance = new CollectionWithExtraPropertiesAttributedAsNotCollection { Property1 = "Property1", Property2 = 1.234 };
+            var instance = new CollectionWithExtraPropertiesAttributedAsNotCollection
+                {Property1 = "Property1", Property2 = 1.234};
 
             instance.Add(1);
             instance.Add(2);
@@ -24,8 +28,7 @@ namespace YAXLibTests.SampleClasses
         public override string ToString()
         {
             return GeneralToStringProvider.GeneralToString(this) +
-                string.Format("Property1: {0}, Property2: {1}", Property1, Property2);
+                   string.Format("Property1: {0}, Property2: {1}", Property1, Property2);
         }
-
     }
 }

@@ -1,8 +1,12 @@
+// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
-    [YAXSerializableType(Options = YAXSerializationOptions.DontSerializeNullObjects, FieldsToSerialize = YAXSerializationFields.AttributedFieldsOnly)]
+    [YAXSerializableType(Options = YAXSerializationOptions.DontSerializeNullObjects,
+        FieldsToSerialize = YAXSerializationFields.AttributedFieldsOnly)]
     [YAXSerializeAs("font")]
     [YAXNamespace("w", "http://example.com/namespace")]
     public class AttributeWithNamespace
@@ -14,7 +18,7 @@ namespace YAXLibTests.SampleClasses
 
         public static AttributeWithNamespace GetSampleInstance()
         {
-            return new AttributeWithNamespace 
+            return new AttributeWithNamespace
             {
                 Name = "Arial"
             };
@@ -33,9 +37,9 @@ namespace YAXLibTests.SampleClasses
         public static AttributeWithNamespaceAsMember GetSampleInstance()
         {
             return new AttributeWithNamespaceAsMember
-                       {
-                           Member = AttributeWithNamespace.GetSampleInstance()
-                       };
+            {
+                Member = AttributeWithNamespace.GetSampleInstance()
+            };
         }
 
         public override string ToString()
@@ -43,6 +47,4 @@ namespace YAXLibTests.SampleClasses
             return GeneralToStringProvider.GeneralToString(this);
         }
     }
-
 }
-

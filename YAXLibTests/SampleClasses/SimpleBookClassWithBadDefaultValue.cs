@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
-    [ShowInDemoApplication(SortKey="001")]
-
+    [ShowInDemoApplication(SortKey = "001")]
     [YAXComment("This example demonstrates serailizing a very simple class")]
     public class BookWithBadDefaultValue
     {
@@ -25,7 +23,7 @@ namespace YAXLibTests.SampleClasses
 
         public static Book GetSampleInstance()
         {
-            return new Book()
+            return new Book
             {
                 Title = "Inside C#",
                 Author = "Tom Archer & Andrew Whitechapel",

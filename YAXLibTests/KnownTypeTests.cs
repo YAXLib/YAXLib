@@ -1,72 +1,31 @@
-﻿using System.Drawing;
-using System.Xml.Linq;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
 
-using NUnit.Framework;
-
-using YAXLib;
 using System;
+using System.Drawing;
+using System.Xml.Linq;
+using NUnit.Framework;
+using YAXLib;
 using YAXLibTests.SampleClasses;
 
 namespace YAXLibTests
 {
-
     [TestFixture]
     public class KnownTypeTests
     {
-#if !FXCORE
-        [Test]
-        public void TestExtensionMethod()
-        {
-            var colorKnownType = new ColorDynamicKnownType();
-            var t1 = colorKnownType.Type;
-            IKnownType kt = new ColorDynamicKnownType();
-
-            Assert.That(kt.Type, Is.EqualTo(t1));
-        }
-
-        [Test]
-        public void TestColorNames()
-        {
-            var colorKnownType = new ColorDynamicKnownType();
-
-            var elem = new XElement("TheColor", "Red");
-            var desCl = (Color)colorKnownType.Deserialize(elem, String.Empty);
-            Assert.That(desCl.ToArgb(), Is.EqualTo(Color.Red.ToArgb()));
-
-            var serElem = new XElement("TheColor");
-            colorKnownType.Serialize(Color.Red, serElem, "");
-            Assert.That(serElem.ToString(), Is.EqualTo(elem.ToString()));
-
-            var elemRgbForRed = new XElement("TheColor",
-                new XElement("A", 255),
-                new XElement("R", 255),
-                new XElement("G", 0),
-                new XElement("B", 0));
-            var desCl2 = (Color)colorKnownType.Deserialize(elemRgbForRed, "");
-            Assert.That(desCl2.ToArgb(), Is.EqualTo(Color.Red.ToArgb()));
-
-            var elemRgbAndValueForRed = new XElement("TheColor",
-                "Blue",
-                new XElement("R", 255),
-                new XElement("G", 0),
-                new XElement("B", 0));
-            var desCl3 = (Color)colorKnownType.Deserialize(elemRgbAndValueForRed, "");
-            Assert.That(desCl3.ToArgb(), Is.EqualTo(Color.Red.ToArgb()));
-        }
-#endif
         [Test]
         public void TestWrappers()
         {
-            var typeToTest = typeof (TimeSpan);
+            var typeToTest = typeof(TimeSpan);
             var serializer = new YAXSerializer(typeToTest);
             var typeWrapper = new UdtWrapper(typeToTest, serializer);
 
             Assert.That(typeWrapper.IsKnownType, Is.True);
         }
-#if !FXCORE
+#if !NETSTANDARD
         [Test]
         public void TestSingleKnownTypeSerialization()
-       {
+        {
             var typeToTest = typeof(Color);
             var serializer = new YAXSerializer(typeToTest);
 
@@ -96,8 +55,8 @@ namespace YAXLibTests
             inst.TheElement = null;
             inst.TheAttribute = null;
 
-            var ser = new YAXSerializer(typeof (ClassContainingXElement), YAXExceptionHandlingPolicies.ThrowErrorsOnly,
-                                        YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var ser = new YAXSerializer(typeof(ClassContainingXElement), YAXExceptionHandlingPolicies.ThrowErrorsOnly,
+                YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
 
             try
             {
@@ -109,14 +68,13 @@ namespace YAXLibTests
             {
                 Assert.Fail("No exception should have been throwned, but received:\r\n" + ex);
             }
-
         }
 
         [Test]
         public void RectangleSerializationTest()
         {
             const string result =
-@"<RectangleDynamicKnownTypeSample>
+                @"<RectangleDynamicKnownTypeSample>
   <Rect>
     <Left>10</Left>
     <Top>20</Top>
@@ -124,16 +82,18 @@ namespace YAXLibTests
     <Height>40</Height>
   </Rect>
 </RectangleDynamicKnownTypeSample>";
-            var serializer = new YAXSerializer(typeof(RectangleDynamicKnownTypeSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
-            string got = serializer.Serialize(RectangleDynamicKnownTypeSample.GetSampleInstance());
+            var serializer = new YAXSerializer(typeof(RectangleDynamicKnownTypeSample),
+                YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning,
+                YAXSerializationOptions.SerializeNullObjects);
+            var got = serializer.Serialize(RectangleDynamicKnownTypeSample.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-#if !FXCORE
+#if !NETSTANDARD
         [Test]
         public void DataSetAndDataTableSerializationTest()
         {
             const string result =
-@"<DataSetAndDataTableKnownTypeSample>
+                @"<DataSetAndDataTableKnownTypeSample>
   <TheDataTable>
     <NewDataSet>
       <TableName xmlns=""http://tableNs/"">
@@ -172,9 +132,52 @@ namespace YAXLibTests
   </TheDataSet>
 </DataSetAndDataTableKnownTypeSample>";
 
-            var serializer = new YAXSerializer(typeof(DataSetAndDataTableKnownTypeSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
-            string got = serializer.Serialize(DataSetAndDataTableKnownTypeSample.GetSampleInstance());
+            var serializer = new YAXSerializer(typeof(DataSetAndDataTableKnownTypeSample),
+                YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning,
+                YAXSerializationOptions.SerializeNullObjects);
+            var got = serializer.Serialize(DataSetAndDataTableKnownTypeSample.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
+        }
+#endif
+#if !NETSTANDARD
+        [Test]
+        public void TestExtensionMethod()
+        {
+            var colorKnownType = new ColorDynamicKnownType();
+            var t1 = colorKnownType.Type;
+            IKnownType kt = new ColorDynamicKnownType();
+
+            Assert.That(kt.Type, Is.EqualTo(t1));
+        }
+
+        [Test]
+        public void TestColorNames()
+        {
+            var colorKnownType = new ColorDynamicKnownType();
+
+            var elem = new XElement("TheColor", "Red");
+            var desCl = (Color) colorKnownType.Deserialize(elem, string.Empty);
+            Assert.That(desCl.ToArgb(), Is.EqualTo(Color.Red.ToArgb()));
+
+            var serElem = new XElement("TheColor");
+            colorKnownType.Serialize(Color.Red, serElem, "");
+            Assert.That(serElem.ToString(), Is.EqualTo(elem.ToString()));
+
+            var elemRgbForRed = new XElement("TheColor",
+                new XElement("A", 255),
+                new XElement("R", 255),
+                new XElement("G", 0),
+                new XElement("B", 0));
+            var desCl2 = (Color) colorKnownType.Deserialize(elemRgbForRed, "");
+            Assert.That(desCl2.ToArgb(), Is.EqualTo(Color.Red.ToArgb()));
+
+            var elemRgbAndValueForRed = new XElement("TheColor",
+                "Blue",
+                new XElement("R", 255),
+                new XElement("G", 0),
+                new XElement("B", 0));
+            var desCl3 = (Color) colorKnownType.Deserialize(elemRgbAndValueForRed, "");
+            Assert.That(desCl3.ToArgb(), Is.EqualTo(Color.Red.ToArgb()));
         }
 #endif
     }

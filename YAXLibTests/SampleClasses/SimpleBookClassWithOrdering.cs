@@ -1,28 +1,26 @@
-﻿using System;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
     [ShowInDemoApplication(SortKey = "003")]
-
     [YAXComment("This example demonstrates serailizing a very simple class, but with partial priority ordering.")]
     public class BookClassWithOrdering
     {
-        private string _title;
         private string _author;
-        private int _publishYear;
+        private string _editor;
         private double _price;
-        private int currentElement = 0;
-
-        [YAXDontSerialize]
-        public Dictionary<int, string> DecentralizationOrder = new Dictionary<int, string>();
+        private string _publisher;
+        private int _publishYear;
 
         private string _review;
-        private string _publisher;
-        private string _editor;
+        private string _title;
+        private int currentElement;
+
+        [YAXDontSerialize] public Dictionary<int, string> DecentralizationOrder = new Dictionary<int, string>();
 
         [YAXElementOrder(1)]
         public string Title
@@ -71,7 +69,7 @@ namespace YAXLibTests.SampleClasses
             get { return _review; }
             set
             {
-                _review = value; 
+                _review = value;
                 DecentralizationOrder.Add(currentElement++, "Review");
             }
         }
@@ -81,7 +79,7 @@ namespace YAXLibTests.SampleClasses
             get { return _publisher; }
             set
             {
-                _publisher = value; 
+                _publisher = value;
                 DecentralizationOrder.Add(currentElement++, "Publisher");
             }
         }
@@ -91,7 +89,7 @@ namespace YAXLibTests.SampleClasses
             get { return _editor; }
             set
             {
-                _editor = value; 
+                _editor = value;
                 DecentralizationOrder.Add(currentElement++, "Editor");
             }
         }
@@ -103,7 +101,7 @@ namespace YAXLibTests.SampleClasses
 
         public static BookClassWithOrdering GetSampleInstance()
         {
-            return new BookClassWithOrdering()
+            return new BookClassWithOrdering
             {
                 Title = "Reinforcement Learning an Introduction",
                 Author = "R. S. Sutton & A. G. Barto",

@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
+using System.Collections.Generic;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
@@ -10,18 +13,17 @@ namespace YAXLibTests.SampleClasses
     [YAXSerializableType(FieldsToSerialize = YAXSerializationFields.AttributedFieldsOnly)]
     public class SingleLetterPropertyNames
     {
-        [YAXSerializableField]
-        public LinkedList<TestPoint> TestPoints { get; set; }
-
         /// <summary>
-        /// Initializes a new instance of the SampleClassForTestPoint class.
+        ///     Initializes a new instance of the SampleClassForTestPoint class.
         /// </summary>
         public SingleLetterPropertyNames()
         {
             TestPoints = new LinkedList<TestPoint>();
-            TestPoints.AddLast(new TestPoint { Id = 0, X = 100, Y = 100 });
-            TestPoints.AddLast(new TestPoint { Id = 1, X = -100, Y = 150 });
+            TestPoints.AddLast(new TestPoint {Id = 0, X = 100, Y = 100});
+            TestPoints.AddLast(new TestPoint {Id = 1, X = -100, Y = 150});
         }
+
+        [YAXSerializableField] public LinkedList<TestPoint> TestPoints { get; set; }
 
         public static SingleLetterPropertyNames GetSampleInstance()
         {

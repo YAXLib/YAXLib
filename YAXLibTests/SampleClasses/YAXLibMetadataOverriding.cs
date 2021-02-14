@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
@@ -21,7 +20,7 @@ namespace YAXLibTests.SampleClasses
 
         public static YAXLibMetadataOverriding GetSampleInstance()
         {
-            YAXLibMetadataOverriding instance = new YAXLibMetadataOverriding();
+            var instance = new YAXLibMetadataOverriding();
             instance.SetSampleData();
             return instance;
         }
@@ -30,9 +29,9 @@ namespace YAXLibTests.SampleClasses
         {
             IntArray = new int[2, 3];
 
-            for (int i = 0; i < 2; i++)
-                for (int j = 0; j < 3; j++)
-                    IntArray[i, j] = i + j + 1;
+            for (var i = 0; i < 2; i++)
+            for (var j = 0; j < 3; j++)
+                IntArray[i, j] = i + j + 1;
 
             Obj = "Hello, World!";
         }
@@ -42,9 +41,9 @@ namespace YAXLibTests.SampleClasses
     [YAXNamespace("http://namespace.org/sample")]
     public class YAXLibMetadataOverridingWithNamespace : YAXLibMetadataOverriding
     {
-        public static new YAXLibMetadataOverridingWithNamespace GetSampleInstance()
+        public new static YAXLibMetadataOverridingWithNamespace GetSampleInstance()
         {
-            YAXLibMetadataOverridingWithNamespace instance = new YAXLibMetadataOverridingWithNamespace();
+            var instance = new YAXLibMetadataOverridingWithNamespace();
             instance.SetSampleData();
             return instance;
         }

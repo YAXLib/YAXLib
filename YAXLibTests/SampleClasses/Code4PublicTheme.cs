@@ -1,14 +1,16 @@
-﻿using System;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
+using System.Globalization;
 using System.Text;
 using System.Xml.Linq;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
-#if !FXCORE
+#if !NETSTANDARD
     //[ShowInDemoApplication]
 
     [YAXSerializeAs("root")]
@@ -56,14 +58,11 @@ namespace YAXLibTests.SampleClasses
 
     public class Theme
     {
-        [YAXAttributeFor(".#name")]
-        public string Name { get; set; }
+        [YAXAttributeFor(".#name")] public string Name { get; set; }
 
-        [YAXElementFor("Header#Border")]
-        public BorderInfo HeaderBorder { get; set; }
+        [YAXElementFor("Header#Border")] public BorderInfo HeaderBorder { get; set; }
 
-        [YAXElementFor("Header#Font")]
-        public FontInfo HeaderFont { get; set; }
+        [YAXElementFor("Header#Font")] public FontInfo HeaderFont { get; set; }
 
         [YAXAttributeFor("Header/BackColor#value")]
         [YAXCustomSerializer(typeof(ColorSerializer))]
@@ -72,8 +71,7 @@ namespace YAXLibTests.SampleClasses
         [YAXAttributeFor("Header/FontSize#value")]
         public int HeaderFontSize { get; set; }
 
-        [YAXElementFor("MainContent#Border")]
-        public BorderInfo MainContentBorder { get; set; }
+        [YAXElementFor("MainContent#Border")] public BorderInfo MainContentBorder { get; set; }
 
         [YAXAttributeFor("MainContent/FontSize#value")]
         public int MainContentFontSize { get; set; }
@@ -85,8 +83,7 @@ namespace YAXLibTests.SampleClasses
         [YAXCustomSerializer(typeof(ColorSerializer))]
         public Color LineNumbersSeperatorLineColor { get; set; }
 
-        [YAXElementFor("LineNumbers#Font")]
-        public FontInfo LineNumbersFont { get; set; }
+        [YAXElementFor("LineNumbers#Font")] public FontInfo LineNumbersFont { get; set; }
 
         [YAXCustomSerializer(typeof(ColorSerializer))]
         [YAXAttributeFor("LineNumbers/BackColor#value")]
@@ -111,17 +108,13 @@ namespace YAXLibTests.SampleClasses
         [YAXAttributeFor("CodeContent/BackColor#value")]
         public Color CodeContentBackColor { get; set; }
 
-        [YAXElementFor("CodeContent#Font")]
-        public FontInfo CodeContentFont { get; set; }
-
-        
+        [YAXElementFor("CodeContent#Font")] public FontInfo CodeContentFont { get; set; }
     }
 
     public class BorderInfo
     {
         public BorderInfo()
         {
-            
         }
 
         public BorderInfo(bool top, bool bottom, bool left, bool right, Color color)
@@ -133,29 +126,23 @@ namespace YAXLibTests.SampleClasses
             Color = color;
         }
 
-        [YAXAttributeFor(".#top")]
-        public bool Top { get; set; }
+        [YAXAttributeFor(".#top")] public bool Top { get; set; }
 
-        [YAXAttributeFor(".#bottom")]
-        public bool Bottom { get; set; }
+        [YAXAttributeFor(".#bottom")] public bool Bottom { get; set; }
 
-        [YAXAttributeFor(".#left")]
-        public bool Left { get; set; }
+        [YAXAttributeFor(".#left")] public bool Left { get; set; }
 
-        [YAXAttributeFor(".#right")]
-        public bool Right { get; set; }
+        [YAXAttributeFor(".#right")] public bool Right { get; set; }
 
         [YAXAttributeFor(".#color")]
         [YAXCustomSerializer(typeof(ColorSerializer))]
         public Color Color { get; set; }
-
     }
 
     public class FontInfo
     {
         public FontInfo()
         {
-            
         }
 
         public FontInfo(Color color, bool bold, bool italic)
@@ -165,16 +152,13 @@ namespace YAXLibTests.SampleClasses
             Color = color;
         }
 
-        [YAXAttributeFor(".#bold")]
-        public bool Bold { get; set; }
+        [YAXAttributeFor(".#bold")] public bool Bold { get; set; }
 
-        [YAXAttributeFor(".#italic")]
-        public bool Italic { get; set; }
+        [YAXAttributeFor(".#italic")] public bool Italic { get; set; }
 
         [YAXCustomSerializer(typeof(ColorSerializer))]
         [YAXAttributeFor(".#color")]
         public Color Color { get; set; }
-
     }
 
     internal class ColorSerializer : ICustomSerializer<Color>
@@ -221,15 +205,12 @@ namespace YAXLibTests.SampleClasses
             throw new YAXBadlyFormedInput("[SomeValue]", value, null);
         }
 
-                    public static string ColorTo8CharString(Color color)
+        public static string ColorTo8CharString(Color color)
         {
-            string str = String.Format("{0:X}", color.ToArgb());
+            var str = string.Format("{0:X}", color.ToArgb());
 
             var sb = new StringBuilder();
-            for(int i = 0; i < 8 - str.Length; ++i)
-            {
-                sb.Append("0");
-            }
+            for (var i = 0; i < 8 - str.Length; ++i) sb.Append("0");
 
             return sb + str;
         }
@@ -251,18 +232,18 @@ namespace YAXLibTests.SampleClasses
             strColor = strColor.Trim();
             if (strColor.StartsWith("#")) // remove leading # if any
                 strColor = strColor.Substring(1);
-            
+
             int n;
-            if (Int32.TryParse(strColor, System.Globalization.NumberStyles.HexNumber, null, out n))
+            if (int.TryParse(strColor, NumberStyles.HexNumber, null, out n))
             {
                 color = Color.FromArgb(n);
                 // sets the alpha value to 255
                 color = Color.FromArgb(255, color.R, color.G, color.B);
                 return true;
             }
+
             return false;
         }
-
     }
 #endif
 }
