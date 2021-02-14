@@ -1,5 +1,6 @@
 clone_folder: c:\xaxlib
 version: 2.16.{build}
+image: Visual Studio 2019
 
 build_script:
 - ps: dotnet restore --verbosity quiet
