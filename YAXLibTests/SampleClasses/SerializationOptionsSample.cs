@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
@@ -12,7 +11,7 @@ namespace YAXLibTests.SampleClasses
         public string StrNotNull { get; set; }
 
         // the default value should not be used && no warning or errors should be reported
-        [YAXErrorIfMissed(YAXExceptionTypes.Warning, DefaultValue="Salam")]
+        [YAXErrorIfMissed(YAXExceptionTypes.Warning, DefaultValue = "Salam")]
         public string StrNull { get; set; }
 
         [YAXErrorIfMissed(YAXExceptionTypes.Warning, DefaultValue = 123)]
@@ -33,7 +32,6 @@ namespace YAXLibTests.SampleClasses
     }
 
     [ShowInDemoApplication]
-
     public class SerializationOptionsSample
     {
         [YAXComment(@"Str2Null must NOT be serialized when it is null, even 
@@ -55,27 +53,26 @@ in the serializer itself")]
 
         public static SerializationOptionsSample GetSampleInstance()
         {
-            return new SerializationOptionsSample()
+            return new SerializationOptionsSample
             {
-                ObjectWithOptionsSet = new ClassWithOptionsSet()
+                ObjectWithOptionsSet = new ClassWithOptionsSet
                 {
                     StrNull = null,
                     StrNotNull = "SomeString"
                 },
 
-                AnotherObjectWithOptionsSet = new AnotherClassWithOptionsSet()
+                AnotherObjectWithOptionsSet = new AnotherClassWithOptionsSet
                 {
                     StrNull = null,
                     StrNotNull = "Some other string"
                 },
 
-                ObjectWithoutOptionsSet = new ClassWithoutOptionsSet()
+                ObjectWithoutOptionsSet = new ClassWithoutOptionsSet
                 {
                     StrNull = null,
                     StrNotNull = "Another string"
                 }
             };
         }
-
     }
 }

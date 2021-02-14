@@ -1,26 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
 using System.Drawing;
+using System.Globalization;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
-#if !FXCORE
+#if !NETSTANDARD
     [ShowInDemoApplication]
-
-    [YAXComment("This example shows a technique for serializing classes without a default constructor")] 
+    [YAXComment("This example shows a technique for serializing classes without a default constructor")]
     public class ColorExample
     {
         private Color m_color = Color.Blue;
 
         public string TheColor
         {
-            get
-            {
-                return String.Format("#{0:X}", m_color.ToArgb());
-            }
+            get { return string.Format("#{0:X}", m_color.ToArgb()); }
 
             set
             {
@@ -31,17 +27,14 @@ namespace YAXLibTests.SampleClasses
                     value = value.Substring(1);
 
                 int n;
-                if (Int32.TryParse(value, System.Globalization.NumberStyles.HexNumber, null, out n))
-                {
-                    m_color = Color.FromArgb(n);
-                }
+                if (int.TryParse(value, NumberStyles.HexNumber, null, out n)) m_color = Color.FromArgb(n);
             }
         }
 
         public override string ToString()
         {
             //return GeneralToStringProvider.GeneralToString(this);
-            return String.Format("TheColor: {0}", m_color.ToString());
+            return string.Format("TheColor: {0}", m_color.ToString());
         }
 
         public static ColorExample GetSampleInstance()

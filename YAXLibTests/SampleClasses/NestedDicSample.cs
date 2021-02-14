@@ -1,19 +1,20 @@
-﻿using System;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
     [ShowInDemoApplication]
-
     [YAXComment(@"This example demonstrates usage of recursive collection serialization
                 and deserialization. In this case a Dictionary whose Key, or Value is 
                 another dictionary or collection has been used.")]
     public class NestedDicSample
     {
-        public Dictionary<Dictionary<double, Dictionary<int, int>>, Dictionary<Dictionary<string, string>, List<double>>> SomeDic { get; set; }
+        public Dictionary<Dictionary<double, Dictionary<int, int>>, Dictionary<Dictionary<string, string>, List<double>>
+        > SomeDic { get; set; }
 
         public override string ToString()
         {
@@ -45,13 +46,15 @@ namespace YAXLibTests.SampleClasses
             dicK.Add(3.14, dicKV2);
 
             var dicV = new Dictionary<Dictionary<string, string>, List<double>>();
-            dicV.Add(dicVK1, new double[] { 0.98767, 232, 13.124}.ToList());
-            dicV.Add(dicVK2, new double[] { 9.8767, 23.2, 1.34 }.ToList());
+            dicV.Add(dicVK1, new[] {0.98767, 232, 13.124}.ToList());
+            dicV.Add(dicVK2, new[] {9.8767, 23.2, 1.34}.ToList());
 
-            var mainDic = new Dictionary<Dictionary<double, Dictionary<int, int>>, Dictionary<Dictionary<string, string>, List<double>>>();
+            var mainDic =
+                new Dictionary<Dictionary<double, Dictionary<int, int>>,
+                    Dictionary<Dictionary<string, string>, List<double>>>();
             mainDic.Add(dicK, dicV);
 
-            return new NestedDicSample()
+            return new NestedDicSample
             {
                 SomeDic = mainDic
             };

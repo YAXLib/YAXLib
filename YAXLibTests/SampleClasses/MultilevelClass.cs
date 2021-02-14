@@ -1,13 +1,12 @@
-﻿using System;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
     [ShowInDemoApplication]
-
     [YAXComment(@"This example shows a multi-level class, which helps to test 
       the null references identity problem. 
       Thanks go to Anton Levshunov for proposing this example,
@@ -23,7 +22,7 @@ namespace YAXLibTests.SampleClasses
 
         public static MultilevelClass GetSampleInstance()
         {
-            MultilevelClass obj = new MultilevelClass();
+            var obj = new MultilevelClass();
             obj.items = new List<FirstLevelClass>();
             obj.items.Add(new FirstLevelClass());
             obj.items.Add(new FirstLevelClass());
@@ -40,13 +39,13 @@ namespace YAXLibTests.SampleClasses
 
     public class FirstLevelClass
     {
-        public String ID { get; set; }
+        public string ID { get; set; }
 
         public SecondLevelClass Second { get; set; }
     }
 
     public class SecondLevelClass
     {
-        public String SecondID { get; set; }
+        public string SecondID { get; set; }
     }
 }

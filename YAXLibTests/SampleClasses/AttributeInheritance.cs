@@ -1,21 +1,24 @@
-﻿using YAXLib;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
+using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
     public class AttributeInheritanceWithPropertyOverride : AttributeInheritance
     {
-        public override string Gender { get { return "Female"; } }  // should inherit the base's YAXSerializeAs attribute
+        public override string Gender => "Female"; // should inherit the base's YAXSerializeAs attribute
 
-        [YAXSerializeAs("CurrentAge")]   // should override the base's YAXSerializeAs attribute
+        [YAXSerializeAs("CurrentAge")] // should override the base's YAXSerializeAs attribute
         public override double Age
         {
             get { return base.Age; }
             set { base.Age = value; }
         }
 
-        public static new AttributeInheritanceWithPropertyOverride GetSampleInstance()
+        public new static AttributeInheritanceWithPropertyOverride GetSampleInstance()
         {
-            return new AttributeInheritanceWithPropertyOverride()
+            return new AttributeInheritanceWithPropertyOverride
             {
                 Name = "Sally",
                 Age = 38.7
@@ -26,12 +29,11 @@ namespace YAXLibTests.SampleClasses
     [YAXSerializeAs("Child")]
     public class AttributeInheritance : AttributeInheritanceBase
     {
-        [YAXSerializeAs("TheAge")]
-        public virtual double Age { get; set; }
+        [YAXSerializeAs("TheAge")] public virtual double Age { get; set; }
 
         public static AttributeInheritance GetSampleInstance()
         {
-            return new AttributeInheritance()
+            return new AttributeInheritance
             {
                 Name = "John",
                 Age = 30.2
@@ -47,10 +49,8 @@ namespace YAXLibTests.SampleClasses
     [YAXSerializeAs("Base")]
     public class AttributeInheritanceBase
     {
-        [YAXSerializeAs("TheName")]
-        public string Name { get; set; }
+        [YAXSerializeAs("TheName")] public string Name { get; set; }
 
-        [YAXSerializeAs("TheGender")]
-        public virtual string Gender { get { return "Unknown";  } }
+        [YAXSerializeAs("TheGender")] public virtual string Gender => "Unknown";
     }
 }

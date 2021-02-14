@@ -1,12 +1,12 @@
-﻿using System;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
-    [YAXSerializableType(Options= YAXSerializationOptions.DontSerializeNullObjects)]
+    [YAXSerializableType(Options = YAXSerializationOptions.DontSerializeNullObjects)]
     public class SomeCollectionItem
     {
         public string Value { get; set; }
@@ -17,13 +17,11 @@ namespace YAXLibTests.SampleClasses
     [ShowInDemoApplication]
     public class BookClassTesgingSerializeAsValue
     {
-        [YAXValueFor(".")]
-        public double Price { get; set; }
+        [YAXValueFor(".")] public double Price { get; set; }
 
         public int PublishYear { get; set; }
 
-        [YAXValueFor(".")]
-        public string Comments { get; set; }
+        [YAXValueFor(".")] public string Comments { get; set; }
 
         public string Author { get; set; }
 
@@ -37,13 +35,13 @@ namespace YAXLibTests.SampleClasses
 
         public static BookClassTesgingSerializeAsValue GetSampleInstance()
         {
-            List<SomeCollectionItem> theCollection = new List<SomeCollectionItem>();
+            var theCollection = new List<SomeCollectionItem>();
 
-            theCollection.Add(new SomeCollectionItem() { Value = "value1", SomeElement = "elem1" });
-            theCollection.Add(new SomeCollectionItem() { Value = "value2", SomeElement = "elem2" });
-            theCollection.Add(new SomeCollectionItem() { Value = "value3", SomeElement = "elem3" });
+            theCollection.Add(new SomeCollectionItem {Value = "value1", SomeElement = "elem1"});
+            theCollection.Add(new SomeCollectionItem {Value = "value2", SomeElement = "elem2"});
+            theCollection.Add(new SomeCollectionItem {Value = "value3", SomeElement = "elem3"});
 
-            return new BookClassTesgingSerializeAsValue()
+            return new BookClassTesgingSerializeAsValue
             {
                 Author = "Tom Archer & Andrew Whitechapel",
                 PublishYear = 2002,

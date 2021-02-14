@@ -1,6 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
 
+using System.Collections.Generic;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
@@ -8,8 +9,7 @@ namespace YAXLibTests.SampleClasses
     [YAXSerializeAs("container")]
     public class AttributeContainerSample
     {
-        [YAXSerializeAs("range")]
-        public AttributeSample Range { get; set; } 
+        [YAXSerializeAs("range")] public AttributeSample Range { get; set; }
 
         public static AttributeContainerSample GetSampleInstance()
         {
@@ -18,7 +18,7 @@ namespace YAXLibTests.SampleClasses
                 Range = new AttributeSample
                 {
                     From = 1,
-                    To = 3,
+                    To = 3
                 }
             };
 
@@ -56,10 +56,7 @@ namespace YAXLibTests.SampleClasses
 
         [YAXSerializeAs("page")]
         [YAXAttributeForClass]
-        public int Page
-        {
-            get { return 1; }
-        }
+        public int Page => 1;
     }
 
     [YAXSerializeAs("subclass")]
@@ -69,7 +66,7 @@ namespace YAXLibTests.SampleClasses
         {
             var instance = new AttributeSubclassSample
             {
-                Url = "http://example.com/subclass/1",
+                Url = "http://example.com/subclass/1"
             };
 
             //instance.Add(new AttributeSample { From = 1, To = 2 });

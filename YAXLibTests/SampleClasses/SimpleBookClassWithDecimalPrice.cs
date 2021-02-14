@@ -1,5 +1,5 @@
-﻿// This class is created to test serialization of decimal fields.
-// The patch is contributed by 
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
 
 using YAXLib;
 
@@ -20,7 +20,7 @@ namespace YAXLibTests.SampleClasses
 
         public static SimpleBookClassWithDecimalPrice GetSampleInstance()
         {
-            return new SimpleBookClassWithDecimalPrice()
+            return new SimpleBookClassWithDecimalPrice
             {
                 Title = "Inside C#",
                 Author = "Tom Archer & Andrew Whitechapel",

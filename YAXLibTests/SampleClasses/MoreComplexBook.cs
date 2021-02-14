@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
     [ShowInDemoApplication]
-
     [YAXComment(@"This example shows how to provide serialization address
         for elements and attributes. Theses addresses resemble those used
         in known file-systems")]
@@ -29,7 +27,7 @@ namespace YAXLibTests.SampleClasses
 
         public static MoreComplexBook GetSampleInstance()
         {
-            return new MoreComplexBook()
+            return new MoreComplexBook
             {
                 Title = "Inside C#",
                 Author = "Tom Archer & Andrew Whitechapel",

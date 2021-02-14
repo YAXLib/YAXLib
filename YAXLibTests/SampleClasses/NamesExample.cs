@@ -1,21 +1,22 @@
-﻿using YAXLib;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
 
 namespace YAXLibTests.SampleClasses
 {
     public class NamesExample
     {
-        public string FirstName{get;set;}
+        public string FirstName { get; set; }
 
         public PersonInfo[] Persons { get; set; }
 
         public static NamesExample GetSampleInstance()
         {
-            PersonInfo info1 = new PersonInfo() { FirstName = "Li" };
-            PersonInfo info2 = new PersonInfo() { FirstName = "Hu", LastName = "Hu" };
-            NamesExample w = new NamesExample()
+            var info1 = new PersonInfo {FirstName = "Li"};
+            var info2 = new PersonInfo {FirstName = "Hu", LastName = "Hu"};
+            var w = new NamesExample
             {
                 FirstName = "Li",
-                Persons = new PersonInfo[] { info1, info2 }
+                Persons = new[] {info1, info2}
             };
 
             return w;
@@ -29,8 +30,7 @@ namespace YAXLibTests.SampleClasses
 
     public class PersonInfo
     {
-        public string FirstName{get;set;}
-        public string LastName{get;set;}
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
     }
-
 }

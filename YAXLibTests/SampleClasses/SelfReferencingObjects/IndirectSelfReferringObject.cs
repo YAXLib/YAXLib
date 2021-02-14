@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
+using System.Text;
 
 namespace YAXLibTests.SampleClasses.SelfReferencingObjects
 {
@@ -19,13 +22,13 @@ namespace YAXLibTests.SampleClasses.SelfReferencingObjects
         {
             var parent = new IndirectSelfReferringObject
             {
-                ParentDescription = "I'm Parent",
+                ParentDescription = "I'm Parent"
             };
-            
-            
+
+
             var child = new ChildReferrenceType
             {
-                ChildDescription = "I'm Child",
+                ChildDescription = "I'm Child"
             };
 
             parent.Child = child;

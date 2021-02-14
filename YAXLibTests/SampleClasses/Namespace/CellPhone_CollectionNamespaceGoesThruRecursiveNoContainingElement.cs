@@ -1,8 +1,7 @@
-﻿using System;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses.Namespace
@@ -28,7 +27,7 @@ namespace YAXLibTests.SampleClasses.Namespace
             {
                 DeviceBrand = "Samsung Galaxy Nexus",
                 OS = "Android",
-                IntalledApps = new List<string> { "Google Map", "Google+", "Google Play" }
+                IntalledApps = new List<string> {"Google Map", "Google+", "Google Play"}
             };
         }
     }

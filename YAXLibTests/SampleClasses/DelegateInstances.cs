@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
+using System;
 
 namespace YAXLibTests.SampleClasses
 {
@@ -18,6 +21,7 @@ namespace YAXLibTests.SampleClasses
         public Action SomeAction { get; set; }
 
         public int SomeNumber { get; set; }
+
         private string AwesomeMethod(int n, double d)
         {
             return "Hi";
@@ -26,12 +30,12 @@ namespace YAXLibTests.SampleClasses
         public static DelegateInstances GetSampleInstance()
         {
             return new DelegateInstances
-                   {
-                        Delegate2 = (n, d) => String.Format("Hey n:{0}, d:{1}", n, d),
-                        SomeFunc = () => "Some",
-                        SomeAction = () => Console.WriteLine("I'm doing something"),
-                        SomeNumber = 12
-                   };
+            {
+                Delegate2 = (n, d) => string.Format("Hey n:{0}, d:{1}", n, d),
+                SomeFunc = () => "Some",
+                SomeAction = () => Console.WriteLine("I'm doing something"),
+                SomeNumber = 12
+            };
         }
 
         public override string ToString()

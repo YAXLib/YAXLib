@@ -1,8 +1,11 @@
-﻿using YAXLib;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
+using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
-    class ClassWithDuplicateYaxValue
+    internal class ClassWithDuplicateYaxValue
     {
         [YAXSerializableField]
         [YAXValueForClass]
@@ -14,7 +17,7 @@ namespace YAXLibTests.SampleClasses
 
         public static ClassWithDuplicateYaxValue GetSampleInstance()
         {
-            return new ClassWithDuplicateYaxValue()
+            return new ClassWithDuplicateYaxValue
             {
                 Value1 = "lorum ipsum",
                 Value2 = "lorum oopsum"
@@ -22,7 +25,7 @@ namespace YAXLibTests.SampleClasses
         }
     }
 
-    class ClassWithInvalidFormat
+    internal class ClassWithInvalidFormat
     {
         [YAXSerializableField]
         [YAXFormat("fancyFormat")]
@@ -30,9 +33,9 @@ namespace YAXLibTests.SampleClasses
 
         public static ClassWithInvalidFormat GetSampleInstance()
         {
-            return new ClassWithInvalidFormat()
+            return new ClassWithInvalidFormat
             {
-                Value1 = 500,
+                Value1 = 500
             };
         }
     }

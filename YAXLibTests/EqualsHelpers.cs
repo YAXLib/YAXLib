@@ -1,81 +1,52 @@
-﻿using System;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace YAXLibTests
 {
     /// <summary>
-    /// Helpers for .Equals
+    ///     Helpers for .Equals
     /// </summary>
     internal class EqualsHelpers
     {
         /// <summary>
-        /// Equals ICollection, should be in same order
+        ///     Equals ICollection, should be in same order
         /// </summary>
         /// <param name="me"></param>
         /// <param name="other"></param>
         /// <returns></returns>
         public static bool CollectionEquals(ICollection me, ICollection other)
         {
-            if (me == null)
-            {
-                return other == null;
-            }
-            if (other == null)
-            {
-                return false;
-            }
-            if (me.Count != other.Count)
-            {
-                return false;
-            }
+            if (me == null) return other == null;
+            if (other == null) return false;
+            if (me.Count != other.Count) return false;
 
             return me.Cast<object>().SequenceEqual(other.Cast<object>());
         }
 
         /// <summary>
-        /// Equals IDictionary, order doesn't matter
+        ///     Equals IDictionary, order doesn't matter
         /// </summary>
         public static bool DictionaryEquals(IDictionary me, IDictionary other)
         {
-            if (me == null)
-            {
-                return other == null;
-            }
-            if (other == null)
-            {
-                return false;
-            }
+            if (me == null) return other == null;
+            if (other == null) return false;
 
-            if (me.Count != other.Count)
-            {
-                return false;
-            }
-            
+            if (me.Count != other.Count) return false;
+
             foreach (var k in me.Keys)
             {
-                if (!other.Contains(k))
-                {
-                    return false;
-                }
+                if (!other.Contains(k)) return false;
                 var val1 = me[k];
                 var val2 = other[k];
-                if (!Equals(val1, val2))
-                {
-                    return false;
-                }
+                if (!Equals(val1, val2)) return false;
             }
 
             foreach (var k in other.Keys)
-            {
                 if (!me.Contains(k))
-                {
                     return false;
-                }
-             
-            }
             return true;
         }
     }

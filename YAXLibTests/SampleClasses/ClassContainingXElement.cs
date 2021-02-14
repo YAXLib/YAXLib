@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
 using System.Xml.Linq;
 
 namespace YAXLibTests.SampleClasses
@@ -14,15 +13,15 @@ namespace YAXLibTests.SampleClasses
 
         public override string ToString()
         {
-            return String.Format("TheElement: {0}\r\nTheAttribute: {1}\r\n",
+            return string.Format("TheElement: {0}\r\nTheAttribute: {1}\r\n",
                 TheElement, TheAttribute);
         }
 
         public static ClassContainingXElement GetSampleInstance()
         {
-            var elem = new XElement("SomeElement", 
+            var elem = new XElement("SomeElement",
                 new XElement("Child", "Content"),
-                new XElement("Multi-level", 
+                new XElement("Multi-level",
                     new XElement("GrandChild", "Content")),
                 new XAttribute("someattribute", "value"));
 

@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
@@ -9,17 +8,11 @@ namespace YAXLibTests.SampleClasses
     [YAXSerializeAs("Pricing")]
     public class Request
     {
-        public Request()
-        { }
+        [YAXAttributeForClass] public string id { get; set; }
 
-        [YAXAttributeForClass()]
-        public string id { get; set; }
+        [YAXAttributeFor("version")] public string major { get; set; }
 
-        [YAXAttributeFor("version")]
-        public string major { get; set; }
-
-        [YAXAttributeFor("version")]
-        public string minor { get; set; }
+        [YAXAttributeFor("version")] public string minor { get; set; }
 
         [YAXSerializeAs("value_date")]
         [YAXElementFor("input")]
@@ -45,7 +38,7 @@ namespace YAXLibTests.SampleClasses
 
         internal static Request GetSampleInstance()
         {
-            return new Request()
+            return new Request
             {
                 id = "123",
                 major = "1",
@@ -53,7 +46,7 @@ namespace YAXLibTests.SampleClasses
                 valueDate = "2010-10-5",
                 storageDate = "2010-10-5",
                 user = "me",
-                Config = new SkyLabConfig() { Config = "someconf", Job = "test" }
+                Config = new SkyLabConfig {Config = "someconf", Job = "test"}
             };
         }
 
@@ -65,10 +58,8 @@ namespace YAXLibTests.SampleClasses
 
     public class SkyLabConfig
     {
-        [YAXSerializeAs("SomeString")]
-        public string Config { get; set; }
+        [YAXSerializeAs("SomeString")] public string Config { get; set; }
 
-        [YAXSerializeAs("job")]
-        public string Job { get; set; }
+        [YAXSerializeAs("job")] public string Job { get; set; }
     }
 }

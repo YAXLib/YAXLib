@@ -1,8 +1,7 @@
-﻿using System;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses.Namespace
@@ -15,9 +14,9 @@ namespace YAXLibTests.SampleClasses.Namespace
         public string OS { get; set; }
 
         [YAXSerializeAs("{http://namespace.org/prices}ThePrices")]
-        [YAXDictionary(EachPairName="{http://namespace.org/pricepair}PricePair",
-            KeyName="{http://namespace.org/color}TheColor", 
-            ValueName="{http://namespace.org/pricevalue}ThePrice")]
+        [YAXDictionary(EachPairName = "{http://namespace.org/pricepair}PricePair",
+            KeyName = "{http://namespace.org/color}TheColor",
+            ValueName = "{http://namespace.org/pricevalue}ThePrice")]
         public Dictionary<string, double> Prices { get; set; }
 
         public override string ToString()
@@ -27,12 +26,12 @@ namespace YAXLibTests.SampleClasses.Namespace
 
         public static CellPhone_DictionaryNamespaceForAllItems GetSampleInstance()
         {
-            var prices = new Dictionary<string, double> { { "red", 120 }, { "blue", 110 }, { "black", 140 } };
-            return new CellPhone_DictionaryNamespaceForAllItems 
-            { 
+            var prices = new Dictionary<string, double> {{"red", 120}, {"blue", 110}, {"black", 140}};
+            return new CellPhone_DictionaryNamespaceForAllItems
+            {
                 DeviceBrand = "Samsung Galaxy Nexus",
                 OS = "Android",
-                Prices = prices,
+                Prices = prices
             };
         }
     }

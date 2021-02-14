@@ -1,7 +1,7 @@
-﻿using System;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
@@ -10,7 +10,7 @@ namespace YAXLibTests.SampleClasses
     public class DictionaryKeyValueAsContent
     {
         [YAXDictionary(EachPairName = "Pair", KeyName = "Digits", ValueName = "Letters",
-            SerializeKeyAs=YAXNodeTypes.Attribute, SerializeValueAs = YAXNodeTypes.Content)]
+            SerializeKeyAs = YAXNodeTypes.Attribute, SerializeValueAs = YAXNodeTypes.Content)]
         public Dictionary<int, string> DicValueAsContent { get; set; }
 
         [YAXDictionary(EachPairName = "Pair", KeyName = "Digits", ValueName = "Letters",
@@ -27,10 +27,9 @@ namespace YAXLibTests.SampleClasses
 
         public static DictionaryKeyValueAsContent GetSampleInstance()
         {
-            var dic = new Dictionary<int, string>() 
-                { {1, "one"}, {2, "two"}, {3, "three"} };
+            var dic = new Dictionary<int, string> {{1, "one"}, {2, "two"}, {3, "three"}};
 
-            return new DictionaryKeyValueAsContent()
+            return new DictionaryKeyValueAsContent
             {
                 DicValueAsContent = dic,
                 DicKeyAsContnet = dic,

@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
     [ShowInDemoApplication]
-
     [YAXComment("This sample demonstrates serialization of non-generic collection classes")]
     public class NonGenericCollectionsSample
     {
@@ -33,45 +33,45 @@ namespace YAXLibTests.SampleClasses
 
         public static NonGenericCollectionsSample GetSampleInstance()
         {
-            List<object> lst = new List<object>();
+            var lst = new List<object>();
             lst.Add(1);
             lst.Add(3.0);
             lst.Add("Hello");
             lst.Add(new DateTime(2010, 3, 4));
-            lst.Add(new Author() { Name = "Charles", Age = 50 });
+            lst.Add(new Author {Name = "Charles", Age = 50});
 
-            ArrayList arLst = new ArrayList();
+            var arLst = new ArrayList();
             arLst.Add(2);
             arLst.Add(8.5);
             arLst.Add("Hi");
-            arLst.Add(new Author() { Name = "Steve", Age = 30 });
+            arLst.Add(new Author {Name = "Steve", Age = 30});
 
-            Hashtable table = new Hashtable();
+            var table = new Hashtable();
             table.Add(1.0, "Tim");
             table.Add("Tom", "Sam");
             table.Add(new DateTime(2009, 2, 1), 7);
 
-            BitArray bitArray = new BitArray(10);
+            var bitArray = new BitArray(10);
             bitArray[1] = true;
             bitArray[6] = true;
 
-            Queue queue = new Queue();
+            var queue = new Queue();
             queue.Enqueue(10);
             queue.Enqueue(20);
             queue.Enqueue(30);
 
-            Stack stack = new Stack();
+            var stack = new Stack();
             stack.Push(100);
             stack.Push(200);
             stack.Push(300);
 
 
-            SortedList sortedList = new SortedList();
+            var sortedList = new SortedList();
             sortedList.Add(1, 2);
             sortedList.Add(5, 7);
             sortedList.Add(8, 2);
 
-            return new NonGenericCollectionsSample()
+            return new NonGenericCollectionsSample
             {
                 ObjList = lst,
                 TheArrayList = arLst,
@@ -81,33 +81,36 @@ namespace YAXLibTests.SampleClasses
                 TheStack = stack,
                 TheSortedList = sortedList
             };
-
-
-
         }
 
         #region Equality members
 
         protected bool Equals(NonGenericCollectionsSample other)
         {
-            return EqualsHelpers.CollectionEquals(ObjList, other.ObjList) 
-                && EqualsHelpers.CollectionEquals(TheArrayList, other.TheArrayList) 
-                && EqualsHelpers.DictionaryEquals(TheHashtable, other.TheHashtable)
-                && EqualsHelpers.CollectionEquals(TheQueue, other.TheQueue)
-                && EqualsHelpers.CollectionEquals(TheStack, other.TheStack) 
-                && EqualsHelpers.DictionaryEquals(TheSortedList, other.TheSortedList)
-                && EqualsHelpers.CollectionEquals(TheBitArray, other.TheBitArray);
+            return EqualsHelpers.CollectionEquals(ObjList, other.ObjList)
+                   && EqualsHelpers.CollectionEquals(TheArrayList, other.TheArrayList)
+                   && EqualsHelpers.DictionaryEquals(TheHashtable, other.TheHashtable)
+                   && EqualsHelpers.CollectionEquals(TheQueue, other.TheQueue)
+                   && EqualsHelpers.CollectionEquals(TheStack, other.TheStack)
+                   && EqualsHelpers.DictionaryEquals(TheSortedList, other.TheSortedList)
+                   && EqualsHelpers.CollectionEquals(TheBitArray, other.TheBitArray);
         }
 
 
-        /// <summary>Determines whether the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />.</summary>
-        /// <returns>true if the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />; otherwise, false.</returns>
+        /// <summary>
+        ///     Determines whether the specified <see cref="T:System.Object" /> is equal to the current
+        ///     <see cref="T:System.Object" />.
+        /// </summary>
+        /// <returns>
+        ///     true if the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />;
+        ///     otherwise, false.
+        /// </returns>
         /// <param name="obj">The object to compare with the current object. </param>
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((NonGenericCollectionsSample) obj);
         }
 
@@ -117,7 +120,7 @@ namespace YAXLibTests.SampleClasses
         {
             unchecked
             {
-                var hashCode = (ObjList != null ? ObjList.GetHashCode() : 0);
+                var hashCode = ObjList != null ? ObjList.GetHashCode() : 0;
                 hashCode = (hashCode * 397) ^ (TheArrayList != null ? TheArrayList.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (TheHashtable != null ? TheHashtable.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (TheQueue != null ? TheQueue.GetHashCode() : 0);

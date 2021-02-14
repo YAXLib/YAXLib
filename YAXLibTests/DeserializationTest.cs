@@ -1,20 +1,10 @@
-﻿// Copyright 2009 - 2014 Sina Iravanian - <sina@sinairv.com>
-//
-// This source file(s) may be redistributed, altered and customized
-// by any means PROVIDING the authors name and all copyright
-// notices remain intact.
-// THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED. USE IT AT YOUR OWN RISK. THE AUTHOR ACCEPTS NO
-// LIABILITY FOR ANY DATA DAMAGE/LOSS THAT THIS PRODUCT MAY CAUSE.
-//-----------------------------------------------------------------------
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
-
 using NUnit.Framework;
-
 using YAXLib;
 using YAXLibTests.SampleClasses;
 using YAXLibTests.SampleClasses.PolymorphicSerialization;
@@ -28,7 +18,7 @@ namespace YAXLibTests
         [OneTimeSetUp]
         public void TestFixtureSetUp()
         {
-#if FXCORE
+#if NETSTANDARD
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 #else
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
@@ -41,7 +31,7 @@ namespace YAXLibTests
         }
 
         /// <summary>
-        /// Perform test by using .Equals. Equals should be well implemented for <paramref name="obj"/>
+        ///     Perform test by using .Equals. Equals should be well implemented for <paramref name="obj" />
         /// </summary>
         /// <param name="obj"></param>
         private void PerformTestWithEquals(object obj)
@@ -52,7 +42,8 @@ namespace YAXLibTests
             Assert.AreEqual(obj, gottonObject);
         }
 
-        private object GetTheTwoStringsAndReturn(object obj, out string originalString, out string gottonString, out int errorCounts)
+        private object GetTheTwoStringsAndReturn(object obj, out string originalString, out string gottonString,
+            out int errorCounts)
         {
             originalString = GeneralToStringProvider.GeneralToString(obj);
             object gottonObject;
@@ -64,7 +55,8 @@ namespace YAXLibTests
 
         private static YAXSerializer SerializeDeserialize(object obj, out object gottonObject)
         {
-            var serializer = new YAXSerializer(obj.GetType(), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(obj.GetType(), YAXExceptionHandlingPolicies.DoNotThrow,
+                YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             var serResult = serializer.Serialize(obj);
             gottonObject = serializer.Deserialize(serResult);
             return serializer;
@@ -148,7 +140,7 @@ namespace YAXLibTests
             object obj = ProgrammingLanguage.GetSampleInstance();
             PerformTest(obj);
         }
-#if !FXCORE
+#if !NETSTANDARD
         [Test]
         public void DesColorExampleTest()
         {
@@ -183,16 +175,15 @@ namespace YAXLibTests
         {
             object obj = NestedDicSample.GetSampleInstance();
             PerformTest(obj);
-
         }
 
         [Test]
         public void DesGUIDTestTest()
         {
-            Guid g1 = Guid.NewGuid();
-            Guid g2 = Guid.NewGuid();
-            Guid g3 = Guid.NewGuid();
-            Guid g4 = Guid.NewGuid();
+            var g1 = Guid.NewGuid();
+            var g2 = Guid.NewGuid();
+            var g3 = Guid.NewGuid();
+            var g4 = Guid.NewGuid();
 
             object obj = GUIDTest.GetSampleInstance(g1, g2, g3, g4);
             PerformTest(obj);
@@ -202,8 +193,8 @@ namespace YAXLibTests
         public void DesEmptyNullableTest()
         {
             const string xml = @"<NullableSample2 />";
-            YAXSerializer serializer = new YAXSerializer(typeof(NullableSample2), YAXExceptionHandlingPolicies.DoNotThrow);
-            NullableSample2 got = (NullableSample2)serializer.Deserialize(xml);
+            var serializer = new YAXSerializer(typeof(NullableSample2), YAXExceptionHandlingPolicies.DoNotThrow);
+            var got = (NullableSample2) serializer.Deserialize(xml);
 
             Assert.That(got, Is.Not.Null);
             Assert.That(got.Boolean, Is.Null);
@@ -357,24 +348,25 @@ namespace YAXLibTests
         [Test]
         public void MoreComplexBookTwoResumedDeserializationTest()
         {
-            string result =
-@"<MoreComplexBook2 Author_s_Name=""Tom Archer"">
+            var result =
+                @"<MoreComplexBook2 Author_s_Name=""Tom Archer"">
   <Title>Inside C#</Title>
   <PublishYear>2002</PublishYear>
   <Price>30.5</Price>
 </MoreComplexBook2>";
-            MoreComplexBook2 book = new MoreComplexBook2();
-            book.Author = new Author()
+            var book = new MoreComplexBook2();
+            book.Author = new Author
             {
                 Name = null,
                 Age = 40
             };
 
-            string initialToString = book.ToString();
+            var initialToString = book.ToString();
 
-            YAXSerializer serializer = new YAXSerializer(typeof(MoreComplexBook2), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(MoreComplexBook2), YAXExceptionHandlingPolicies.DoNotThrow,
+                YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             serializer.SetDeserializationBaseObject(book);
-            MoreComplexBook2 bookResult = (MoreComplexBook2)serializer.Deserialize(result);
+            var bookResult = (MoreComplexBook2) serializer.Deserialize(result);
             Assert.AreNotEqual(bookResult.ToString(), initialToString);
         }
 
@@ -384,8 +376,8 @@ namespace YAXLibTests
             object obj = SerializationOptionsSample.GetSampleInstance();
             PerformTest(obj);
 
-            string input1 =
-@"<SerializationOptionsSample>
+            var input1 =
+                @"<SerializationOptionsSample>
   <!-- Str2Null must NOT be serialized when it is null, even -->
   <!-- if the serialization options of the serializer is changed -->
   <ObjectWithOptionsSet>
@@ -405,7 +397,9 @@ namespace YAXLibTests
   </ObjectWithoutOptionsSet>
 </SerializationOptionsSample>";
 
-            var serializer = new YAXSerializer(typeof(SerializationOptionsSample), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.DontSerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(SerializationOptionsSample),
+                YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning,
+                YAXSerializationOptions.DontSerializeNullObjects);
             var gottonObject = serializer.Deserialize(input1) as SerializationOptionsSample;
 
             Assert.That(123, Is.EqualTo(gottonObject.ObjectWithOptionsSet.SomeValueType));
@@ -497,17 +491,18 @@ namespace YAXLibTests
         [Test]
         public void DesRectangleDynamicKnownTypeSample()
         {
-            var obj = YAXLibTests.SampleClasses.RectangleDynamicKnownTypeSample.GetSampleInstance();
+            var obj = RectangleDynamicKnownTypeSample.GetSampleInstance();
             PerformTest(obj);
         }
-#if !FXCORE
+#if !NETSTANDARD
         [Test]
         public void DesDataSetAndDataTableDynamicKnownTypes()
         {
             var obj = DataSetAndDataTableKnownTypeSample.GetSampleInstance();
 
-            var serializer = new YAXSerializer(obj.GetType(), YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
-            object gottonObject = serializer.Deserialize(serializer.Serialize(obj));
+            var serializer = new YAXSerializer(obj.GetType(), YAXExceptionHandlingPolicies.DoNotThrow,
+                YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var gottonObject = serializer.Deserialize(serializer.Serialize(obj));
             Assert.That(obj.ToString(), Is.EqualTo(gottonObject.ToString()));
         }
 #endif
@@ -518,15 +513,15 @@ namespace YAXLibTests
 
             var ser = new YAXSerializer(typeof(DictionaryContainerSample));
 
-            string input = ser.Serialize(container);
+            var input = ser.Serialize(container);
 
-            var deserializedContainer = (DictionaryContainerSample)ser.Deserialize(input);
+            var deserializedContainer = (DictionaryContainerSample) ser.Deserialize(input);
 
             Assert.IsNotNull(deserializedContainer.Items);
             Assert.IsTrue(deserializedContainer.Items.Count == container.Items.Count,
-                          "Expected Count: {0}. Actual Count: {1}",
-                          container.Items.Count,
-                          deserializedContainer.Items.Count);
+                "Expected Count: {0}. Actual Count: {1}",
+                container.Items.Count,
+                deserializedContainer.Items.Count);
         }
 
         [Test]
@@ -536,15 +531,15 @@ namespace YAXLibTests
 
             var ser = new YAXSerializer(typeof(DictionarySample));
 
-            string input = ser.Serialize(inst);
+            var input = ser.Serialize(inst);
 
-            var deserializedInstance = (DictionarySample)ser.Deserialize(input);
+            var deserializedInstance = (DictionarySample) ser.Deserialize(input);
 
             Assert.That(deserializedInstance, Is.Not.Null);
             Assert.IsTrue(deserializedInstance.Count == inst.Count,
-                          "Expected Count: {0}. Actual Count: {1}",
-                          inst.Count,
-                          deserializedInstance.Count);
+                "Expected Count: {0}. Actual Count: {1}",
+                inst.Count,
+                deserializedInstance.Count);
         }
 
         [Test]
@@ -604,9 +599,9 @@ namespace YAXLibTests
             var ser = new YAXSerializer(typeof(IndirectSelfReferringObject),
                 YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Error);
 
-            string input = ser.Serialize(inst);
+            var input = ser.Serialize(inst);
 
-            var deserializedInstance = (IndirectSelfReferringObject)ser.Deserialize(input);
+            var deserializedInstance = (IndirectSelfReferringObject) ser.Deserialize(input);
 
             Assert.That(deserializedInstance, Is.Not.Null);
             Assert.IsNull(deserializedInstance.Child.Parent);
@@ -620,9 +615,9 @@ namespace YAXLibTests
             var ser = new YAXSerializer(typeof(DirectSelfReferringObject),
                 YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Error);
 
-            string input = ser.Serialize(inst);
+            var input = ser.Serialize(inst);
 
-            var deserializedInstance = (DirectSelfReferringObject)ser.Deserialize(input);
+            var deserializedInstance = (DirectSelfReferringObject) ser.Deserialize(input);
 
             Assert.That(deserializedInstance, Is.Not.Null);
             Assert.IsNull(deserializedInstance.Next.Next);
@@ -636,19 +631,21 @@ namespace YAXLibTests
             var ser = new YAXSerializer(typeof(DirectSelfReferringObject),
                 YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Error);
 
-            string input = ser.Serialize(inst);
+            var input = ser.Serialize(inst);
 
-            var deserializedInstance = (DirectSelfReferringObject)ser.Deserialize(input);
+            var deserializedInstance = (DirectSelfReferringObject) ser.Deserialize(input);
 
             Assert.That(deserializedInstance, Is.Not.Null);
             Assert.IsNull(deserializedInstance.Next);
         }
 
         [Test]
-        public void InfiniteLoopCausedBySerializingCalculatedPropertiesCanBePreventedBySettingDontSerializePropertiesWithNoSetter()
+        public void
+            InfiniteLoopCausedBySerializingCalculatedPropertiesCanBePreventedBySettingDontSerializePropertiesWithNoSetter()
         {
-            var ser = new YAXSerializer(typeof(CalculatedPropertiesCanCauseInfiniteLoop), YAXSerializationOptions.DontSerializePropertiesWithNoSetter);
-            string result = ser.Serialize(CalculatedPropertiesCanCauseInfiniteLoop.GetSampleInstance());
+            var ser = new YAXSerializer(typeof(CalculatedPropertiesCanCauseInfiniteLoop),
+                YAXSerializationOptions.DontSerializePropertiesWithNoSetter);
+            var result = ser.Serialize(CalculatedPropertiesCanCauseInfiniteLoop.GetSampleInstance());
 
             var deserialzedInstance = ser.Deserialize(result) as CalculatedPropertiesCanCauseInfiniteLoop;
             Assert.IsNotNull(deserialzedInstance);
@@ -659,7 +656,7 @@ namespace YAXLibTests
         {
             var ser = new YAXSerializer(typeof(CalculatedPropertiesCanCauseInfiniteLoop));
             ser.MaxRecursion = 10;
-            string result = ser.Serialize(CalculatedPropertiesCanCauseInfiniteLoop.GetSampleInstance());
+            var result = ser.Serialize(CalculatedPropertiesCanCauseInfiniteLoop.GetSampleInstance());
             var deserialzedInstance = ser.Deserialize(result) as CalculatedPropertiesCanCauseInfiniteLoop;
             Assert.IsNotNull(deserialzedInstance);
             Assert.AreEqual(2.0M, deserialzedInstance.Data);
@@ -669,7 +666,7 @@ namespace YAXLibTests
         public void OrderedDeserialization()
         {
             var obj = BookClassWithOrdering.GetSampleInstance();
-            obj = (BookClassWithOrdering)PerformTestAndReturn(obj);
+            obj = (BookClassWithOrdering) PerformTestAndReturn(obj);
             var first = "";
             var second = "";
             var third = "";
@@ -699,12 +696,12 @@ namespace YAXLibTests
             var ser = new YAXSerializer(typeof(BaseContainer));
             var container = new DerivedContainer
             {
-                Items = new BaseItem[]
+                Items = new[]
                 {
-                    new BaseItem { Data = "Some Data" }
+                    new BaseItem {Data = "Some Data"}
                 }
             };
-            string result = ser.Serialize(container);
+            var result = ser.Serialize(container);
             var deserialzedInstance = ser.Deserialize(result) as BaseContainer;
 
             Assert.That(deserialzedInstance.Items[0].Data, Is.EqualTo("Some Data"));
@@ -719,16 +716,15 @@ namespace YAXLibTests
             {
                 Items = new BaseItem[]
                 {
-                    new DerivedItem { Data = "Some Data" }
+                    new DerivedItem {Data = "Some Data"}
                 }
             };
-            string result = ser.Serialize(container); // This works correct
+            var result = ser.Serialize(container); // This works correct
             var deserialzedInstance = ser.Deserialize(result) as BaseContainer;
 
             Assert.That(deserialzedInstance.Items[0], Is.InstanceOf<DerivedItem>());
             Assert.That(deserialzedInstance.Items[0].Data, Is.EqualTo("Some Data"));
             Assert.That(deserialzedInstance.Items.Length, Is.EqualTo(1));
         }
-
     }
 }
