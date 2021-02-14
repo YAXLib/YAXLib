@@ -36,9 +36,30 @@
     <PropertyGroup>
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>../Key/YAXLib.DevKey.snk</AssemblyOriginatorKeyFile>
+        <Version>2.16</Version>
+        <Description>YAXLib is a flexible XML serialization library that lets developers design freely the XML file structure, choose among private and public fields to be serialized, and serialize all known collection classes and arrays (single-dimensional, multi-dimensional, and jagged arrays)</Description>
+        <Copyright>Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageIcon>YAXLib_64x64.png</PackageIcon>
+        <PackageProjectUrl>https://github.com/sinairv/YAXLib</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/sinairv/YAXLib</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>XML serialize deserialize c#</PackageTags>
+        <PackageReleaseNotes>Now supporting netstandard2.0 netstandard2.1 net461 net462 net472 net48</PackageReleaseNotes>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" />
         <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="3.1.6" />
+    </ItemGroup>
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+            <_Parameter1>YAXLibTests, PublicKey=0024000004800000940000000602000000240000525341310004000001000100d7f87eefee568e19ff867da48567811d16853dbc045adcae7a9682012ad27a39dd24c9959db4e87965a589859f8a2cfc33c2d4997bf969dc4baa159ceefe1a85f45368d76918c764df03763848f50370e660da01bb4b2614fb67f8d0f7183c0c640b16c61d47628d8e4ba20f86dc6bab11b0528425efd05607c28ac576f92ca1</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+    <ItemGroup>
+      <None Include="..\Logo\YAXLib_64x64.png">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+      </None>
     </ItemGroup>
 </Project>

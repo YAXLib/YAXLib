@@ -35,6 +35,7 @@
     <PropertyGroup>
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>../Key/YAXLib.DevKey.snk</AssemblyOriginatorKeyFile>
+        <Version>2.16</Version>
     </PropertyGroup>
     <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1' OR '$(TargetFramework)' == 'NET5.0' ">
         <DefineConstants>NETSTANDARD</DefineConstants>
