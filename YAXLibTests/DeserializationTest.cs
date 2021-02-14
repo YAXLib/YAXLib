@@ -18,11 +18,7 @@ namespace YAXLibTests
         [OneTimeSetUp]
         public void TestFixtureSetUp()
         {
-#if NETSTANDARD
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
-#else
-            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-#endif
         }
 
         private void PerformTest(object obj)
@@ -36,8 +32,7 @@ namespace YAXLibTests
         /// <param name="obj"></param>
         private void PerformTestWithEquals(object obj)
         {
-            object gottonObject;
-            var serializer = SerializeDeserialize(obj, out gottonObject);
+            var serializer = SerializeDeserialize(obj, out var gottonObject);
             Assert.AreEqual(0, serializer.ParsingErrors.Count);
             Assert.AreEqual(obj, gottonObject);
         }
@@ -46,8 +41,7 @@ namespace YAXLibTests
             out int errorCounts)
         {
             originalString = GeneralToStringProvider.GeneralToString(obj);
-            object gottonObject;
-            var serializer = SerializeDeserialize(obj, out gottonObject);
+            var serializer = SerializeDeserialize(obj, out var gottonObject);
             errorCounts = serializer.ParsingErrors.Count;
             gottonString = GeneralToStringProvider.GeneralToString(gottonObject);
             return gottonObject;
@@ -64,9 +58,7 @@ namespace YAXLibTests
 
         private object PerformTestAndReturn(object obj)
         {
-            string originalString, gottonString;
-            int errorCounts;
-            var result = GetTheTwoStringsAndReturn(obj, out originalString, out gottonString, out errorCounts);
+            var result = GetTheTwoStringsAndReturn(obj, out var originalString, out var gottonString, out var errorCounts);
             Assert.That(originalString, Is.Not.Null);
             Assert.That(gottonString, Is.Not.Null);
             Assert.That(gottonString, Is.EqualTo(originalString));
@@ -140,14 +132,14 @@ namespace YAXLibTests
             object obj = ProgrammingLanguage.GetSampleInstance();
             PerformTest(obj);
         }
-#if !NETSTANDARD
+
         [Test]
         public void DesColorExampleTest()
         {
             object obj = ColorExample.GetSampleInstance();
             PerformTest(obj);
         }
-#endif
+
         [Test]
         public void DesMultiLevelClassTest()
         {
@@ -494,7 +486,7 @@ namespace YAXLibTests
             var obj = RectangleDynamicKnownTypeSample.GetSampleInstance();
             PerformTest(obj);
         }
-#if !NETSTANDARD
+
         [Test]
         public void DesDataSetAndDataTableDynamicKnownTypes()
         {
@@ -505,7 +497,7 @@ namespace YAXLibTests
             var gottonObject = serializer.Deserialize(serializer.Serialize(obj));
             Assert.That(obj.ToString(), Is.EqualTo(gottonObject.ToString()));
         }
-#endif
+
         [Test]
         public void AttributeForKeyInDictionaryPropertyTest()
         {

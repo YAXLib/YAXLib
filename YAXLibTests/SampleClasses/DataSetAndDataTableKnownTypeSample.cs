@@ -6,7 +6,6 @@ using System.Text;
 
 namespace YAXLibTests.SampleClasses
 {
-#if !NETSTANDARD
     public class DataSetAndDataTableKnownTypeSample
     {
         public DataTable TheDataTable { get; set; }
@@ -63,5 +62,4 @@ namespace YAXLibTests.SampleClasses
             return sb.ToString();
         }
     }
-#endif
 }

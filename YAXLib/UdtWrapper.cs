@@ -7,7 +7,7 @@ using System.Xml.Linq;
 namespace YAXLib
 {
     /// <summary>
-    ///     a wrapper class around user-defined types, for quick acess to their YAXLib related attributes
+    ///     A wrapper class around user-defined types, for quick access to their YAXLib related attributes
     /// </summary>
     internal class UdtWrapper
     {
@@ -78,7 +78,7 @@ namespace YAXLib
             IsAttributedAsNotCollection = false;
 
             SetYAXSerializerOptions(callerSerializer);
-
+            
             foreach (var attr in m_udtType.GetCustomAttributes(true))
                 if (attr is YAXBaseAttribute)
                     ProcessYAXAttribute(attr);

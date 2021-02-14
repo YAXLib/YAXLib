@@ -1,55 +1,54 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-        <ProjectGuid>{F1C4D174-C948-4D18-A125-F6855EF55683}</ProjectGuid>
-        <OutputType>Library</OutputType>
-        <AppDesignerFolder>Properties</AppDesignerFolder>
-        <RootNamespace>YAXLib</RootNamespace>
-        <AssemblyName>YAXLib</AssemblyName>
-        <TargetFrameworks>netstandard2.0;netstandard2.1;net461;net462;net472;net48</TargetFrameworks>
-        <PublishUrl>publish\</PublishUrl>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-        <DebugSymbols>true</DebugSymbols>
-        <DebugType>full</DebugType>
-        <Optimize>false</Optimize>
-        <OutputPath>..\Bin\</OutputPath>
-        <DefineConstants>TRACE;DEBUG</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <DocumentationFile>..\Bin\YAXLib.XML</DocumentationFile>
-        <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-        <LangVersion>6</LangVersion>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-        <DebugType>pdbonly</DebugType>
-        <Optimize>true</Optimize>
-        <OutputPath>..\Bin\</OutputPath>
-        <DefineConstants>TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <DocumentationFile>..\Bin\YAXLib.XML</DocumentationFile>
-        <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-        <LangVersion>6</LangVersion>
-    </PropertyGroup>
-    <PropertyGroup>
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>../Key/YAXLib.DevKey.snk</AssemblyOriginatorKeyFile>
-        <Version>2.16</Version>
-        <Description>YAXLib is a flexible XML serialization library that lets developers design freely the XML file structure, choose among private and public fields to be serialized, and serialize all known collection classes and arrays (single-dimensional, multi-dimensional, and jagged arrays)</Description>
+        <Version>2.16.0</Version><!-- semver -->
+        <Description>YAXLib is an XML Serialization library which allows the programmer to structure freely the XML result, choose the fields to serialize (public, or non-public properties, or member variables), serialize all known generic and non-generic collections, serialize different kinds of arrays (single-dimensional, multi-dimensional, and jagged arrays), serialize objects through a reference to their base-class or interface (polymorphic serialization), define custom serializers, add comments for the elements in the XML result, and many more ...</Description>
         <Copyright>Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors</Copyright>
+        <Authors>Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors</Authors>
+        <Company></Company>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageIcon>YAXLib_64x64.png</PackageIcon>
         <PackageProjectUrl>https://github.com/sinairv/YAXLib</PackageProjectUrl>
         <RepositoryUrl>https://github.com/sinairv/YAXLib</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>XML serialize deserialize c#</PackageTags>
-        <PackageReleaseNotes>Now supporting netstandard2.0 netstandard2.1 net461 net462 net472 net48</PackageReleaseNotes>
+        <PackageTags>XML Serialization Serializer Serialize Deserialize .NETFramework .NETStandard .NET</PackageTags>
+        <PackageReleaseNotes>Now supporting netstandard2.0 netstandard2.1 net461 net462 net472 net48 net5.0</PackageReleaseNotes>
+        <OutputType>Library</OutputType>
+        <RootNamespace>YAXLib</RootNamespace>
+        <AssemblyName>YAXLib</AssemblyName>
+        <TargetFrameworks>netstandard2.0;netstandard2.1;net461;net462;net472;net48;net5.0</TargetFrameworks>
+        <LangVersion>8</LangVersion>
+        <WarningLevel>4</WarningLevel>
+        <Nullable>disable</Nullable>
+        <PublishUrl>publish\</PublishUrl>
+        <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <OutputPath>bin\Debug\</OutputPath>
+        <DocumentationFile></DocumentationFile>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <OutputPath>bin\Release\</OutputPath>
+        <DocumentationFile>bin\Release\YAXLib.xml</DocumentationFile>
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+        <Deterministic>true</Deterministic>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+      <DefineConstants>TRACE</DefineConstants>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" />
         <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="3.1.6" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
     <ItemGroup>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">

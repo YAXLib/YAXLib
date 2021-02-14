@@ -18,11 +18,7 @@ namespace YAXLibTests
         [OneTimeSetUp]
         public void TestFixtureSetUp()
         {
-#if NETSTANDARD
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
-#else
-            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-#endif
         }
 
         [Test]
@@ -132,19 +128,12 @@ namespace YAXLibTests
   <Dec1>192389183919123.18232131</Dec1>
   <Date1>10/11/2010 18:20:30</Date1>
 </CultureSample>";
-#if NETSTANDARD
             CultureInfo.CurrentCulture = new CultureInfo(cultName1);
-#else
-            Thread.CurrentThread.CurrentCulture = new CultureInfo(cultName1);
-#endif
             var serializer = new YAXSerializer(typeof(CultureSample), YAXExceptionHandlingPolicies.DoNotThrow,
                 YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             var serResult = serializer.Serialize(CultureSample.GetSampleInstance());
-#if NETSTANDARD
+
             CultureInfo.CurrentCulture = new CultureInfo(cultName2);
-#else
-            Thread.CurrentThread.CurrentCulture = new CultureInfo(cultName2);
-#endif
             serializer = new YAXSerializer(typeof(CultureSample), YAXExceptionHandlingPolicies.DoNotThrow,
                 YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             var desResult = serializer.Deserialize(serResult) as CultureSample;
@@ -341,7 +330,7 @@ namespace YAXLibTests
             var got = serializer.Serialize(ProgrammingLanguage.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-#if !NETSTANDARD
+
         [Test]
         public void ColorExampleTest()
         {
@@ -355,7 +344,7 @@ namespace YAXLibTests
             var got = serializer.Serialize(ColorExample.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-#endif
+
         [Test]
         public void MultiLevelClassTest()
         {
@@ -363,7 +352,7 @@ namespace YAXLibTests
                 @"<!-- This example shows a multi-level class, which helps to test -->
 <!-- the null references identity problem. -->
 <!-- Thanks go to Anton Levshunov for proposing this example, -->
-<!-- and a disussion on this matter. -->
+<!-- and a discussion on this matter. -->
 <MultilevelClass>
   <items>
     <FirstLevelClass>
@@ -445,7 +434,7 @@ namespace YAXLibTests
         [Test]
         public void MoreComplexExampleTest()
         {
-#if NETSTANDARD
+#if NETCOREAPP3_1 || NET5_0
             const string result =
                 @"<!-- This example tries to show almost all features of YAXLib which were not shown before. -->
 <!-- FamousPoints - shows a dictionary with a non-primitive value member. -->
@@ -1699,7 +1688,7 @@ namespace YAXLibTests
             var lst = new List<int> {1, 2, 3};
             var ser = new YAXSerializer(typeof(object));
             var xmlResult = ser.Serialize(lst);
-#if NETSTANDARD
+#if NETCOREAPP3_1 || NET5_0
             const string expectedResult =
                 @"<Object yaxlib:realtype=""System.Collections.Generic.List`1[[System.Int32, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
   <Int32>1</Int32>
@@ -1728,7 +1717,7 @@ namespace YAXLibTests
             var lst = new List<object> {1, 2, 3};
             var ser = new YAXSerializer(typeof(object));
             var xmlResult = ser.Serialize(lst);
-#if NETSTANDARD
+#if NETCOREAPP3_1 || NET5_0
             const string expectedResult =
                 @"<Object xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"" yaxlib:realtype=""System.Collections.Generic.List`1[[System.Object, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"">
   <Object yaxlib:realtype=""System.Int32"">1</Object>

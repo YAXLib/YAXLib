@@ -10,9 +10,6 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
-#if !NETSTANDARD
-    //[ShowInDemoApplication]
-
     [YAXSerializeAs("root")]
     public class Code4PublicThemesCollection : List<Theme>
     {
@@ -49,8 +46,7 @@ namespace YAXLibTests.SampleClasses
                 MainContentFontSize = 9
             };
 
-            var themeCol = new Code4PublicThemesCollection();
-            themeCol.Add(theme);
+            var themeCol = new Code4PublicThemesCollection {theme};
 
             return themeCol;
         }
@@ -180,8 +176,7 @@ namespace YAXLibTests.SampleClasses
 
         public Color DeserializeFromAttribute(XAttribute attrib)
         {
-            Color color;
-            if (TryParseColor(attrib.Value, out color))
+            if (TryParseColor(attrib.Value, out var color))
                 return color;
 
             throw new YAXBadlyFormedInput(attrib.Name.ToString(), attrib.Value, attrib);
@@ -189,8 +184,7 @@ namespace YAXLibTests.SampleClasses
 
         public Color DeserializeFromElement(XElement element)
         {
-            Color color;
-            if (TryParseColor(element.Value, out color))
+            if (TryParseColor(element.Value, out var color))
                 return color;
 
             throw new YAXBadlyFormedInput(element.Name.ToString(), element.Value, element);
@@ -198,8 +192,7 @@ namespace YAXLibTests.SampleClasses
 
         public Color DeserializeFromValue(string value)
         {
-            Color color;
-            if (TryParseColor(value, out color))
+            if (TryParseColor(value, out var color))
                 return color;
 
             throw new YAXBadlyFormedInput("[SomeValue]", value, null);
@@ -245,5 +238,4 @@ namespace YAXLibTests.SampleClasses
             return false;
         }
     }
-#endif
 }

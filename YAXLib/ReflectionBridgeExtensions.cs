@@ -8,10 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-#if NETSTANDARD
-
-#endif
-
 namespace YAXLib
 {
 #if NETSTANDARD
@@ -25,29 +21,6 @@ namespace YAXLib
             CurrentDomain = new AppDomain();
         }
 
-        /*
-        MIT License
-
-        Copyright (C) 2017 by axuno gGmbH (https://github.com/axuno and http://www.axuno.net)
-
-        Permission is hereby granted, free of charge, to any person obtaining a copy
-        of this software and associated documentation files (the "Software"), to deal
-        in the Software without restriction, including without limitation the rights
-        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-        copies of the Software, and to permit persons to whom the Software is
-        furnished to do so, subject to the following conditions:
-
-        The above copyright notice and this permission notice shall be included in all
-        copies or substantial portions of the Software.
-
-        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-        SOFTWARE.
-        */
         internal static AppDomain CurrentDomain { get; }
 
         /// <summary>
@@ -74,38 +47,14 @@ namespace YAXLib
 
     /// <summary>
     ///     Provides extensions as a bridge for the differences
-    ///     between .Net Framework "Type" and .Net Core "TypeInfo".
+    ///     between .Net Framework &quot;Type&quot; and .Net Standard &quot;TypeInfo&quot;.
     /// </summary>
+    /// <remarks>
+    ///     Copyright (c) 2016 to 2099 Stef Heyenrath - MIT License
+    ///     Sourcecode: https://github.com/StefH/ReflectionBridge
+    /// </remarks>
     internal static class ReflectionBridgeExtensions
     {
-        /*
-        MIT License
-
-        Copyright (c) 2016 to 2099 Stef Heyenrath
-        Sourcecode: https://github.com/StefH/ReflectionBridge
-
-        Permission is hereby granted, free of charge, to any person obtaining a copy
-        of this software and associated documentation files (the "Software"), to deal
-        in the Software without restriction, including without limitation the rights
-        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-        copies of the Software, and to permit persons to whom the Software is
-        furnished to do so, subject to the following conditions:
-
-        The above copyright notice and this permission notice shall be included in all
-        copies or substantial portions of the Software.
-
-        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-        SOFTWARE.
-        */
-
-        /*
-        Modified by axuno gGmbH (https://github.com/axuno and http://www.axuno.net) for YAXLib
-        */
         public static Assembly GetAssembly(this Type type)
         {
 #if NETSTANDARD
@@ -203,13 +152,13 @@ namespace YAXLib
             if (argTypes.All(t => t != null))
             {
                 var method = type.GetTypeInfo().GetMethod(methodName, argTypes);
-                return method.Invoke(target, arg);
+                return method?.Invoke(target, arg);
             }
 
             // one of the arguments is null
             var potentialMethods = type.GetTypeInfo().GetMethods().Where(m => m.Name == methodName).ToArray();
             var ex = new Exception(nameof(InvokeMethod));
-            //TODO: FXCORE Trial and error for method invocation is not the most elegant way...
+            // Todo: Trial and error for method invocation is not the most elegant way...
             foreach (var method in potentialMethods)
                 try
                 {
