@@ -1,5 +1,6 @@
 clone_folder: c:\xaxlib
 version: 2.16.{build}
+image: Visual Studio 2019
 
 build_script:
 - ps: dotnet restore --verbosity quiet
@@ -8,7 +9,7 @@ build_script:
 test_script:
   - dotnet test YAXLibTests
   - nuget.exe install OpenCover -ExcludeVersion
-  - OpenCover\tools\OpenCover.Console.exe -register:user -target:"nunit3-console.exe" -targetargs:"\"c:\xaxlib\YAXLibTests\bin\Release\YAXLibTests.dll\" --result=myresults.xml;format=AppVeyor"  -returntargetcode -filter:"+[YAXLib]*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:coverage.xml
+  - OpenCover\tools\OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:"test -f net5.0  -c debug YAXLibTests" -filter:"+[YAXLib]*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:coverage.xml
   - "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%"
   - pip install codecov
   - codecov -f "coverage.xml"
