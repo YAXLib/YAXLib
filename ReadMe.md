@@ -29,7 +29,8 @@ See the accompanied demo application for an example of each functionality.
 
 ## Documentation
 
-The best documentation for *YAXLib* is its various samples and unit-tests. However this (rather old) [CodeProject article](http://www.codeproject.com/Articles/34045/Yet-Another-XML-Serialization-Library-for-the-NET) is a good source to start. The article is also found in the `Doc` folder of the source code.
+In the first place please have a look at the [YAXLib Wiki](https://github.com/YAXLib/YAXLib/wiki). It is a good source to start.
+The next best documentation for *YAXLib* is its various samples and unit-tests in this repo.
 
 To play with sample classes, open one of the solution files in Visual Studio, go to `YAXLibTests` project, `SampleClasses` folder. If you want a sample class to appear in the demo application simply put a `[ShowInDemoApplication]` attribute on top of the class definition. In the demo application you can see the serialization result, modify it, and test its deserialization.
 
