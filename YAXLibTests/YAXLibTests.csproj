@@ -1,59 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-        <ProjectGuid>{4F012F71-C259-481B-A112-EC24D3AF24AC}</ProjectGuid>
-        <OutputType>Library</OutputType>
-        <AppDesignerFolder>Properties</AppDesignerFolder>
-        <RootNamespace>YAXLibTests</RootNamespace>
-        <AssemblyName>YAXLibTests</AssemblyName>
         <TargetFrameworks>net461;net462;net472;net48;netcoreapp3.1;net5.0</TargetFrameworks>
-        <FileAlignment>512</FileAlignment>
-        <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-        <RestorePackages>true</RestorePackages>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-        <DebugSymbols>true</DebugSymbols>
-        <DebugType>full</DebugType>
-        <Optimize>false</Optimize>
-        <OutputPath>bin\Debug\</OutputPath>
-        <DefineConstants>DEBUG;TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <LangVersion>6</LangVersion>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-        <DebugType>full</DebugType>
-        <Optimize>true</Optimize>
-        <OutputPath>bin\Release\</OutputPath>
-        <DefineConstants>TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <DebugSymbols>true</DebugSymbols>
-        <LangVersion>6</LangVersion>
-    </PropertyGroup>
-    <PropertyGroup>
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>../Key/YAXLib.DevKey.snk</AssemblyOriginatorKeyFile>
-        <Version>2.16</Version>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1' OR '$(TargetFramework)' == 'NET5.0' ">
-        <DefineConstants>NETSTANDARD</DefineConstants>
+        <Version>2.16.0</Version><!-- semver -->
+        <Authors></Authors>
+        <Company></Company>
+        <Product>YAXLib</Product>
+        <Copyright>Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors</Copyright>
+        <PackageProjectUrl>https://github.com/sinairv/YAXLib</PackageProjectUrl>
+        <RepositoryType>Git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <LangVersion>8.0</LangVersion>
+        <Nullable>disable</Nullable>
+        <DelaySign>false</DelaySign>
+        <PackageId>YAXLibTests</PackageId>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\YAXLib\YAXLib.csproj">
-            <Project>{f1c4d174-c948-4d18-a125-f6855ef55683}</Project>
-            <Name>YAXLib</Name>
-        </ProjectReference>
+        <ProjectReference Include="..\YAXLib\YAXLib.csproj" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
         <PackageReference Include="NUnit" Version="3.13.1" />
         <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
-        <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
-    </ItemGroup>
-    <ItemGroup>
-        <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
     </ItemGroup>
 </Project>

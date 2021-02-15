@@ -29,9 +29,8 @@ namespace YAXLib
             Add(new TimeSpanKnownType());
             Add(new XElementKnownType());
             Add(new XAttributeKnownType());
-#if !NETSTANDARD1_6
             Add(new DbNullKnownType());
-#endif
+
             Add(new TypeKnownType());
             AddDynamicKnownType(new RectangleDynamicKnownType());
             AddDynamicKnownType(new ColorDynamicKnownType());
@@ -429,8 +428,7 @@ namespace YAXLib
     #endregion
 
     #region DBNull
-
-#if !NETSTANDARD1_6
+    
     internal class DbNullKnownType : KnownType<DBNull>
     {
         public override void Serialize(DBNull obj, XElement elem, XNamespace overridingNamespace)
@@ -446,7 +444,6 @@ namespace YAXLib
             return DBNull.Value;
         }
     }
-#endif
 
     #endregion
 

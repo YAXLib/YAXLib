@@ -10,7 +10,7 @@ namespace YAXLibTests.SampleClasses
     [YAXComment(@"This example shows a multi-level class, which helps to test 
       the null references identity problem. 
       Thanks go to Anton Levshunov for proposing this example,
-      and a disussion on this matter.")]
+      and a discussion on this matter.")]
     public class MultilevelClass
     {
         public List<FirstLevelClass> items { get; set; }

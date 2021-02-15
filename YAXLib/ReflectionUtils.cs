@@ -629,7 +629,7 @@ namespace YAXLib
             }
             else if (dstType == typeof(decimal))
             {
-                // to fix the asymetry of used locales for this type between serialization and deseralization
+                // to fix the asymmetry of used locales for this type between serialization and deserialization
                 convertedObj = Convert.ChangeType(value, dstType, CultureInfo.InvariantCulture);
             }
             else if (dstType == typeof(bool))
@@ -647,7 +647,7 @@ namespace YAXLib
                 {
                     var boolIntValue = 0;
                     if (int.TryParse(strValue, out boolIntValue))
-                        convertedObj = boolIntValue == 0 ? false : true;
+                        convertedObj = boolIntValue != 0;
                     else
                         throw new Exception("The specified value is not recognized as boolean: " + strValue);
                 }
@@ -677,7 +677,7 @@ namespace YAXLib
         ///     Searches all loaded assemblies to find a type with a special name.
         /// </summary>
         /// <param name="name">The name of the type to find.</param>
-        /// <returns>type found using the specified name</returns>
+        /// <returns><see cref="Type"/> found using the specified name</returns>
         public static Type GetTypeByName(string name)
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
@@ -718,15 +718,21 @@ namespace YAXLib
             return false;
         }
 
+        /// <summary>
+        ///     Test whether the <see cref="MemberInfo"/> parameter is part of a .NET module.
+        /// </summary>
+        /// <remarks>
+        ///     Might require modifications when supporting future versions of .NET.
+        /// </remarks>
+        /// <param name="memberInfo"></param>
+        /// <returns>Returns <see langword="true"/>, if the <see cref="MemberInfo"/> parameter is part of a .NET module, else <see langword="false"/>.</returns>
         public static bool IsPartOfNetFx(MemberInfo memberInfo)
         {
             var moduleName = memberInfo.Module.Name;
-            //memberInfo.Module.Assembly.
-#if NETSTANDARD
-            //TODO: FXCORE: This simplification may not come close enough to the .Net Framework version!
+#if NETSTANDARD || NET5_0
             return moduleName.StartsWith("System.", StringComparison.OrdinalIgnoreCase) ||
                    moduleName.StartsWith("mscorlib.", StringComparison.OrdinalIgnoreCase) ||
-                   moduleName.StartsWith("Microsoft", StringComparison.OrdinalIgnoreCase);
+                   moduleName.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase);
 #else
             return moduleName.Equals("mscorlib.dll", StringComparison.OrdinalIgnoreCase)
                    || moduleName.Equals("System.dll", StringComparison.OrdinalIgnoreCase)
@@ -742,7 +748,7 @@ namespace YAXLib
         public static T InvokeGetProperty<T>(object srcObj, string propertyName)
         {
             return (T) srcObj.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance)
-                .GetValue(srcObj, null);
+                ?.GetValue(srcObj, null);
             //return (T)srcObj.GetType().InvokeMember(propertyName, BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance, null, srcObj, null);
         }
 
@@ -756,7 +762,7 @@ namespace YAXLib
         {
             var argTypes = args.Select(x => x.GetType()).ToArray();
             var method = type.GetMethod(methodName, argTypes);
-            var result = method.Invoke(null, args);
+            var result = method?.Invoke(null, args);
             return result;
         }
 
@@ -764,7 +770,7 @@ namespace YAXLib
         {
             var argTypes = args.Select(x => x.GetType()).ToArray();
             var method = srcObj.GetType().GetMethod(methodName, argTypes);
-            var result = method.Invoke(srcObj, args);
+            var result = method?.Invoke(srcObj, args);
             return result;
         }
     }

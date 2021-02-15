@@ -22,7 +22,7 @@ namespace YAXLibTests
 
             Assert.That(typeWrapper.IsKnownType, Is.True);
         }
-#if !NETSTANDARD
+
         [Test]
         public void TestSingleKnownTypeSerialization()
         {
@@ -47,7 +47,7 @@ namespace YAXLibTests
 
             Assert.That(colStr2, Is.EqualTo(expectedCol2));
         }
-#endif
+
         [Test]
         public void TestSerializingNDeserializingNullKnownTypes()
         {
@@ -61,12 +61,12 @@ namespace YAXLibTests
             try
             {
                 var xml = ser.Serialize(inst);
-                var deseredInstance = ser.Deserialize(xml);
-                Assert.That(deseredInstance.ToString(), Is.EqualTo(inst.ToString()));
+                var deserializedInstance = ser.Deserialize(xml);
+                Assert.That(deserializedInstance.ToString(), Is.EqualTo(inst.ToString()));
             }
             catch (Exception ex)
             {
-                Assert.Fail("No exception should have been throwned, but received:\r\n" + ex);
+                Assert.Fail("No exception should have been thrown, but received:\r\n" + ex);
             }
         }
 
@@ -88,7 +88,7 @@ namespace YAXLibTests
             var got = serializer.Serialize(RectangleDynamicKnownTypeSample.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-#if !NETSTANDARD
+
         [Test]
         public void DataSetAndDataTableSerializationTest()
         {
@@ -138,8 +138,8 @@ namespace YAXLibTests
             var got = serializer.Serialize(DataSetAndDataTableKnownTypeSample.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-#endif
-#if !NETSTANDARD
+
+
         [Test]
         public void TestExtensionMethod()
         {
@@ -179,6 +179,5 @@ namespace YAXLibTests
             var desCl3 = (Color) colorKnownType.Deserialize(elemRgbAndValueForRed, "");
             Assert.That(desCl3.ToArgb(), Is.EqualTo(Color.Red.ToArgb()));
         }
-#endif
     }
 }

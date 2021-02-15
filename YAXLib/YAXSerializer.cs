@@ -2754,8 +2754,7 @@ namespace YAXLib
                             continue;
                     }
 
-                    if (typeWrapper.IsCollectionType || typeWrapper.IsDictionaryType
-                    ) //&& typeWrapper.IsAttributedAsNotCollection)
+                    if (typeWrapper.IsCollectionType || typeWrapper.IsDictionaryType) //&& typeWrapper.IsAttributedAsNotCollection)
                         if (ReflectionUtils.IsPartOfNetFx(member))
                             continue;
 
