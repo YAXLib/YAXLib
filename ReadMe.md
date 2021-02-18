@@ -1,7 +1,7 @@
 ![YAXLib Logo](Logo/YAXLib_256x256.png)
 # YAXLib: Yet Another XML Serialization Library for the .NET Framework and .NET Core
 
-[![Build status](https://ci.appveyor.com/api/projects/status/ggown5b8ha8wnpf1/branch/master?svg=true)](https://ci.appveyor.com/project/SinaIravanian/yaxlib/branch/master) [![codecov.io](https://codecov.io/github/sinairv/YAXLib/coverage.svg?branch=master)](https://codecov.io/github/sinairv/YAXLib?branch=master) [![NuGet](https://img.shields.io/nuget/v/YAXLib.svg)](https://www.nuget.org/packages/YAXLib/)
+[![Build status](https://ci.appveyor.com/api/projects/status/ggown5b8ha8wnpf1/branch/master?svg=true)](https://ci.appveyor.com/project/SinaIravanian/yaxlib/branch/master) [![codecov](https://codecov.io/gh/YAXLib/YAXLib/branch/master/graph/badge.svg?token=9VHIEiyUt8)](https://codecov.io/gh/YAXLib/YAXLib) [![NuGet](https://img.shields.io/nuget/v/YAXLib.svg)](https://www.nuget.org/packages/YAXLib/)
 
 *YAXLib* is a flexible XML serialization library that lets developers design freely the XML file structure, choose among private and public fields to be serialized, and serialize all known collection classes and arrays (single-dimensional, multi-dimensional, and jagged arrays) in the .NET Framework. 
 
