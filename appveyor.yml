@@ -9,7 +9,7 @@ build_script:
 test_script:
   - dotnet test YAXLibTests
   - nuget.exe install OpenCover -ExcludeVersion
-  - OpenCover\tools\OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:"test -f net5.0  -c debug YAXLibTests" -filter:"+[YAXLib]*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:coverage.xml
+  - OpenCover\tools\OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:"test -f net5.0  -c debug YAXLibTests" -filter:"+[YAXLib]*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:coverage.xml -oldstyle
   - "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%"
   - pip install codecov
   - codecov -f "coverage.xml"
