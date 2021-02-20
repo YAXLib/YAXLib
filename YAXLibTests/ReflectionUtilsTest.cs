@@ -103,19 +103,24 @@ namespace YAXLibTests
             Assert.That(typeof(int[]).EqualsOrIsNullableOf(typeof(Array)), Is.False);
         }
 
-        [Test]
-        public void GetTypeByNameTest()
+#if NETFRAMEWORK
+        [TestCase("mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")] // NETFRAMEWORK2.x
+        [TestCase("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")] // NETFRAMEWORK4.x
+#elif NETCOREAPP3_1
+        [TestCase("System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NETSTANDARD
+#else
+        [TestCase("System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NETSTANDARD
+        [TestCase("System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NET5.0
+#endif
+        public void GetTypeByNameTest(string coreLibName)
         {
             var type1 = ReflectionUtils.GetTypeByName(
-                "System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]");
+                $"System.Collections.Generic.List`1[[System.Int32, {coreLibName}]]");
             var type2 = ReflectionUtils.GetTypeByName("System.Collections.Generic.List`1[[System.Int32]]");
-            var type3 = ReflectionUtils.GetTypeByName(
-                "System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral]]");
+
             Assert.That(type1, Is.Not.Null);
             Assert.That(type2, Is.Not.Null);
-            Assert.That(type3, Is.Not.Null);
             Assert.That(type2, Is.EqualTo(type1));
-            Assert.That(type3, Is.EqualTo(type2));
         }
     }
 }
