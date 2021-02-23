@@ -1,7 +1,7 @@
 ![YAXLib Logo](Logo/YAXLib_256x256.png)
 # YAXLib: Yet Another XML Serialization Library for the .NET Framework and .NET Core
 
-[![Build status](https://ci.appveyor.com/api/projects/status/ggown5b8ha8wnpf1/branch/master?svg=true)](https://ci.appveyor.com/project/SinaIravanian/yaxlib/branch/master) [![codecov.io](https://codecov.io/github/sinairv/YAXLib/coverage.svg?branch=master)](https://codecov.io/github/sinairv/YAXLib?branch=master) [![NuGet](https://img.shields.io/nuget/v/YAXLib.svg)](https://www.nuget.org/packages/YAXLib/)
+[![Build status](https://ci.appveyor.com/api/projects/status/ggown5b8ha8wnpf1/branch/master?svg=true)](https://ci.appveyor.com/project/SinaIravanian/yaxlib/branch/master) [![codecov](https://codecov.io/gh/YAXLib/YAXLib/branch/master/graph/badge.svg?token=9VHIEiyUt8)](https://codecov.io/gh/YAXLib/YAXLib) [![NuGet](https://img.shields.io/nuget/v/YAXLib.svg)](https://www.nuget.org/packages/YAXLib/)
 
 *YAXLib* is a flexible XML serialization library that lets developers design freely the XML file structure, choose among private and public fields to be serialized, and serialize all known collection classes and arrays (single-dimensional, multi-dimensional, and jagged arrays) in the .NET Framework. 
 
@@ -29,7 +29,8 @@ See the accompanied demo application for an example of each functionality.
 
 ## Documentation
 
-The best documentation for *YAXLib* is its various samples and unit-tests. However this (rather old) [CodeProject article](http://www.codeproject.com/Articles/34045/Yet-Another-XML-Serialization-Library-for-the-NET) is a good source to start. The article is also found in the `Doc` folder of the source code.
+In the first place please have a look at the [YAXLib Wiki](https://github.com/YAXLib/YAXLib/wiki). It is a good source to start.
+The next best documentation for *YAXLib* is its various samples and unit-tests in this repo.
 
 To play with sample classes, open one of the solution files in Visual Studio, go to `YAXLibTests` project, `SampleClasses` folder. If you want a sample class to appear in the demo application simply put a `[ShowInDemoApplication]` attribute on top of the class definition. In the demo application you can see the serialization result, modify it, and test its deserialization.
 
