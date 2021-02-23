@@ -676,20 +676,24 @@ namespace YAXLib
         /// <summary>
         ///     Searches all loaded assemblies to find a type with a special name.
         /// </summary>
-        /// <param name="name">The name of the type to find.</param>
+        /// <remarks>
+        /// Types from System.Private.CoreLib (NETSTANDARD, NET5.0) the corresponding type from mscorlib (NETFRAMEWORK)
+        /// will be returned and vice versa, depending on the framework the executing assembly is compiled for.
+        /// </remarks>
+        /// <param name="name">The <see cref="Type.AssemblyQualifiedName"/> of the type to find.</param>
         /// <returns><see cref="Type"/> found using the specified name</returns>
         public static Type GetTypeByName(string name)
         {
-#if NETSTANDARD || NET5_0
-            // Backward compatibility:
-            // if we get a yaxlib:realtype which is .Net Framework 2.x/4.x mscorlib, replace it with its equivalent
-            const string pattern = @"\,\s+(mscorlib)\,\s+Version\=\d+(\.\d+)*\,\s+Culture=\b\w+\b\,\s+PublicKeyToken\=\b\w+\b";
-#else
-            // Forward compatibility:
-            // if we get a yaxlib:realtype which is NETSTANDARD or NET5.0 System.Private.CoreLib, replace it with its equivalent
-            const string pattern = @"\,\s+(System\.Private\.CoreLib)\,\s+Version\=\d+(\.\d+)*\,\s+Culture=\b\w+\b\,\s+PublicKeyToken\=\b\w+\b";
-#endif
-            var targetPlatFormName = System.Text.RegularExpressions.Regex.Replace(name, pattern, name.GetType().Assembly.FullName);
+            var pattern =
+                System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription.StartsWith(".NET Framework")
+                    // Forward compatibility:
+                    // if we get a yaxlib:realtype which is NETSTANDARD or NET5.0 System.Private.CoreLib, replace it with its equivalent
+                    ? @"\,\s+(System\.Private\.CoreLib)\,\s+Version\=\d+(\.\d+)*\,\s+Culture=\b\w+\b\,\s+PublicKeyToken\=\b\w+\b"
+                    // Backward compatibility:
+                    // if we get a yaxlib:realtype which is .Net Framework 2.x/3.x/4.x mscorlib, replace it with its equivalent
+                    : @"\,\s+(mscorlib)\,\s+Version\=\d+(\.\d+)*\,\s+Culture=\b\w+\b\,\s+PublicKeyToken\=\b\w+\b";
+            var execAppFxName  = System.Text.RegularExpressions.Regex.Replace(name, pattern, name.GetType().Assembly.FullName);
+            
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
             // first search the 1st assembly (i.e. the mscorlib), then start from the last assembly backward, 
@@ -700,7 +704,7 @@ namespace YAXLib
 
                 try
                 {
-                    var type = curAssembly.GetType(targetPlatFormName, false, true);
+                    var type = curAssembly.GetType(execAppFxName, false, true);
                     if (type != null)
                         return type;
                 }

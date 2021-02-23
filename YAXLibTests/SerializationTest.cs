@@ -435,7 +435,7 @@ namespace YAXLibTests
         [TestCase("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")] // NETFRAMEWORK4.x
         [TestCase("System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NETSTANDARD
         [TestCase("System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NET5.0
-        public void MoreComplexExample_CrossPlatform_Test(string coreLibName)
+        public void MoreComplexExample_CrossFramework_Test(string coreLibName)
         {
             var result =
                 $@"<!-- This example tries to show almost all features of YAXLib which were not shown before. -->
@@ -1649,7 +1649,7 @@ namespace YAXLibTests
         [TestCase("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")] // NETFRAMEWORK4.x
         [TestCase("System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NETSTANDARD
         [TestCase("System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NET5.0
-        public void PolymorphicSerializationThroughList_CrossPlatform_Test(string coreLibName)
+        public void PolymorphicSerializationThroughList_CrossFramework_Test(string coreLibName)
         {
             var lst = new List<int> {1, 2, 3};
             var ser = new YAXSerializer(typeof(object));
@@ -1672,7 +1672,7 @@ namespace YAXLibTests
         [TestCase("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")] // NETFRAMEWORK4.x
         [TestCase("System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NETSTANDARD
         [TestCase("System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NET5.0
-        public void PolymorphicSerializationThroughListWhichMayContainYaxlibNamespace_CrossPlatForm_Test(string coreLibName)
+        public void PolymorphicSerializationThroughListWhichMayContainYaxlibNamespace_CrossFramework_Test(string coreLibName)
         {
             var lst = new List<object> {1, 2, 3};
             var ser = new YAXSerializer(typeof(object));
