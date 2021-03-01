@@ -37,6 +37,10 @@ for:
     environment:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
     build_script:
-    - dotnet --version
-    - dotnet restore YAXLib --verbosity quiet
-    - dotnet build YAXLib -f net5.0 
+      - dotnet --version
+      - dotnet restore YAXLib --verbosity quiet
+      - dotnet build YAXLib -f net5.0 
+    test_script:
+      - dotnet restore YAXLibTests --verbosity quiet
+      - dotnet build YAXLibTests -f net5.0
+      - dotnet test YAXLibTests
