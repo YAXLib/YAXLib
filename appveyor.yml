@@ -10,8 +10,6 @@ build_script:
 - ps: dotnet restore --verbosity quiet
 - ps: msbuild YAXLib.sln /verbosity:minimal /t:rebuild /p:configuration=release
 
-
-
 for:
   -
     matrix:
@@ -29,7 +27,6 @@ for:
       - "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%"
       - pip install codecov
       - codecov -f "coverage.xml"
-
   -
     matrix:
       only:
