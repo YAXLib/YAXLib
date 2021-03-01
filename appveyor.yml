@@ -42,4 +42,4 @@ for:
     test_script:
       - dotnet restore YAXLibTests --verbosity quiet
       - dotnet build YAXLibTests -f net5.0
-      - dotnet test YAXLibTests
+      - dotnet test YAXLibTests -f net5.0
