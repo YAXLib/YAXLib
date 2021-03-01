@@ -1,6 +1,10 @@
-clone_folder: c:\xaxlib
 version: 2.16.{build}
-image: Visual Studio 2019
+image:
+  - Visual Studio 2019
+  - Ubuntu
+
+matrix:
+  fast_finish: true
 
 build_script:
 - ps: dotnet restore --verbosity quiet
