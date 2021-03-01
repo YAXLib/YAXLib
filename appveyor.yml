@@ -33,6 +33,8 @@ for:
         - image: Ubuntu
     environment:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+    init:
+      - git config --global core.autocrlf input
     build_script:
       - dotnet --version
       - dotnet restore YAXLib --verbosity quiet
