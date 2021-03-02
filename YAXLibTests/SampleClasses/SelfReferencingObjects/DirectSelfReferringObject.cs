@@ -1,7 +1,4 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-namespace YAXLibTests.SampleClasses.SelfReferencingObjects
+﻿namespace YAXLibTests.SampleClasses.SelfReferencingObjects
 {
     public class DirectSelfReferringObject
     {
@@ -20,7 +17,7 @@ namespace YAXLibTests.SampleClasses.SelfReferencingObjects
             first.Next = second;
             // this must be serialized fine, because there's no loop, although the type is a self referring type.
             // However by setting, "second.Next = first;" It should not be serialized any more because it will cause a loop
-
+            
             return first;
         }
 

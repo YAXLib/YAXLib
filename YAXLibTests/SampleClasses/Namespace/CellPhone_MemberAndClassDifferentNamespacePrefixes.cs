@@ -1,7 +1,4 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using YAXLib;
+﻿using YAXLib;
 
 namespace YAXLibTests.SampleClasses.Namespace
 {
@@ -24,8 +21,9 @@ namespace YAXLibTests.SampleClasses.Namespace
             return new CellPhone_MemberAndClassDifferentNamespacePrefixes
             {
                 DeviceBrand = "HTC",
-                OS = "Windows Phone 8"
+                OS = "Windows Phone 8",
             };
         }
+
     }
 }

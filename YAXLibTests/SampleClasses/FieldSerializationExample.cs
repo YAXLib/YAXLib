@@ -1,19 +1,24 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using System.Text;
+﻿using System.Text;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
     [ShowInDemoApplication]
+
     [YAXComment("This example shows how to choose the fields to be serialized")]
-    [YAXSerializableType(FieldsToSerialize = YAXSerializationFields.AttributedFieldsOnly)]
+    [YAXSerializableType(FieldsToSerialize=YAXSerializationFields.AttributedFieldsOnly)]
     public class FieldSerializationExample
     {
-        [YAXSerializableField] private readonly int m_someInt;
-        
-        [YAXSerializableField] private readonly double m_someDouble;
+        [YAXSerializableField]
+        private int m_someInt;
+
+        [YAXSerializableField]
+        private double m_someDouble;
+
+        [YAXSerializableField]
+        private string SomePrivateStringProperty { get; set; }
+
+        public string SomePublicPropertyThatIsNotSerialized { get; set; }
 
         public FieldSerializationExample()
         {
@@ -23,13 +28,9 @@ namespace YAXLibTests.SampleClasses
             SomePublicPropertyThatIsNotSerialized = "Public";
         }
 
-        [YAXSerializableField] private string SomePrivateStringProperty { get; }
-
-        public string SomePublicPropertyThatIsNotSerialized { get; set; }
-
         public override string ToString()
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
 
             sb.AppendLine("m_someInt: " + m_someInt);
             sb.AppendLine("m_someDouble: " + m_someDouble);

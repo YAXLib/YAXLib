@@ -1,18 +1,16 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
     [ShowInDemoApplication]
+
     [YAXComment(@"This example demonstrates how not to use 
       white spaces as separators while serializing 
       collection classes serially")]
     public class PathsExample
     {
-        [YAXCollection(YAXCollectionSerializationTypes.Serially, SeparateBy = ";", IsWhiteSpaceSeparator = false)]
+        [YAXCollection(YAXCollectionSerializationTypes.Serially, SeparateBy=";", IsWhiteSpaceSeparator=false)]
         public List<string> Paths { get; set; }
 
         public override string ToString()
@@ -22,15 +20,16 @@ namespace YAXLibTests.SampleClasses
 
         public static PathsExample GetSampleInstance()
         {
-            var paths = new List<string>();
+            List<string> paths = new List<string>();
             paths.Add(@"C:\SomeFile.txt");
             paths.Add(@"C:\SomeFolder\SomeFile.txt");
             paths.Add(@"C:\Some Folder With Space Such As\Program Files");
 
-            return new PathsExample
+            return new PathsExample()
             {
                 Paths = paths
             };
         }
+
     }
 }

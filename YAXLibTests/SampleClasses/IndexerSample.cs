@@ -1,7 +1,4 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-namespace YAXLibTests.SampleClasses
+﻿namespace YAXLibTests.SampleClasses
 {
     public class IndexerSample
     {
@@ -23,10 +20,10 @@ namespace YAXLibTests.SampleClasses
         public static IndexerSample GetSampleInstance()
         {
             return new IndexerSample
-            {
-                SomeInt = 1234,
-                SomeString = "Something"
-            };
+                   {
+                       SomeInt = 1234,
+                       SomeString = "Something"
+                   };
         }
     }
 }

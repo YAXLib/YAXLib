@@ -1,13 +1,21 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
+﻿// Copyright 2009 - 2010 Sina Iravanian - <sina@sinairv.com>
+//
+// This source file(s) may be redistributed, altered and customized
+// by any means PROVIDING the authors name and all copyright
+// notices remain intact.
+// THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED. USE IT AT YOUR OWN RISK. THE AUTHOR ACCEPTS NO
+// LIABILITY FOR ANY DATA DAMAGE/LOSS THAT THIS PRODUCT MAY CAUSE.
+//-----------------------------------------------------------------------
 
 using NUnit.Framework;
+
 using YAXLib;
 
 namespace YAXLibTests
 {
     /// <summary>
-    ///     Summary description for StringUtilsTest
+    /// Summary description for StringUtilsTest
     /// </summary>
     [TestFixture]
     public class StringUtilsTest
@@ -26,17 +34,13 @@ namespace YAXLibTests
             Assert.That(StringUtils.RefineLocationString("ans/////"), Is.EqualTo("ans"));
             Assert.That(StringUtils.RefineLocationString("ans\\\\\\"), Is.EqualTo("ans"));
             Assert.That(StringUtils.RefineLocationString("..."), Is.EqualTo("_.."));
-            Assert.That(StringUtils.RefineLocationString("one / two / three / four "),
-                Is.EqualTo("one/two/three/four"));
-            Assert.That(StringUtils.RefineLocationString("one / two \\ three / four "),
-                Is.EqualTo("one/two/three/four"));
-            Assert.That(StringUtils.RefineLocationString("one / two / three and else / four "),
-                Is.EqualTo("one/two/three_and_else/four"));
+            Assert.That(StringUtils.RefineLocationString("one / two / three / four "), Is.EqualTo("one/two/three/four"));
+            Assert.That(StringUtils.RefineLocationString("one / two \\ three / four "), Is.EqualTo("one/two/three/four"));
+            Assert.That(StringUtils.RefineLocationString("one / two / three and else / four "), Is.EqualTo("one/two/three_and_else/four"));
             Assert.That(StringUtils.RefineLocationString("one / two / .. / four "), Is.EqualTo("one/two/../four"));
             Assert.That(StringUtils.RefineLocationString("one / two / .. / four / "), Is.EqualTo("one/two/../four"));
             Assert.That(StringUtils.RefineLocationString("one / two / . . / four / "), Is.EqualTo("one/two/__./four"));
-            Assert.That(StringUtils.RefineLocationString("one / two / two:words.are / four "),
-                Is.EqualTo("one/two/two_words.are/four"));
+            Assert.That(StringUtils.RefineLocationString("one / two / two:words.are / four "), Is.EqualTo("one/two/two_words.are/four"));
             Assert.That(StringUtils.RefineLocationString("one-two-three-four"), Is.EqualTo("one-two-three-four"));
             Assert.That(StringUtils.RefineLocationString("one.two.three.four"), Is.EqualTo("one.two.three.four"));
             Assert.That(StringUtils.RefineLocationString(".one"), Is.EqualTo("_one"));
@@ -91,8 +95,8 @@ namespace YAXLibTests
             string newLocation;
             string newElement;
 
-            var location = "..";
-            var returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
+            string location = "..";
+            bool returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
             Assert.That(newLocation, Is.EqualTo(".."));
             Assert.That(newElement, Is.Null);
             Assert.That(returnValue, Is.False);
@@ -137,13 +141,18 @@ namespace YAXLibTests
         [Test]
         public void LooksLikeExpandedNameTest()
         {
-            var falseCases = new[]
-                {"", "    ", "{}", "{a", "{} ", " {}", " {} ", " {a} ", "{a}", "{a}    ", "something"};
+            var falseCases = new[] {"", "    ", "{}", "{a", "{} ", " {}", " {} ", " {a} ", "{a}", "{a}    ", "something"};
             var trueCases = new[] {"{a}b", " {a}b ", " {a}b"};
 
-            foreach (var falseCase in falseCases) Assert.That(StringUtils.LooksLikeExpandedXName(falseCase), Is.False);
+            foreach (var falseCase in falseCases)
+            {
+                Assert.That(StringUtils.LooksLikeExpandedXName(falseCase), Is.False);
+            }
 
-            foreach (var trueCase in trueCases) Assert.That(StringUtils.LooksLikeExpandedXName(trueCase), Is.True);
-        }
+            foreach (var trueCase in trueCases)
+            {
+                Assert.That(StringUtils.LooksLikeExpandedXName(trueCase), Is.True);
+            }
+        } 
     }
 }

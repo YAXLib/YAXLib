@@ -1,11 +1,9 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using YAXLib;
+﻿using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
     [ShowInDemoApplication]
+
     [YAXComment("This example is used in the article to show YAXLib exception handling policies")]
     public class ProgrammingLanguage
     {
@@ -22,7 +20,7 @@ namespace YAXLibTests.SampleClasses
 
         public static ProgrammingLanguage GetSampleInstance()
         {
-            return new ProgrammingLanguage
+            return new ProgrammingLanguage()
             {
                 LanguageName = "C#",
                 IsCaseSensitive = true

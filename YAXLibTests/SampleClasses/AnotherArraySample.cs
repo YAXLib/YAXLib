@@ -1,7 +1,4 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using YAXLib;
+﻿using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
@@ -18,21 +15,21 @@ namespace YAXLibTests.SampleClasses
 
         public static AnotherArraySample GetSampleInstance()
         {
-            var ar0 = new int[2, 3];
-            for (var i = 0; i < ar0.GetLength(0); i++)
-            for (var j = 0; j < ar0.GetLength(1); j++)
-                ar0[i, j] = i * j + 1;
+            int[,] ar0 = new int[2, 3];
+            for (int i = 0; i < ar0.GetLength(0); i++)
+                for (int j = 0; j < ar0.GetLength(1); j++)
+                    ar0[i, j] = i * j + 1;
 
-            var ar1 = new int[3, 2];
-            for (var i = 0; i < ar1.GetLength(0); i++)
-            for (var j = 0; j < ar1.GetLength(1); j++)
-                ar1[i, j] = i * j + 3;
+            int[,] ar1 = new int[3, 2];
+            for (int i = 0; i < ar1.GetLength(0); i++)
+                for (int j = 0; j < ar1.GetLength(1); j++)
+                    ar1[i, j] = i * j + 3;
 
-            var ar00 = new int[2][,];
+            int[][,] ar00 = new int[2][,];
             ar00[0] = ar0;
             ar00[1] = ar1;
 
-            return new AnotherArraySample {Array1 = ar00};
+            return new AnotherArraySample() { Array1 = ar00 };
         }
     }
 }

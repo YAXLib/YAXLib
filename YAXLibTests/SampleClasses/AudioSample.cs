@@ -1,7 +1,4 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using YAXLib;
+﻿using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
@@ -9,12 +6,12 @@ namespace YAXLibTests.SampleClasses
     {
         [YAXErrorIfMissed(YAXExceptionTypes.Ignore)]
         public string Audio { get; set; }
-
+        
         [YAXSerializeAs("FileName")]
         [YAXAttributeFor("Audio")]
         [YAXErrorIfMissed(YAXExceptionTypes.Ignore, DefaultValue = "")]
         public string AudioFileName { get; set; }
-
+        
         [YAXErrorIfMissed(YAXExceptionTypes.Ignore)]
         public string Image { get; set; }
 
@@ -22,7 +19,7 @@ namespace YAXLibTests.SampleClasses
         [YAXAttributeFor("Image")]
         [YAXErrorIfMissed(YAXExceptionTypes.Ignore, DefaultValue = "")]
         public string ImageFileName { get; set; }
-
+        
         public override string ToString()
         {
             return GeneralToStringProvider.GeneralToString(this);
@@ -30,7 +27,7 @@ namespace YAXLibTests.SampleClasses
 
         public static AudioSample GetSampleInstance()
         {
-            return new AudioSample
+            return new AudioSample()
             {
                 Audio = "base64",
                 AudioFileName = "filesname.jpg",

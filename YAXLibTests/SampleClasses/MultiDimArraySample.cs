@@ -1,7 +1,4 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using YAXLib;
+﻿using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
@@ -12,7 +9,7 @@ namespace YAXLibTests.SampleClasses
     {
         public int[,] IntArray { get; set; }
 
-        public double[,,] DoubleArray { get; set; }
+        public double[, ,] DoubleArray { get; set; }
 
         public int[][] JaggedArray { get; set; }
 
@@ -31,29 +28,29 @@ namespace YAXLibTests.SampleClasses
 
         public static MultiDimArraySample GetSampleInstance()
         {
-            var intArray = new int[2, 3];
+            int[,] intArray = new int[2,3];
 
-            for (var i = 0; i < 2; i++)
-            for (var j = 0; j < 3; j++)
-                intArray[i, j] = i + j + 1;
+            for (int i = 0; i < 2; i++)
+                for (int j = 0; j < 3; j++)
+                    intArray[i, j] = i + j + 1;
 
 
-            var doubleArray = new double[2, 3, 3];
+            double[, ,] doubleArray = new double[2, 3, 3];
 
-            for (var i = 0; i < 2; i++)
-            for (var j = 0; j < 3; j++)
-            for (var k = 0; k < 3; k++)
-                doubleArray[i, j, k] = (i * j + 1) / (k + 0.5);
+            for (int i = 0; i < 2; i++)
+                for (int j = 0; j < 3; j++)
+                    for (int k = 0; k < 3; k++)
+                        doubleArray[i, j, k] = (double)(i * j + 1) / (k + 0.5);
 
-            var jaggedArray = new int[3][];
-            for (var i = 0; i < 3; i++)
+            int[][] jaggedArray = new int[3][];
+            for (int i = 0; i < 3; i++)
             {
                 jaggedArray[i] = new int[(i + 1) * 2];
-                for (var j = 1; j <= (i + 1) * 2; j++)
+                for (int j = 1; j <= (i + 1) * 2; j++)
                     jaggedArray[i][j - 1] = j;
             }
 
-            return new MultiDimArraySample
+            return new MultiDimArraySample()
             {
                 IntArray = intArray,
                 DoubleArray = doubleArray,

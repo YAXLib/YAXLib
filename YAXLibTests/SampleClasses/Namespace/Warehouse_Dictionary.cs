@@ -1,7 +1,4 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses.Namespace
@@ -10,8 +7,8 @@ namespace YAXLibTests.SampleClasses.Namespace
     public class Warehouse_Dictionary
     {
         [YAXDictionary(EachPairName = "ItemInfo", KeyName = "Item", ValueName = "Count",
-            SerializeKeyAs = YAXNodeTypes.Attribute,
-            SerializeValueAs = YAXNodeTypes.Attribute)]
+                       SerializeKeyAs = YAXNodeTypes.Attribute,
+                       SerializeValueAs = YAXNodeTypes.Attribute)]
         [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement)]
         [YAXSerializeAs("ItemQuantities")]
         public Dictionary<string, int> ItemQuantitiesDic { get; set; }
@@ -23,9 +20,10 @@ namespace YAXLibTests.SampleClasses.Namespace
 
         public static Warehouse_Dictionary GetSampleInstance()
         {
-            return new Warehouse_Dictionary
+            return new Warehouse_Dictionary()
             {
-                ItemQuantitiesDic = new Dictionary<string, int> {{"Item1", 10}, {"Item4", 30}, {"Item2", 20}}
+                ItemQuantitiesDic = new Dictionary<string, int>() 
+                    { {"Item1", 10}, {"Item4", 30}, {"Item2", 20} },
             };
         }
     }

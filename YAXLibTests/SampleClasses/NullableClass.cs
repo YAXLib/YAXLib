@@ -1,11 +1,9 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using YAXLib;
+﻿using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
     [ShowInDemoApplication]
+
     [YAXComment("This exmaple shows the usage of nullable fields")]
     public class NullableClass
     {
@@ -20,7 +18,7 @@ namespace YAXLibTests.SampleClasses
 
         public static NullableClass GetSampleInstance()
         {
-            return new NullableClass
+            return new NullableClass()
             {
                 Title = "Inside C#",
                 PublishYear = 2002,

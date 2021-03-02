@@ -1,7 +1,4 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-namespace YAXLibTests.SampleClasses.SelfReferencingObjects
+﻿namespace YAXLibTests.SampleClasses.SelfReferencingObjects
 {
     public class RepetitiveReferenceIsNotLoop
     {
@@ -17,10 +14,10 @@ namespace YAXLibTests.SampleClasses.SelfReferencingObjects
         {
             var singleRef = new SmallClass {N = 10};
             return new RepetitiveReferenceIsNotLoop
-            {
-                RefA = singleRef,
-                RefB = singleRef
-            };
+                   {
+                       RefA = singleRef,
+                       RefB = singleRef
+                   };
         }
     }
 

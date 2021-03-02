@@ -1,7 +1,4 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace YAXLibTests.SampleClasses
 {
@@ -17,6 +14,6 @@ namespace YAXLibTests.SampleClasses
         public override string ToString()
         {
             return GeneralToStringProvider.GeneralToString(this);
-        }
+        } 
     }
 }

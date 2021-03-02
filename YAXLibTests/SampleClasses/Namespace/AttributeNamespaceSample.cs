@@ -1,14 +1,12 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using YAXLib;
+﻿using YAXLib;
 
 namespace YAXLibTests.SampleClasses.Namespace
 {
     [YAXNamespace("http://namespaces.org/default")]
     public class AttributeNamespaceSample
     {
-        [YAXAttributeFor("Attribs")] public string attrib { get; private set; }
+        [YAXAttributeFor("Attribs")]
+        public string attrib { get; private set; }
 
         [YAXAttributeFor("Attribs")]
         [YAXNamespace("ns", "http://namespaces.org/ns")]
@@ -16,7 +14,7 @@ namespace YAXLibTests.SampleClasses.Namespace
 
         public static AttributeNamespaceSample GetSampleInstance()
         {
-            return new AttributeNamespaceSample
+            return new AttributeNamespaceSample()
             {
                 attrib = "value",
                 attrib2 = "value2"

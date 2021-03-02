@@ -1,7 +1,4 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
@@ -45,29 +42,29 @@ namespace YAXLibTests.SampleClasses
 
         public static CollectionOfInterfacesSample GetSampleInstance()
         {
-            var c1 = new Class1 {IntInInterface = 1, DoubleInClass1 = 1.0};
-            var c2 = new Class2 {IntInInterface = 2, StringInClass2 = "Class2"};
-            var c3 = new Class3_1 {DoubleInClass1 = 3.0, IntInInterface = 3, StringInClass3_1 = "Class3_1"};
+            var c1 = new Class1() { IntInInterface = 1, DoubleInClass1 = 1.0 };
+            var c2 = new Class2() { IntInInterface = 2, StringInClass2 = "Class2" };
+            var c3 = new Class3_1() { DoubleInClass1 = 3.0, IntInInterface = 3, StringInClass3_1 = "Class3_1" };
 
-            var lstOfSamples = new List<ISample>();
+            List<ISample> lstOfSamples = new List<ISample>();
             lstOfSamples.Add(c1);
             lstOfSamples.Add(c2);
             lstOfSamples.Add(c3);
 
-            var dicSample2Int = new Dictionary<ISample, int>();
+            Dictionary<ISample, int> dicSample2Int = new Dictionary<ISample, int>();
             dicSample2Int.Add(c1, 1);
             dicSample2Int.Add(c2, 2);
             dicSample2Int.Add(c3, 3);
 
-            var dicInt2Sample = new Dictionary<int, ISample>();
+            Dictionary<int, ISample> dicInt2Sample = new Dictionary<int, ISample>();
             dicInt2Sample.Add(1, c1);
             dicInt2Sample.Add(2, c2);
             dicInt2Sample.Add(3, c3);
 
 
-            return new CollectionOfInterfacesSample
+            return new CollectionOfInterfacesSample()
             {
-                SingleRef = new Class2 {IntInInterface = 22, StringInClass2 = "SingleRef"},
+                SingleRef = new Class2() { IntInInterface = 22, StringInClass2 = "SingleRef" },
                 ListOfSamples = lstOfSamples,
                 DictSample2Int = dicSample2Int,
                 DictInt2Sample = dicInt2Sample

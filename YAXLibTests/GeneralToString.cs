@@ -1,11 +1,18 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
+﻿// Copyright 2009 - 2010 Sina Iravanian - <sina@sinairv.com>
+//
+// This source file(s) may be redistributed, altered and customized
+// by any means PROVIDING the authors name and all copyright
+// notices remain intact.
+// THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED. USE IT AT YOUR OWN RISK. THE AUTHOR ACCEPTS NO
+// LIABILITY FOR ANY DATA DAMAGE/LOSS THAT THIS PRODUCT MAY CAUSE.
+//-----------------------------------------------------------------------
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Text;
+using System.Reflection;
+using System.Collections;
 using YAXLib;
 
 namespace YAXLibTests
@@ -20,10 +27,10 @@ namespace YAXLibTests
         private static string CollectionToString(object collectionInstance, string propName, int layer)
         {
             //object collectionInstance = prop.GetValue(o, null);
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             if (collectionInstance == null)
             {
-                if (string.IsNullOrEmpty(propName))
+                if(string.IsNullOrEmpty(propName))
                     sb.AppendLayerFormatLine(layer, "[null]");
                 else
                     sb.AppendLayerFormatLine(layer, "{0}: [null]", propName);
@@ -32,29 +39,29 @@ namespace YAXLibTests
             {
                 if (!string.IsNullOrEmpty(propName))
                 {
-                    var strSize = "";
+                    string strSize = "";
                     if (collectionInstance.GetType().IsArray)
                     {
-                        var ar = collectionInstance as Array;
-                        var rank = ar.Rank;
-                        var ars = new StringBuilder();
-                        for (var i = 0; i < rank; i++)
+                        System.Array ar = collectionInstance as System.Array;
+                        int rank = ar.Rank;
+                        StringBuilder ars = new StringBuilder();
+                        for (int i = 0; i < rank; i++)
                         {
                             if (i != 0)
                                 ars.Append("*");
                             ars.Append(ar.GetLength(i));
                         }
-
-                        strSize = string.Format("[size: {0}]", ars);
+                        strSize = string.Format("[size: {0}]", ars.ToString());
                     }
 
                     sb.AppendLayerFormatLine(layer, "{0}: {1}", propName, strSize);
                 }
 
-                foreach (var item in collectionInstance as IEnumerable)
-                    if (item != null && IsBasicType(item.GetType()))
+                foreach (object item in collectionInstance as IEnumerable)
+                {
+                    if (IsBasicType(item.GetType()) || item == null)
                     {
-                        sb.AppendLayerFormatLine(layer + 1, "[{0}]", item.ToString());
+                        sb.AppendLayerFormatLine(layer + 1, "[{0}]", item == null ? "null" : item.ToString());
                     }
                     else
                     {
@@ -62,14 +69,14 @@ namespace YAXLibTests
                         sb.Append(GeneralToString(item, layer + 2));
                         sb.AppendLayerFormatLine(layer + 1, "]");
                     }
+                }
             }
-
             return sb.ToString();
         }
 
         private static string NonGenericDictionaryToString(object dicInstance, string propName, int layer)
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             if (dicInstance == null)
             {
                 if (string.IsNullOrEmpty(propName))
@@ -82,7 +89,8 @@ namespace YAXLibTests
                 if (!string.IsNullOrEmpty(propName))
                     sb.AppendLayerFormatLine(layer, "{0}:", propName);
 
-                foreach (var pair in dicInstance as IEnumerable)
+                foreach (object pair in dicInstance as IEnumerable)
+                {
                     if (pair == null)
                     {
                         sb.AppendLayerFormatLine(layer + 1, "[null]");
@@ -91,10 +99,10 @@ namespace YAXLibTests
                     {
                         sb.AppendLayerFormatLine(layer + 1, "[");
 
-                        var objKey = pair.GetType().GetProperty("Key").GetValue(pair, null);
-                        var objValue = pair.GetType().GetProperty("Value").GetValue(pair, null);
+                        object objKey = pair.GetType().GetProperty("Key").GetValue(pair, null);
+                        object objValue = pair.GetType().GetProperty("Value").GetValue(pair, null);
 
-                        if (objKey == null || IsBasicType(objKey.GetType()))
+                        if (objKey == null || IsBasicType(objKey.GetType()) )
                         {
                             sb.AppendLayerFormatLine(layer + 1, "Key: {0}",
                                 objKey == null ? "[null]" : objKey.ToString()
@@ -124,6 +132,7 @@ namespace YAXLibTests
 
                         sb.AppendLayerFormatLine(layer + 1, "]");
                     }
+                }
             }
 
             return sb.ToString();
@@ -132,10 +141,10 @@ namespace YAXLibTests
 
         private static string DictionaryToString(object dicInstance, string propName, int layer)
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             if (dicInstance == null)
             {
-                if (string.IsNullOrEmpty(propName))
+                if(string.IsNullOrEmpty(propName))
                     sb.AppendLayerFormatLine(layer, "[null]");
                 else
                     sb.AppendLayerFormatLine(layer, "{0}: [null]", propName);
@@ -150,7 +159,8 @@ namespace YAXLibTests
                 if (IsBasicType(keyType) && IsBasicType(valueType))
                 {
                     object objKey, objValue;
-                    foreach (var pair in dicInstance as IEnumerable)
+                    foreach (object pair in dicInstance as IEnumerable)
+                    {
                         if (pair == null)
                         {
                             sb.AppendLayerFormatLine(layer + 1, "[null]");
@@ -164,11 +174,13 @@ namespace YAXLibTests
                                 objValue == null ? "[null]" : objValue.ToString()
                             );
                         }
+                    }
                 }
                 else
                 {
                     object objKey, objValue;
-                    foreach (var pair in dicInstance as IEnumerable)
+                    foreach (object pair in dicInstance as IEnumerable)
+                    {
                         if (pair == null)
                         {
                             sb.AppendLayerFormatLine(layer + 1, "[null]");
@@ -192,6 +204,7 @@ namespace YAXLibTests
                                 sb.AppendLayerFormatLine(layer + 2, "[");
                                 sb.Append(GeneralToString(objKey, layer + 3));
                                 sb.AppendLayerFormatLine(layer + 2, "]");
+
                             }
 
                             if (IsBasicType(valueType) || objValue == null)
@@ -210,15 +223,15 @@ namespace YAXLibTests
 
                             sb.AppendLayerFormatLine(layer + 1, "]");
                         }
+                    }
                 }
             }
-
             return sb.ToString();
         }
 
         private static string GeneralToString(object o, int layer)
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             if (o == null)
             {
                 sb.AppendLayerFormatLine(layer, "[null]");
@@ -245,10 +258,10 @@ namespace YAXLibTests
                 Type propType;
                 foreach (var prop in o.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))
                 {
-                    if (!prop.CanRead)
+                    if (!(prop.CanRead))
                         continue;
 
-                    if (prop.GetIndexParameters().Length > 0) // do not print indexers
+                    if(prop.GetIndexParameters().Length > 0) // do not print indexers
                         continue;
 
                     if (ReflectionUtils.IsTypeEqualOrInheritedFromType(prop.PropertyType, typeof(Delegate)))
@@ -277,7 +290,7 @@ namespace YAXLibTests
                     }
                     else
                     {
-                        var propValue = prop.GetValue(o, null);
+                        object propValue = prop.GetValue(o, null);
                         if (propValue == null)
                         {
                             sb.AppendLayerFormatLine(layer, "{0}: [null]", prop.Name);
@@ -299,7 +312,7 @@ namespace YAXLibTests
 
         private static bool IsDictionary(Type type)
         {
-            if (type.IsGenericType())
+            if (type.IsGenericType)
                 type = type.GetGenericTypeDefinition();
 
             if (type == typeof(Dictionary<,>))
@@ -309,28 +322,31 @@ namespace YAXLibTests
         }
 
         /// <summary>
-        ///     Determines whether the specified type is a generic dictionary.
+        /// Determines whether the specified type is a generic dictionary.
         /// </summary>
         /// <param name="type">The type to check.</param>
         /// <param name="keyType">Type of the key.</param>
         /// <param name="valueType">Type of the value.</param>
         /// <returns>
-        ///     <c>true</c> if the specified type is dictionary; otherwise, <c>false</c>.
+        /// 	<c>true</c> if the specified type is dictionary; otherwise, <c>false</c>.
         /// </returns>
         private static bool IsDictionary(Type type, out Type keyType, out Type valueType)
         {
             keyType = typeof(object);
             valueType = typeof(object);
 
-            foreach (var interfaceType in type.GetInterfaces())
-                if (interfaceType.IsGenericType() &&
+            foreach (Type interfaceType in type.GetInterfaces())
+            {
+                if (interfaceType.IsGenericType &&
                     interfaceType.GetGenericTypeDefinition() == typeof(IDictionary<,>))
                 {
-                    var genArgs = interfaceType.GetGenericArguments();
+                    Type[] genArgs = interfaceType.GetGenericArguments();
                     keyType = genArgs[0];
                     valueType = genArgs[1];
                     return true;
                 }
+
+            }
 
             return false;
         }
@@ -340,11 +356,17 @@ namespace YAXLibTests
             if (type == typeof(IDictionary))
                 return true;
 
-            foreach (var interfaceType in type.GetInterfaces())
+            foreach (Type interfaceType in type.GetInterfaces())
+            {
                 if (interfaceType == typeof(IDictionary))
+                {
                     return true;
+                }
+
+            }
 
             return false;
+
         }
 
         private static bool IsNonGenericIEnumerable(Type type)
@@ -352,9 +374,13 @@ namespace YAXLibTests
             if (type == typeof(IEnumerable))
                 return true;
 
-            foreach (var interfaceType in type.GetInterfaces())
+            foreach (Type interfaceType in type.GetInterfaces())
+            {
                 if (interfaceType == typeof(IEnumerable))
+                {
                     return true;
+                }
+            }
 
             return false;
         }
@@ -362,20 +388,23 @@ namespace YAXLibTests
 
         private static bool IsCollection(Type type)
         {
-            if (type == typeof(string))
+            if (type == typeof(string)) 
                 return false;
 
-            if (IsArray(type))
+            if (IsArray(type)) 
                 return true;
 
-            if (type.IsGenericType())
+            if (type.IsGenericType)
                 type = type.GetGenericTypeDefinition();
 
             if (type == typeof(List<>) || type == typeof(HashSet<>) || type == typeof(IEnumerable<>))
                 return true;
 
             Type elemType;
-            if (IsIEnumerableExceptArray(type, out elemType)) return true;
+            if(IsIEnumerableExceptArray(type, out elemType))
+            {
+                return true;
+            }
 
             return false;
         }
@@ -385,13 +414,21 @@ namespace YAXLibTests
             // is IFormattable
             // accept parameterless ToString
             // accept ctor of string
-            foreach (var interfaceType in type.GetInterfaces())
+            foreach (Type interfaceType in type.GetInterfaces())
+            {
                 if (interfaceType == typeof(IFormattable))
+                {
                     if (!HasSuitableProperties(type))
-                        if (null != type.GetConstructor(new[] {typeof(string)}))
+                    {
+                        if (null != type.GetConstructor(new Type[] { typeof(string) }))
+                        {
                             if (null != type.GetMethod("ToString", new Type[0]) &&
-                                null != type.GetMethod("ToString", new[] {typeof(string)}))
+                                null != type.GetMethod("ToString", new Type[] { typeof(string) }))
                                 return true;
+                        }
+                    }
+                }
+            }
 
             return false;
         }
@@ -400,6 +437,7 @@ namespace YAXLibTests
         {
             var props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (var pi in props)
+            {
                 if (pi.CanRead && pi.CanWrite)
                 {
                     var getPi = pi.GetGetMethod(false);
@@ -407,71 +445,84 @@ namespace YAXLibTests
                     if (setPi != null && getPi != null)
                         return true;
                 }
+            }
 
             return false;
         }
 
         /// <summary>
-        ///     Gets the type of the items of a collection type.
+        /// Gets the type of the items of a collection type.
         /// </summary>
         /// <param name="type">The type of the collection.</param>
         /// <returns>the type of the items of a collection type.</returns>
         private static Type GetCollectionItemType(Type type)
         {
-            var itemType = typeof(object);
+            Type itemType = typeof(object);
 
-            if (type.IsInterface() && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            if (type.IsInterface && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            {
                 itemType = type.GetGenericArguments()[0];
-            else if (type.IsInterface() && type == typeof(IEnumerable))
+            }
+            else if (type.IsInterface && type == typeof(IEnumerable))
+            {
                 itemType = typeof(object);
+            }
             else
-                foreach (var interfaceType in type.GetInterfaces())
-                    if (interfaceType.IsGenericType() &&
+            {
+                foreach (Type interfaceType in type.GetInterfaces())
+                {
+                    if (interfaceType.IsGenericType &&
                         interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                    {
                         itemType = interfaceType.GetGenericArguments()[0];
+                    }
+                }
+            }
 
             return itemType;
         }
 
 
+
         private static string GetBasicPropertyValue(object o, PropertyInfo prop)
         {
-            var value = prop.GetValue(o, null);
-            return value == null ? "[null]" : value.ToString();
+            object value = prop.GetValue(o, null);
+            return (value == null) ? "[null]" : value.ToString();
         }
 
         /// <summary>
-        ///     Determines whether the specified type is basic type. A basic type is one that can be wholly expressed
-        ///     as an XML attribute. All primitive data types and type <c>string</c> and <c>DataTime</c> are basic.
+        /// Determines whether the specified type is basic type. A basic type is one that can be wholly expressed
+        /// as an XML attribute. All primitive data types and type <c>string</c> and <c>DataTime</c> are basic.
         /// </summary>
         /// <param name="t">The type</param>
         private static bool IsBasicType(Type t)
         {
-            if (t == typeof(string) || t.IsPrimitive() || t.IsEnum() || t == typeof(DateTime) || t == typeof(decimal))
+            if (t == typeof(string) || t.IsPrimitive || t.IsEnum || t == typeof(DateTime) || t == typeof(decimal))
                 return true;
-            return false;
+            else
+                return false;
         }
 
         /// <summary>
-        ///     Determines whether the specified type is array.
+        /// Determines whether the specified type is array.
         /// </summary>
         /// <param name="t">The type</param>
         /// <returns>
-        ///     <c>true</c> if the specified type is array; otherwise, <c>false</c>.
+        /// 	<c>true</c> if the specified type is array; otherwise, <c>false</c>.
         /// </returns>
         private static bool IsArray(Type t)
         {
-            return t.BaseType() == typeof(Array);
+            return (t.BaseType == typeof(System.Array));
         }
 
         /// <summary>
-        ///     Determines whether the specified type has implemented or is an <c>IEnumerable</c> or <c>IEnumerable&lt;&gt;</c>.
-        ///     This method does not detect Arrays.
+        /// Determines whether the specified type has implemented or is an <c>IEnumerable</c> or <c>IEnumerable&lt;&gt;</c>.
+        /// This method does not detect Arrays.
         /// </summary>
         /// <param name="type">The type to check.</param>
         /// <param name="seqType">Type of the sequence items.</param>
         /// <returns>
-        ///     <value><c>true</c> if the specified type is enumerable; otherwise, <c>false</c>.</value>
+        /// <value><c>true</c> if the specified type is enumerable; otherwise, <c>false</c>.</value>
         /// </returns>
         public static bool IsIEnumerableExceptArray(Type type, out Type seqType)
         {
@@ -479,19 +530,20 @@ namespace YAXLibTests
             if (type == typeof(IEnumerable))
                 return true;
 
-            var isNongenericEnumerable = false;
+            bool isNongenericEnumerable = false;
 
-            if (type.IsInterface() && type.IsGenericType() && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            if (type.IsInterface && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
             {
                 seqType = type.GetGenericArguments()[0];
                 return true;
             }
 
-            foreach (var interfaceType in type.GetInterfaces())
-                if (interfaceType.IsGenericType() &&
+            foreach (Type interfaceType in type.GetInterfaces())
+            {
+                if (interfaceType.IsGenericType &&
                     interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                 {
-                    var genArgs = interfaceType.GetGenericArguments();
+                    Type[] genArgs = interfaceType.GetGenericArguments();
                     seqType = genArgs[0];
                     return true;
                 }
@@ -499,6 +551,7 @@ namespace YAXLibTests
                 {
                     isNongenericEnumerable = true;
                 }
+            }
 
             // the second case is a direct reference to IEnumerable
             if (isNongenericEnumerable || type == typeof(IEnumerable))
@@ -509,28 +562,27 @@ namespace YAXLibTests
 
             return false;
         }
+
     }
 
     public static class StringBuilderExtensions
     {
-        public static StringBuilder AppendLayerFormatLine(this StringBuilder sb, int layer, string format,
-            params object[] args)
+        public static StringBuilder AppendLayerFormatLine(this StringBuilder sb, int layer, string format, params object[] args)
         {
             return AppendLayerFormat(sb, layer, format + Environment.NewLine, args);
         }
 
-        public static StringBuilder AppendLayerFormat(this StringBuilder sb, int layer, string format,
-            params object[] args)
+        public static StringBuilder AppendLayerFormat(this StringBuilder sb, int layer, string format, params object[] args)
         {
-            var strToAppend = string.Format(format, args);
+            string strToAppend = string.Format(format, args);
             return sb.AppendFormat("{0}{1}", GetLayerPrefix(layer), strToAppend);
         }
 
         private static string GetLayerPrefix(int layer)
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
 
-            for (var i = 0; i < layer; ++i)
+            for (int i = 0; i < layer; ++i)
                 sb.Append("   ");
 
             return sb.ToString();

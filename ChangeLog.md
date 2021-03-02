@@ -1,9 +1,9 @@
-[2.16.0] Feb 14, 2021
-   * Now supporting netstandard2.0 netstandard2.1 net461 net462 net472 net48 net5.0
-   * Dropped support of netstandard1.6
-   * Extended unit tests for netstandard
-   * Enabled SourceLink
-   * SemVer versioning
+[2.20] Feb 05, 2021
+  * Updated build toolchain to .NET SDK 5.0
+  * YAXLib now targets exclusively `netstandard2.0`
+  * Testsuite is green when targeting `net48` and `net5.0` under Microsoft Windows and under Linux using `net5.0`
+  * `DemoApplication` is now a .NET 5 Windows Forms application
+  * General repository cleanup
 
 [2.15] Feb 18, 2017
    * Added support for .NET Core. Huge thanks go to [axuno gGmbH](https://github.com/axunonb) for developing the support for .NET Core.

@@ -1,7 +1,4 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using YAXLib;
+﻿using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
@@ -20,7 +17,7 @@ namespace YAXLibTests.SampleClasses
 
         public static YAXLibMetadataOverriding GetSampleInstance()
         {
-            var instance = new YAXLibMetadataOverriding();
+            YAXLibMetadataOverriding instance = new YAXLibMetadataOverriding();
             instance.SetSampleData();
             return instance;
         }
@@ -29,9 +26,9 @@ namespace YAXLibTests.SampleClasses
         {
             IntArray = new int[2, 3];
 
-            for (var i = 0; i < 2; i++)
-            for (var j = 0; j < 3; j++)
-                IntArray[i, j] = i + j + 1;
+            for (int i = 0; i < 2; i++)
+                for (int j = 0; j < 3; j++)
+                    IntArray[i, j] = i + j + 1;
 
             Obj = "Hello, World!";
         }
@@ -41,9 +38,9 @@ namespace YAXLibTests.SampleClasses
     [YAXNamespace("http://namespace.org/sample")]
     public class YAXLibMetadataOverridingWithNamespace : YAXLibMetadataOverriding
     {
-        public new static YAXLibMetadataOverridingWithNamespace GetSampleInstance()
+        public static new YAXLibMetadataOverridingWithNamespace GetSampleInstance()
         {
-            var instance = new YAXLibMetadataOverridingWithNamespace();
+            YAXLibMetadataOverridingWithNamespace instance = new YAXLibMetadataOverridingWithNamespace();
             instance.SetSampleData();
             return instance;
         }

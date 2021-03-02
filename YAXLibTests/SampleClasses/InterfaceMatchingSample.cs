@@ -1,7 +1,4 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
@@ -11,12 +8,13 @@ namespace YAXLibTests.SampleClasses
                 collection classes")]
     public class InterfaceMatchingSample
     {
-        [YAXAttributeForClass] public int? SomeNumber { get; set; }
+        [YAXAttributeForClass]
+        public int? SomeNumber { get; set; }
 
         [YAXCollection(YAXCollectionSerializationTypes.Serially)]
         public List<int?> ListOfSamples { get; set; }
 
-        [YAXDictionary(SerializeKeyAs = YAXNodeTypes.Attribute, SerializeValueAs = YAXNodeTypes.Attribute)]
+        [YAXDictionary(SerializeKeyAs = YAXNodeTypes.Attribute, SerializeValueAs= YAXNodeTypes.Attribute)]
         public Dictionary<double?, int> DictNullable2Int { get; set; }
 
         [YAXDictionary(SerializeKeyAs = YAXNodeTypes.Attribute, SerializeValueAs = YAXNodeTypes.Attribute)]
@@ -45,7 +43,7 @@ namespace YAXLibTests.SampleClasses
             dicInt2Sample.Add(3, null);
 
 
-            return new InterfaceMatchingSample
+            return new InterfaceMatchingSample()
             {
                 SomeNumber = 10,
                 ListOfSamples = lstOfSamples,

@@ -1,7 +1,4 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using YAXLib;
+﻿using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
@@ -23,12 +20,13 @@ namespace YAXLibTests.SampleClasses
     {
         public string Title { get; set; }
 
-        [YAXComment("Comment for author")] public Author3 Author { get; set; }
+        [YAXComment("Comment for author")]
+        public Author3 Author { get; set; }
 
         public int PublishYear { get; set; }
         public double Price { get; set; }
 
-        [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement, EachElementName = "Editor")]
+        [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement, EachElementName="Editor")]
         public string[] Editors { get; set; }
 
         public override string ToString()
@@ -38,12 +36,12 @@ namespace YAXLibTests.SampleClasses
 
         public static MoreComplexBook3 GetSampleInstance()
         {
-            var auth = new Author3 {Age = 30, Name = "Tom Archer"};
-            return new MoreComplexBook3
+            Author3 auth = new Author3() { Age = 30, Name = "Tom Archer" };
+            return new MoreComplexBook3()
             {
                 Title = "Inside C#",
                 Author = auth,
-                Editors = new[] {"Mark Twain", "Timothy Jones", "Oliver Twist"},
+                Editors = new string[] {"Mark Twain", "Timothy Jones", "Oliver Twist"},
                 PublishYear = 2002,
                 Price = 30.5
             };

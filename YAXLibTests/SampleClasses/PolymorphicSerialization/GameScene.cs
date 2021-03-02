@@ -1,20 +1,21 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses.PolymorphicSerialization
 {
     public class GameScene
     {
-        [YAXType(typeof(Sword))] public IWeapon DefaultWeapon { get; set; }
+        [YAXType(typeof(Sword))]
+        public IWeapon DefaultWeapon { get; set; }
 
-        [YAXType(typeof(Sword))] public IWeapon AlternativeWeapon { get; set; }
+        [YAXType(typeof(Sword))]
+        public IWeapon AlternativeWeapon { get; set; }
 
-        [YAXCollectionItemType(typeof(Sword))] public IWeapon[] Weapons { get; set; }
+        [YAXCollectionItemType(typeof(Sword))]
+        public IWeapon[] Weapons { get; set; }
 
-        [YAXCollectionItemType(typeof(Alien))] public List<CharacterBase> Characters { get; set; }
+        [YAXCollectionItemType(typeof(Alien))]
+        public List<CharacterBase> Characters { get; set; }
 
         public override string ToString()
         {
@@ -24,12 +25,12 @@ namespace YAXLibTests.SampleClasses.PolymorphicSerialization
         public static GameScene GetSampleInstance()
         {
             return new GameScene
-            {
-                Weapons = new IWeapon[] {new Sword(), new Gun()},
-                Characters = new List<CharacterBase> {new Human(), new Alien()},
-                DefaultWeapon = new Sword(),
-                AlternativeWeapon = new Sword()
-            };
+                   {
+                       Weapons = new IWeapon[] { new Sword(), new Gun()},
+                       Characters = new List<CharacterBase> { new Human(), new Alien()},
+                       DefaultWeapon = new Sword(),
+                       AlternativeWeapon = new Sword(),
+                   };
         }
     }
 
@@ -48,9 +49,8 @@ namespace YAXLibTests.SampleClasses.PolymorphicSerialization
             FatalityFactor = 1;
         }
 
-        public string Name { get; }
-        public int FatalityFactor { get; }
-
+        public string Name { get; private set; }
+        public int FatalityFactor { get; private set; }
         public override string ToString()
         {
             return GeneralToStringProvider.GeneralToString(this);
@@ -66,11 +66,9 @@ namespace YAXLibTests.SampleClasses.PolymorphicSerialization
             Calibre = 9.0;
         }
 
+        public string Name { get; private set; }
+        public int FatalityFactor { get; private set; }
         public double Calibre { get; set; }
-
-        public string Name { get; }
-        public int FatalityFactor { get; }
-
         public override string ToString()
         {
             return GeneralToStringProvider.GeneralToString(this);
@@ -93,7 +91,6 @@ namespace YAXLibTests.SampleClasses.PolymorphicSerialization
         }
 
         public double Stamina { get; set; }
-
         public override string ToString()
         {
             return GeneralToStringProvider.GeneralToString(this);
@@ -110,7 +107,6 @@ namespace YAXLibTests.SampleClasses.PolymorphicSerialization
         }
 
         public int NumberOfHands { get; set; }
-
         public override string ToString()
         {
             return GeneralToStringProvider.GeneralToString(this);

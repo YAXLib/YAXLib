@@ -1,7 +1,4 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using System;
+﻿using System;
 
 namespace YAXLibTests.SampleClasses
 {
@@ -25,16 +22,16 @@ namespace YAXLibTests.SampleClasses
         public static PropertylessClassesSample GetSampleInstance()
         {
             return new PropertylessClassesSample
-            {
-                ValuedDbNull = DBNull.Value,
-                NullDbNull = null,
-                ObjValuedDbNull = DBNull.Value,
-                ObjNullDbNull = null,
-                ValuedRandom = new Random(),
-                NullRandom = null,
-                ObjValuedRandom = new Random(),
-                ObjNullRandom = null
-            };
+                       {
+                           ValuedDbNull = DBNull.Value,
+                           NullDbNull =  null,
+                           ObjValuedDbNull = DBNull.Value,
+                           ObjNullDbNull = null,
+                           ValuedRandom = new Random(),
+                           NullRandom = null,
+                           ObjValuedRandom = new Random(),
+                           ObjNullRandom = null
+                       };
         }
     }
 }

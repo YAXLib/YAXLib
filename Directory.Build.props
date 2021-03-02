@@ -1,0 +1,18 @@
+<Project>
+
+  <PropertyGroup>
+    <Product>YAXLib</Product>
+    <Authors>Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors</Authors>
+    <Copyright>Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors</Copyright>
+    <RepositoryUrl>https://github.com/MhpSoftware/YAXLib.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <Version>2.20.0</Version>
+    <AssemblyVersion>2.20.0</AssemblyVersion>
+    <FileVersion>2.20.0</FileVersion>
+    <LangVersion>latest</LangVersion>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <Deterministic>true</Deterministic>
+    <Features>strict</Features>
+  </PropertyGroup>
+  
+</Project>

@@ -1,11 +1,9 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using YAXLib;
+﻿using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
     [ShowInDemoApplication]
+
     [YAXComment("This example is our basic hypothetical warehouse")]
     public class WarehouseSimple
     {
@@ -20,11 +18,11 @@ namespace YAXLibTests.SampleClasses
 
         public static WarehouseSimple GetSampleInstance()
         {
-            var w = new WarehouseSimple
+            WarehouseSimple w = new WarehouseSimple()
             {
                 Name = "Foo Warehousing Ltd.",
                 Address = "No. 10, Some Ave., Some City, Some Country",
-                Area = 120000.50 // square meters
+                Area = 120000.50, // square meters
             };
 
             return w;

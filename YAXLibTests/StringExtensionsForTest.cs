@@ -1,6 +1,4 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
+﻿using System;
 using System.Text.RegularExpressions;
 
 namespace YAXLibTests

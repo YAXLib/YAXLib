@@ -1,47 +1,58 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
+﻿// Copyright 2009 - 2010 Sina Iravanian - <sina@sinairv.com>
+//
+// This source file(s) may be redistributed, altered and customized
+// by any means PROVIDING the authors name and all copyright
+// notices remain intact.
+// THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED. USE IT AT YOUR OWN RISK. THE AUTHOR ACCEPTS NO
+// LIABILITY FOR ANY DATA DAMAGE/LOSS THAT THIS PRODUCT MAY CAUSE.
+//-----------------------------------------------------------------------
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
+using System.Globalization;
+using System.Collections;
 using System.Reflection;
 
 namespace YAXLib
 {
     /// <summary>
-    ///     A utility class for reflection related stuff
+    /// A utility class for reflection related stuff
     /// </summary>
     internal static class ReflectionUtils
     {
         /// <summary>
-        ///     Determines whether the specified type is basic type. A basic type is one that can be wholly expressed
-        ///     as an XML attribute. All primitive data types and type <c>string</c> and <c>DataTime</c> are basic.
+        /// Determines whether the specified type is basic type. A basic type is one that can be wholly expressed
+        /// as an XML attribute. All primitive data types and type <c>string</c> and <c>DataTime</c> are basic.
         /// </summary>
         /// <param name="t">The type to check.</param>
         /// <returns>
-        ///     <value><c>true</c> if the specified type is a basic type; otherwise, <c>false</c>.</value>
+        /// <value><c>true</c> if the specified type is a basic type; otherwise, <c>false</c>.</value>
         /// </returns>
         public static bool IsBasicType(Type t)
         {
-            if (t == typeof(string) || t.IsPrimitive() || t.IsEnum() || t == typeof(DateTime) || t == typeof(decimal) ||
+            if (t == typeof(string) || t.IsPrimitive || t.IsEnum || t == typeof(DateTime) || t == typeof(decimal) ||
                 t == typeof(Guid))
+            {
                 return true;
-
-            Type nullableValueType;
-            if (IsNullable(t, out nullableValueType))
-                return IsBasicType(nullableValueType);
-            return false;
+            }
+            else
+            {
+                Type nullableValueType;
+                if(IsNullable(t, out nullableValueType))
+                    return IsBasicType(nullableValueType);
+                return false;
+            }
         }
 
         /// <summary>
-        ///     Determines whether the specified type is array.
+        /// Determines whether the specified type is array.
         /// </summary>
         /// <param name="type">The type to check</param>
         /// <param name="elementType">Type of the containing element.</param>
         /// <returns>
-        ///     <value><c>true</c> if the specified type is array; otherwise, <c>false</c>.</value>
+        /// 	<value><c>true</c> if the specified type is array; otherwise, <c>false</c>.</value>
         /// </returns>
         public static bool IsArray(Type type, out Type elementType)
         {
@@ -50,23 +61,24 @@ namespace YAXLib
                 elementType = type.GetElementType();
                 return true;
             }
-
-            if (type == typeof(Array)) // i.e., a direct ref to System.Array
+            else if (type == typeof(Array)) // i.e., a direct ref to System.Array
             {
                 elementType = typeof(object);
                 return true;
             }
-
-            elementType = typeof(object);
-            return false;
+            else
+            {
+                elementType = typeof(object);
+                return false;
+            }
         }
 
         /// <summary>
-        ///     Determines whether the specified type is array.
+        /// Determines whether the specified type is array.
         /// </summary>
         /// <param name="type">The type to check.</param>
         /// <returns>
-        ///     <c>true</c> if the specified type is array; otherwise, <c>false</c>.
+        /// <c>true</c> if the specified type is array; otherwise, <c>false</c>.
         /// </returns>
         public static bool IsArray(Type type)
         {
@@ -75,7 +87,7 @@ namespace YAXLib
         }
 
         /// <summary>
-        ///     Gets the array dimensions.
+        /// Gets the array dimensions.
         /// </summary>
         /// <param name="ar">The array to return its dimensions.</param>
         /// <returns>the specified array's dimensions</returns>
@@ -84,9 +96,9 @@ namespace YAXLib
             int[] dims = null;
             if (IsArray(ar.GetType()))
             {
-                var arObj = ar as Array;
+                var arObj = ar as System.Array;
                 dims = new int[arObj.Rank];
-                for (var i = 0; i < dims.Length; i++)
+                for (int i = 0; i < dims.Length; i++)
                     dims[i] = arObj.GetLength(i);
             }
 
@@ -94,78 +106,102 @@ namespace YAXLib
         }
 
         /// <summary>
-        ///     Gets the friendly name for the type. Recommended for generic types.
+        /// Gets the friendly name for the type. Recommended for generic types.
         /// </summary>
         /// <param name="type">The type to get its friendly name</param>
         /// <returns>The friendly name for the type</returns>
         public static string GetTypeFriendlyName(Type type)
         {
-            if (type == null) throw new ArgumentNullException("type");
-
-            var name = type.Name;
-            if (type.IsGenericType())
+            if (type == null)
             {
-                var backqIndex = name.IndexOf('`');
+                throw new ArgumentNullException("type");
+            }
+
+            string name = type.Name;
+            if (type.IsGenericType)
+            {
+                int backqIndex = name.IndexOf('`');
                 if (backqIndex == 0)
-                    throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, "Bad type name: {0}",
-                        name));
-                if (backqIndex > 0) name = name.Substring(0, backqIndex);
+                {
+                    throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, "Bad type name: {0}", name));
+                }
+                else if (backqIndex > 0)
+                {
+                    name = name.Substring(0, backqIndex);
+                }
 
                 name += "Of";
 
-                foreach (var genType in type.GetGenericArguments()) name += GetTypeFriendlyName(genType);
+                foreach (var genType in type.GetGenericArguments())
+                {
+                    name += GetTypeFriendlyName(genType);
+                }
             }
             else if (type.IsArray)
             {
-                var t = type.GetElementType();
-                name = string.Format(CultureInfo.InvariantCulture, "Array{0}Of{1}", type.GetArrayRank(),
-                    GetTypeFriendlyName(t));
+                Type t = type.GetElementType();
+                name = string.Format(CultureInfo.InvariantCulture, "Array{0}Of{1}", type.GetArrayRank(), GetTypeFriendlyName(t));
             }
 
             return name;
         }
 
         /// <summary>
-        ///     Determines whether the type specified contains generic parameters or not.
+        /// Determines whether the type specified contains generic parameters or not.
         /// </summary>
         /// <param name="type">The type to check.</param>
         /// <returns>
-        ///     <value><c>true</c> if the type contains generic parameters; otherwise,<c>false</c>.</value>
+        /// <value><c>true</c> if the type contains generic parameters; otherwise,<c>false</c>.</value>
         /// </returns>
         public static bool TypeContainsGenericParameters(Type type)
         {
-            if (type == null) throw new ArgumentNullException("type");
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
 
-            if (type.IsGenericType())
-                foreach (var genType in type.GetGenericArguments())
+            if (type.IsGenericType)
+            {
+                foreach (Type genType in type.GetGenericArguments())
+                {
                     if (genType.IsGenericParameter)
+                    {
                         return true;
-                    else if (TypeContainsGenericParameters(genType)) return true;
+                    }
+                    else if (TypeContainsGenericParameters(genType))
+                    {
+                        return true;
+                    }
+                }
+            }
 
             return false;
         }
 
         /// <summary>
-        ///     Determines whether the specified type is a collection type, i.e., it implements IEnumerable.
-        ///     Although System.String is derived from IEnumerable, it is considered as an exception.
+        /// Determines whether the specified type is a collection type, i.e., it implements IEnumerable.
+        /// Although System.String is derived from IEnumerable, it is considered as an exception.
         /// </summary>
         /// <param name="type">The type to check.</param>
         /// <returns>
-        ///     <value><c>true</c> if the specified type is a collection type; otherwise, <c>false</c>.</value>
+        /// <value><c>true</c> if the specified type is a collection type; otherwise, <c>false</c>.</value>
         /// </returns>
         public static bool IsCollectionType(Type type)
         {
-            if (type == typeof(string)) return false;
+            if (type == typeof(string))
+            {
+                return false;
+            }
 
             return IsIEnumerable(type);
         }
 
         /// <summary>
-        ///     Determines whether the specified type has implemented or is an <c>IEnumerable</c> or <c>IEnumerable&lt;&gt;</c>
+        /// Determines whether the specified type has implemented or is an <c>IEnumerable</c> or <c>IEnumerable&lt;&gt;</c>
         /// </summary>
         /// <param name="type">The type to check.</param>
         /// <returns>
-        ///     <value><c>true</c> if the specified type is enumerable; otherwise, <c>false</c>.</value>
+        /// 	<value><c>true</c> if the specified type is enumerable; otherwise, <c>false</c>.</value>
         /// </returns>
         public static bool IsIEnumerable(Type type)
         {
@@ -173,34 +209,36 @@ namespace YAXLib
             return IsIEnumerable(type, out seqType);
         }
 
-        public static bool IsDerivedFromGenericInterfaceType(Type givenType, Type genericInterfaceType,
-            out Type genericType)
+        public static bool IsDerivedFromGenericInterfaceType(Type givenType, Type genericInterfaceType, out Type genericType)
         {
             genericType = null;
-            if ((givenType.IsClass() || givenType.IsValueType()) && !givenType.IsAbstract())
-                foreach (var interfaceType in givenType.GetInterfaces())
-                    if (interfaceType.IsGenericType() &&
+            if ((givenType.IsClass || givenType.IsValueType) && !givenType.IsAbstract)
+            {
+                foreach (Type interfaceType in givenType.GetInterfaces())
+                {
+                    if (interfaceType.IsGenericType &&
                         interfaceType.GetGenericTypeDefinition() == genericInterfaceType)
                     {
-                        var genArgs = interfaceType.GetGenericArguments();
+                        Type[] genArgs = interfaceType.GetGenericArguments();
                         if (genArgs.Length != 1)
                             return false;
 
                         genericType = genArgs[0];
                         return true;
                     }
-
+                }
+            }
             return false;
         }
 
 
         /// <summary>
-        ///     Determines whether the specified type has implemented or is an <c>IEnumerable</c> or <c>IEnumerable&lt;&gt;</c> .
+        /// Determines whether the specified type has implemented or is an <c>IEnumerable</c> or <c>IEnumerable&lt;&gt;</c> .
         /// </summary>
         /// <param name="type">The type to check.</param>
         /// <param name="seqType">Type of the sequence items.</param>
         /// <returns>
-        ///     <value><c>true</c> if the specified type is enumerable; otherwise, <c>false</c>.</value>
+        /// <value><c>true</c> if the specified type is enumerable; otherwise, <c>false</c>.</value>
         /// </returns>
         public static bool IsIEnumerable(Type type, out Type seqType)
         {
@@ -212,19 +250,20 @@ namespace YAXLib
             if (type == typeof(IEnumerable))
                 return true;
 
-            var isNongenericEnumerable = false;
+            bool isNongenericEnumerable = false;
 
-            if (type.IsInterface() && type.IsGenericType() && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            if (type.IsInterface && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
             {
                 seqType = type.GetGenericArguments()[0];
                 return true;
             }
 
-            foreach (var interfaceType in type.GetInterfaces())
-                if (interfaceType.IsGenericType() &&
+            foreach (Type interfaceType in type.GetInterfaces())
+            {
+                if (interfaceType.IsGenericType &&
                     interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                 {
-                    var genArgs = interfaceType.GetGenericArguments();
+                    Type[] genArgs = interfaceType.GetGenericArguments();
                     seqType = genArgs[0];
                     return true;
                 }
@@ -232,6 +271,7 @@ namespace YAXLib
                 {
                     isNongenericEnumerable = true;
                 }
+            }
 
             // the second case is a direct reference to IEnumerable
             if (isNongenericEnumerable || type == typeof(IEnumerable))
@@ -244,76 +284,86 @@ namespace YAXLib
         }
 
         /// <summary>
-        ///     Gets the type of the items of a collection type.
+        /// Gets the type of the items of a collection type.
         /// </summary>
         /// <param name="type">The type of the collection.</param>
         /// <returns>The type of the items of a collection type.</returns>
         public static Type GetCollectionItemType(Type type)
         {
-            var itemType = typeof(object);
+            Type itemType = typeof(object);
             if (IsIEnumerable(type, out itemType))
                 return itemType;
-            throw new Exception("The specified type must be a collection");
+            else
+                throw new Exception("The specified type must be a collection");
         }
 
         /// <summary>
-        ///     Determines whether the specified type has implemented <c>IList</c>.
+        /// Determines whether the specified type has implemented <c>IList</c>.
         /// </summary>
         /// <param name="type">The type to check.</param>
         /// <returns>
-        ///     <value><c>true</c> if the specified type has implemented <c>IList</c>; otherwise, <c>false</c>.</value>
+        /// <value><c>true</c> if the specified type has implemented <c>IList</c>; otherwise, <c>false</c>.</value>
         /// </returns>
         public static bool IsIList(Type type)
         {
             // a direct reference to the interface itself is also OK.
-            if (type.IsInterface() && type.GetGenericTypeDefinition() == typeof(IList<>)) return true;
+            if (type.IsInterface && type.GetGenericTypeDefinition() == typeof(IList<>))
+            {
+                return true;
+            }
 
-            foreach (var interfaceType in type.GetInterfaces())
-                if (interfaceType.IsGenericType() &&
+            foreach (Type interfaceType in type.GetInterfaces())
+            {
+                if (interfaceType.IsGenericType &&
                     interfaceType.GetGenericTypeDefinition() == typeof(IList<>))
+                {
                     return true;
+                }
+            }
 
             return false;
         }
 
         /// <summary>
-        ///     Determines whether the specified type has implemented the <c>ICollection</c> interface.
+        /// Determines whether the specified type has implemented the <c>ICollection</c> interface.
         /// </summary>
         /// <param name="type">The type to check.</param>
         /// <param name="itemType">Type of the member items.</param>
         /// <returns>
-        ///     <value><c>true</c> if the specified type has implemented the <c>ICollection</c> interface; otherwise, <c>false</c>.</value>
+        /// <value><c>true</c> if the specified type has implemented the <c>ICollection</c> interface; otherwise, <c>false</c>.</value>
         /// </returns>
         public static bool IsICollection(Type type, out Type itemType)
         {
             itemType = typeof(object);
 
             // a direct reference to the interface itself is also OK.
-            if (type.IsInterface() && type.GetGenericTypeDefinition() == typeof(ICollection<>))
+            if (type.IsInterface && type.GetGenericTypeDefinition() == typeof(ICollection<>))
             {
                 itemType = type.GetGenericArguments()[0];
                 return true;
             }
 
-            foreach (var interfaceType in type.GetInterfaces())
-                if (interfaceType.IsGenericType() &&
+            foreach (Type interfaceType in type.GetInterfaces())
+            {
+                if (interfaceType.IsGenericType &&
                     interfaceType.GetGenericTypeDefinition() == typeof(ICollection<>))
                 {
                     itemType = interfaceType.GetGenericArguments()[0];
                     return true;
                 }
+            }
 
             return false;
         }
 
         /// <summary>
-        ///     Determines whether the specified type is a generic dictionary.
+        /// Determines whether the specified type is a generic dictionary.
         /// </summary>
         /// <param name="type">The type to check.</param>
         /// <param name="keyType">Type of the key.</param>
         /// <param name="valueType">Type of the value.</param>
         /// <returns>
-        ///     <value><c>true</c> if the specified type has implemented the IDictionary interface; otherwise, <c>false</c>.</value>
+        /// <value><c>true</c> if the specified type has implemented the IDictionary interface; otherwise, <c>false</c>.</value>
         /// </returns>
         public static bool IsIDictionary(Type type, out Type keyType, out Type valueType)
         {
@@ -321,33 +371,35 @@ namespace YAXLib
             valueType = typeof(object);
 
             // a direct reference to the interface itself is also OK.
-            if (type.IsInterface() && type.IsGenericType() && type.GetGenericTypeDefinition() == typeof(IDictionary<,>))
+            if (type.IsInterface && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IDictionary<,>))
             {
-                var genArgs = type.GetGenericArguments();
+                Type[] genArgs = type.GetGenericArguments();
                 keyType = genArgs[0];
                 valueType = genArgs[1];
                 return true;
             }
 
-            foreach (var interfaceType in type.GetInterfaces())
-                if (interfaceType.IsGenericType() &&
+            foreach (Type interfaceType in type.GetInterfaces())
+            {
+                if (interfaceType.IsGenericType &&
                     interfaceType.GetGenericTypeDefinition() == typeof(IDictionary<,>))
                 {
-                    var genArgs = interfaceType.GetGenericArguments();
+                    Type[] genArgs = interfaceType.GetGenericArguments();
                     keyType = genArgs[0];
                     valueType = genArgs[1];
                     return true;
                 }
+            }
 
             return false;
         }
 
         /// <summary>
-        ///     Determines whether the specified type is a generic dictionary.
+        /// Determines whether the specified type is a generic dictionary.
         /// </summary>
         /// <param name="type">The type to check.</param>
         /// <returns>
-        ///     <value><c>true</c> if the specified type is dictionary; otherwise, <c>false</c>.</value>
+        /// <value><c>true</c> if the specified type is dictionary; otherwise, <c>false</c>.</value>
         /// </returns>
         public static bool IsIDictionary(Type type)
         {
@@ -356,28 +408,35 @@ namespace YAXLib
         }
 
         /// <summary>
-        ///     Determines whether the specified type is a non generic IDictionary, e.g., a Hashtable.
+        /// Determines whether the specified type is a non generic IDictionary, e.g., a Hashtable.
         /// </summary>
         /// <param name="type">The type to check.</param>
         /// <returns>
-        ///     <c>true</c> if the specified type is a non generic IDictionary; otherwise, <c>false</c>.
+        /// 	<c>true</c> if the specified type is a non generic IDictionary; otherwise, <c>false</c>.
         /// </returns>
         public static bool IsNonGenericIDictionary(Type type)
         {
             // a direct reference to the interface itself is also OK.
-            if (type == typeof(IDictionary)) return true;
+            if (type == typeof(IDictionary))
+            {
+                return true;
+            }
 
-            foreach (var interfaceType in type.GetInterfaces())
+            foreach (Type interfaceType in type.GetInterfaces())
+            {
                 if (interfaceType == typeof(IDictionary))
+                {
                     return true;
+                }
+            }
 
             return false;
         }
 
         /// <summary>
-        ///     Determines whether the specified type is equal to this type,
-        ///     or is a nullable of this type, or this type is a nullable of
-        ///     the other type.
+        /// Determines whether the specified type is equal to this type,
+        /// or is a nullable of this type, or this type is a nullable of 
+        /// the other type.
         /// </summary>
         /// <param name="self"></param>
         /// <param name="other"></param>
@@ -398,27 +457,25 @@ namespace YAXLib
         }
 
         /// <summary>
-        ///     Determines whether the specified type is equal or inherited from another specified type.
+        /// Determines whether the specified type is equal or inherited from another specified type.
         /// </summary>
         /// <param name="type">The type to check.</param>
-        /// <param name="baseType">
-        ///     Another type that the specified type is checked whether it is equal or
-        ///     has been driven from.
-        /// </param>
+        /// <param name="baseType">Another type that the specified type is checked whether it is equal or
+        /// has been driven from.</param>
         /// <returns>
-        ///     <c>true</c> if the specified type is equal or inherited from another specified type; otherwise, <c>false</c>.
+        /// 	<c>true</c> if the specified type is equal or inherited from another specified type; otherwise, <c>false</c>.
         /// </returns>
         public static bool IsTypeEqualOrInheritedFromType(Type type, Type baseType)
         {
             if (type == baseType)
                 return true;
 
-            var isTypeGenDef = type.IsGenericTypeDefinition();
-            var isBaseGenDef = baseType.IsGenericTypeDefinition();
+            bool isTypeGenDef = type.IsGenericTypeDefinition;
+            bool isBaseGenDef = baseType.IsGenericTypeDefinition;
             Type[] typeGenArgs = null;
             Type[] baseGenArgs = null;
 
-            if (type.IsGenericType())
+            if (type.IsGenericType)
             {
                 if (isBaseGenDef)
                 {
@@ -434,7 +491,7 @@ namespace YAXLib
                 }
             }
 
-            if (baseType.IsGenericType())
+            if (baseType.IsGenericType)
             {
                 if (isTypeGenDef)
                 {
@@ -453,48 +510,54 @@ namespace YAXLib
             if (type == baseType)
                 return true;
 
-            if (typeGenArgs != null && baseGenArgs != null)
+            if(typeGenArgs != null && baseGenArgs != null)
             {
-                if (typeGenArgs.Length != baseGenArgs.Length)
+                if(typeGenArgs.Length != baseGenArgs.Length)
                     return false;
 
-                for (var i = 0; i < typeGenArgs.Length; i++)
+                for(int i = 0; i < typeGenArgs.Length; i++)
+                {
                     // TODO: check if I should call this method for type args recersively
                     if (typeGenArgs[i] != baseGenArgs[i])
                         return false;
+                }
             }
 
-            if (baseType.IsInterface())
+            if (baseType.IsInterface)
             {
                 foreach (var iface in type.GetInterfaces())
+                {
                     if (iface.Name == baseType.Name)
                         return true;
+                }
                 return false;
             }
-
-            var curBaseType = type.BaseType();
-            while (curBaseType != null)
+            else
             {
-                if (curBaseType.Name == baseType.Name)
-                    return true;
+                Type curBaseType = type.BaseType;
+                while (curBaseType != null)
+                {
+                    if (curBaseType.Name == baseType.Name)
+                        return true;
 
-                curBaseType = curBaseType.BaseType();
+                    curBaseType = curBaseType.BaseType;
+                }
+
+                return false;
             }
-
-            return false;
         }
 
         /// <summary>
-        ///     Determines whether the specified type is nullable.
+        /// Determines whether the specified type is nullable.
         /// </summary>
         /// <param name="type">The type to check.</param>
         /// <param name="valueType">The value type of the corresponding nullable type.</param>
         /// <returns>
-        ///     <c>true</c> if the specified type is nullable; otherwise, <c>false</c>.
+        /// <c>true</c> if the specified type is nullable; otherwise, <c>false</c>.
         /// </returns>
         public static bool IsNullable(Type type, out Type valueType)
         {
-            if (type.IsGenericType() && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
                 valueType = type.GetGenericArguments()[0];
                 return true;
@@ -505,11 +568,11 @@ namespace YAXLib
         }
 
         /// <summary>
-        ///     Determines whether the specified type is nullable.
+        /// Determines whether the specified type is nullable.
         /// </summary>
         /// <param name="type">The type to check.</param>
         /// <returns>
-        ///     <c>true</c> if the specified type is nullable; otherwise, <c>false</c>.
+        /// <c>true</c> if the specified type is nullable; otherwise, <c>false</c>.
         /// </returns>
         public static bool IsNullable(Type type)
         {
@@ -518,31 +581,38 @@ namespace YAXLib
         }
 
         /// <summary>
-        ///     Determines whether the specified type implements <c>IFormattable</c>
+        /// Determines whether the specified type implements <c>IFormattable</c>
         /// </summary>
         /// <param name="type">The type to check.</param>
         /// <returns>
-        ///     <c>true</c> if the specified type implements <c>IFormattable</c>; otherwise, <c>false</c>.
+        /// 	<c>true</c> if the specified type implements <c>IFormattable</c>; otherwise, <c>false</c>.
         /// </returns>
         public static bool IsIFormattable(Type type)
         {
             // a direct reference to the interface itself is also OK.
-            if (type == typeof(IFormattable)) return true;
+            if (type == typeof(IFormattable))
+            {
+                return true;
+            }
 
-            foreach (var interfaceType in type.GetInterfaces())
+            foreach (Type interfaceType in type.GetInterfaces())
+            {
                 if (interfaceType == typeof(IFormattable))
+                {
                     return true;
+                }
+            }
 
             return false;
         }
 
         /// <summary>
-        ///     Determines whether the type provides the functionality
-        ///     to format the value of an object into a string representation.
+        /// Determines whether the type provides the functionality 
+        /// to format the value of an object into a string representation.
         /// </summary>
         /// <param name="type">The type to check.</param>
         /// <returns>
-        ///     <value><c>true</c> if the specified type impliments the <c>IFormattable</c> interface; otherwise, <c>false</c>.</value>
+        /// <value><c>true</c> if the specified type impliments the <c>IFormattable</c> interface; otherwise, <c>false</c>.</value>
         /// </returns>
         public static bool IsStringConvertibleIFormattable(Type type)
         {
@@ -550,46 +620,58 @@ namespace YAXLib
             // accept parameterless ToString
             // accept ctor of string
             if (IsIFormattable(type) && !HasOneReadWriteProperty(type))
-                if (null != type.GetConstructor(new[] {typeof(string)}))
+            {
+                if (null != type.GetConstructor(new Type[] { typeof(string) }))
+                {
                     if (null != type.GetMethod("ToString", new Type[0]) &&
-                        null != type.GetMethod("ToString", new[] {typeof(string)}))
+                        null != type.GetMethod("ToString", new Type[] { typeof(string) })) 
+                    {
                         return true;
+                    }
+                }
+            }
 
             return false;
         }
 
         /// <summary>
-        ///     Checks to see if the specified type has readable and writable properties.
+        /// Checks to see if the specified type has readable and writable properties.
         /// </summary>
         /// <param name="type">The type to check for.</param>
-        /// <returns>
-        ///     <value><c>true</c> if the specified type has readable and writable properties; otherwise, <c>false</c>.</value>
-        /// </returns>
+        /// <returns><value><c>true</c> if the specified type has readable and writable properties; otherwise, <c>false</c>.</value></returns>
         public static bool HasOneReadWriteProperty(Type type)
         {
-            var props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var pi in props)
+            PropertyInfo[] props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (PropertyInfo pi in props)
+            {
                 if (pi.CanRead && pi.CanWrite)
                 {
-                    var getPi = pi.GetGetMethod(false);
-                    var setPi = pi.GetSetMethod(false);
-                    if (setPi != null && getPi != null) return true;
+                    MethodInfo getPi = pi.GetGetMethod(false);
+                    MethodInfo setPi = pi.GetSetMethod(false);
+                    if (setPi != null && getPi != null)
+                    {
+                        return true;
+                    }
                 }
+            }
 
             return false;
         }
 
         /// <summary>
-        ///     Tries to format the specified object using the format string provided.
-        ///     If the formatting operation is not applicable, the source object is returned intact.
-        ///     Note: The type of the returned object will be 'System.String' if formatting succeeds.
+        /// Tries to format the specified object using the format string provided.
+        /// If the formatting operation is not applicable, the source object is returned intact.
+        /// Note: The type of the returned object will be 'System.String' if formatting succeeds.
         /// </summary>
         /// <param name="src">The source object.</param>
         /// <param name="format">The format string.</param>
         /// <returns><code>System.String</code> if the format is successful; otherwise, the original object</returns>
         public static object TryFormatObject(object src, string format)
         {
-            if (format == null || src == null) return src;
+            if (format == null || src == null)
+            {
+                return src;
+            }
 
             object formattedObject = null;
 
@@ -609,8 +691,8 @@ namespace YAXLib
         }
 
         /// <summary>
-        ///     Converts the specified object from a basic type to another type as specified.
-        ///     It is meant by basic types, primitive data types, strings, and enums.
+        /// Converts the specified object from a basic type to another type as specified.
+        /// It is meant by basic types, primitive data types, strings, and enums.
         /// </summary>
         /// <param name="value">The object to be converted.</param>
         /// <param name="dstType">the destination type of conversion.</param>
@@ -618,9 +700,9 @@ namespace YAXLib
         public static object ConvertBasicType(object value, Type dstType)
         {
             object convertedObj = null;
-            if (dstType.IsEnum())
+            if (dstType.IsEnum)
             {
-                var typeWrapper = TypeWrappersPool.Pool.GetTypeWrapper(dstType, null);
+                UdtWrapper typeWrapper = TypeWrappersPool.Pool.GetTypeWrapper(dstType, null);
                 convertedObj = typeWrapper.EnumWrapper.ParseAlias(value.ToString());
             }
             else if (dstType == typeof(DateTime))
@@ -629,25 +711,21 @@ namespace YAXLib
             }
             else if (dstType == typeof(decimal))
             {
-                // to fix the asymmetry of used locales for this type between serialization and deserialization
+                // to fix the asymetry of used locales for this type between serialization and deseralization
                 convertedObj = Convert.ChangeType(value, dstType, CultureInfo.InvariantCulture);
             }
             else if (dstType == typeof(bool))
             {
-                var strValue = value.ToString().Trim().ToLower();
+                string strValue = value.ToString().Trim().ToLower();
                 if (strValue == "false" || strValue == "no" || strValue == "0")
-                {
                     convertedObj = false;
-                }
                 else if (strValue == "true" || strValue == "yes" || strValue == "1")
-                {
                     convertedObj = true;
-                }
                 else
                 {
-                    var boolIntValue = 0;
+                    int boolIntValue = 0;
                     if (int.TryParse(strValue, out boolIntValue))
-                        convertedObj = boolIntValue != 0;
+                        convertedObj = boolIntValue == 0 ? false : true;
                     else
                         throw new Exception("The specified value is not recognized as boolean: " + strValue);
                 }
@@ -674,23 +752,23 @@ namespace YAXLib
         }
 
         /// <summary>
-        ///     Searches all loaded assemblies to find a type with a special name.
+        /// Searches all loaded assemblies to find a type with a special name.
         /// </summary>
         /// <param name="name">The name of the type to find.</param>
-        /// <returns><see cref="Type"/> found using the specified name</returns>
+        /// <returns>type found using the specified name</returns>
         public static Type GetTypeByName(string name)
         {
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
             // first search the 1st assembly (i.e. the mscorlib), then start from the last assembly backward, 
             // the last assemblies are user defined ones
-            for (var i = assemblies.Length; i > 0; i--)
+            for(int i = assemblies.Length; i > 0; i--)
             {
-                var curAssembly = i == assemblies.Length ? assemblies[0] : assemblies[i];
+                Assembly curAssembly = (i == assemblies.Length) ? assemblies[0] : assemblies[i];
 
                 try
                 {
-                    var type = curAssembly.GetType(name, false, true);
+                    Type type = curAssembly.GetType(name, false, true);
                     if (type != null)
                         return type;
                 }
@@ -703,41 +781,29 @@ namespace YAXLib
         }
 
         /// <summary>
-        ///     Determines whether the specified property is public.
+        /// Determines whether the specified property is public.
         /// </summary>
         /// <param name="pi">The property.</param>
         /// <returns>
-        ///     <c>true</c> if the specified property is public; otherwise, <c>false</c>.
+        /// <c>true</c> if the specified property is public; otherwise, <c>false</c>.
         /// </returns>
         public static bool IsPublicProperty(PropertyInfo pi)
         {
-            foreach (var m in pi.GetAccessors())
-                if (m.IsPublic)
+            foreach(var m in pi.GetAccessors())
+                if(m.IsPublic) 
                     return true;
 
             return false;
         }
 
-        /// <summary>
-        ///     Test whether the <see cref="MemberInfo"/> parameter is part of a .NET module.
-        /// </summary>
-        /// <remarks>
-        ///     Might require modifications when supporting future versions of .NET.
-        /// </remarks>
-        /// <param name="memberInfo"></param>
-        /// <returns>Returns <see langword="true"/>, if the <see cref="MemberInfo"/> parameter is part of a .NET module, else <see langword="false"/>.</returns>
         public static bool IsPartOfNetFx(MemberInfo memberInfo)
         {
-            var moduleName = memberInfo.Module.Name;
-#if NETSTANDARD || NET5_0
-            return moduleName.StartsWith("System.", StringComparison.OrdinalIgnoreCase) ||
-                   moduleName.StartsWith("mscorlib.", StringComparison.OrdinalIgnoreCase) ||
-                   moduleName.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase);
-#else
-            return moduleName.Equals("mscorlib.dll", StringComparison.OrdinalIgnoreCase)
-                   || moduleName.Equals("System.dll", StringComparison.OrdinalIgnoreCase)
-                   || moduleName.Equals("System.Core.dll", StringComparison.OrdinalIgnoreCase);
-#endif
+            object[] attributes = memberInfo.Module.Assembly.GetCustomAttributes(typeof(AssemblyCompanyAttribute), true);
+            if (attributes.Length == 0)
+                return false;
+
+            var attribute = (AssemblyCompanyAttribute)attributes[0];
+            return attribute.Company != null && attribute.Company.Equals("Microsoft Corporation", StringComparison.OrdinalIgnoreCase);
         }
 
         public static bool IsInstantiableCollection(Type colType)
@@ -747,22 +813,21 @@ namespace YAXLib
 
         public static T InvokeGetProperty<T>(object srcObj, string propertyName)
         {
-            return (T) srcObj.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance)
-                ?.GetValue(srcObj, null);
+            return (T) srcObj.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance).GetValue(srcObj, null);
             //return (T)srcObj.GetType().InvokeMember(propertyName, BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance, null, srcObj, null);
         }
 
         public static T InvokeIntIndexer<T>(object srcObj, string propertyName, int index)
         {
-            var pi = srcObj.GetType().GetProperty("Item", new[] {typeof(int)});
-            return (T) pi.GetValue(srcObj, new object[] {index});
+            var pi = srcObj.GetType().GetProperty("Item", new [] { typeof(int) });
+            return (T) pi.GetValue(srcObj, new object[] { index });
         }
 
         public static object InvokeStaticMethod(Type type, string methodName, params object[] args)
         {
             var argTypes = args.Select(x => x.GetType()).ToArray();
             var method = type.GetMethod(methodName, argTypes);
-            var result = method?.Invoke(null, args);
+            var result = method.Invoke(null, args);
             return result;
         }
 
@@ -770,7 +835,7 @@ namespace YAXLib
         {
             var argTypes = args.Select(x => x.GetType()).ToArray();
             var method = srcObj.GetType().GetMethod(methodName, argTypes);
-            var result = method?.Invoke(srcObj, args);
+            var result = method.Invoke(srcObj, args);
             return result;
         }
     }

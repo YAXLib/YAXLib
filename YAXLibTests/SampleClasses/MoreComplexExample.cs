@@ -1,36 +1,42 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using YAXLib;
+using System.Collections;
 
 namespace YAXLibTests.SampleClasses
 {
     [ShowInDemoApplication]
+
     [YAXComment(@"This example tries to show almost all features of YAXLib which were not shown before.
       FamousPoints - shows a dictionary with a non-primitive value member.
       IntEnumerable - shows serializing properties of type IEnumerable<>
       Students - shows the usage of YAXNotCollection attribute")]
     public class MoreComplexExample
     {
-        private List<int> m_lst = new List<int>();
-
         [YAXDictionary(EachPairName = "PointInfo", KeyName = "PName",
             ValueName = "ThePoint", SerializeKeyAs = YAXNodeTypes.Attribute,
             SerializeValueAs = YAXNodeTypes.Attribute)]
         public Dictionary<string, MyPoint> FamousPoints { get; set; }
 
+        private List<int> m_lst = new List<int>();
+
         public IEnumerable<int> IntEnumerable
         {
-            get { return m_lst; }
+            get
+            {
+                return m_lst;
+            }
 
-            set { m_lst = value.ToList(); }
+            set
+            {
+                m_lst = value.ToList();
+            }
         }
 
-        [YAXNotCollection] public Students Students { get; set; }
+        [YAXNotCollection]
+        public Students Students { get; set; }
 
         public override string ToString()
         {
@@ -39,14 +45,14 @@ namespace YAXLibTests.SampleClasses
 
         public static MoreComplexExample GetSampleInstance()
         {
-            var famPoints = new Dictionary<string, MyPoint>();
-            famPoints.Add("Center", new MyPoint {X = 0, Y = 0});
-            famPoints.Add("Q1", new MyPoint {X = 1, Y = 1});
-            famPoints.Add("Q2", new MyPoint {X = -1, Y = 1});
+            Dictionary<string, MyPoint> famPoints = new Dictionary<string, MyPoint>();
+            famPoints.Add("Center", new MyPoint() { X = 0, Y = 0 });
+            famPoints.Add("Q1", new MyPoint() { X = 1, Y = 1 });
+            famPoints.Add("Q2", new MyPoint() { X = -1, Y = 1 });
 
-            int[] nArray = {1, 3, 5, 7};
+            int[] nArray = new int[] { 1, 3, 5, 7 };
 
-            return new MoreComplexExample
+            return new MoreComplexExample()
             {
                 FamousPoints = famPoints,
                 Students = Students.GetSampleInstance(),
@@ -57,9 +63,11 @@ namespace YAXLibTests.SampleClasses
 
     public class MyPoint
     {
-        [YAXAttributeForClass] public int X { get; set; }
+        [YAXAttributeForClass]
+        public int X { get; set; }
 
-        [YAXAttributeForClass] public int Y { get; set; }
+        [YAXAttributeForClass]
+        public int Y { get; set; }
 
         public override string ToString()
         {
@@ -74,6 +82,37 @@ namespace YAXLibTests.SampleClasses
         public string[] Names { get; set; }
 
         public string[] Families { get; set; }
+
+        public string GetAt(int i)
+        {
+            return string.Format("{0}, {1}", Families[i], Names[i]);
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine(string.Format("Count = {0}", Count));
+            sb.AppendLine(string.Format("Names: "));
+            foreach (string str in Names)
+                sb.Append(str + "  ");
+
+            sb.AppendLine(string.Format("Families: "));
+            foreach (string str in Families)
+                sb.Append(str + "  ");
+
+            return sb.ToString();
+        }
+
+        public static Students GetSampleInstance()
+        {
+            return new Students()
+            {
+                Count = 3,
+                Names = new string[] { "Ali", "Dave", "John" },
+                Families = new string[] { "Alavi", "Black", "Doe" }
+            };
+        }
 
         #region IEnumerable<string> Members
 
@@ -92,44 +131,12 @@ namespace YAXLibTests.SampleClasses
         }
 
         #endregion
-
-        public string GetAt(int i)
-        {
-            return string.Format("{0}, {1}", Families[i], Names[i]);
-        }
-
-        public override string ToString()
-        {
-            var sb = new StringBuilder();
-
-            sb.AppendLine(string.Format("Count = {0}", Count));
-            sb.AppendLine("Names: ");
-            foreach (var str in Names)
-                sb.Append(str + "  ");
-
-            sb.AppendLine("Families: ");
-            foreach (var str in Families)
-                sb.Append(str + "  ");
-
-            return sb.ToString();
-        }
-
-        public static Students GetSampleInstance()
-        {
-            return new Students
-            {
-                Count = 3,
-                Names = new[] {"Ali", "Dave", "John"},
-                Families = new[] {"Alavi", "Black", "Doe"}
-            };
-        }
     }
 
     public class StudentsEnumerator : IEnumerator<string>
     {
-        private readonly Students m_students;
-        private int counter = -1;
-
+        Students m_students = null;
+        int counter = -1;
         public StudentsEnumerator(Students studentsInstance)
         {
             m_students = studentsInstance;
@@ -138,7 +145,10 @@ namespace YAXLibTests.SampleClasses
 
         #region IEnumerator<string> Members
 
-        public string Current => m_students.GetAt(counter);
+        public string Current
+        {
+            get { return m_students.GetAt(counter); }
+        }
 
         #endregion
 
@@ -146,13 +156,17 @@ namespace YAXLibTests.SampleClasses
 
         public void Dispose()
         {
+
         }
 
         #endregion
 
         #region IEnumerator Members
 
-        object IEnumerator.Current => m_students.GetAt(counter);
+        object IEnumerator.Current
+        {
+            get { return m_students.GetAt(counter); }
+        }
 
         public bool MoveNext()
         {
@@ -169,4 +183,6 @@ namespace YAXLibTests.SampleClasses
 
         #endregion
     }
+
+
 }

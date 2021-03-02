@@ -1,24 +1,24 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 
 namespace YAXLibTests.SampleClasses
 {
     public class ListHolderClass
     {
+        public List<string> ListOfStrings { get; set; }
+
         public ListHolderClass()
         {
             ListOfStrings = new List<string>();
         }
 
-        public List<string> ListOfStrings { get; set; }
-
         public override string ToString()
         {
-            var sb = new StringBuilder();
-            foreach (var item in ListOfStrings) sb.AppendLine(item);
+            StringBuilder sb = new StringBuilder();
+            foreach (var item in ListOfStrings)
+            {
+                sb.AppendLine(item.ToString());
+            }
 
             return sb.ToString();
         }
@@ -32,5 +32,6 @@ namespace YAXLibTests.SampleClasses
 
             return inst;
         }
+
     }
 }

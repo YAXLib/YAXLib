@@ -1,7 +1,4 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using YAXLib;
 
 // test class created to discuss:
@@ -11,14 +8,9 @@ using YAXLib;
 namespace YAXLibTests.SampleClasses
 {
     [ShowInDemoApplication]
+
     public class DictionaryKeyValueAsInterface
     {
-        public DictionaryKeyValueAsInterface()
-        {
-            Attributes1 = new Dictionary<string, IParameter>();
-            Attributes2 = new Dictionary<IParameter, string>();
-        }
-
         [YAXComment("Values are serialized through a reference to their interface.")]
         [YAXErrorIfMissed(YAXExceptionTypes.Ignore)]
         [YAXDictionary(EachPairName = "attribute", KeyName = "key", SerializeKeyAs = YAXNodeTypes.Attribute)]
@@ -29,6 +21,13 @@ namespace YAXLibTests.SampleClasses
         [YAXDictionary(EachPairName = "Entry", ValueName = "value", SerializeValueAs = YAXNodeTypes.Attribute)]
         public Dictionary<IParameter, string> Attributes2 { get; set; }
 
+
+        public DictionaryKeyValueAsInterface()
+        {
+            Attributes1 = new Dictionary<string, IParameter>();
+            Attributes2 = new Dictionary<IParameter, string>();
+        }
+
         public override string ToString()
         {
             return GeneralToStringProvider.GeneralToString(this);
@@ -38,8 +37,8 @@ namespace YAXLibTests.SampleClasses
         {
             var test = new DictionaryKeyValueAsInterface();
 
-            test.Attributes1.Add("test", new GenericMessageParameter {Name = "name1", Type = "int", Body = "27"});
-            test.Attributes2.Add(new GenericMessageParameter {Name = "name2", Type = "str", Body = "30"}, "test");
+            test.Attributes1.Add("test", new GenericMessageParameter { Name = "name1", Type = "int", Body = "27" });
+            test.Attributes2.Add(new GenericMessageParameter { Name = "name2", Type = "str", Body = "30" }, "test");
 
             return test;
         }
@@ -73,4 +72,5 @@ namespace YAXLibTests.SampleClasses
     public class GenericMessageParameter : ParameterBase
     {
     }
+
 }

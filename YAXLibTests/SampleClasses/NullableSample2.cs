@@ -1,16 +1,15 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using System;
+﻿using System;
 using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
     public class NullableSample2
     {
-        [YAXAttributeForClass] public int? Number { get; set; }
+        [YAXAttributeForClass]
+        public int? Number { get; set; }
 
-        [YAXFormat("o")] public DateTime? DateTime { get; set; }
+        [YAXFormat("o")]
+        public DateTime? DateTime { get; set; }
 
         public decimal? Decimal { get; set; }
 
@@ -31,7 +30,7 @@ namespace YAXLibTests.SampleClasses
                 DateTime = new DateTime(624599050212345678, DateTimeKind.Utc),
                 Decimal = 1234.56789m,
                 Boolean = true,
-                Enum = Seasons.Third
+                Enum = Seasons.Third,
             };
         }
     }

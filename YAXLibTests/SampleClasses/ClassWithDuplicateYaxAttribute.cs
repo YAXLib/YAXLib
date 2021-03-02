@@ -1,11 +1,8 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using YAXLib;
+﻿using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
-    internal class ClassWithDuplicateYaxAttribute
+    class ClassWithDuplicateYaxAttribute
     {
         [YAXAttributeForClass]
         [YAXSerializeAs("test")]
@@ -17,7 +14,7 @@ namespace YAXLibTests.SampleClasses
 
         public static ClassWithDuplicateYaxAttribute GetSampleInstance()
         {
-            return new ClassWithDuplicateYaxAttribute
+            return new ClassWithDuplicateYaxAttribute()
             {
                 Test1 = "test1",
                 Test2 = "test2"

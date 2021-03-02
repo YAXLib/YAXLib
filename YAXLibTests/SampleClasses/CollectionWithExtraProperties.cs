@@ -1,7 +1,4 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace YAXLibTests.SampleClasses
 {
@@ -25,7 +22,8 @@ namespace YAXLibTests.SampleClasses
         public override string ToString()
         {
             return GeneralToStringProvider.GeneralToString(this) +
-                   string.Format("Property1: {0}, Property2: {1}", Property1, Property2);
+                string.Format("Property1: {0}, Property2: {1}", Property1, Property2);
         }
+
     }
 }

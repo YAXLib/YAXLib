@@ -1,7 +1,4 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using YAXLib;
+﻿using YAXLib;
 
 namespace YAXLibTests.SampleClasses.PolymorphicSerialization
 {
@@ -10,5 +7,6 @@ namespace YAXLibTests.SampleClasses.PolymorphicSerialization
         [YAXType(typeof(int), Alias = "SameAlias")]
         [YAXType(typeof(string), Alias = "SameAlias")]
         public object Object { get; set; }
+
     }
 }

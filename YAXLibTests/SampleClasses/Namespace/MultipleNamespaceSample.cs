@@ -1,7 +1,4 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using YAXLib;
+﻿using YAXLib;
 
 namespace YAXLibTests.SampleClasses.Namespace
 {
@@ -9,17 +6,20 @@ namespace YAXLibTests.SampleClasses.Namespace
     [YAXNamespace("ns1", "http://namespaces.org/ns1")]
     public class MultipleNamespaceSample
     {
-        public bool BoolItem { get; set; }
+        public bool BoolItem
+        { get; set; }
 
         [YAXNamespace("ns2", "http://namespaces.org/ns2")]
-        public string StringItem { get; set; }
+        public string StringItem
+        { get; set; }
 
         [YAXNamespace("ns3", "http://namespaces.org/ns3")]
-        public int IntItem { get; set; }
+        public int IntItem
+        { get; set; }
 
         public static MultipleNamespaceSample GetSampleInstance()
         {
-            return new MultipleNamespaceSample
+            return new MultipleNamespaceSample()
             {
                 BoolItem = true,
                 StringItem = "This is a test string",
@@ -31,5 +31,6 @@ namespace YAXLibTests.SampleClasses.Namespace
         {
             return GeneralToStringProvider.GeneralToString(this);
         }
-    }
+
+    }    
 }

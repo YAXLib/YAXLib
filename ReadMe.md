@@ -3,9 +3,9 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/ggown5b8ha8wnpf1/branch/master?svg=true)](https://ci.appveyor.com/project/SinaIravanian/yaxlib/branch/master) [![codecov](https://codecov.io/gh/YAXLib/YAXLib/branch/master/graph/badge.svg?token=9VHIEiyUt8)](https://codecov.io/gh/YAXLib/YAXLib) [![NuGet](https://img.shields.io/nuget/v/YAXLib.svg)](https://www.nuget.org/packages/YAXLib/)
 
-*YAXLib* is a flexible XML serialization library that lets developers design freely the XML file structure, choose among private and public fields to be serialized, and serialize all known collection classes and arrays (single-dimensional, multi-dimensional, and jagged arrays) in the .NET Framework. 
+*YAXLib* is a flexible XML serialization library that lets developers design freely the XML file structure, choose among private and public fields to be serialized, and serialize all known collection classes and arrays (single-dimensional, multi-dimensional, and jagged arrays) in the .NET Framework.
 
-*YAXLib* can be used as a powerful XML parser or generator, that exploits the object to XML mapping in the class definitions themselves. 
+*YAXLib* can be used as a powerful XML parser or generator, that exploits the object to XML mapping in the class definitions themselves.
 
 The exception handling policies and its missing data recovery capabilities makes *YAXLib* a reliable tool for XML configuration storage and retrieval.
 
@@ -25,7 +25,7 @@ The exception handling policies and its missing data recovery capabilities makes
 * Allowing the programmer to add comments for the elements in the XML result
 * and more ...
 
-See the accompanied demo application for an example of each functionality. 
+See the accompanied demo application for an example of each functionality.
 
 ## Documentation
 
@@ -187,4 +187,3 @@ Logo designed by [axuno gGmbH](https://github.com/axuno)
 YAXLib is hosted on [GitHub](https://github.com/sinairv/YAXLib).
 
 Copyright (c) 2009 - 2021 Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors - Licenced under [MIT](LICENSE.txt) 
-

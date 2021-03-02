@@ -1,7 +1,4 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using YAXLib;
 
@@ -10,7 +7,7 @@ namespace YAXLibTests.SampleClasses
     [YAXSerializeAs("issues")]
     public class IssuesSample
     {
-        [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement, EachElementName = "issue")]
+        [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement, EachElementName="issue")]
         public List<Issue> Issues { get; set; }
 
         [YAXSerializeAs("type")]
@@ -23,9 +20,9 @@ namespace YAXLibTests.SampleClasses
 
         public static IssuesSample GetSampleInstance()
         {
-            var issues = new List<Issue>();
+            List<Issue> issues = new List<Issue>();
 
-            var issue1 = new Issue
+            Issue issue1 = new Issue()
             {
                 IssueID = 425,
                 ProjectName = "Tech Pubs Box",
@@ -38,21 +35,20 @@ namespace YAXLibTests.SampleClasses
                 DueDate = new DateTime(2010, 5, 20),
                 CreatedOn = new DateTime(2010, 5, 20, 14, 19, 59, 700),
                 UpdatedOn = new DateTime(2010, 5, 20, 14, 20, 37, 700),
-                CustomFields = new List<CustomField>
-                {
+                CustomFields = new List<CustomField>() 
+                { 
                     new CustomField("Provided Steps to Reproduce", 69, "0"),
                     new CustomField("Steps to Reproduce", 71, ""),
                     new CustomField("Browser", 1, ""),
                     new CustomField("Platform", 77, "n/a"),
                     new CustomField("Workaround", 49, ""),
-                    new CustomField("Customer", 47, "")
+                    new CustomField("Customer", 47, ""),
                 }
             };
 
             issues.Add(issue1);
-            return new IssuesSample
-            {
-                Type = "array",
+            return new IssuesSample()
+            {   Type = "array",
                 Count = 22,
                 Issues = issues
             };
@@ -61,7 +57,8 @@ namespace YAXLibTests.SampleClasses
 
     public class Issue
     {
-        [YAXSerializeAs("id")] public int IssueID { get; set; }
+        [YAXSerializeAs("id")]
+        public int IssueID { get; set; }
 
         [YAXSerializeAs("name")]
         [YAXAttributeFor("project")]
@@ -79,11 +76,13 @@ namespace YAXLibTests.SampleClasses
         [YAXAttributeFor("tracker")]
         public int TrackerId { get; set; }
 
-        // do the same for status, priority, author
+             // do the same for status, priority, author
 
-        [YAXSerializeAs("subject")] public string Subject { get; set; }
+        [YAXSerializeAs("subject")]
+        public string Subject { get; set; }
 
-        [YAXSerializeAs("description")] public string Description { get; set; }
+        [YAXSerializeAs("description")]
+        public string Description { get; set; }
 
         [YAXSerializeAs("start_date")]
         [YAXFormat("yyyy-MM-dd")]
@@ -95,7 +94,7 @@ namespace YAXLibTests.SampleClasses
 
         // and so on
 
-        [YAXCollection(YAXCollectionSerializationTypes.Recursive, EachElementName = "custom_field")]
+        [YAXCollection(YAXCollectionSerializationTypes.Recursive, EachElementName="custom_field")]
         [YAXSerializeAs("custom_fields")]
         public List<CustomField> CustomFields { get; set; }
 
@@ -110,13 +109,6 @@ namespace YAXLibTests.SampleClasses
 
     public class CustomField
     {
-        public CustomField(string name, int id, string value)
-        {
-            Name = name;
-            ID = id;
-            Value = value;
-        }
-
         [YAXSerializeAs("name")]
         [YAXAttributeForClass]
         public string Name { get; set; }
@@ -128,5 +120,12 @@ namespace YAXLibTests.SampleClasses
         [YAXSerializeAs("value")]
         [YAXAttributeForClass]
         public string Value { get; set; }
+
+        public CustomField(string name, int id, string value)
+        {
+            this.Name = name;
+            this.ID = id;
+            this.Value = value;
+        }
     }
 }

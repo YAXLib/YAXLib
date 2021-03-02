@@ -1,11 +1,9 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using YAXLib;
+﻿using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
     [ShowInDemoApplication]
+
     [YAXComment("How multi-line comments are serialized as multiple XML comments")]
     public class MultipleCommentsTest
     {
@@ -23,7 +21,7 @@ namespace YAXLibTests.SampleClasses
 
         public static MultipleCommentsTest GetSampleInstance()
         {
-            return new MultipleCommentsTest {SomeInt = 10};
+            return new MultipleCommentsTest() { SomeInt = 10 };
         }
     }
 }

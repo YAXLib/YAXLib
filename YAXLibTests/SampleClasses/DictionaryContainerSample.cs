@@ -1,7 +1,4 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
-// Licensed under the MIT license.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using YAXLib;
 
@@ -22,7 +19,7 @@ namespace YAXLibTests.SampleClasses
         {
             var container = new DictionaryContainerSample
             {
-                Items = DictionarySample.GetSampleInstance()
+                Items =  DictionarySample.GetSampleInstance()
             };
 
             return container;
@@ -46,8 +43,8 @@ namespace YAXLibTests.SampleClasses
         {
             var dictionary = new DictionarySample
             {
-                {"key1", new Guid(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11).ToString()},
-                {"key2", 1234.ToString()}
+                    { "key1", new Guid(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11).ToString()},
+                    { "key2", 1234.ToString() },
             };
 
             return dictionary;
@@ -58,4 +55,5 @@ namespace YAXLibTests.SampleClasses
             return GeneralToStringProvider.GeneralToString(this);
         }
     }
+
 }
