@@ -2,6 +2,10 @@ clone_folder: c:\xaxlib
 version: 2.16.{build}
 image: Visual Studio 2019
 
+init:
+  # default is: core.autocrlf input
+  - git config --global core.autocrlf true
+
 build_script:
 - ps: dotnet restore --verbosity quiet
 - ps: msbuild YAXLib.sln /verbosity:minimal /t:rebuild /p:configuration=release
