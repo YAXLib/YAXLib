@@ -2,7 +2,10 @@ version: 2.16.{build}
 image:
   - Ubuntu
   - Visual Studio 2019
-
+environment:
+  matrix:
+  - job_name: windows
+  - job_name: linux
 matrix:
   fast_finish: true
 
