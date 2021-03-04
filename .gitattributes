@@ -1,0 +1,23 @@
+* text=auto
+
+*.config text
+*.cs text diff=csharp
+*.csproj text
+*.editorconfig text
+*.json text
+*.md text diff=markdown
+*.props text
+*.ps1 text
+*.resx text
+*.runsettings text
+*.sln text
+*.slnf text
+*.targets text
+*.txt text
+*.xaml text
+*.xml text
+*.yaml text
+*.yml text
+
+*.png binary
+*.psd binary
