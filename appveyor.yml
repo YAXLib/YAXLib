@@ -1,19 +1,42 @@
-clone_folder: c:\xaxlib
 version: 2.16.{build}
-image: Visual Studio 2019
+environment:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true 
+  matrix:
+  - job_name: windows
+    appveyor_build_worker_image: Visual Studio 2019
+  - job_name: linux
+    appveyor_build_worker_image: Ubuntu
+matrix:
+  fast_finish: true
 
-init:
-  # default is: core.autocrlf input
-  - git config --global core.autocrlf true
 
-build_script:
-- ps: dotnet restore --verbosity quiet
-- ps: msbuild YAXLib.sln /verbosity:minimal /t:rebuild /p:configuration=release
-
-test_script:
-  - dotnet test YAXLibTests
-  - nuget.exe install OpenCover -ExcludeVersion
-  - OpenCover\tools\OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:"test -f net5.0  -c debug YAXLibTests" -filter:"+[YAXLib]*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:coverage.xml -oldstyle
-  - "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%"
-  - pip install codecov
-  - codecov -f "coverage.xml"
+for:
+  -
+    matrix:
+      only:
+        - job_name: windows
+    init:
+      # default is: core.autocrlf input
+      - git config --global core.autocrlf true
+    build_script:
+      - ps: dotnet restore --verbosity quiet
+      - ps: dotnet build YAXLib.sln --verbosity minimal --configuration release
+    test_script:
+      - dotnet test YAXLibTests
+      - nuget.exe install OpenCover -ExcludeVersion
+      - OpenCover\tools\OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:"test -f net5.0  -c debug YAXLibTests" -filter:"+[YAXLib]*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:coverage.xml -oldstyle
+      - "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%"
+      - pip install codecov
+      - codecov -f "coverage.xml"
+  -
+    matrix:
+      only:
+        - job_name: linux
+    build_script:
+      - dotnet --version
+      - dotnet restore YAXLib --verbosity quiet
+      - dotnet build YAXLib -f net5.0 
+    test_script:
+      - dotnet restore YAXLibTests --verbosity quiet
+      - dotnet build YAXLibTests -f net5.0
+      - dotnet test YAXLibTests -f net5.0
