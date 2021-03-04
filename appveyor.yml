@@ -1,5 +1,6 @@
 version: 2.16.{build}
 environment:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true 
   matrix:
   - job_name: windows
     appveyor_build_worker_image: Visual Studio 2019
@@ -8,13 +9,15 @@ environment:
 matrix:
   fast_finish: true
 
+init:
+  # default is: core.autocrlf input
+  - git config --global core.autocrlf true
+
 for:
   -
     matrix:
       only:
         - job_name: windows
-    environment:
-      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
     build_script:
       - ps: dotnet restore --verbosity quiet
       - ps: dotnet build YAXLib.sln --verbosity minimal --configuration release
@@ -29,10 +32,6 @@ for:
     matrix:
       only:
         - job_name: linux
-    environment:
-      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-    init:
-      - git config --global core.autocrlf input
     build_script:
       - dotnet --version
       - dotnet restore YAXLib --verbosity quiet
