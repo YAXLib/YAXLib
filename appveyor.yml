@@ -8,9 +8,6 @@ environment:
 matrix:
   fast_finish: true
 
-init:
-  # default is: core.autocrlf input
-  - git config --global core.autocrlf true
 for:
   -
     matrix:
