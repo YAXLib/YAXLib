@@ -11,11 +11,6 @@ matrix:
 init:
   # default is: core.autocrlf input
   - git config --global core.autocrlf true
-
-build_script:
-- ps: dotnet restore --verbosity quiet
-- ps: msbuild YAXLib.sln /verbosity:minimal /t:rebuild /p:configuration=release
-
 for:
   -
     matrix:
@@ -25,7 +20,7 @@ for:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
     build_script:
       - ps: dotnet restore --verbosity quiet
-      - ps: msbuild YAXLib.sln /verbosity:minimal /t:rebuild /p:configuration=release
+      - ps: dotnet build YAXLib.sln --verbosity minimal --configuration release
     test_script:
       - dotnet test YAXLibTests
       - nuget.exe install OpenCover -ExcludeVersion
