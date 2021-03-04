@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace YAXLib
 {
@@ -25,7 +26,7 @@ namespace YAXLib
         /// </returns>
         public static bool IsBasicType(Type t)
         {
-            if (t == typeof(string) || t.IsPrimitive() || t.IsEnum() || t == typeof(DateTime) || t == typeof(decimal) ||
+            if (t == typeof(string) || t.IsPrimitive || t.IsEnum || t == typeof(DateTime) || t == typeof(decimal) ||
                 t == typeof(Guid))
                 return true;
 
@@ -103,7 +104,7 @@ namespace YAXLib
             if (type == null) throw new ArgumentNullException("type");
 
             var name = type.Name;
-            if (type.IsGenericType())
+            if (type.IsGenericType)
             {
                 var backqIndex = name.IndexOf('`');
                 if (backqIndex == 0)
@@ -136,7 +137,7 @@ namespace YAXLib
         {
             if (type == null) throw new ArgumentNullException("type");
 
-            if (type.IsGenericType())
+            if (type.IsGenericType)
                 foreach (var genType in type.GetGenericArguments())
                     if (genType.IsGenericParameter)
                         return true;
@@ -177,9 +178,9 @@ namespace YAXLib
             out Type genericType)
         {
             genericType = null;
-            if ((givenType.IsClass() || givenType.IsValueType()) && !givenType.IsAbstract())
+            if ((givenType.IsClass || givenType.IsValueType) && !givenType.IsAbstract)
                 foreach (var interfaceType in givenType.GetInterfaces())
-                    if (interfaceType.IsGenericType() &&
+                    if (interfaceType.IsGenericType &&
                         interfaceType.GetGenericTypeDefinition() == genericInterfaceType)
                     {
                         var genArgs = interfaceType.GetGenericArguments();
@@ -214,14 +215,14 @@ namespace YAXLib
 
             var isNongenericEnumerable = false;
 
-            if (type.IsInterface() && type.IsGenericType() && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            if (type.IsInterface && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
             {
                 seqType = type.GetGenericArguments()[0];
                 return true;
             }
 
             foreach (var interfaceType in type.GetInterfaces())
-                if (interfaceType.IsGenericType() &&
+                if (interfaceType.IsGenericType &&
                     interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                 {
                     var genArgs = interfaceType.GetGenericArguments();
@@ -266,10 +267,10 @@ namespace YAXLib
         public static bool IsIList(Type type)
         {
             // a direct reference to the interface itself is also OK.
-            if (type.IsInterface() && type.GetGenericTypeDefinition() == typeof(IList<>)) return true;
+            if (type.IsInterface && type.GetGenericTypeDefinition() == typeof(IList<>)) return true;
 
             foreach (var interfaceType in type.GetInterfaces())
-                if (interfaceType.IsGenericType() &&
+                if (interfaceType.IsGenericType &&
                     interfaceType.GetGenericTypeDefinition() == typeof(IList<>))
                     return true;
 
@@ -289,14 +290,14 @@ namespace YAXLib
             itemType = typeof(object);
 
             // a direct reference to the interface itself is also OK.
-            if (type.IsInterface() && type.GetGenericTypeDefinition() == typeof(ICollection<>))
+            if (type.IsInterface && type.GetGenericTypeDefinition() == typeof(ICollection<>))
             {
                 itemType = type.GetGenericArguments()[0];
                 return true;
             }
 
             foreach (var interfaceType in type.GetInterfaces())
-                if (interfaceType.IsGenericType() &&
+                if (interfaceType.IsGenericType &&
                     interfaceType.GetGenericTypeDefinition() == typeof(ICollection<>))
                 {
                     itemType = interfaceType.GetGenericArguments()[0];
@@ -321,7 +322,7 @@ namespace YAXLib
             valueType = typeof(object);
 
             // a direct reference to the interface itself is also OK.
-            if (type.IsInterface() && type.IsGenericType() && type.GetGenericTypeDefinition() == typeof(IDictionary<,>))
+            if (type.IsInterface && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IDictionary<,>))
             {
                 var genArgs = type.GetGenericArguments();
                 keyType = genArgs[0];
@@ -330,7 +331,7 @@ namespace YAXLib
             }
 
             foreach (var interfaceType in type.GetInterfaces())
-                if (interfaceType.IsGenericType() &&
+                if (interfaceType.IsGenericType &&
                     interfaceType.GetGenericTypeDefinition() == typeof(IDictionary<,>))
                 {
                     var genArgs = interfaceType.GetGenericArguments();
@@ -413,12 +414,12 @@ namespace YAXLib
             if (type == baseType)
                 return true;
 
-            var isTypeGenDef = type.IsGenericTypeDefinition();
-            var isBaseGenDef = baseType.IsGenericTypeDefinition();
+            var isTypeGenDef = type.IsGenericTypeDefinition;
+            var isBaseGenDef = baseType.IsGenericTypeDefinition;
             Type[] typeGenArgs = null;
             Type[] baseGenArgs = null;
 
-            if (type.IsGenericType())
+            if (type.IsGenericType)
             {
                 if (isBaseGenDef)
                 {
@@ -434,7 +435,7 @@ namespace YAXLib
                 }
             }
 
-            if (baseType.IsGenericType())
+            if (baseType.IsGenericType)
             {
                 if (isTypeGenDef)
                 {
@@ -464,7 +465,7 @@ namespace YAXLib
                         return false;
             }
 
-            if (baseType.IsInterface())
+            if (baseType.IsInterface)
             {
                 foreach (var iface in type.GetInterfaces())
                     if (iface.Name == baseType.Name)
@@ -472,13 +473,13 @@ namespace YAXLib
                 return false;
             }
 
-            var curBaseType = type.BaseType();
+            var curBaseType = type.BaseType;
             while (curBaseType != null)
             {
                 if (curBaseType.Name == baseType.Name)
                     return true;
 
-                curBaseType = curBaseType.BaseType();
+                curBaseType = curBaseType.BaseType;
             }
 
             return false;
@@ -494,7 +495,7 @@ namespace YAXLib
         /// </returns>
         public static bool IsNullable(Type type, out Type valueType)
         {
-            if (type.IsGenericType() && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
                 valueType = type.GetGenericArguments()[0];
                 return true;
@@ -618,7 +619,7 @@ namespace YAXLib
         public static object ConvertBasicType(object value, Type dstType)
         {
             object convertedObj = null;
-            if (dstType.IsEnum())
+            if (dstType.IsEnum)
             {
                 var typeWrapper = TypeWrappersPool.Pool.GetTypeWrapper(dstType, null);
                 convertedObj = typeWrapper.EnumWrapper.ParseAlias(value.ToString());
@@ -718,6 +719,14 @@ namespace YAXLib
             return false;
         }
 
+        /// <summary>
+        ///     Test whether the <see cref="MemberInfo"/> parameter is part of a .NET module.
+        /// </summary>
+        /// <remarks>
+        ///     Might require modifications when supporting future versions of .NET.
+        /// </remarks>
+        /// <param name="memberInfo"></param>
+        /// <returns>Returns <see langword="true"/>, if the <see cref="MemberInfo"/> parameter is part of a .NET module, else <see langword="false"/>.</returns>
         /// <summary>
         ///     Test whether the <see cref="MemberInfo"/> parameter is part of a .NET module.
         /// </summary>

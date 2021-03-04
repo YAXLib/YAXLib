@@ -1,6 +1,8 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+using System;
+using System.Globalization;
 using System.Xml.Linq;
 
 namespace YAXLibTests.SampleClasses
@@ -10,13 +12,12 @@ namespace YAXLibTests.SampleClasses
         public XElement TheElement { get; set; }
         public XAttribute TheAttribute { get; set; }
 
-
         public override string ToString()
         {
-            return string.Format("TheElement: {0}\r\nTheAttribute: {1}\r\n",
-                TheElement, TheAttribute);
+            return string.Format(CultureInfo.CurrentCulture, "TheElement: {0}{1}TheAttribute: {2}{3}",
+                TheElement, Environment.NewLine, TheAttribute, Environment.NewLine);
         }
-
+        
         public static ClassContainingXElement GetSampleInstance()
         {
             var elem = new XElement("SomeElement",

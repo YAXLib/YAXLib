@@ -1,28 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
     <PropertyGroup>
-        <TargetFrameworks>net461;net462;net472;net48;netcoreapp3.1;net5.0</TargetFrameworks>
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>../Key/YAXLib.DevKey.snk</AssemblyOriginatorKeyFile>
-        <Version>2.16.0</Version><!-- semver -->
-        <Authors></Authors>
-        <Company></Company>
-        <Product>YAXLib</Product>
-        <Copyright>Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors</Copyright>
-        <PackageProjectUrl>https://github.com/sinairv/YAXLib</PackageProjectUrl>
-        <RepositoryType>Git</RepositoryType>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <LangVersion>8.0</LangVersion>
-        <Nullable>disable</Nullable>
         <DelaySign>false</DelaySign>
-        <PackageId>YAXLibTests</PackageId>
+        <TargetFrameworks>net461;net462;net472;net48;netcoreapp3.1;net5.0</TargetFrameworks>
+        <IsPackable>false</IsPackable>
     </PropertyGroup>
+
     <ItemGroup>
-        <ProjectReference Include="..\YAXLib\YAXLib.csproj" />
-    </ItemGroup>
-    <ItemGroup>
-        <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
         <PackageReference Include="NUnit" Version="3.13.1" />
         <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\YAXLib\YAXLib.csproj" />
     </ItemGroup>
 </Project>

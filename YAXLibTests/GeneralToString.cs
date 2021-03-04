@@ -299,7 +299,7 @@ namespace YAXLibTests
 
         private static bool IsDictionary(Type type)
         {
-            if (type.IsGenericType())
+            if (type.IsGenericType)
                 type = type.GetGenericTypeDefinition();
 
             if (type == typeof(Dictionary<,>))
@@ -323,7 +323,7 @@ namespace YAXLibTests
             valueType = typeof(object);
 
             foreach (var interfaceType in type.GetInterfaces())
-                if (interfaceType.IsGenericType() &&
+                if (interfaceType.IsGenericType &&
                     interfaceType.GetGenericTypeDefinition() == typeof(IDictionary<,>))
                 {
                     var genArgs = interfaceType.GetGenericArguments();
@@ -368,7 +368,7 @@ namespace YAXLibTests
             if (IsArray(type))
                 return true;
 
-            if (type.IsGenericType())
+            if (type.IsGenericType)
                 type = type.GetGenericTypeDefinition();
 
             if (type == typeof(List<>) || type == typeof(HashSet<>) || type == typeof(IEnumerable<>))
@@ -420,13 +420,13 @@ namespace YAXLibTests
         {
             var itemType = typeof(object);
 
-            if (type.IsInterface() && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            if (type.IsInterface && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                 itemType = type.GetGenericArguments()[0];
-            else if (type.IsInterface() && type == typeof(IEnumerable))
+            else if (type.IsInterface && type == typeof(IEnumerable))
                 itemType = typeof(object);
             else
                 foreach (var interfaceType in type.GetInterfaces())
-                    if (interfaceType.IsGenericType() &&
+                    if (interfaceType.IsGenericType &&
                         interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                         itemType = interfaceType.GetGenericArguments()[0];
 
@@ -447,7 +447,7 @@ namespace YAXLibTests
         /// <param name="t">The type</param>
         private static bool IsBasicType(Type t)
         {
-            if (t == typeof(string) || t.IsPrimitive() || t.IsEnum() || t == typeof(DateTime) || t == typeof(decimal))
+            if (t == typeof(string) || t.IsPrimitive || t.IsEnum || t == typeof(DateTime) || t == typeof(decimal))
                 return true;
             return false;
         }
@@ -461,7 +461,7 @@ namespace YAXLibTests
         /// </returns>
         private static bool IsArray(Type t)
         {
-            return t.BaseType() == typeof(Array);
+            return t.BaseType == typeof(Array);
         }
 
         /// <summary>
@@ -481,14 +481,14 @@ namespace YAXLibTests
 
             var isNongenericEnumerable = false;
 
-            if (type.IsInterface() && type.IsGenericType() && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            if (type.IsInterface && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
             {
                 seqType = type.GetGenericArguments()[0];
                 return true;
             }
 
             foreach (var interfaceType in type.GetInterfaces())
-                if (interfaceType.IsGenericType() &&
+                if (interfaceType.IsGenericType &&
                     interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                 {
                     var genArgs = interfaceType.GetGenericArguments();

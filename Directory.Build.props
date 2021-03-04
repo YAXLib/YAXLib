@@ -1,0 +1,19 @@
+<Project>
+
+  <PropertyGroup>
+    <Product>YAXLib</Product>
+    <Authors>Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors</Authors>
+    <Copyright>Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors</Copyright>
+    <RepositoryUrl>https://github.com/YAXLib/YAXLib.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <Version>2.16.0</Version>
+    <AssemblyVersion>2.16.0</AssemblyVersion>
+    <FileVersion>2.16.0</FileVersion>
+    <LangVersion>latest</LangVersion>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <Deterministic>true</Deterministic>
+    <Features>strict</Features>
+  </PropertyGroup>
+  
+</Project>

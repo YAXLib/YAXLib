@@ -555,7 +555,7 @@ namespace YAXLib
             {
                 // SerializeBase will add the object to the stack
                 var elem = SerializeBase(obj, m_udtWrapper.Alias);
-                if (!m_type.IsValueType())
+                if (!m_type.IsValueType)
                     m_serializedStack.Pop();
                 Debug.Assert(m_serializedStack.Count == 0,
                     "Serialization stack is not empty at the end of serialization");
@@ -565,7 +565,7 @@ namespace YAXLib
 
         private void PushObjectToSerializationStack(object obj)
         {
-            if (!obj.GetType().IsValueType())
+            if (!obj.GetType().IsValueType)
                 m_serializedStack.Push(obj);
         }
 
@@ -620,7 +620,7 @@ namespace YAXLib
                 return m_baseElement;
             }
 
-            if (!m_type.IsValueType())
+            if (!m_type.IsValueType)
             {
                 var alreadySerializedObject = m_serializedStack.FirstOrDefault(x => ReferenceEquals(x, obj));
                 if (alreadySerializedObject != null)
@@ -1473,7 +1473,7 @@ namespace YAXLib
                 }
             }
 
-            if (m_type.IsGenericType() && m_type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
+            if (m_type.IsGenericType && m_type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
                 return DeserializeKeyValuePair(baseElement);
 
             if (KnownTypes.IsKnowType(m_type)) return KnownTypes.Deserialize(baseElement, m_type, TypeNamespace);
@@ -1535,7 +1535,7 @@ namespace YAXLib
                             OnExceptionOccurred(new YAXAttributeMissingException(
                                     StringUtils.CombineLocationAndElementName(serializationLocation, member.Alias),
                                     elem ?? baseElement),
-                                !member.MemberType.IsValueType() && m_udtWrapper.IsNotAllowdNullObjectSerialization
+                                !member.MemberType.IsValueType && m_udtWrapper.IsNotAllowdNullObjectSerialization
                                     ? YAXExceptionTypes.Ignore
                                     : member.TreatErrorsAs);
                         }
@@ -1553,7 +1553,7 @@ namespace YAXLib
                     {
                         OnExceptionOccurred(new YAXElementMissingException(
                                 serializationLocation, baseElement),
-                            !member.MemberType.IsValueType() && m_udtWrapper.IsNotAllowdNullObjectSerialization
+                            !member.MemberType.IsValueType && m_udtWrapper.IsNotAllowdNullObjectSerialization
                                 ? YAXExceptionTypes.Ignore
                                 : member.TreatErrorsAs);
                     }
@@ -1577,7 +1577,7 @@ namespace YAXLib
                                 OnExceptionOccurred(
                                     new YAXElementValueMissingException(serializationLocation,
                                         innerelem ?? baseElement),
-                                    !member.MemberType.IsValueType() && m_udtWrapper.IsNotAllowdNullObjectSerialization
+                                    !member.MemberType.IsValueType && m_udtWrapper.IsNotAllowdNullObjectSerialization
                                         ? YAXExceptionTypes.Ignore
                                         : member.TreatErrorsAs);
                             }
@@ -1634,7 +1634,7 @@ namespace YAXLib
                             OnExceptionOccurred(new YAXElementMissingException(
                                     StringUtils.CombineLocationAndElementName(serializationLocation,
                                         member.Alias.OverrideNsIfEmpty(TypeNamespace)), baseElement),
-                                !member.MemberType.IsValueType() && m_udtWrapper.IsNotAllowdNullObjectSerialization
+                                !member.MemberType.IsValueType && m_udtWrapper.IsNotAllowdNullObjectSerialization
                                     ? YAXExceptionTypes.Ignore
                                     : member.TreatErrorsAs);
                     }
@@ -1652,7 +1652,7 @@ namespace YAXLib
                     if (m_desObject == null
                     ) // i.e. if it was NOT resuming deserialization, set default value, otherwise existing value for the member is kept
                     {
-                        if (!member.MemberType.IsValueType() && m_udtWrapper.IsNotAllowdNullObjectSerialization)
+                        if (!member.MemberType.IsValueType && m_udtWrapper.IsNotAllowdNullObjectSerialization)
                         {
                             try
                             {
@@ -1682,7 +1682,7 @@ namespace YAXLib
                         }
                         else
                         {
-                            if (!member.MemberType.IsValueType())
+                            if (!member.MemberType.IsValueType)
                                 member.SetValue(o, null /*the value to be assigned */);
                         }
                     }
@@ -2513,7 +2513,7 @@ namespace YAXLib
                 return;
 
             if (popFromSerializationStack && m_isSerializing && serializer.m_type != null &&
-                !serializer.m_type.IsValueType())
+                !serializer.m_type.IsValueType)
                 m_serializedStack.Pop();
 
             if (importNamespaces)
