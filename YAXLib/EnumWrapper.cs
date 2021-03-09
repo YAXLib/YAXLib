@@ -28,7 +28,7 @@ namespace YAXLib
         /// <param name="t">The enum type.</param>
         public EnumWrapper(Type t)
         {
-            if (!t.IsEnum())
+            if (!t.IsEnum)
                 throw new ArithmeticException();
 
             m_enumType = t;

@@ -656,8 +656,8 @@ namespace YAXLib
                     LineInfoMessage);
 
                 if (innerException != null)
-                    msg += string.Format(CultureInfo.CurrentCulture, "\r\nMore Details:\r\n{0}",
-                        innerException.Message);
+                    msg += string.Format(CultureInfo.CurrentCulture, "{0}More Details:{1}{2}", Environment.NewLine, 
+                        this.innerException.Message, Environment.NewLine);
 
                 return msg;
             }

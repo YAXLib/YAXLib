@@ -156,7 +156,7 @@ namespace YAXLib
         ///     Gets a value indicating whether this instance wraps around an enum.
         /// </summary>
         /// <value><c>true</c> if this instance wraps around an enum; otherwise, <c>false</c>.</value>
-        public bool IsEnum => m_udtType.IsEnum();
+        public bool IsEnum => m_udtType.IsEnum;
 
         /// <summary>
         ///     Gets the enum wrapper, provided that this instance wraps around an enum.
