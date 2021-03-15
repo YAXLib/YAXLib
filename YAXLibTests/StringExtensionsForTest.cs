@@ -9,7 +9,7 @@ namespace YAXLibTests
     {
         public static string StripTypeAssemblyVersion(this string str)
         {
-            const string pattern = @"\,\s+Version\=\d+(\.\d+)*\,\s+Culture=\b\w+\b\,\s+PublicKeyToken\=\b\w+\b";
+            const string pattern = @"\,\s+(mscorlib|System\.Private\.CoreLib)\,\s+Version\=\d+(\.\d+)*\,\s+Culture=\b\w+\b\,\s+PublicKeyToken\=\b\w+\b";
             return Regex.Replace(str, pattern, string.Empty);
         }
     }

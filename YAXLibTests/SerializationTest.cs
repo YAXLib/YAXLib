@@ -431,12 +431,15 @@ namespace YAXLibTests
             Assert.That(got, Is.EqualTo(result));
         }
 
-        [Test]
-        public void MoreComplexExampleTest()
+
+        [TestCase("mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")] // NETFRAMEWORK2.x
+        [TestCase("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")] // NETFRAMEWORK4.x
+        [TestCase("System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NETSTANDARD
+        [TestCase("System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NET5.0
+        public void MoreComplexExample_CrossFramework_Test(string coreLibName)
         {
-#if NETCOREAPP3_1 || NET5_0
-            const string result =
-                @"<!-- This example tries to show almost all features of YAXLib which were not shown before. -->
+            var result =
+                @$"<!-- This example tries to show almost all features of YAXLib which were not shown before. -->
 <!-- FamousPoints - shows a dictionary with a non-primitive value member. -->
 <!-- IntEnumerable - shows serializing properties of type IEnumerable<> -->
 <!-- Students - shows the usage of YAXNotCollection attribute -->
@@ -452,7 +455,7 @@ namespace YAXLibTests
       <ThePoint X=""-1"" Y=""1"" />
     </PointInfo>
   </FamousPoints>
-  <IntEnumerable yaxlib:realtype=""System.Collections.Generic.List`1[[System.Int32, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"">
+  <IntEnumerable yaxlib:realtype=""System.Collections.Generic.List`1[[System.Int32, {coreLibName}]]"">
     <Int32>1</Int32>
     <Int32>3</Int32>
     <Int32>5</Int32>
@@ -472,45 +475,7 @@ namespace YAXLibTests
     </Families>
   </Students>
 </MoreComplexExample>";
-#else
-            const string result =
-                @"<!-- This example tries to show almost all features of YAXLib which were not shown before. -->
-<!-- FamousPoints - shows a dictionary with a non-primitive value member. -->
-<!-- IntEnumerable - shows serializing properties of type IEnumerable<> -->
-<!-- Students - shows the usage of YAXNotCollection attribute -->
-<MoreComplexExample xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
-  <FamousPoints>
-    <PointInfo PName=""Center"">
-      <ThePoint X=""0"" Y=""0"" />
-    </PointInfo>
-    <PointInfo PName=""Q1"">
-      <ThePoint X=""1"" Y=""1"" />
-    </PointInfo>
-    <PointInfo PName=""Q2"">
-      <ThePoint X=""-1"" Y=""1"" />
-    </PointInfo>
-  </FamousPoints>
-  <IntEnumerable yaxlib:realtype=""System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"">
-    <Int32>1</Int32>
-    <Int32>3</Int32>
-    <Int32>5</Int32>
-    <Int32>7</Int32>
-  </IntEnumerable>
-  <Students>
-    <Count>3</Count>
-    <Names>
-      <String>Ali</String>
-      <String>Dave</String>
-      <String>John</String>
-    </Names>
-    <Families>
-      <String>Alavi</String>
-      <String>Black</String>
-      <String>Doe</String>
-    </Families>
-  </Students>
-</MoreComplexExample>";
-#endif
+
             var serializer = new YAXSerializer(typeof(MoreComplexExample), YAXExceptionHandlingPolicies.DoNotThrow,
                 YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
             var got = serializer.Serialize(MoreComplexExample.GetSampleInstance());
@@ -1682,27 +1647,23 @@ namespace YAXLibTests
             Assert.That(desObj.ToString(), Is.EqualTo(content.ToString()));
         }
 
-        [Test]
-        public void PolymorphicSerializationThroughListTest()
+        [TestCase("mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")] // NETFRAMEWORK2.x
+        [TestCase("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")] // NETFRAMEWORK4.x
+        [TestCase("System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NETSTANDARD
+        [TestCase("System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NET5.0
+        public void PolymorphicSerializationThroughList_CrossFramework_Test(string coreLibName)
         {
             var lst = new List<int> {1, 2, 3};
             var ser = new YAXSerializer(typeof(object));
             var xmlResult = ser.Serialize(lst);
-#if NETCOREAPP3_1 || NET5_0
-            const string expectedResult =
-                @"<Object yaxlib:realtype=""System.Collections.Generic.List`1[[System.Int32, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
+
+            var expectedResult =
+                $@"<Object yaxlib:realtype=""System.Collections.Generic.List`1[[System.Int32, {coreLibName}]]"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
   <Int32>1</Int32>
   <Int32>2</Int32>
   <Int32>3</Int32>
 </Object>";
-#else
-            const string expectedResult =
-                @"<Object yaxlib:realtype=""System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
-  <Int32>1</Int32>
-  <Int32>2</Int32>
-  <Int32>3</Int32>
-</Object>";
-#endif
+
             Assert.That(xmlResult.StripTypeAssemblyVersion(), Is.EqualTo(expectedResult.StripTypeAssemblyVersion()));
             var desObj = ser.Deserialize(xmlResult);
             Assert.That(desObj.GetType(), Is.EqualTo(lst.GetType()));
@@ -1711,27 +1672,23 @@ namespace YAXLibTests
             Assert.That(lst, Is.EquivalentTo(desLst));
         }
 
-        [Test]
-        public void PolymorphicSerializationThroughListWhichMayContainYaxlibNamespaceTest()
+        [TestCase("mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")] // NETFRAMEWORK2.x
+        [TestCase("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")] // NETFRAMEWORK4.x
+        [TestCase("System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NETSTANDARD
+        [TestCase("System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NET5.0
+        public void PolymorphicSerializationThroughListWhichMayContainYaxlibNamespace_CrossFramework_Test(string coreLibName)
         {
             var lst = new List<object> {1, 2, 3};
             var ser = new YAXSerializer(typeof(object));
             var xmlResult = ser.Serialize(lst);
-#if NETCOREAPP3_1 || NET5_0
-            const string expectedResult =
-                @"<Object xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"" yaxlib:realtype=""System.Collections.Generic.List`1[[System.Object, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"">
+
+            var expectedResult =
+                $@"<Object xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"" yaxlib:realtype=""System.Collections.Generic.List`1[[System.Object, {coreLibName}]]"">
   <Object yaxlib:realtype=""System.Int32"">1</Object>
   <Object yaxlib:realtype=""System.Int32"">2</Object>
   <Object yaxlib:realtype=""System.Int32"">3</Object>
 </Object>";
-#else
-            const string expectedResult =
-                @"<Object xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"" yaxlib:realtype=""System.Collections.Generic.List`1[[System.Object, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"">
-  <Object yaxlib:realtype=""System.Int32"">1</Object>
-  <Object yaxlib:realtype=""System.Int32"">2</Object>
-  <Object yaxlib:realtype=""System.Int32"">3</Object>
-</Object>";
-#endif
+
             Assert.That(xmlResult.StripTypeAssemblyVersion(), Is.EqualTo(expectedResult.StripTypeAssemblyVersion()));
             var desObj = ser.Deserialize(xmlResult);
             Assert.That(desObj.GetType(), Is.EqualTo(lst.GetType()));
