@@ -3,7 +3,7 @@
     <PropertyGroup>
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>../Key/YAXLib.DevKey.snk</AssemblyOriginatorKeyFile>
-        <TargetFrameworks>netstandard2.0;netstandard2.1;net461;net462;net472;net48;net5.0</TargetFrameworks>
+        <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
         <PackageId>YAXLib</PackageId>
         <Title>YAXLib</Title>
         <Description>YAXLib is an XML Serialization library which allows the programmer to structure freely the XML result, choose the fields to serialize (public, or non-public properties, or member variables), serialize all known generic and non-generic collections, serialize different kinds of arrays (single-dimensional, multi-dimensional, and jagged arrays), serialize objects through a reference to their base-class or interface (polymorphic serialization), define custom serializers, add comments for the elements in the XML result, and many more ...</Description>

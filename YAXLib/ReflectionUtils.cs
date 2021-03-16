@@ -754,7 +754,7 @@ namespace YAXLib
         public static bool IsPartOfNetFx(MemberInfo memberInfo)
         {
             var moduleName = memberInfo.Module.Name;
-#if NETSTANDARD || NET5_0
+#if NETSTANDARD
             return moduleName.StartsWith("System.", StringComparison.OrdinalIgnoreCase) ||
                    moduleName.StartsWith("mscorlib.", StringComparison.OrdinalIgnoreCase) ||
                    moduleName.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase);
