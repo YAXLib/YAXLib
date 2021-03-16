@@ -11,7 +11,7 @@
         <PackageIcon>YAXLib_256x256.png</PackageIcon>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageTags>XML Serialization Serializer Serialize Deserialize .NETFramework .NETStandard .NET</PackageTags>
-        <PackageReleaseNotes>Now supporting netstandard2.0 netstandard2.1 net461 net462 net472 net48 net5.0</PackageReleaseNotes>
+        <PackageReleaseNotes></PackageReleaseNotes>
     </PropertyGroup>
     
     <ItemGroup>
