@@ -1,4 +1,4 @@
-version: 2.16.{build}
+version: 3.0.{build}
 environment:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true 
   matrix:
@@ -20,7 +20,15 @@ for:
       - git config --global core.autocrlf true
     build_script:
       - ps: dotnet restore --verbosity quiet
-      - ps: dotnet build YAXLib.sln --verbosity minimal --configuration release
+      - ps: |
+          $version = "3.0.0-rc.1"
+          $versionFile = $version + "." + ${env:APPVEYOR_BUILD_NUMBER}
+
+          if ($env:APPVEYOR_PULL_REQUEST_NUMBER) {
+              $version = $version + "-PR" + $env:APPVEYOR_PULL_REQUEST_NUMBER
+          }
+
+          dotnet pack YAXLib --verbosity minimal --configuration release /p:IncludeSymbols=true /p:SymbolPackageFormat=snupkg /p:PackageOutputPath=../artifacts /p:ContinuousIntegrationBuild=true /p:Version=$version /p:FileVersion=$versionFile
     test_script:
       - dotnet test YAXLibTests
       - nuget.exe install OpenCover -ExcludeVersion
@@ -28,6 +36,10 @@ for:
       - "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%"
       - pip install codecov
       - codecov -f "coverage.xml"
+    artifacts:
+      - path: 'artifacts\*.nupkg'
+      - path: 'artifacts\*.snupkg'
+  
   -
     matrix:
       only:
