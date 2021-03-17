@@ -35,7 +35,7 @@ for:
     build_script:
       - dotnet --version
       - dotnet restore YAXLib --verbosity quiet
-      - dotnet build YAXLib -f net5.0 
+      - dotnet build YAXLib -f netstandard2.0 
     test_script:
       - dotnet restore YAXLibTests --verbosity quiet
       - dotnet build YAXLibTests -f net5.0
