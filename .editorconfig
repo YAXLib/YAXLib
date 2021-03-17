@@ -121,3 +121,8 @@ dotnet_style_qualification_for_property = false:suggestion
 # Copyright file header
 file_header_template = Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.\nLicensed under the MIT license.\n
 
+[*.csproj]
+
+#use soft tabs (spaces) for indentation
+indent_style = space
+indent_size = 2

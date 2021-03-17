@@ -1,20 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <SignAssembly>true</SignAssembly>
-        <AssemblyOriginatorKeyFile>../Key/YAXLib.DevKey.snk</AssemblyOriginatorKeyFile>
-        <DelaySign>false</DelaySign>
-        <TargetFrameworks>net462;net5.0</TargetFrameworks>
-        <IsPackable>false</IsPackable>
-    </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>../Key/YAXLib.DevKey.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
+    <TargetFrameworks>net462;net5.0</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="NUnit" Version="3.13.1" />
-        <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NUnit" Version="3.13.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\YAXLib\YAXLib.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\YAXLib\YAXLib.csproj" />
+  </ItemGroup>
 </Project>
