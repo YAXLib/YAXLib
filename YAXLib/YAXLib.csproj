@@ -12,6 +12,8 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>XML Serialization Serializer Serialize Deserialize .NETFramework .NETStandard .NET</PackageTags>
     <PackageReleaseNotes></PackageReleaseNotes>
+    <!-- EmbedUntrackedSources for deterministic build -->
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
   </PropertyGroup>
 
   <ItemGroup>
