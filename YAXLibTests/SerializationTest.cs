@@ -799,8 +799,8 @@ namespace YAXLibTests
                 @"<!-- This example shows how to choose the fields to be serialized -->
 <FieldSerializationExample>
   <SomePrivateStringProperty>Hi</SomePrivateStringProperty>
-  <m_someInt>8</m_someInt>
-  <m_someDouble>3.14</m_someDouble>
+  <_someInt>8</_someInt>
+  <_someDouble>3.14</_someDouble>
 </FieldSerializationExample>";
             var serializer = new YAXSerializer(typeof(FieldSerializationExample),
                 YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning,

@@ -16,7 +16,7 @@ namespace YAXLibTests.SampleClasses
       Students - shows the usage of YAXNotCollection attribute")]
     public class MoreComplexExample
     {
-        private List<int> m_lst = new List<int>();
+        private List<int> _lst = new List<int>();
 
         [YAXDictionary(EachPairName = "PointInfo", KeyName = "PName",
             ValueName = "ThePoint", SerializeKeyAs = YAXNodeTypes.Attribute,
@@ -25,9 +25,9 @@ namespace YAXLibTests.SampleClasses
 
         public IEnumerable<int> IntEnumerable
         {
-            get { return m_lst; }
+            get { return _lst; }
 
-            set { m_lst = value.ToList(); }
+            set { _lst = value.ToList(); }
         }
 
         [YAXNotCollection] public Students Students { get; set; }
@@ -127,18 +127,18 @@ namespace YAXLibTests.SampleClasses
 
     public class StudentsEnumerator : IEnumerator<string>
     {
-        private readonly Students m_students;
+        private readonly Students _students;
         private int counter = -1;
 
         public StudentsEnumerator(Students studentsInstance)
         {
-            m_students = studentsInstance;
+            _students = studentsInstance;
             counter = -1;
         }
 
         #region IEnumerator<string> Members
 
-        public string Current => m_students.GetAt(counter);
+        public string Current => _students.GetAt(counter);
 
         #endregion
 
@@ -152,12 +152,12 @@ namespace YAXLibTests.SampleClasses
 
         #region IEnumerator Members
 
-        object IEnumerator.Current => m_students.GetAt(counter);
+        object IEnumerator.Current => _students.GetAt(counter);
 
         public bool MoveNext()
         {
             counter++;
-            if (counter >= m_students.Count)
+            if (counter >= _students.Count)
                 return false;
             return true;
         }

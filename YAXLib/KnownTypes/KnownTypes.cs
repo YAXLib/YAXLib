@@ -18,9 +18,9 @@ namespace YAXLib
     /// </summary>
     internal class KnownTypes
     {
-        private static readonly Dictionary<Type, IKnownType> s_dictKnownTypes = new Dictionary<Type, IKnownType>();
+        private static readonly Dictionary<Type, IKnownType> _dictKnownTypes = new Dictionary<Type, IKnownType>();
 
-        private static readonly Dictionary<string, IKnownType> s_dictDynamicKnownTypes =
+        private static readonly Dictionary<string, IKnownType> _dictDynamicKnownTypes =
             new Dictionary<string, IKnownType>();
 
         static KnownTypes()
@@ -41,17 +41,17 @@ namespace YAXLib
 
         public static void Add(IKnownType kt)
         {
-            s_dictKnownTypes[kt.Type] = kt;
+            _dictKnownTypes[kt.Type] = kt;
         }
 
         public static void AddDynamicKnownType(DynamicKnownType dkt)
         {
-            s_dictDynamicKnownTypes[dkt.TypeName] = dkt;
+            _dictDynamicKnownTypes[dkt.TypeName] = dkt;
         }
 
         public static bool IsKnowType(Type type)
         {
-            return s_dictKnownTypes.ContainsKey(type) || s_dictDynamicKnownTypes.ContainsKey(type.FullName);
+            return _dictKnownTypes.ContainsKey(type) || _dictDynamicKnownTypes.ContainsKey(type.FullName);
         }
 
         public static void Serialize(object obj, XElement elem, XNamespace overridingNamespace)
@@ -59,18 +59,18 @@ namespace YAXLib
             if (obj == null)
                 return;
 
-            if (s_dictKnownTypes.ContainsKey(obj.GetType()))
-                s_dictKnownTypes[obj.GetType()].Serialize(obj, elem, overridingNamespace);
-            else if (s_dictDynamicKnownTypes.ContainsKey(obj.GetType().FullName))
-                s_dictDynamicKnownTypes[obj.GetType().FullName].Serialize(obj, elem, overridingNamespace);
+            if (_dictKnownTypes.ContainsKey(obj.GetType()))
+                _dictKnownTypes[obj.GetType()].Serialize(obj, elem, overridingNamespace);
+            else if (_dictDynamicKnownTypes.ContainsKey(obj.GetType().FullName))
+                _dictDynamicKnownTypes[obj.GetType().FullName].Serialize(obj, elem, overridingNamespace);
         }
 
         public static object Deserialize(XElement elem, Type type, XNamespace overridingNamespace)
         {
-            if (s_dictKnownTypes.ContainsKey(type))
-                return s_dictKnownTypes[type].Deserialize(elem, overridingNamespace);
-            if (s_dictDynamicKnownTypes.ContainsKey(type.FullName))
-                return s_dictDynamicKnownTypes[type.FullName].Deserialize(elem, overridingNamespace);
+            if (_dictKnownTypes.ContainsKey(type))
+                return _dictKnownTypes[type].Deserialize(elem, overridingNamespace);
+            if (_dictDynamicKnownTypes.ContainsKey(type.FullName))
+                return _dictDynamicKnownTypes[type.FullName].Deserialize(elem, overridingNamespace);
             return null;
         }
     }

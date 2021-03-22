@@ -15,12 +15,12 @@ namespace YAXLib
         /// <summary>
         ///     maps real enum names to their corresponding user defined aliases
         /// </summary>
-        private readonly Dictionary<string, string> m_enumMembers = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _enumMembers = new Dictionary<string, string>();
 
         /// <summary>
         ///     The enum underlying type
         /// </summary>
-        private readonly Type m_enumType;
+        private readonly Type _enumType;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="EnumWrapper" /> class.
@@ -31,7 +31,7 @@ namespace YAXLib
             if (!t.IsEnum)
                 throw new ArithmeticException();
 
-            m_enumType = t;
+            _enumType = t;
 
             foreach (var m in t.GetFields())
                 if (m.FieldType == t)
@@ -44,10 +44,10 @@ namespace YAXLib
 
                     if (alias != originalName)
                     {
-                        if (!m_enumMembers.ContainsKey(alias))
-                            m_enumMembers.Add(m.Name, alias);
-                        else if (!m_enumMembers.ContainsKey(originalName))
-                            m_enumMembers.Add(m.Name, originalName);
+                        if (!_enumMembers.ContainsKey(alias))
+                            _enumMembers.Add(m.Name, alias);
+                        else if (!_enumMembers.ContainsKey(originalName))
+                            _enumMembers.Add(m.Name, originalName);
                         else
                             throw new YAXException("Enum alias already exists");
                     }
@@ -76,7 +76,7 @@ namespace YAXLib
                     sb.Append(realName);
                 }
 
-                return Enum.Parse(m_enumType, sb.ToString());
+                return Enum.Parse(_enumType, sb.ToString());
             }
 
             throw new Exception("Invalid enum alias");
@@ -96,7 +96,7 @@ namespace YAXLib
             if (components.Length == 1)
             {
                 string alias;
-                if (m_enumMembers.TryGetValue(originalName, out alias))
+                if (_enumMembers.TryGetValue(originalName, out alias))
                     return alias;
                 return enumMember;
             }
@@ -110,7 +110,7 @@ namespace YAXLib
                         result.Append(", ");
 
                     string alias;
-                    if (m_enumMembers.TryGetValue(components[i], out alias))
+                    if (_enumMembers.TryGetValue(components[i], out alias))
                         result.Append(alias);
                     else
                         result.Append(components[i]);
@@ -130,7 +130,7 @@ namespace YAXLib
         private string FindRealNameFromAlias(string alias)
         {
             alias = alias.Trim();
-            foreach (var pair in m_enumMembers)
+            foreach (var pair in _enumMembers)
                 if (pair.Value == alias)
                     return pair.Key;
 

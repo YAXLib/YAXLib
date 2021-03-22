@@ -11,14 +11,14 @@ namespace YAXLibTests.SampleClasses
     [YAXSerializableType(FieldsToSerialize = YAXSerializationFields.AttributedFieldsOnly)]
     public class FieldSerializationExample
     {
-        [YAXSerializableField] private readonly int m_someInt;
+        [YAXSerializableField] private readonly int _someInt;
         
-        [YAXSerializableField] private readonly double m_someDouble;
+        [YAXSerializableField] private readonly double _someDouble;
 
         public FieldSerializationExample()
         {
-            m_someInt = 8;
-            m_someDouble = 3.14;
+            _someInt = 8;
+            _someDouble = 3.14;
             SomePrivateStringProperty = "Hi";
             SomePublicPropertyThatIsNotSerialized = "Public";
         }
@@ -31,8 +31,8 @@ namespace YAXLibTests.SampleClasses
         {
             var sb = new StringBuilder();
 
-            sb.AppendLine("m_someInt: " + m_someInt);
-            sb.AppendLine("m_someDouble: " + m_someDouble);
+            sb.AppendLine("_someInt: " + _someInt);
+            sb.AppendLine("_someDouble: " + _someDouble);
             sb.AppendLine("SomePrivateStringProperty: " + SomePrivateStringProperty);
             sb.AppendLine("SomePublicPropertyThatIsNotSerialized: " + SomePublicPropertyThatIsNotSerialized);
 
