@@ -42,7 +42,7 @@ for:
     deploy:
     - provider: NuGet
       api_key:
-        secure: <encrypted-nuget-api-key>
+        secure: l21iXr00++8acaUmTEzdn5GnOwFf5/N4/K+QNdhMHNN3VsLruodH4v5CAdON0Lf+
       on:
         branch: master
   
