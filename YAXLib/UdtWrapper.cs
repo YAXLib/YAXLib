@@ -14,48 +14,48 @@ namespace YAXLib
         /// <summary>
         ///     boolean value indicating whether this instance is a wrapper around a collection type
         /// </summary>
-        private readonly bool m_isTypeCollection;
+        private readonly bool _isTypeCollection;
 
         /// <summary>
         ///     boolean value indicating whether this instance is a wrapper around a dictionary type
         /// </summary>
-        private readonly bool m_isTypeDictionary;
+        private readonly bool _isTypeDictionary;
 
         /// <summary>
         ///     the underlying type for this instance of <c>TypeWrapper</c>
         /// </summary>
-        private readonly Type m_udtType = typeof(object);
+        private readonly Type _udtType = typeof(object);
 
         /// <summary>
         ///     Alias for the type
         /// </summary>
-        private XName m_alias;
+        private XName _alias;
 
         /// <summary>
         ///     The collection attribute instance
         /// </summary>
-        private YAXCollectionAttribute m_collectionAttributeInstance;
+        private YAXCollectionAttribute _collectionAttributeInstance;
 
         /// <summary>
         ///     the dictionary attribute instance
         /// </summary>
-        private YAXDictionaryAttribute m_dictionaryAttributeInstance;
+        private YAXDictionaryAttribute _dictionaryAttributeInstance;
 
         /// <summary>
         ///     reference to an instance of <c>EnumWrapper</c> in case that the current instance is an enum.
         /// </summary>
-        private EnumWrapper m_enumWrapper;
+        private EnumWrapper _enumWrapper;
 
         /// <summary>
         ///     value indicating whether the serialization options has been explicitly adjusted
         ///     using attributes for the class
         /// </summary>
-        private bool m_isSerializationOptionSetByAttribute;
+        private bool _isSerializationOptionSetByAttribute;
 
         /// <summary>
         ///     the namespace associated with this element
         /// </summary>
-        private XNamespace m_namespace = XNamespace.None;
+        private XNamespace _namespace = XNamespace.None;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="UdtWrapper" /> class.
@@ -67,19 +67,19 @@ namespace YAXLib
         /// </param>
         public UdtWrapper(Type udtType, YAXSerializer callerSerializer)
         {
-            m_isTypeDictionary = false;
-            m_udtType = udtType;
-            m_isTypeCollection = ReflectionUtils.IsCollectionType(m_udtType);
-            m_isTypeDictionary = ReflectionUtils.IsIDictionary(m_udtType);
+            _isTypeDictionary = false;
+            _udtType = udtType;
+            _isTypeCollection = ReflectionUtils.IsCollectionType(_udtType);
+            _isTypeDictionary = ReflectionUtils.IsIDictionary(_udtType);
 
-            Alias = StringUtils.RefineSingleElement(ReflectionUtils.GetTypeFriendlyName(m_udtType));
+            Alias = StringUtils.RefineSingleElement(ReflectionUtils.GetTypeFriendlyName(_udtType));
             Comment = null;
             FieldsToSerialize = YAXSerializationFields.PublicPropertiesOnly;
             IsAttributedAsNotCollection = false;
 
             SetYAXSerializerOptions(callerSerializer);
             
-            foreach (var attr in m_udtType.GetCustomAttributes(true))
+            foreach (var attr in _udtType.GetCustomAttributes(true))
                 if (attr is YAXBaseAttribute)
                     ProcessYAXAttribute(attr);
         }
@@ -90,19 +90,19 @@ namespace YAXLib
         /// <value>The alias of the type.</value>
         public XName Alias
         {
-            get { return m_alias; }
+            get { return _alias; }
 
             private set
             {
                 if (Namespace.IsEmpty())
                 {
-                    m_alias = Namespace + value.LocalName;
+                    _alias = Namespace + value.LocalName;
                 }
                 else
                 {
-                    m_alias = value;
-                    if (m_alias.Namespace.IsEmpty())
-                        m_namespace = m_alias.Namespace;
+                    _alias = value;
+                    if (_alias.Namespace.IsEmpty())
+                        _namespace = _alias.Namespace;
                 }
             }
         }
@@ -145,18 +145,18 @@ namespace YAXLib
         ///     Gets the underlying type corresponding to this wrapper.
         /// </summary>
         /// <value>The underlying type corresponding to this wrapper.</value>
-        public Type UnderlyingType => m_udtType;
+        public Type UnderlyingType => _udtType;
 
         /// <summary>
         ///     Gets a value indicating whether the underlying type is a known-type
         /// </summary>
-        public bool IsKnownType => KnownTypes.IsKnowType(m_udtType);
+        public bool IsKnownType => KnownTypes.IsKnowType(_udtType);
 
         /// <summary>
         ///     Gets a value indicating whether this instance wraps around an enum.
         /// </summary>
         /// <value><c>true</c> if this instance wraps around an enum; otherwise, <c>false</c>.</value>
-        public bool IsEnum => m_udtType.IsEnum;
+        public bool IsEnum => _udtType.IsEnum;
 
         /// <summary>
         ///     Gets the enum wrapper, provided that this instance wraps around an enum.
@@ -168,10 +168,10 @@ namespace YAXLib
             {
                 if (IsEnum)
                 {
-                    if (m_enumWrapper == null)
-                        m_enumWrapper = new EnumWrapper(m_udtType);
+                    if (_enumWrapper == null)
+                        _enumWrapper = new EnumWrapper(_udtType);
 
-                    return m_enumWrapper;
+                    return _enumWrapper;
                 }
 
                 return null;
@@ -217,7 +217,7 @@ namespace YAXLib
         /// <value>
         ///     <c>true</c> if this instance wraps around a collection type; otherwise, <c>false</c>.
         /// </value>
-        public bool IsCollectionType => m_isTypeCollection;
+        public bool IsCollectionType => _isTypeCollection;
 
         /// <summary>
         ///     Gets a value indicating whether this instance wraps around a dictionary type.
@@ -225,7 +225,7 @@ namespace YAXLib
         /// <value>
         ///     <c>true</c> if this instance wraps around a dictionary type; otherwise, <c>false</c>.
         /// </value>
-        public bool IsDictionaryType => m_isTypeDictionary;
+        public bool IsDictionaryType => _isTypeDictionary;
 
         /// <summary>
         ///     Gets a value indicating whether this instance is treated as collection.
@@ -247,13 +247,13 @@ namespace YAXLib
         ///     Gets the collection attribute instance.
         /// </summary>
         /// <value>The collection attribute instance.</value>
-        public YAXCollectionAttribute CollectionAttributeInstance => m_collectionAttributeInstance;
+        public YAXCollectionAttribute CollectionAttributeInstance => _collectionAttributeInstance;
 
         /// <summary>
         ///     Gets the dictionary attribute instance.
         /// </summary>
         /// <value>The dictionary attribute instance.</value>
-        public YAXDictionaryAttribute DictionaryAttributeInstance => m_dictionaryAttributeInstance;
+        public YAXDictionaryAttribute DictionaryAttributeInstance => _dictionaryAttributeInstance;
 
         /// <summary>
         ///     Gets or sets the type of the custom serializer.
@@ -286,13 +286,13 @@ namespace YAXLib
         /// </remarks>
         public XNamespace Namespace
         {
-            get { return m_namespace; }
+            get { return _namespace; }
 
             private set
             {
-                m_namespace = value;
+                _namespace = value;
                 // explicit namespace definition overrides namespace definitions in SerializeAs attributes.
-                m_alias = m_namespace + m_alias.LocalName;
+                _alias = _namespace + _alias.LocalName;
             }
         }
 
@@ -319,7 +319,7 @@ namespace YAXLib
         /// <param name="caller">The caller serializer.</param>
         public void SetYAXSerializerOptions(YAXSerializer caller)
         {
-            if (!m_isSerializationOptionSetByAttribute)
+            if (!_isSerializationOptionSetByAttribute)
                 SerializationOption = caller != null
                     ? caller.SerializationOption
                     : YAXSerializationOptions.SerializeNullObjects;
@@ -333,7 +333,7 @@ namespace YAXLib
         /// </returns>
         public override string ToString()
         {
-            return m_udtType.ToString();
+            return _udtType.ToString();
         }
 
         /// <summary>
@@ -353,7 +353,7 @@ namespace YAXLib
             if (obj is UdtWrapper)
             {
                 var other = obj as UdtWrapper;
-                return m_udtType == other.m_udtType;
+                return _udtType == other._udtType;
             }
 
             return false;
@@ -367,7 +367,7 @@ namespace YAXLib
         /// </returns>
         public override int GetHashCode()
         {
-            return m_udtType.GetHashCode();
+            return _udtType.GetHashCode();
         }
 
         /// <summary>
@@ -394,7 +394,7 @@ namespace YAXLib
                 if (theAttr.IsSerializationOptionSet())
                 {
                     SerializationOption = theAttr.Options;
-                    m_isSerializationOptionSetByAttribute = true;
+                    _isSerializationOptionSetByAttribute = true;
                 }
             }
             else if (attr is YAXSerializeAsAttribute)
@@ -403,7 +403,7 @@ namespace YAXLib
             }
             else if (attr is YAXNotCollectionAttribute)
             {
-                if (!ReflectionUtils.IsArray(m_udtType))
+                if (!ReflectionUtils.IsArray(_udtType))
                     IsAttributedAsNotCollection = true;
             }
             else if (attr is YAXCustomSerializerAttribute)
@@ -436,11 +436,11 @@ namespace YAXLib
             }
             else if (attr is YAXCollectionAttribute)
             {
-                m_collectionAttributeInstance = attr as YAXCollectionAttribute;
+                _collectionAttributeInstance = attr as YAXCollectionAttribute;
             }
             else if (attr is YAXDictionaryAttribute)
             {
-                m_dictionaryAttributeInstance = attr as YAXDictionaryAttribute;
+                _dictionaryAttributeInstance = attr as YAXDictionaryAttribute;
             }
             else
             {

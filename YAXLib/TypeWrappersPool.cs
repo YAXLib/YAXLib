@@ -15,17 +15,17 @@ namespace YAXLib
         /// <summary>
         ///     The instance to the pool, to implement the singleton
         /// </summary>
-        private static TypeWrappersPool s_instance;
+        private static TypeWrappersPool _instance;
 
         /// <summary>
         ///     A dictionary from types to their corresponding wrappers
         /// </summary>
-        private readonly Dictionary<Type, UdtWrapper> m_dicTypes = new Dictionary<Type, UdtWrapper>();
+        private readonly Dictionary<Type, UdtWrapper> _dicTypes = new Dictionary<Type, UdtWrapper>();
 
         /// <summary>
         ///     An object to lock type-wrapper dictionary to make it thread-safe
         /// </summary>
-        private readonly object m_lockDic = new object();
+        private readonly object _lockDic = new object();
 
         /// <summary>
         ///     Prevents a default instance of the <c>TypeWrappersPool</c> class from being created, from
@@ -43,9 +43,9 @@ namespace YAXLib
         {
             get
             {
-                if (s_instance == null)
-                    s_instance = new TypeWrappersPool();
-                return s_instance;
+                if (_instance == null)
+                    _instance = new TypeWrappersPool();
+                return _instance;
             }
         }
 
@@ -54,9 +54,9 @@ namespace YAXLib
         /// </summary>
         public static void CleanUp()
         {
-            if (s_instance != null)
+            if (_instance != null)
             {
-                s_instance = null;
+                _instance = null;
                 // TODO: not sure if it's good work to do
                 GC.Collect();
             }
@@ -70,13 +70,13 @@ namespace YAXLib
         /// <returns>the type wrapper corresponding to the specified type</returns>
         public UdtWrapper GetTypeWrapper(Type t, YAXSerializer caller)
         {
-            lock (m_lockDic)
+            lock (_lockDic)
             {
                 UdtWrapper result;
-                if (!m_dicTypes.TryGetValue(t, out result))
+                if (!_dicTypes.TryGetValue(t, out result))
                 {
                     result = new UdtWrapper(t, caller);
-                    m_dicTypes.Add(t, result);
+                    _dicTypes.Add(t, result);
                 }
                 else
                 {

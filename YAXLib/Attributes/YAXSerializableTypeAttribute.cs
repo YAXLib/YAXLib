@@ -37,7 +37,7 @@ namespace YAXLib
         /// </returns>
         public bool IsSerializationOptionSet()
         {
-            return m_isOptionSet;
+            return _isOptionSet;
         }
 
         #endregion
@@ -48,12 +48,12 @@ namespace YAXLib
         ///     determines whether the serialization options property has been explicitly
         ///     set by the user.
         /// </summary>
-        private bool m_isOptionSet;
+        private bool _isOptionSet;
 
         /// <summary>
         ///     Private variable to hold the serialization options
         /// </summary>
-        private YAXSerializationOptions m_serializationOptions = YAXSerializationOptions.SerializeNullObjects;
+        private YAXSerializationOptions _serializationOptions = YAXSerializationOptions.SerializeNullObjects;
 
         #endregion
 
@@ -71,12 +71,12 @@ namespace YAXLib
         /// <value>The options.</value>
         public YAXSerializationOptions Options
         {
-            get { return m_serializationOptions; }
+            get { return _serializationOptions; }
 
             set
             {
-                m_serializationOptions = value;
-                m_isOptionSet = true;
+                _serializationOptions = value;
+                _isOptionSet = true;
             }
         }
 
