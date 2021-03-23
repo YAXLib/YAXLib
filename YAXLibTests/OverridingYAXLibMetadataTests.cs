@@ -17,7 +17,7 @@ namespace YAXLibTests
 
             ser.YaxLibNamespacePrefix = "yax";
             ser.YaxLibNamespaceUri = "http://namespace.org/yax";
-            ser.DimentionsAttributeName = "dm";
+            ser.DimensionsAttributeName = "dm";
             ser.RealTypeAttributeName = "type";
 
             var sampleInstance = YAXLibMetadataOverridingWithNamespace.GetSampleInstance();
@@ -50,7 +50,7 @@ namespace YAXLibTests
 
             ser.YaxLibNamespacePrefix = string.Empty;
             ser.YaxLibNamespaceUri = "http://namespace.org/sample";
-            ser.DimentionsAttributeName = "dm";
+            ser.DimensionsAttributeName = "dm";
             ser.RealTypeAttributeName = "type";
 
             var sampleInstance = YAXLibMetadataOverridingWithNamespace.GetSampleInstance();

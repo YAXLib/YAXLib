@@ -246,9 +246,9 @@ namespace YAXLib
         }
 
         /// <summary>
-        ///     the attribute name used to deserialize meta-data for multi-dimensional arrays.
+        ///     The attribute name used to deserialize meta-data for multi-dimensional arrays.
         /// </summary>
-        public string DimentionsAttributeName
+        public string DimensionsAttributeName
         {
             get { return _dimsAttrName; }
 
