@@ -99,7 +99,7 @@ namespace YAXLib
         /// </summary>
         /// <param name="type">The type of the object being serialized/deserialized.</param>
         /// <param name="serializationOptions">The serialization option flags.</param>
-        [Obsolete("Will be removed in v4. Use YAXSerializer(Type, SerializerOptions) instead.")]
+        [Obsolete("Will be removed in v4. Use YAXSerializer(Type) or YAXSerializer(Type, SerializerOptions) instead.")]
         public YAXSerializer(Type type, YAXSerializationOptions serializationOptions)
             : this(type, YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error,
                 serializationOptions)
@@ -111,7 +111,7 @@ namespace YAXLib
         /// </summary>
         /// <param name="type">The type of the object being serialized/deserialized.</param>
         /// <param name="exceptionPolicy">The exception handling policy.</param>
-        [Obsolete("Will be removed in v4. Use YAXSerializer(Type, SerializerOptions) instead.")]
+        [Obsolete("Will be removed in v4. Use YAXSerializer(Type) or YAXSerializer(Type, SerializerOptions) instead.")]
         public YAXSerializer(Type type, YAXExceptionHandlingPolicies exceptionPolicy)
             : this(type, exceptionPolicy, YAXExceptionTypes.Error, YAXSerializationOptions.SerializeNullObjects)
         {
@@ -123,7 +123,7 @@ namespace YAXLib
         /// <param name="type">The type of the object being serialized/deserialized.</param>
         /// <param name="exceptionPolicy">The exception handling policy.</param>
         /// <param name="defaultExType">The exceptions are treated as the value specified, unless otherwise specified.</param>
-        [Obsolete("Will be removed in v4. Use YAXSerializer(Type, SerializerOptions) instead.")]
+        [Obsolete("Will be removed in v4. Use YAXSerializer(Type) or YAXSerializer(Type, SerializerOptions) instead.")]
         public YAXSerializer(Type type, YAXExceptionHandlingPolicies exceptionPolicy, YAXExceptionTypes defaultExType)
             : this(type, exceptionPolicy, defaultExType, YAXSerializationOptions.SerializeNullObjects)
         {
@@ -136,7 +136,7 @@ namespace YAXLib
         /// <param name="exceptionPolicy">The exception handling policy.</param>
         /// <param name="defaultExType">The exceptions are treated as the value specified, unless otherwise specified.</param>
         /// <param name="option">The serialization option.</param>
-        [Obsolete("Will be removed in v4. Use YAXSerializer(Type, SerializerOptions) instead.")]
+        [Obsolete("Will be removed in v4. Use YAXSerializer(Type) or YAXSerializer(Type, SerializerOptions) instead.")]
         public YAXSerializer(Type t, YAXExceptionHandlingPolicies exceptionPolicy, YAXExceptionTypes defaultExType,
             YAXSerializationOptions option) : this(t,
             new SerializerOptions {
