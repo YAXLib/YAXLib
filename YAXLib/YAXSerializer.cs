@@ -169,10 +169,10 @@ namespace YAXLib
         internal bool HasTypeNamespace => TypeNamespace.IsEmpty();
 
         /// <summary>
-        ///     Gets or sets the <see cref="SerializationOption"/> settings
+        ///     Gets the <see cref="SerializationOption"/> settings
         ///     to influence the process of serialization or de-serialization of <see cref="YAXSerializer"/>s.
         /// </summary>
-        public SerializerOptions Options { get; set; }
+        public SerializerOptions Options { get; }
 
         /// <summary>
         ///     Gets the default type of the exception.
