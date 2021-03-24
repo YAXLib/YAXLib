@@ -52,15 +52,9 @@ namespace YAXLib
         /// <summary>
         ///     Cleans up the pool.
         /// </summary>
-        [Obsolete("Will be removed in v4. Do not use.")]
         public static void CleanUp()
         {
-            if (_instance != null)
-            {
-                _instance = null;
-                // TODO: not sure if it's good work to do
-                GC.Collect();
-            }
+            _instance = null;
         }
 
         /// <summary>

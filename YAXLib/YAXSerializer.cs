@@ -458,7 +458,6 @@ namespace YAXLib
         /// <summary>
         ///     Cleans up auxiliary memory used by YAXLib during different sessions of serialization.
         /// </summary>
-        [Obsolete("Will be removed in v4. Do not use.")]
         public static void CleanUpAuxiliaryMemory()
         {
             TypeWrappersPool.CleanUp();
