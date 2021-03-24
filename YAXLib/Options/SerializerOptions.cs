@@ -4,7 +4,7 @@
 using System;
 using System.Xml.Linq;
 
-namespace YAXLib
+namespace YAXLib.Options
 {
     /// <summary>
     ///     Settings to influence the process of serialization or de-serialization of <see cref="YAXSerializer"/>s.
@@ -23,46 +23,13 @@ namespace YAXLib
 
             // Initialization with compatibility to v2.x:
 
-            ExceptionBehavior = YAXExceptionTypes.Warning;
-            ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowErrorsOnly;
-            SerializationOptions = YAXSerializationOptions.DontSerializeNullObjects;
+            ExceptionBehavior = YAXExceptionTypes.Error;
+            ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors;
+            SerializationOptions = YAXSerializationOptions.SerializeNullObjects;
             AttributeName = new YAXAttributeName {Dimensions = "dims", RealType = "realtype"};
             Namespace = new YAXNameSpace {Prefix = "yaxlib", Uri = XNamespace.Get("http://www.sinairv.com/yaxlib/")};
         }
 
-        /// <summary>
-        /// Definitions for special attribute names.
-        /// </summary>
-        public class YAXAttributeName
-        {
-            /// <summary>
-            ///     The attribute name used to de-serialize meta-data for multi-dimensional arrays.
-            /// </summary>
-            public string Dimensions { get; set; }
-            
-            /// <summary>
-            ///     The attribute name used to de-serialize meta-data for real types of objects serialized through
-            ///     a reference to their base class or interface.
-            /// </summary>
-            public string RealType { get; set; }
-        }
-
-        /// <summary>
-        ///     XML Namespace definitions for the <see cref="YAXSerializer"/>.
-        /// </summary>
-        public class YAXNameSpace
-        {
-            /// <summary>
-            ///     The URI address which holds the xmlns:yaxlib definition.
-            /// </summary>
-            public XNamespace Uri { get; set; }
-            
-            /// <summary>
-            ///     The prefix used for the xml namespace.
-            /// </summary>
-            public string Prefix { get; set; }
-        }
-        
         /// <summary>
         ///     Gets or sets the kinds of <see cref="YAXExceptionHandlingPolicies"/>.
         /// </summary>

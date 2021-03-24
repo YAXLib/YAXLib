@@ -4,6 +4,7 @@
 using System.Xml.Linq;
 using NUnit.Framework;
 using YAXLib;
+using YAXLib.Options;
 
 namespace YAXLibTests
 {
@@ -18,11 +19,11 @@ namespace YAXLibTests
         private SerializerOptions GetNonDefaultOptions()
         {
             return new() {
-                ExceptionBehavior = YAXExceptionTypes.Error,
-                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
-                AttributeName = new SerializerOptions.YAXAttributeName
+                ExceptionBehavior = YAXExceptionTypes.Ignore,
+                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
+                AttributeName = new YAXAttributeName
                     {Dimensions = "test-dims", RealType = "test-realtype"},
-                Namespace = new SerializerOptions.YAXNameSpace
+                Namespace = new YAXNameSpace
                     {Prefix = "testyaxlib", Uri = XNamespace.Get("https://test.sinairv.com/yaxlib/")},
                 MaxRecursion = 123,
                 SerializationOptions = YAXSerializationOptions.SuppressMetadataAttributes
@@ -35,15 +36,13 @@ namespace YAXLibTests
             var opt1 = GetDefaultOptions();
             var opt2 = GetNonDefaultOptions();
 
-            Assert.IsFalse(
-                opt1.ExceptionBehavior == opt2.ExceptionBehavior ||
-                opt1.ExceptionHandlingPolicies == opt2.ExceptionHandlingPolicies ||
-                opt1.AttributeName.Dimensions == opt2.AttributeName.Dimensions ||
-                opt1.Namespace.Prefix == opt2.Namespace.Prefix ||
-                opt1.Namespace.Uri == opt2.Namespace.Uri ||
-                opt1.MaxRecursion == opt2.MaxRecursion ||
-                opt1.SerializationOptions == opt2.SerializationOptions
-            );
+            Assert.IsFalse(opt1.ExceptionBehavior == opt2.ExceptionBehavior);
+            Assert.IsFalse(opt1.ExceptionHandlingPolicies == opt2.ExceptionHandlingPolicies);
+            Assert.IsFalse(opt1.AttributeName.Dimensions == opt2.AttributeName.Dimensions);
+            Assert.IsFalse(opt1.Namespace.Prefix == opt2.Namespace.Prefix);
+            Assert.IsFalse(opt1.Namespace.Uri == opt2.Namespace.Uri);
+            Assert.IsFalse(opt1.MaxRecursion == opt2.MaxRecursion);
+            Assert.IsFalse(opt1.SerializationOptions == opt2.SerializationOptions);
         }
 
         /// <summary>
@@ -55,16 +54,14 @@ namespace YAXLibTests
             var opt = GetNonDefaultOptions();
             var ser = new YAXSerializer(typeof(SerializerOptions), opt);
 
-            Assert.IsTrue(
-                ser.DefaultExceptionType == opt.ExceptionBehavior &&
-                ser.SerializationOption == opt.SerializationOptions &&
-                ser.ExceptionHandlingPolicy == opt.ExceptionHandlingPolicies &&
-                ser.YaxLibNamespacePrefix == opt.Namespace.Prefix &&
-                ser.YaxLibNamespaceUri == opt.Namespace.Uri &&
-                ser.DimensionsAttributeName == opt.AttributeName.Dimensions &&
-                ser.RealTypeAttributeName == opt.AttributeName.RealType &&
-                ser.MaxRecursion == opt.MaxRecursion
-            );
+            Assert.IsTrue(ser.DefaultExceptionType == opt.ExceptionBehavior);
+            Assert.IsTrue(ser.SerializationOption == opt.SerializationOptions);
+            Assert.IsTrue(ser.ExceptionHandlingPolicy == opt.ExceptionHandlingPolicies);
+            Assert.IsTrue(ser.YaxLibNamespacePrefix == opt.Namespace.Prefix);
+            Assert.IsTrue(ser.YaxLibNamespaceUri == opt.Namespace.Uri);
+            Assert.IsTrue(ser.DimensionsAttributeName == opt.AttributeName.Dimensions);
+            Assert.IsTrue(ser.RealTypeAttributeName == opt.AttributeName.RealType);
+            Assert.IsTrue(ser.MaxRecursion == opt.MaxRecursion);
         }
         
         /// <summary>
@@ -75,12 +72,6 @@ namespace YAXLibTests
         {
             var opt = GetNonDefaultOptions();
             var ser = new YAXSerializer(typeof(SerializerOptions), new SerializerOptions());
-
-            // These don't have setters:
-            // ser.Options = new SerializerOptions();
-            // ser.DefaultExceptionType = opt.ExceptionBehavior;
-            // ser.SerializationOption = opt.SerializationOptions;
-            // ser.ExceptionHandlingPolicy = opt.ExceptionHandlingPolicies;
             
             ser.YaxLibNamespacePrefix = opt.Namespace.Prefix;
             ser.YaxLibNamespaceUri = opt.Namespace.Uri;
@@ -88,13 +79,11 @@ namespace YAXLibTests
             ser.RealTypeAttributeName = opt.AttributeName.RealType;
             ser.MaxRecursion = opt.MaxRecursion;
             
-            Assert.IsTrue(
-                ser.YaxLibNamespacePrefix == opt.Namespace.Prefix &&
-                ser.YaxLibNamespaceUri == opt.Namespace.Uri &&
-                ser.DimensionsAttributeName == opt.AttributeName.Dimensions &&
-                ser.RealTypeAttributeName == opt.AttributeName.RealType &&
-                ser.MaxRecursion == opt.MaxRecursion
-            );
+            Assert.IsTrue(ser.YaxLibNamespacePrefix == opt.Namespace.Prefix);
+            Assert.IsTrue(ser.YaxLibNamespaceUri == opt.Namespace.Uri);
+            Assert.IsTrue(ser.DimensionsAttributeName == opt.AttributeName.Dimensions);
+            Assert.IsTrue(ser.RealTypeAttributeName == opt.AttributeName.RealType);
+            Assert.IsTrue(ser.MaxRecursion == opt.MaxRecursion);
         }
     }
 }

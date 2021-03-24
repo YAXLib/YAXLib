@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
+using YAXLib.Options;
 
 namespace YAXLib
 {
@@ -88,10 +89,8 @@ namespace YAXLib
         ///     Initializes a new instance of the <see cref="YAXSerializer" /> class.
         /// </summary>
         /// <param name="type">The type of the object being serialized/deserialized.</param>
-        [Obsolete("Will be removed in v4. Use YAXSerializer(Type, SerializerOptions) instead.")]
         public YAXSerializer(Type type)
-            : this(type, YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error,
-                YAXSerializationOptions.SerializeNullObjects)
+            : this(type, new SerializerOptions())
         {
         }
 
@@ -99,11 +98,11 @@ namespace YAXLib
         ///     Initializes a new instance of the <see cref="YAXSerializer" /> class.
         /// </summary>
         /// <param name="type">The type of the object being serialized/deserialized.</param>
-        /// <param name="seializationOptions">The serialization option flags.</param>
+        /// <param name="serializationOptions">The serialization option flags.</param>
         [Obsolete("Will be removed in v4. Use YAXSerializer(Type, SerializerOptions) instead.")]
-        public YAXSerializer(Type type, YAXSerializationOptions seializationOptions)
+        public YAXSerializer(Type type, YAXSerializationOptions serializationOptions)
             : this(type, YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error,
-                seializationOptions)
+                serializationOptions)
         {
         }
 
@@ -147,16 +146,16 @@ namespace YAXLib
             })
         {
         }
-
+        
         /// <summary>
         ///     Initializes a new instance of the <see cref="YAXSerializer" /> class.
         /// </summary>
         /// <param name="t">The type of the object being serialized/de-serialized.</param>
         /// <param name="options">The <see cref="SerializationOption"/> settings to influence the process of serialization or de-serialization</param>
-        public YAXSerializer(Type t, SerializerOptions? options = null)
+        public YAXSerializer(Type t, SerializerOptions options)
         {
             _type = t;
-            Options = options ?? new SerializerOptions();
+            Options = options;
             
             // this must be the last call
             _udtWrapper = TypeWrappersPool.Pool.GetTypeWrapper(_type, this);
