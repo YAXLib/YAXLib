@@ -7,7 +7,7 @@ using System.Xml.Linq;
 namespace YAXLib
 {
     /// <summary>
-    /// Settings to influence the process of serialization or de-serialization of <see cref="YAXSerializer"/>s.
+    ///     Settings to influence the process of serialization or de-serialization of <see cref="YAXSerializer"/>s.
     /// </summary>
     public class SerializerOptions
     {
@@ -48,7 +48,7 @@ namespace YAXLib
         }
 
         /// <summary>
-        /// XML Namespace definitions for the <see cref="YAXSerializer"/>.
+        ///     XML Namespace definitions for the <see cref="YAXSerializer"/>.
         /// </summary>
         public class YAXNameSpace
         {
