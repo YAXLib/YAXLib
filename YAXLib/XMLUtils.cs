@@ -234,12 +234,13 @@ namespace YAXLib
         /// <param name="attrName">Name of the attribute.</param>
         /// <param name="attrValue">The value to be assigned to the attribute.</param>
         /// <param name="documentDefaultNamespace">The default namespace.</param>
+        /// <param name="culture">The <see cref="CultureInfo"/> to use for formatting the value.</param>
         /// <returns>
         ///     returns the attribute with the given name in the location
         ///     specified by the given location string in the given XML element.
         /// </returns>
         public static XAttribute CreateAttribute(XElement baseElement, string location, XName attrName,
-            object attrValue, XNamespace documentDefaultNamespace)
+            object attrValue, XNamespace documentDefaultNamespace, CultureInfo culture)
         {
             var newLoc = FindLocation(baseElement, location);
             if (newLoc == null)
@@ -263,7 +264,7 @@ namespace YAXLib
                     return null; // we cannot create another one with the same name
             }
 
-            return newLoc.AddAttributeNamespaceSafe(attrName, attrValue, documentDefaultNamespace);
+            return newLoc.AddAttributeNamespaceSafe(attrName, attrValue, documentDefaultNamespace, culture);
         }
 
         /// <summary>
@@ -400,10 +401,11 @@ namespace YAXLib
         ///     Adds the 'xml:space="preserve"' attribute to the specified element.
         /// </summary>
         /// <param name="element">Element to add the 'xml:space="preserve"' attribute to</param>
+        /// <param name="culture">The <see cref="CultureInfo"/> to use for string-formatting values.</param>
         /// <returns></returns>
-        public static XElement AddPreserveSpaceAttribute(XElement element)
+        public static XElement AddPreserveSpaceAttribute(XElement element, CultureInfo culture)
         {
-            element.AddAttributeNamespaceSafe(XNamespace.Xml + "space", "preserve", null);
+            element.AddAttributeNamespaceSafe(XNamespace.Xml + "space", "preserve", null, culture);
             return element;
         }
 
@@ -422,32 +424,38 @@ namespace YAXLib
             throw new InvalidOperationException("Cannot create a unique random prefix");
         }
 
-        public static string ToXmlValue(this object self)
+        /// <summary>
+        /// Gets the string representation of the object.
+        /// </summary>
+        /// <param name="self">The object to get as a string.</param>
+        /// <param name="culture">The <see cref="CultureInfo"/> to use for culture-specific output.</param>
+        /// <returns>The <see cref="CultureInfo"/>-aware string representation of the object.</returns>
+        public static string ToXmlValue(this object self, CultureInfo culture)
         {
             var typeName = self == null ? string.Empty : self.GetType().Name;
 
             switch (typeName)
             {
                 case "Double":
-                    return ((double) self).ToString("R", CultureInfo.InvariantCulture);
+                    return ((double) self).ToString("R", culture);
                 case "Single":
-                    return ((float) self).ToString("R", CultureInfo.InvariantCulture);
+                    return ((float) self).ToString("R", culture);
                 case "BigInteger":
-                    return ReflectionUtils.InvokeMethod(self, "ToString", "R", CultureInfo.InvariantCulture) as string;
+                    return ReflectionUtils.InvokeMethod(self, "ToString", "R", culture) as string;
             }
 
-            return Convert.ToString(self ?? string.Empty, CultureInfo.InvariantCulture);
+            return Convert.ToString(self ?? string.Empty, culture);
         }
 
         public static XAttribute AddAttributeNamespaceSafe(this XElement parent, XName attrName, object attrValue,
-            XNamespace documentDefaultNamespace)
+            XNamespace documentDefaultNamespace, CultureInfo culture)
         {
             var newAttrName = attrName;
 
             if (newAttrName.Namespace == documentDefaultNamespace)
                 newAttrName = newAttrName.RemoveNamespace();
 
-            var newAttr = new XAttribute(newAttrName, attrValue.ToXmlValue());
+            var newAttr = new XAttribute(newAttrName, attrValue.ToXmlValue(culture));
             parent.Add(newAttr);
             return newAttr;
         }
@@ -468,9 +476,16 @@ namespace YAXLib
             return parent.Attributes(attrName);
         }
 
-        public static XElement AddXmlContent(this XElement self, object contentValue)
+        /// <summary>
+        /// Gets the XML content of an <see cref="XElement"/> with the value parameter formatted <see cref="CultureInfo"/>-specific.
+        /// </summary>
+        /// <param name="self">The <see cref="XElement"/></param>
+        /// <param name="contentValue">An <see cref="object"/> for the content value.</param>
+        /// <param name="culture">The <see cref="CultureInfo"/> to use for string-formatting the content value.</param>
+        /// <returns>The XML content of an <see cref="XElement"/> with the value parameter formatted <see cref="CultureInfo"/>-specific.</returns>
+        public static XElement AddXmlContent(this XElement self, object contentValue, CultureInfo culture)
         {
-            self.Add(new XText(contentValue.ToXmlValue()));
+            self.Add(new XText(contentValue.ToXmlValue(culture)));
             return self;
         }
 

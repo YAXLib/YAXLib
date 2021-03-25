@@ -20,8 +20,9 @@ namespace YAXLib
         /// </summary>
         /// <param name="propName">Name of the property.</param>
         /// <param name="defaultValue">The default value which caused the problem.</param>
-        public YAXDefaultValueCannotBeAssigned(string propName, object defaultValue) :
-            this(propName, defaultValue, null)
+        /// <param name="culture">The <see cref="CultureInfo"/> used for string formatting values.</param>
+        public YAXDefaultValueCannotBeAssigned(string propName, object defaultValue, CultureInfo culture) :
+            this(propName, defaultValue, null, culture)
         {
         }
 
@@ -31,11 +32,13 @@ namespace YAXLib
         /// <param name="propName">Name of the property.</param>
         /// <param name="defaultValue">The default value which caused the problem.</param>
         /// <param name="lineInfo">IXmlLineInfo derived object, e.g. XElement, XAttribute containing line info</param>
-        public YAXDefaultValueCannotBeAssigned(string propName, object defaultValue, IXmlLineInfo lineInfo) :
+        /// <param name="culture">The <see cref="CultureInfo"/> used for string formatting values in the <see cref="Message"/>.</param>
+        public YAXDefaultValueCannotBeAssigned(string propName, object defaultValue, IXmlLineInfo lineInfo, CultureInfo culture) :
             base(lineInfo)
         {
             PropertyName = propName;
             TheDefaultValue = defaultValue;
+            Culture = culture;
         }
 
         #endregion
@@ -53,6 +56,11 @@ namespace YAXLib
         /// </summary>
         /// <value>The default value which caused the problem.</value>
         public object TheDefaultValue { get; }
+        
+        /// <summary>
+        ///     Gets the <see cref="CultureInfo"/> used for string formatting values in the <see cref="Message"/>,
+        /// </summary>
+        public CultureInfo Culture { get; }
 
         /// <summary>
         ///     Gets a message that describes the current exception.
@@ -63,7 +71,7 @@ namespace YAXLib
         /// </returns>
         public override string Message =>
             string.Format(
-                CultureInfo.CurrentCulture,
+                Culture,
                 "Could not assign the default value specified ('{0}') for the property '{1}'.{2}",
                 TheDefaultValue,
                 PropertyName,

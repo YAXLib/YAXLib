@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using System;
+using System.Globalization;
 using NUnit.Framework;
 using YAXLib;
 using YAXLibTests.SampleClasses;
@@ -289,7 +290,7 @@ namespace YAXLibTests
             var testValue = 1;
             var ex = Assert.Throws<YAXDefaultValueCannotBeAssigned>(() =>
             {
-                throw new YAXDefaultValueCannotBeAssigned(testName, testValue);
+                throw new YAXDefaultValueCannotBeAssigned(testName, (object) testValue, CultureInfo.InvariantCulture);
             });
             StringAssert.Contains(testName, ex.Message);
             StringAssert.Contains(testValue.ToString(), ex.Message);
