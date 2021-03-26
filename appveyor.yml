@@ -1,12 +1,11 @@
 version: 3.0.{build}
 environment:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true 
+  sonar_token:
+    secure: vGykSE7HJldBws9UK3SWTieFV6KXV7EAxQ4b+BkNijXiAbWdzxHFnbjvBzhLTevU  
   matrix:
   - job_name: windows
     appveyor_build_worker_image: Visual Studio 2019
-    sonar_token:
-      secure: vGykSE7HJldBws9UK3SWTieFV6KXV7EAxQ4b+BkNijXiAbWdzxHFnbjvBzhLTevU
-        
   - job_name: linux
     appveyor_build_worker_image: Ubuntu
 matrix:
