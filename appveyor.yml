@@ -2,7 +2,7 @@ version: 3.0.{build}
 environment:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true 
   sonar_token:
-    secure: vGykSE7HJldBws9UK3SWTieFV6KXV7EAxQ4b+BkNijXiAbWdzxHFnbjvBzhLTevU  
+    secure: RxImROoeWPzE38G+9+M9IC5NIHqfrcQ23DKkYPEI0WzKi03lSCQ1MijExTHXLmPa
   matrix:
   - job_name: windows
     appveyor_build_worker_image: Visual Studio 2019
