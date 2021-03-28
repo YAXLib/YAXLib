@@ -9,8 +9,8 @@ $sonarOrg = "yaxlib"
 if ($env:APPVEYOR_REPO_NAME -eq $github) {
 
     if (-not $env:sonar_token) {
-        Write-warning "Sonar: not running SonarQube, no sonar_token"
-        return;
+        Write-error "Sonar: not running SonarQube, no sonar_token"
+        return 1;
     }
  
     $prMode = $false;
