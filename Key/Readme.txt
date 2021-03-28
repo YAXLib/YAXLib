@@ -1,4 +1,4 @@
-The key provided here is to keep the downloaded source code buildable. However binary releases are signed with another key.
+The key provided here is to keep the downloaded source code buildable.
 
 Public key is:
 0024000004800000940000000602000000240000525341310004000001000100d7f87eefee568e
