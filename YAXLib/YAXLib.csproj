@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>../Key/YAXLib.DevKey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>../Key/YAXLib.Key.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <PackageId>YAXLib</PackageId>
     <Title>YAXLib</Title>

@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using System.Xml.Linq;
+
 using FluentAssertions;
 using NUnit.Framework;
 using YAXLib;
@@ -64,7 +65,6 @@ namespace YAXLibTests
             ser.DimensionsAttributeName = opt.AttributeName.Dimensions;
             ser.RealTypeAttributeName = opt.AttributeName.RealType;
             ser.MaxRecursion = opt.MaxRecursion;
-            
             ser.YaxLibNamespacePrefix.Should().Be(opt.Namespace.Prefix);
             ser.YaxLibNamespaceUri.Should().Be(opt.Namespace.Uri);
             ser.DimensionsAttributeName.Should().Be(opt.AttributeName.Dimensions);

@@ -31,6 +31,7 @@ namespace YAXLib
         /// <summary>
         ///     The list of all errors that have occurred.
         /// </summary>
+
         private readonly YAXParsingErrors _parsingErrors;
 
         /// <summary>
@@ -1657,6 +1658,7 @@ namespace YAXLib
                             {
                                 OnExceptionOccurred(
                                     new YAXDefaultValueCannotBeAssigned(member.Alias.LocalName, member.DefaultValue,
+
                                         xattrValue ?? xelemValue ?? baseElement as IXmlLineInfo, Options.Culture),
                                     Options.ExceptionBehavior);
                             }
@@ -1671,6 +1673,7 @@ namespace YAXLib
                             {
                                 OnExceptionOccurred(
                                     new YAXDefaultValueCannotBeAssigned(member.Alias.LocalName, member.DefaultValue,
+
                                         xattrValue ?? xelemValue ?? baseElement as IXmlLineInfo, Options.Culture),
                                     Options.ExceptionBehavior);
                             }
