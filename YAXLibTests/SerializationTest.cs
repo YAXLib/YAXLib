@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
+using FluentAssertions;
 using NUnit.Framework;
 using YAXLib;
 using YAXLib.Options;
@@ -168,7 +169,7 @@ namespace YAXLibTests
             serializer.Options.Culture = CultureInfo.InvariantCulture;
             var serResult2 = serializer.Serialize(CultureSample.GetSampleInstance());
             
-            Assert.That(!serResult1.Equals(serResult2));
+            serResult1.Should().NotBeEquivalentTo(serResult2, because:"cultures with different number formats are used");
         }
         
         [TestCase("fr-FR", "fa-IR")]
@@ -201,13 +202,9 @@ namespace YAXLibTests
             CultureInfo.CurrentCulture = new CultureInfo(cultName2);
             serializer = new YAXSerializer(typeof(CultureSample));
             var desResult = serializer.Deserialize(serResult) as CultureSample;
-
-            Assert.That(serResult, Is.EqualTo(expected),
-                $"Comparing serialized '{cultName1}' with expected.");
-            Assert.That(desResult != null,
-                $"Deserialized from '{cultName1}' to '{cultName2}' is not null.");
-            Assert.That(desResult.Equals(CultureSample.GetSampleInstance()),
-                $"Comparing deserialized '{cultName2}' with deserialized expected.");
+            
+            serResult.Should().BeEquivalentTo(expected, because: "this is our result XML literal");
+            desResult.Should().BeEquivalentTo(CultureSample.GetSampleInstance(), because: "this is the original object");
         }
 
         [Test]

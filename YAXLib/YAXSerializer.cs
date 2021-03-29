@@ -31,7 +31,6 @@ namespace YAXLib
         /// <summary>
         ///     The list of all errors that have occurred.
         /// </summary>
-
         private readonly YAXParsingErrors _parsingErrors;
 
         /// <summary>

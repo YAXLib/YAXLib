@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 using System.Xml.Linq;
-
 using FluentAssertions;
 using NUnit.Framework;
 using YAXLib;
