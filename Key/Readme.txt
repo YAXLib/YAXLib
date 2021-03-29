@@ -1,4 +1,4 @@
-The key provided here is to keep the downloaded source code buildable.
+Strong-name the assembly, see https://docs.microsoft.com/en-us/dotnet/standard/assembly/strong-named
 
 Public key is:
 0024000004800000940000000602000000240000525341310004000001000100d7f87eefee568e
