@@ -15,7 +15,31 @@ namespace YAXLibTests.SampleClasses.CustomSerialization
         public string MessageBody { get; set; }
         
         public string Title { get; set; }
-        
+    }
+
+    public class ClassLevelSampleAsElement
+    {
+        public ClassLevelSample ClassLevelSample { get; set; }
+        public override string ToString()
+        {
+            return GeneralToStringProvider.GeneralToString(this);
+        }
+    }
+    
+    public class ClassLevelSampleAsAttribute
+    {
+        [YAXAttributeForClass]
+        public ClassLevelSample ClassLevelSample { get; set; }
+        public override string ToString()
+        {
+            return GeneralToStringProvider.GeneralToString(this);
+        }
+    }
+    
+    public class ClassLevelSampleAsValue
+    {
+        [YAXValueForClass]
+        public ClassLevelSample ClassLevelSample { get; set; }
         public override string ToString()
         {
             return GeneralToStringProvider.GeneralToString(this);

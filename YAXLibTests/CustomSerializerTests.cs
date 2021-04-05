@@ -11,16 +11,51 @@ namespace YAXLibTests
     public class CustomSerializerTests
     {
         [Test]
-        public void Custom_Class_Level_Serializer()
+        public void Custom_Class_Level_Serializer_Element()
         {
-            // The custom serializer handles the whole class instance
-            
-            var original = new ClassLevelSample { Title = "The Title", MessageBody = "The Message"};
-            var s = new YAXSerializer(typeof(ClassLevelSample));
+            // The custom serializer for ClassLevelSample handles serialization options
+
+            var original = new ClassLevelSampleAsElement
+                {ClassLevelSample = new ClassLevelSample {Title = "The Title", MessageBody = "The Message"}};
+            var s = new YAXSerializer(typeof(ClassLevelSampleAsElement));
             var xml = s.Serialize(original);
-            var deserialized = (ClassLevelSample) s.Deserialize(xml);
+            var deserialized = (ClassLevelSampleAsElement) s.Deserialize(xml);
             
-            Assert.That(xml, Is.EqualTo("<ClassLevelSample Title=\"The Title\">The Message</ClassLevelSample>"));
+            Assert.That(xml, Is.EqualTo(@"<ClassLevelSampleAsElement>
+  <ClassLevelSample>
+    <Title>The Title</Title>
+    <MessageBody>The Message</MessageBody>
+  </ClassLevelSample>
+</ClassLevelSampleAsElement>"));
+            Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()));
+        }
+        
+        [Test]
+        public void Custom_Class_Level_Serializer_Attribute()
+        {
+            // The custom serializer for ClassLevelSample handles serialization options
+
+            var original = new ClassLevelSampleAsAttribute
+                {ClassLevelSample = new ClassLevelSample {Title = "The Title", MessageBody = "The Message"}};
+            var s = new YAXSerializer(typeof(ClassLevelSampleAsAttribute));
+            var xml = s.Serialize(original);
+            var deserialized = (ClassLevelSampleAsAttribute) s.Deserialize(xml);
+            
+            Assert.That(xml, Is.EqualTo("<ClassLevelSampleAsAttribute ClassLevelSample=\"ATTR|The Title|The Message\" />"));
+            Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()));
+        }
+        
+        [Test]
+        public void Custom_Class_Level_Serializer_Value()
+        {
+            // The custom serializer for ClassLevelSample handles serialization options
+            
+            var original = new ClassLevelSampleAsValue { ClassLevelSample = new ClassLevelSample { Title = "The Title", MessageBody = "The Message"}};
+            var s = new YAXSerializer(typeof(ClassLevelSampleAsValue));
+            var xml = s.Serialize(original);
+            var deserialized = (ClassLevelSampleAsValue) s.Deserialize(xml);
+            
+            Assert.That(xml, Is.EqualTo("<ClassLevelSampleAsValue>VAL|The Title|The Message</ClassLevelSampleAsValue>"));
             Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()));
         }
         
