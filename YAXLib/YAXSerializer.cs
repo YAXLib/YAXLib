@@ -496,7 +496,7 @@ namespace YAXLib
             {
                 var elemResult = MakeDictionaryElement(null, _udtWrapper.Alias, obj,
                     _udtWrapper.DictionaryAttributeInstance, _udtWrapper.CollectionAttributeInstance,
-                    _udtWrapper.IsNotAllowdNullObjectSerialization);
+                    _udtWrapper.IsNotAllowedNullObjectSerialization);
                 if (_udtWrapper.PreservesWhitespace)
                     XMLUtils.AddPreserveSpaceAttribute(elemResult);
                 if (elemResult.Parent == null)
@@ -676,7 +676,7 @@ namespace YAXLib
 
                     // ignore this member if it is null and we are not about to serialize null objects
                     if (elementValue == null &&
-                        _udtWrapper.IsNotAllowdNullObjectSerialization)
+                        _udtWrapper.IsNotAllowedNullObjectSerialization)
                         continue;
 
                     if (elementValue == null &&
@@ -1255,7 +1255,7 @@ namespace YAXLib
 
             if (udt != null && udt.IsTreatedAsDictionary)
             {
-                elemToAdd = MakeDictionaryElement(elem, alias, obj, null, null, udt.IsNotAllowdNullObjectSerialization);
+                elemToAdd = MakeDictionaryElement(elem, alias, obj, null, null, udt.IsNotAllowedNullObjectSerialization);
                 if (elemToAdd.Parent != elem)
                     elem.Add(elemToAdd);
             }
@@ -1529,7 +1529,7 @@ namespace YAXLib
                             OnExceptionOccurred(new YAXAttributeMissingException(
                                     StringUtils.CombineLocationAndElementName(serializationLocation, member.Alias),
                                     elem ?? baseElement),
-                                !member.MemberType.IsValueType && _udtWrapper.IsNotAllowdNullObjectSerialization
+                                !member.MemberType.IsValueType && _udtWrapper.IsNotAllowedNullObjectSerialization
                                     ? YAXExceptionTypes.Ignore
                                     : member.TreatErrorsAs);
                         }
@@ -1547,7 +1547,7 @@ namespace YAXLib
                     {
                         OnExceptionOccurred(new YAXElementMissingException(
                                 serializationLocation, baseElement),
-                            !member.MemberType.IsValueType && _udtWrapper.IsNotAllowdNullObjectSerialization
+                            !member.MemberType.IsValueType && _udtWrapper.IsNotAllowedNullObjectSerialization
                                 ? YAXExceptionTypes.Ignore
                                 : member.TreatErrorsAs);
                     }
@@ -1571,7 +1571,7 @@ namespace YAXLib
                                 OnExceptionOccurred(
                                     new YAXElementValueMissingException(serializationLocation,
                                         innerelem ?? baseElement),
-                                    !member.MemberType.IsValueType && _udtWrapper.IsNotAllowdNullObjectSerialization
+                                    !member.MemberType.IsValueType && _udtWrapper.IsNotAllowedNullObjectSerialization
                                         ? YAXExceptionTypes.Ignore
                                         : member.TreatErrorsAs);
                             }
@@ -1628,7 +1628,7 @@ namespace YAXLib
                             OnExceptionOccurred(new YAXElementMissingException(
                                     StringUtils.CombineLocationAndElementName(serializationLocation,
                                         member.Alias.OverrideNsIfEmpty(TypeNamespace)), baseElement),
-                                !member.MemberType.IsValueType && _udtWrapper.IsNotAllowdNullObjectSerialization
+                                !member.MemberType.IsValueType && _udtWrapper.IsNotAllowedNullObjectSerialization
                                     ? YAXExceptionTypes.Ignore
                                     : member.TreatErrorsAs);
                     }
@@ -1646,7 +1646,7 @@ namespace YAXLib
                     if (_desObject == null
                     ) // i.e. if it was NOT resuming de-serialization, set default value, otherwise existing value for the member is kept
                     {
-                        if (!member.MemberType.IsValueType && _udtWrapper.IsNotAllowdNullObjectSerialization)
+                        if (!member.MemberType.IsValueType && _udtWrapper.IsNotAllowedNullObjectSerialization)
                         {
                             try
                             {
@@ -2754,7 +2754,7 @@ namespace YAXLib
 
                     var memInfo = new MemberWrapper(member, this);
                     if (memInfo.IsAllowedToBeSerialized(typeWrapper.FieldsToSerialize,
-                        _udtWrapper.DontSerializePropertiesWithNoSetter)) yield return memInfo;
+                        _udtWrapper.DoNotSerializePropertiesWithNoSetter)) yield return memInfo;
                 }
             }
         }
