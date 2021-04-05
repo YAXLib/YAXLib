@@ -8,7 +8,7 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses
 {
-    [YAXCustomSerializer(typeof(CustomMessageSerializer))]
+    [YAXCustomSerializer(typeof(CustomMessageClassSerializer))]
     public class Message
     {
         public string MessageText { get; set; }
@@ -23,7 +23,7 @@ namespace YAXLibTests.SampleClasses
     }
 
     [ShowInDemoApplication]
-    public class CustomSerializationTests
+    public class CustomSerializationDemoClasses
     {
         [YAXCustomSerializer(typeof(CustomTitleSerializer))]
         [YAXElementFor("SomeTitle")]
@@ -36,7 +36,7 @@ namespace YAXLibTests.SampleClasses
             return GeneralToStringProvider.GeneralToString(this);
         }
 
-        public static CustomSerializationTests GetSampleInstance()
+        public static CustomSerializationDemoClasses GetSampleInstance()
         {
             var message = new Message
             {
@@ -46,7 +46,7 @@ namespace YAXLibTests.SampleClasses
                 BoldLength = 3
             };
 
-            return new CustomSerializationTests
+            return new CustomSerializationDemoClasses
             {
                 Title = "Important Note",
                 Message = message
@@ -54,7 +54,7 @@ namespace YAXLibTests.SampleClasses
         }
     }
 
-    public class CustomMessageSerializer : ICustomSerializer<Message>
+    public class CustomMessageClassSerializer : ICustomSerializer<Message>
     {
         #region ICustomSerializer<Message> Members
 
@@ -135,20 +135,20 @@ namespace YAXLibTests.SampleClasses
 
         public string DeserializeFromAttribute(XAttribute attrib)
         {
-            return RetreiveValue(attrib.Value);
+            return RetrieveValue(attrib.Value);
         }
 
         public string DeserializeFromElement(XElement element)
         {
-            return RetreiveValue(element.Value);
+            return RetrieveValue(element.Value);
         }
 
         public string DeserializeFromValue(string value)
         {
-            return RetreiveValue(value);
+            return RetrieveValue(value);
         }
 
-        private string RetreiveValue(string str)
+        private string RetrieveValue(string str)
         {
             var sb = new StringBuilder();
 
