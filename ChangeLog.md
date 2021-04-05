@@ -1,6 +1,7 @@
 [3.00] Commits until April 05, 2021
 
    **Changes:**
+   * Fix `YAXAttributeForClass` and `YAXValueForClass` attributes are ignored when a `YAXCustomSerializer` is not defined on the property's type ([#147](https://github.com/YAXLib/YAXLib/pull/143), [#97](https://github.com/YAXLib/YAXLib/issues/97))
    * Introduced `SerializerOptions` for instanciating `YAXSerializer` ([#137](https://github.com/YAXLib/YAXLib/pull/137)). Marked 2.x constructors as obsolete (will be removed in v4)
    * Removed Microsoft.DotNet.PlatformAbstractions dependency ([#127](https://github.com/YAXLib/YAXLib/pull/127)) 
    * Enabled SourceLink ([#125](https://github.com/YAXLib/YAXLib/pull/125))
