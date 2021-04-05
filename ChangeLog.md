@@ -1,9 +1,18 @@
-[2.16.0] Feb 14, 2021
-   * Now supporting netstandard2.0 netstandard2.1 net461 net462 net472 net48 net5.0
-   * Dropped support of netstandard1.6
-   * Extended unit tests for netstandard
-   * Enabled SourceLink
+[3.00] Commits until April 05, 2021
+
+   **Changes:**
+   * Introduced `SerializerOptions` for instanciating `YAXSerializer` ([#137](https://github.com/YAXLib/YAXLib/pull/137)). Marked 2.x constructors as obsolete (will be removed in v4)
+   * Removed Microsoft.DotNet.PlatformAbstractions dependency ([#127](https://github.com/YAXLib/YAXLib/pull/127)) 
+   * Enabled SourceLink ([#125](https://github.com/YAXLib/YAXLib/pull/125))
+   * Now supporting netstandard2.0 net461 ([#124](https://github.com/YAXLib/YAXLib/pull/124))
+   * Added cross-framework compatibility (.Net Framework 2.x-4.x and .Net Standard) ([#123](https://github.com/YAXLib/YAXLib/pull/123))
+   * Ingrated fork [YAXLib.Redux](https://github.com/MhpSoftware/YAXLib.Redux) ([#122](https://github.com/YAXLib/YAXLib/pull/122))
    * SemVer versioning
+   
+   **Breaking changes:**
+   * Corrected typos (UdtWrapper.YAXSerializer.DimentionsAttributeName -> YAXSerializer.DimensionsAttributeName) ([#135](https://github.com/YAXLib/YAXLib/pull/135)) 
+   * Corrected typos (UdtWrapper.IsNotAllowdNullObjectSerialization -> UdtWrapper.IsNotAllowedNullObjectSerialization, UdtWrapper.DontSerializePropertiesWithNoSetter -> UdtWrapper.DoNotSerializePropertiesWithNoSetter) ([#144](https://github.com/YAXLib/YAXLib/pull/144))
+   * Dropped support of netstandard1.6
 
 [2.15] Feb 18, 2017
    * Added support for .NET Core. Huge thanks go to [axuno gGmbH](https://github.com/axunonb) for developing the support for .NET Core.
