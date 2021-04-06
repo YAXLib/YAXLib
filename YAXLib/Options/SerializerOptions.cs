@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using System;
+using System.Globalization;
 using System.Xml.Linq;
 
 namespace YAXLib.Options
@@ -23,6 +24,7 @@ namespace YAXLib.Options
 
             // Initialization with compatibility to v2.x:
 
+            Culture = CultureInfo.InvariantCulture;
             ExceptionBehavior = YAXExceptionTypes.Error;
             ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors;
             SerializationOptions = YAXSerializationOptions.SerializeNullObjects;
@@ -62,5 +64,11 @@ namespace YAXLib.Options
         ///     1 means an empty XML tag with no content.
         /// </summary>
         public int MaxRecursion { get; set; }
+        
+        /// <summary>
+        ///     Gets or sets the <see cref="CultureInfo"/> for serialization and de-serialization.
+        ///     Default is <see cref="CultureInfo.CurrentCulture"/>.
+        /// </summary>
+        public CultureInfo Culture { get; set; }
     }
 }

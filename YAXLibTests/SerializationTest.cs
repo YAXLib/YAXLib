@@ -5,8 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
+using FluentAssertions;
 using NUnit.Framework;
 using YAXLib;
+using YAXLib.Options;
 using YAXLibTests.SampleClasses;
 using YAXLibTests.SampleClasses.SelfReferencingObjects;
 
@@ -106,44 +108,103 @@ namespace YAXLibTests
             Assert.That(got, Is.EqualTo(result));
         }
 
+        [TestCase("fr-FR")]
+        [TestCase("fa-IR")]
+        [TestCase("en-US")]
+        [TestCase("en-GB")]
+        [TestCase("")]
+        public void Serializing_DeSerializing_Same_Culture(string cultName)
+        {
+            var culture = new CultureInfo(cultName);
+            var instance = CultureSample.GetSampleInstance();
+            var expected =
+                $@"<!-- This class contains fields that are vulnerable to culture changes! -->
+<CultureSample Number2=""{instance.Number2.ToString(culture)}"" Dec2=""{instance.Dec2.ToString(culture)}"" Date2=""{instance.Date2.ToString(culture)}"">
+  <Number1>{instance.Number1.ToString(culture)}</Number1>
+  <Number3>{instance.Number3.ToString(culture)}</Number3>
+  <Numbers>
+    <Double>{instance.Numbers[0].ToString(culture)}</Double>
+    <Double>{instance.Numbers[1].ToString(culture)}</Double>
+    <Double>{instance.Numbers[2].ToString(culture)}</Double>
+  </Numbers>
+  <Dec1>{instance.Dec1.ToString(culture)}</Dec1>
+  <Date1>{instance.Date1.ToString(culture)}</Date1>
+</CultureSample>";
+
+            var serializer = new YAXSerializer(typeof(CultureSample),
+                new SerializerOptions {
+                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
+                    ExceptionBehavior = YAXExceptionTypes.Warning,
+                    SerializationOptions = YAXSerializationOptions.SerializeNullObjects,
+                    Culture = new CultureInfo(cultName)
+                });
+            var serResult = serializer.Serialize(CultureSample.GetSampleInstance());
+
+            CultureInfo.CurrentCulture = new CultureInfo(cultName);
+            serializer = new YAXSerializer(typeof(CultureSample),
+                new SerializerOptions {
+                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
+                    ExceptionBehavior = YAXExceptionTypes.Warning,
+                    SerializationOptions = YAXSerializationOptions.SerializeNullObjects,
+                    Culture = new CultureInfo(cultName)
+                });
+
+            var desResult = serializer.Deserialize(serResult) as CultureSample;
+            Assert.That(serResult, Is.EqualTo(expected), $"Comparing serialized '{cultName}' with expected.");
+            Assert.That(desResult.Equals(CultureSample.GetSampleInstance()),
+                $"Comparing deserialized '{cultName}' with deserialized expected.");
+        }
+
         [Test]
+        public void Serializing_DeSerializing_Different_Culture()
+        {
+            var serializer = new YAXSerializer(typeof(CultureSample),
+                new SerializerOptions {
+                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
+                    ExceptionBehavior = YAXExceptionTypes.Warning,
+                    SerializationOptions = YAXSerializationOptions.SerializeNullObjects,
+                    Culture = new CultureInfo("fr-FR")
+                });
+            var serResult1 = serializer.Serialize(CultureSample.GetSampleInstance());
+            serializer.Options.Culture = CultureInfo.InvariantCulture;
+            var serResult2 = serializer.Serialize(CultureSample.GetSampleInstance());
+            
+            serResult1.Should().NotBeEquivalentTo(serResult2, because:"cultures with different number formats are used");
+        }
+        
         [TestCase("fr-FR", "fa-IR")]
         [TestCase("", "fr-FR")]
         [TestCase("fr-FR", "en-US")]
         [TestCase("de-DE", "")]
         [TestCase("fa-IR", "en-US")]
         [TestCase("en-US", "")]
-        public void CultureChangeTest(string cultName1, string cultName2)
+        public void YAXLib_v2_Compatibility_Using_Defaults(string cultName1, string cultName2)
         {
-            const string expected =
-                @"<!-- This class contains fields that are vulnerable to culture changes! -->
-<CultureSample Number2=""32243.67676"" Dec2=""19232389.18391912318232131"" Date2=""09/20/2011 04:10:30"">
-  <Number1>123123.1233</Number1>
-  <Number3>21313.123123</Number3>
+            var instance = CultureSample.GetSampleInstance();
+            var expected =
+                $@"<!-- This class contains fields that are vulnerable to culture changes! -->
+<CultureSample Number2=""{instance.Number2.ToString(CultureInfo.InvariantCulture)}"" Dec2=""{instance.Dec2.ToString(CultureInfo.InvariantCulture)}"" Date2=""{instance.Date2.ToString(CultureInfo.InvariantCulture)}"">
+  <Number1>{instance.Number1.ToString(CultureInfo.InvariantCulture)}</Number1>
+  <Number3>{instance.Number3.ToString(CultureInfo.InvariantCulture)}</Number3>
   <Numbers>
-    <Double>23213.2132</Double>
-    <Double>123.213</Double>
-    <Double>1.2323E+34</Double>
+    <Double>{instance.Numbers[0].ToString(CultureInfo.InvariantCulture)}</Double>
+    <Double>{instance.Numbers[1].ToString(CultureInfo.InvariantCulture)}</Double>
+    <Double>{instance.Numbers[2].ToString(CultureInfo.InvariantCulture)}</Double>
   </Numbers>
-  <Dec1>192389183919123.18232131</Dec1>
-  <Date1>10/11/2010 18:20:30</Date1>
+  <Dec1>{instance.Dec1.ToString(CultureInfo.InvariantCulture)}</Dec1>
+  <Date1>{instance.Date1.ToString(CultureInfo.InvariantCulture)}</Date1>
 </CultureSample>";
+            
             CultureInfo.CurrentCulture = new CultureInfo(cultName1);
-            var serializer = new YAXSerializer(typeof(CultureSample), YAXExceptionHandlingPolicies.DoNotThrow,
-                YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(typeof(CultureSample));
             var serResult = serializer.Serialize(CultureSample.GetSampleInstance());
 
             CultureInfo.CurrentCulture = new CultureInfo(cultName2);
-            serializer = new YAXSerializer(typeof(CultureSample), YAXExceptionHandlingPolicies.DoNotThrow,
-                YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            serializer = new YAXSerializer(typeof(CultureSample));
             var desResult = serializer.Deserialize(serResult) as CultureSample;
-
-            Assert.That(serResult, Is.EqualTo(expected),
-                string.Format("Comparing serialized '{0}' with expected.", cultName1));
-            Assert.That(desResult != null,
-                string.Format("Deserialized from '{0}' to '{1}' is not null.", cultName1, cultName2));
-            Assert.That(desResult.Equals(CultureSample.GetSampleInstance()),
-                string.Format("Comparing deserialized '{0}' with deserialized expected.", cultName2));
+            
+            serResult.Should().BeEquivalentTo(expected, because: "this is our result XML literal");
+            desResult.Should().BeEquivalentTo(CultureSample.GetSampleInstance(), because: "this is the original object");
         }
 
         [Test]
