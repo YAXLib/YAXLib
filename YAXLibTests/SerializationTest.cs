@@ -384,7 +384,7 @@ namespace YAXLibTests
                 @"<!-- This example is used in the article to show YAXLib exception handling policies -->
 <ProgrammingLanguage>
   <LanguageName>C#</LanguageName>
-  <IsCaseSensitive>True</IsCaseSensitive>
+  <IsCaseSensitive>true</IsCaseSensitive>
 </ProgrammingLanguage>";
             var serializer = new YAXSerializer(typeof(ProgrammingLanguage), YAXExceptionHandlingPolicies.DoNotThrow,
                 YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
@@ -706,7 +706,7 @@ namespace YAXLibTests
                 @"<NullableSample2 Number=""10"">
   <DateTime>1980-04-11T13:37:01.2345678Z</DateTime>
   <Decimal>1234.56789</Decimal>
-  <Boolean>True</Boolean>
+  <Boolean>true</Boolean>
   <Enum>Third</Enum>
 </NullableSample2>";
             var serializer = new YAXSerializer(typeof(NullableSample2), YAXExceptionHandlingPolicies.DoNotThrow,
@@ -724,7 +724,7 @@ namespace YAXLibTests
                 @"<NullableSample2>
   <DateTime>1980-04-11T13:37:01.2345678Z</DateTime>
   <Decimal>1234.56789</Decimal>
-  <Boolean>True</Boolean>
+  <Boolean>true</Boolean>
   <Enum>Third</Enum>
 </NullableSample2>";
             var serializer = new YAXSerializer(typeof(NullableSample2), YAXExceptionHandlingPolicies.DoNotThrow,
@@ -1371,16 +1371,16 @@ namespace YAXLibTests
     </Object>
   </TheSortedList>
   <TheBitArray>
-    <Object yaxlib:realtype=""System.Boolean"">False</Object>
-    <Object yaxlib:realtype=""System.Boolean"">True</Object>
-    <Object yaxlib:realtype=""System.Boolean"">False</Object>
-    <Object yaxlib:realtype=""System.Boolean"">False</Object>
-    <Object yaxlib:realtype=""System.Boolean"">False</Object>
-    <Object yaxlib:realtype=""System.Boolean"">False</Object>
-    <Object yaxlib:realtype=""System.Boolean"">True</Object>
-    <Object yaxlib:realtype=""System.Boolean"">False</Object>
-    <Object yaxlib:realtype=""System.Boolean"">False</Object>
-    <Object yaxlib:realtype=""System.Boolean"">False</Object>
+    <Object yaxlib:realtype=""System.Boolean"">false</Object>
+    <Object yaxlib:realtype=""System.Boolean"">true</Object>
+    <Object yaxlib:realtype=""System.Boolean"">false</Object>
+    <Object yaxlib:realtype=""System.Boolean"">false</Object>
+    <Object yaxlib:realtype=""System.Boolean"">false</Object>
+    <Object yaxlib:realtype=""System.Boolean"">false</Object>
+    <Object yaxlib:realtype=""System.Boolean"">true</Object>
+    <Object yaxlib:realtype=""System.Boolean"">false</Object>
+    <Object yaxlib:realtype=""System.Boolean"">false</Object>
+    <Object yaxlib:realtype=""System.Boolean"">false</Object>
   </TheBitArray>
 </NonGenericCollectionsSample>";
 
