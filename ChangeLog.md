@@ -4,7 +4,7 @@
    * Serialization and de-serialization can be culture-specific ([#80](https://github.com/YAXLib/YAXLib/pull/80), [#139](https://github.com/YAXLib/YAXLib/pull/139))
      * Fully compatible with v2.x (using CultureInfo.InvariantCulture as the default setting)
      * **Limitation**: Serialization and de-serialization **must** use the same culture setting
-   * Fix `YAXAttributeForClass` and `YAXValueForClass` attributes are ignored when a `YAXCustomSerializer` is not defined on the property's type ([#147](https://github.com/YAXLib/YAXLib/pull/143), [#97](https://github.com/YAXLib/YAXLib/issues/97))
+   * Fix `YAXAttributeForClass` and `YAXValueForClass` attributes are ignored when a `YAXCustomSerializer` is not an attribute for the property, but on the property's type ([#147](https://github.com/YAXLib/YAXLib/pull/143), [#97](https://github.com/YAXLib/YAXLib/issues/97))
    * Introduced `SerializerOptions` for instanciating `YAXSerializer` ([#137](https://github.com/YAXLib/YAXLib/pull/137)). Marked 2.x constructors as obsolete (will be removed in v4)
    * Removed Microsoft.DotNet.PlatformAbstractions dependency ([#127](https://github.com/YAXLib/YAXLib/pull/127)) 
    * Enabled SourceLink ([#125](https://github.com/YAXLib/YAXLib/pull/125))
