@@ -21,7 +21,7 @@ for:
     build_script:
       - ps: dotnet restore --verbosity quiet
       - ps: |
-          $version = "3.0.0-alpha.1"
+          $version = "3.0.0-alpha.2"
           $versionFile = $version + "." + ${env:APPVEYOR_BUILD_NUMBER}
 
           if ($env:APPVEYOR_PULL_REQUEST_NUMBER) {
