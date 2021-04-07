@@ -8,8 +8,8 @@
    * Introduced `SerializerOptions` for instanciating `YAXSerializer` ([#137](https://github.com/YAXLib/YAXLib/pull/137)). Marked 2.x constructors as obsolete (will be removed in v4)
    * Removed Microsoft.DotNet.PlatformAbstractions dependency ([#127](https://github.com/YAXLib/YAXLib/pull/127)) 
    * Enabled SourceLink and Deterministic Build ([#125](https://github.com/YAXLib/YAXLib/pull/125))
-   * Now supporting netstandard2.0 net461 ([#124](https://github.com/YAXLib/YAXLib/pull/124))
-   * Added cross-framework compatibility (.Net Framework 2.x-4.x and .Net Standard) ([#123](https://github.com/YAXLib/YAXLib/pull/123))
+   * Now supporting .NET Standard 2.0+ and .NET 4.6.1+ ([#124](https://github.com/YAXLib/YAXLib/pull/124))
+   * Added cross-framework compatibility betweek .NET Framework 2.x-4.x and .NET Standard ([#123](https://github.com/YAXLib/YAXLib/pull/123))
    * Ingrated fork [YAXLib.Redux](https://github.com/MhpSoftware/YAXLib.Redux) ([#122](https://github.com/YAXLib/YAXLib/pull/122))
    * SemVer versioning
    
