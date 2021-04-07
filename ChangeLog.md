@@ -1,4 +1,4 @@
-[3.00] Commits until April 06, 2021
+[3.00] Commits until April 07, 2021
 
    **Changes:**
    * Serialization and de-serialization can be culture-specific ([#80](https://github.com/YAXLib/YAXLib/pull/80), [#139](https://github.com/YAXLib/YAXLib/pull/139))
@@ -14,6 +14,8 @@
    * SemVer versioning
    
    **Breaking changes:**
+    
+* Booleans are serialized as `ToLowerInvariant()`, see the docs [here](https://docs.microsoft.com/en-us/dotnet/api/system.boolean.tostring?view=net-5.0). De-serialization is backward compatible. ([#78](https://github.com/YAXLib/YAXLib/issues/78))
 
 * Unless we make `XMLUtils` and `UdtWrapper` completely `internal`, here we added `CultureInfo` parameter: ([#139](https://github.com/YAXLib/YAXLib/pull/139))
   * `ReflectionUtils.ConvertBasicType(object value, Type dstType, CultureInfo culture)`
