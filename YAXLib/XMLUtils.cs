@@ -425,17 +425,19 @@ namespace YAXLib
         }
 
         /// <summary>
-        /// Gets the string representation of the object.
+        /// Gets the string representation of the object, or <see cref="string.Empty"/> if the object is <see langword="null"/>.
         /// </summary>
         /// <param name="self">The object to get as a string.</param>
         /// <param name="culture">The <see cref="CultureInfo"/> to use for culture-specific output.</param>
-        /// <returns>The <see cref="CultureInfo"/>-aware string representation of the object.</returns>
+        /// <returns>The <see cref="CultureInfo"/>-aware string representation of the object, or <see cref="string.Empty"/> if the object is <see langword="null"/>.</returns>
         public static string ToXmlValue(this object self, CultureInfo culture)
         {
-            var typeName = self == null ? string.Empty : self.GetType().Name;
-
-            switch (typeName)
+            if (self == null) return string.Empty;
+            
+            switch (self.GetType().Name)
             {
+                case "Boolean":
+                    return ((bool) self).ToString().ToLowerInvariant();
                 case "Double":
                     return ((double) self).ToString("R", culture);
                 case "Single":
@@ -444,7 +446,7 @@ namespace YAXLib
                     return ReflectionUtils.InvokeMethod(self, "ToString", "R", culture) as string;
             }
 
-            return Convert.ToString(self ?? string.Empty, culture);
+            return Convert.ToString(self, culture);
         }
 
         public static XAttribute AddAttributeNamespaceSafe(this XElement parent, XName attrName, object attrValue,
