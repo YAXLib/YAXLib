@@ -3,7 +3,7 @@
 
 using System;
 
-namespace YAXLib
+namespace YAXLib.Attributes
 {
     /// <summary>
     ///     Makes a field or property to appear as an attribute for another element, if possible.

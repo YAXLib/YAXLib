@@ -3,7 +3,7 @@
 
 using System;
 
-namespace YAXLib
+namespace YAXLib.Attributes
 {
     /// <summary>
     ///     Specifies the format string provided for serializing data. The format string is the parameter

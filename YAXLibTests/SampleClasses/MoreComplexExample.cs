@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using YAXLib;
+using YAXLib.Attributes;
+using YAXLib.Enums;
 
 namespace YAXLibTests.SampleClasses
 {

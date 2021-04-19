@@ -4,7 +4,7 @@
 using System;
 using System.Globalization;
 
-namespace YAXLib
+namespace YAXLib.Exceptions
 {
     /// <summary>
     ///     Raised when the XML input does not follow standard XML formatting rules.

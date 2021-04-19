@@ -3,7 +3,7 @@
 
 using System;
 
-namespace YAXLib
+namespace YAXLib.Attributes
 {
     /// <summary>
     ///     Specifies the order upon which a field or property is serialized / deserialized.

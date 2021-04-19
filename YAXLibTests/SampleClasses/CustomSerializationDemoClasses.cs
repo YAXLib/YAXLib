@@ -5,6 +5,7 @@ using System;
 using System.Text;
 using System.Xml.Linq;
 using YAXLib;
+using YAXLib.Attributes;
 
 namespace YAXLibTests.SampleClasses
 {

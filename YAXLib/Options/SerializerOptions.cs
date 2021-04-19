@@ -4,6 +4,7 @@
 using System;
 using System.Globalization;
 using System.Xml.Linq;
+using YAXLib.Enums;
 
 namespace YAXLib.Options
 {

@@ -1,7 +1,7 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
-namespace YAXLib
+namespace YAXLib.Enums
 {
     /// <summary>
     ///     Enumerates the possible ways of serializing collection classes

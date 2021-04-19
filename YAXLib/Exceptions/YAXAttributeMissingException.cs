@@ -4,7 +4,7 @@
 using System.Globalization;
 using System.Xml;
 
-namespace YAXLib
+namespace YAXLib.Exceptions
 {
     /// <summary>
     ///     Raised when the attribute corresponding to some property is not present in the given XML file, when deserializing.

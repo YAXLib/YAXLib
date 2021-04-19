@@ -8,6 +8,8 @@ using System.Windows.Forms;
 using YAXLib;
 using YAXLibTests.SampleClasses;
 using System.Linq;
+using YAXLib.Enums;
+using YAXLib.Exceptions;
 using YAXLibTests;
 
 namespace DemoApplication

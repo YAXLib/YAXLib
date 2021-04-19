@@ -2,8 +2,9 @@
 // Licensed under the MIT license.
 
 using System;
+using YAXLib.Enums;
 
-namespace YAXLib
+namespace YAXLib.Attributes
 {
     /// <summary>
     ///     Specifies the behavior of the deserialization method, if the element/attribute corresponding to this property is

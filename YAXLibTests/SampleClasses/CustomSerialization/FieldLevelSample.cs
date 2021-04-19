@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YAXLib;
+using YAXLib.Attributes;
 
 namespace YAXLibTests.SampleClasses.CustomSerialization
 {

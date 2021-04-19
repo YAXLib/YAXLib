@@ -7,6 +7,8 @@ using System.Globalization;
 using System.Text;
 using System.Xml.Linq;
 using YAXLib;
+using YAXLib.Attributes;
+using YAXLib.Exceptions;
 
 namespace YAXLibTests.SampleClasses
 {

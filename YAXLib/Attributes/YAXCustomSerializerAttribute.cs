@@ -3,7 +3,7 @@
 
 using System;
 
-namespace YAXLib
+namespace YAXLib.Attributes
 {
     /// <summary>
     ///     Specifies a custom serializer class for a field, property, class, or struct. YAXLib will instantiate an object

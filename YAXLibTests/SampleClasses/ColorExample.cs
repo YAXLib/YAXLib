@@ -4,6 +4,7 @@
 using System.Drawing;
 using System.Globalization;
 using YAXLib;
+using YAXLib.Attributes;
 
 namespace YAXLibTests.SampleClasses
 {

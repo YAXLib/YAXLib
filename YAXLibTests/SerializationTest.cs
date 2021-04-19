@@ -8,6 +8,8 @@ using System.Threading;
 using FluentAssertions;
 using NUnit.Framework;
 using YAXLib;
+using YAXLib.Enums;
+using YAXLib.Exceptions;
 using YAXLib.Options;
 using YAXLibTests.SampleClasses;
 using YAXLibTests.SampleClasses.SelfReferencingObjects;
