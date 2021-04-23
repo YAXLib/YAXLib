@@ -1,4 +1,4 @@
-[3.00] Commits until April 07, 2021
+[3.00] Commits until April 23, 2021
 
    **Changes:**
    * Serialization and de-serialization can be culture-specific ([#80](https://github.com/YAXLib/YAXLib/pull/80), [#139](https://github.com/YAXLib/YAXLib/pull/139))
@@ -16,16 +16,7 @@
    **Breaking changes:**
     
 * Booleans are serialized as `ToLowerInvariant()`, see the docs [here](https://docs.microsoft.com/en-us/dotnet/api/system.boolean.tostring?view=net-5.0). De-serialization is backward compatible. ([#78](https://github.com/YAXLib/YAXLib/issues/78))
-
-* Unless we make `XMLUtils` and `UdtWrapper` completely `internal`, here we added `CultureInfo` parameter: ([#139](https://github.com/YAXLib/YAXLib/pull/139))
-  * `ReflectionUtils.ConvertBasicType(object value, Type dstType, CultureInfo culture)`
-  * `XMLUtils.ToXmlValue(this object self, CultureInfo culture)`
-  * `XMLUtils.CreateAttribute(XElement baseElement, string location, XName attrName, object attrValue, XNamespace documentDefaultNamespace, CultureInfo culture)`
-  * `XMLUtils.AddPreserveSpaceAttribute(XElement element, CultureInfo culture)`
-  * `XMLUtils.ToXmlValue(this object self, CultureInfo culture)`
-  * `XMLUtils.AddAttributeNamespaceSafe(this XElement parent, XName attrName, object attrValue, XNamespace documentDefaultNamespace, CultureInfo culture)`
-  * `XMLUtils.AddXmlContent(this XElement self, object contentValue, CultureInfo culture)`
-   
+* `ICustomDeserializer` has been removed. It was not used in `YAXLib` ([#150](https://github.com/YAXLib/YAXLib/pull/150))
 * Corrected typos (UdtWrapper.YAXSerializer.DimentionsAttributeName -> YAXSerializer.DimensionsAttributeName) ([#135](https://github.com/YAXLib/YAXLib/pull/135)) 
 * Corrected typos (UdtWrapper.IsNotAllowdNullObjectSerialization -> UdtWrapper.IsNotAllowedNullObjectSerialization, UdtWrapper.DontSerializePropertiesWithNoSetter -> UdtWrapper.DoNotSerializePropertiesWithNoSetter) ([#144](https://github.com/YAXLib/YAXLib/pull/144))
 * Dropped support of netstandard1.6
