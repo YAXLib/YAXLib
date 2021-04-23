@@ -56,8 +56,6 @@ namespace YAXLibTests.SampleClasses
 
     public class CustomMessageClassSerializer : ICustomSerializer<Message>
     {
-        #region ICustomSerializer<Message> Members
-
         public void SerializeToAttribute(Message objectToSerialize, XAttribute attrToFill)
         {
             throw new NotImplementedException();
@@ -78,10 +76,6 @@ namespace YAXLibTests.SampleClasses
         {
             throw new NotImplementedException();
         }
-
-        #endregion
-
-        #region ICustomDeserializer<Message> Members
 
         public Message DeserializeFromAttribute(XAttribute attrib)
         {
@@ -125,14 +119,10 @@ namespace YAXLibTests.SampleClasses
         {
             throw new NotImplementedException();
         }
-
-        #endregion
     }
 
     public class CustomTitleSerializer : ICustomSerializer<string>
     {
-        #region ICustomDeserializer<string> Members
-
         public string DeserializeFromAttribute(XAttribute attrib)
         {
             return RetrieveValue(attrib.Value);
@@ -159,10 +149,6 @@ namespace YAXLibTests.SampleClasses
             return sb.ToString();
         }
 
-        #endregion
-
-        #region ICustomSerializer<string> Members
-
         public void SerializeToAttribute(string objectToSerialize, XAttribute attrToFill)
         {
             attrToFill.Value = CreateMixedValue(objectToSerialize);
@@ -186,7 +172,5 @@ namespace YAXLibTests.SampleClasses
 
             return sb.ToString();
         }
-
-        #endregion
     }
 }
