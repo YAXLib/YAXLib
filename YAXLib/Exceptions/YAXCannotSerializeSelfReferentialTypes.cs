@@ -4,7 +4,7 @@
 using System;
 using System.Globalization;
 
-namespace YAXLib
+namespace YAXLib.Exceptions
 {
     /// <summary>
     ///     Raised when trying to serialize self-referential types. This exception cannot be turned off.

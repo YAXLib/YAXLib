@@ -4,7 +4,7 @@
 using System;
 using System.Globalization;
 
-namespace YAXLib
+namespace YAXLib.Exceptions
 {
     /// <summary>
     ///     Raised when the object provided for serialization is not of the type provided for the serializer. This exception

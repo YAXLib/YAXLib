@@ -3,7 +3,7 @@
 
 using System;
 
-namespace YAXLib
+namespace YAXLib.Attributes
 {
     /// <summary>
     ///     Prevents serialization of some field or property.

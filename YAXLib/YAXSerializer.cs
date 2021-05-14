@@ -12,6 +12,9 @@ using System.Reflection;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
+using YAXLib.Attributes;
+using YAXLib.Enums;
+using YAXLib.Exceptions;
 using YAXLib.Options;
 
 namespace YAXLib

@@ -3,7 +3,7 @@
 
 using System;
 
-namespace YAXLib
+namespace YAXLib.Attributes
 {
     /// <summary>
     ///     Creates a comment node per each line of the comment string provided.

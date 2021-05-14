@@ -4,7 +4,7 @@
 using System.Globalization;
 using System.Xml;
 
-namespace YAXLib
+namespace YAXLib.Exceptions
 {
     /// <summary>
     ///     Raised when some member of the collection in the input XML, cannot be added to the collection object.

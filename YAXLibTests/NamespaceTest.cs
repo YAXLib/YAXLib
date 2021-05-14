@@ -3,6 +3,7 @@
 
 using NUnit.Framework;
 using YAXLib;
+using YAXLib.Enums;
 using YAXLibTests.SampleClasses;
 using YAXLibTests.SampleClasses.Namespace;
 

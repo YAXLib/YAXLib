@@ -4,6 +4,8 @@
 using System;
 using System.Collections.Generic;
 using YAXLib;
+using YAXLib.Attributes;
+using YAXLib.Enums;
 
 namespace YAXLibTests.SampleClasses
 {

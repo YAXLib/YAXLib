@@ -4,7 +4,7 @@
 using System.Globalization;
 using System.Xml;
 
-namespace YAXLib
+namespace YAXLib.Exceptions
 {
     /// <summary>
     ///     Base class for all deserialization exceptions, which contains line and position info

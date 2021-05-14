@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Xml.Linq;
 using NUnit.Framework;
 using YAXLib;
+using YAXLib.Enums;
 using YAXLibTests.SampleClasses;
 
 namespace YAXLibTests

@@ -3,6 +3,7 @@
 
 using System;
 using YAXLib;
+using YAXLib.Attributes;
 
 namespace YAXLibTests.SampleClasses
 {

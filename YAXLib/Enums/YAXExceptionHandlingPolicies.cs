@@ -1,9 +1,7 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
-using System;
-
-namespace YAXLib
+namespace YAXLib.Enums
 {
     /// <summary>
     ///     Enumerates different kinds of exception handling policies as used by YAX Library.

@@ -5,6 +5,8 @@ using System;
 using System.Globalization;
 using NUnit.Framework;
 using YAXLib;
+using YAXLib.Enums;
+using YAXLib.Exceptions;
 using YAXLibTests.SampleClasses;
 
 namespace YAXLibTests

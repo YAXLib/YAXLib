@@ -4,6 +4,7 @@
 using System;
 using System.Linq;
 using YAXLib;
+using YAXLib.Attributes;
 
 namespace YAXLibTests.SampleClasses
 {
