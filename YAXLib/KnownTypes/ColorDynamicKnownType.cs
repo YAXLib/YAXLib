@@ -8,8 +8,10 @@ namespace YAXLib
 {
     internal class ColorDynamicKnownType : DynamicKnownType
     {
+        public override bool CanSerialize => true;
+        public override bool CanDeserialize => true;
         public override string TypeName => "System.Drawing.Color";
-
+        
         public override void Serialize(object obj, XElement elem, XNamespace overridingNamespace)
         {
             var objectType = obj.GetType();

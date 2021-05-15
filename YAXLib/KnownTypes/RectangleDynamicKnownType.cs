@@ -8,6 +8,8 @@ namespace YAXLib
 {
     internal class RectangleDynamicKnownType : DynamicKnownType
     {
+        public override bool CanSerialize => true;
+        public override bool CanDeserialize => true;
         public override string TypeName => "System.Drawing.Rectangle";
 
         public override void Serialize(object obj, XElement elem, XNamespace overridingNamespace)

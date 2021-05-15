@@ -8,6 +8,9 @@ namespace YAXLib
 {
     internal class TimeSpanKnownType : KnownType<TimeSpan>
     {
+        public override bool CanSerialize => true;
+        public override bool CanDeserialize => true;
+
         public override void Serialize(TimeSpan timeSpan, XElement elem, XNamespace overridingNamespace)
         {
             elem.Value = timeSpan.ToString();

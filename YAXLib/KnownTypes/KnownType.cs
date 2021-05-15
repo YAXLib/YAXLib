@@ -3,6 +3,7 @@
 
 using System;
 using System.Xml.Linq;
+using YAXLib.Options;
 
 namespace YAXLib
 {
@@ -17,11 +18,23 @@ namespace YAXLib
         /// </summary>
         public Type Type => typeof(T);
 
+        /// <summary>
+        ///     Returns <see langword="true"/>, if <see cref="IKnownType.Serialize"/> is implemented.
+        /// </summary>
+        public abstract bool CanSerialize { get; }
+
+        /// <summary>
+        ///     Returns <see langword="true"/>, if <see cref="IKnownType.Deserialize"/> is implemented.
+        /// </summary>
+        public abstract bool CanDeserialize { get; }
+
+        public SerializerOptions Options { get; set; }
+
         void IKnownType.Serialize(object obj, XElement elem, XNamespace overridingNamespace)
         {
             Serialize((T) obj, elem, overridingNamespace);
         }
-
+        
         object IKnownType.Deserialize(XElement baseElement, XNamespace overridingNamespace)
         {
             return Deserialize(baseElement, overridingNamespace);

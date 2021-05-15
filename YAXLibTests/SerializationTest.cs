@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Threading;
 using FluentAssertions;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using YAXLib;
 using YAXLib.Options;
 using YAXLibTests.SampleClasses;
@@ -2288,22 +2289,61 @@ namespace YAXLibTests
             Assert.AreEqual(expectedResult, result);
         }
 
+        /// <summary>
+        /// All subclasses of <see cref="Exception"/>s are considered as
+        /// <see cref="IKnownType"/>, specifically a known "base type".
+        /// <see cref="Exception"/>s are serialized using the <see cref="ExceptionKnownBaseType"/>.
+        /// </summary>
         [Test]
-        public void SerializeExceptionShouldNotThrowExceptions()
+        public void Exception_Serializable()
         {
             try
             {
-                throw new ArgumentOutOfRangeException("index",
-                    new InvalidOperationException("Inner exception 1",
-                        new Exception("Inner Exception 2")));
+                // throws System exceptions which are all ISerializable
+                new ExceptionTestSample().CreateInnerSystemExceptions();
             }
             catch (Exception ex)
             {
+                // Use serializer with default MaxRecursion
                 var ser = new YAXSerializer(ex.GetType());
-                ser.MaxRecursion =
-                    10; //todo with the default (300), this takes ages. Even now if 10 this is a really large string
+                
                 var exceptionSerialized = ser.Serialize(ex);
-                Assert.That(exceptionSerialized, Is.Not.Empty);
+                var deserialized = (Exception) ser.Deserialize(exceptionSerialized);
+                Assert.That(exceptionSerialized, Does.Contain("<InnerException type=\"System.IndexOutOfRangeException\">"));
+                Assert.That(exceptionSerialized, Does.Contain(ExceptionKnownBaseType.ObjectGraphElementName));
+                
+                // InnerExceptions are serialized for ISerializable Exceptions
+                Assert.That(deserialized, Is.TypeOf(typeof(ArgumentOutOfRangeException)));
+                Assert.That(deserialized.InnerException, Is.TypeOf(typeof(IndexOutOfRangeException)));
+                // Exception messages are deserialized, too:
+                Assert.That(deserialized.Message, Does.Contain("x-axis"));
+            }
+        }
+
+        /// <summary>
+        /// All subclasses of <see cref="Exception"/>s are considered as
+        /// <see cref="IKnownType"/>, specifically a known "base type".
+        /// <see cref="Exception"/>s are serialized using the <see cref="ExceptionKnownBaseType"/>.
+        /// </summary>
+        [Test]
+        public void Exception_not_Serializable()
+        {
+            try
+            {
+                new ExceptionTestSample().CreateNotSerializableException();
+            }
+            catch (Exception ex)
+            {
+                // Use serializer with default MaxRecursion
+                var ser = new YAXSerializer(ex.GetType());
+                
+                var exceptionSerialized = ser.Serialize(ex);
+                var deserialized = (ExceptionNotSerializable) ser.Deserialize(exceptionSerialized);
+                Assert.That(exceptionSerialized, Does.Contain("<Exception type=\"" + ex.GetType().AssemblyQualifiedName + "\""));
+                Assert.That(exceptionSerialized, Does.Contain(((ExceptionNotSerializable)ex).Info));
+                // InnerExceptions cannot be deserialized
+                Assert.That(deserialized.InnerException, Is.Null);
+                Assert.That(ser.Deserialize("<dummy></dummy>"), Is.Null);
             }
         }
 

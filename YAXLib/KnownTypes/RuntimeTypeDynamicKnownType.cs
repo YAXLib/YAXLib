@@ -8,6 +8,8 @@ namespace YAXLib
 {
     internal class RuntimeTypeDynamicKnownType : DynamicKnownType
     {
+        public override bool CanSerialize => true;
+        public override bool CanDeserialize => true;
         public override string TypeName => "System.RuntimeType";
 
         public override void Serialize(object obj, XElement elem, XNamespace overridingNamespace)

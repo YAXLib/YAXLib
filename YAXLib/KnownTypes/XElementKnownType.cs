@@ -8,6 +8,9 @@ namespace YAXLib
 {
     internal class XElementKnownType : KnownType<XElement>
     {
+        public override bool CanSerialize => true;
+        public override bool CanDeserialize => true;
+
         public override void Serialize(XElement obj, XElement elem, XNamespace overridingNamespace)
         {
             if (obj != null) elem.Add(obj);

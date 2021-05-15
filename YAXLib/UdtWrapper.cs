@@ -12,6 +12,11 @@ namespace YAXLib
     internal class UdtWrapper
     {
         /// <summary>
+        ///     The serializer that creates this instance.
+        /// </summary>
+        private readonly YAXSerializer _callerSerializer;
+
+        /// <summary>
         ///     boolean value indicating whether this instance is a wrapper around a collection type
         /// </summary>
         private readonly bool _isTypeCollection;
@@ -76,8 +81,9 @@ namespace YAXLib
             Comment = null;
             FieldsToSerialize = YAXSerializationFields.PublicPropertiesOnly;
             IsAttributedAsNotCollection = false;
-
+            
             SetYAXSerializerOptions(callerSerializer);
+            _callerSerializer = callerSerializer;
             
             foreach (var attr in _udtType.GetCustomAttributes(true))
                 if (attr is YAXBaseAttribute)
@@ -150,7 +156,7 @@ namespace YAXLib
         /// <summary>
         ///     Gets a value indicating whether the underlying type is a known-type
         /// </summary>
-        public bool IsKnownType => KnownTypes.IsKnowType(_udtType);
+        public bool IsKnownType => KnownTypes.TryGetKnownType(_udtType, _callerSerializer.Options, out _);
 
         /// <summary>
         ///     Gets a value indicating whether this instance wraps around an enum.

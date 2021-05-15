@@ -3,6 +3,7 @@
 
 using System;
 using System.Xml.Linq;
+using YAXLib.Options;
 
 namespace YAXLib
 {
@@ -12,6 +13,21 @@ namespace YAXLib
         ///     Gets the underlying known type.
         /// </summary>
         Type Type { get; }
+
+        /// <summary>
+        ///     Returns <see langword="true"/>, if <see cref="IKnownType.Serialize"/> is implemented.
+        /// </summary>
+        bool CanSerialize { get; }
+
+        /// <summary>
+        ///     Returns <see langword="true"/>, if <see cref="IKnownType.Deserialize"/> is implemented.
+        /// </summary>
+        bool CanDeserialize { get; }
+
+        /// <summary>
+        ///    Gets or sets the <see cref="SerializerOptions"/>.
+        /// </summary>
+        SerializerOptions Options { get; set; }
 
         /// <summary>
         ///     Serializes the specified object int the specified XML element.

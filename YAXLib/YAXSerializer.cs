@@ -5,7 +5,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -642,16 +641,18 @@ namespace YAXLib
             // required attribute
             if (_udtWrapper.PreservesWhitespace) XMLUtils.AddPreserveSpaceAttribute(_baseElement, Options.Culture);
 
+            var isKnownType = KnownTypes.TryGetKnownType(_type, Options, out var knownType);
+
             // check if the main class/type has defined custom serializers
             if (_udtWrapper.HasCustomSerializer)
             {
                 InvokeCustomSerializerToElement(_udtWrapper.CustomSerializerType, obj, _baseElement);
             }
-            else if (KnownTypes.IsKnowType(_type))
+            else if (isKnownType && knownType.CanSerialize)
             {
-                KnownTypes.Serialize(obj, _baseElement, TypeNamespace);
+                knownType.Serialize(obj, _baseElement, TypeNamespace);
             }
-            else // if it has no custom serializers
+            else // if it has no custom or known type serializers
             {
                 // a flag that indicates whether the object had any fields to be serialized
                 // if an object did not have any fields to serialize, then we should not remove
@@ -666,7 +667,7 @@ namespace YAXLib
                     if (!member.CanRead)
                         continue;
 
-                    // ignore this member if it is attributed as dont serialize
+                    // ignore this member if it is attributed as don't serialize
                     if (member.IsAttributedAsDontSerialize)
                         continue;
 
@@ -694,8 +695,7 @@ namespace YAXLib
                     var isCollectionSerially = member.CollectionAttributeInstance != null &&
                                                member.CollectionAttributeInstance.SerializationType ==
                                                YAXCollectionSerializationTypes.Serially;
-                    var isKnownType = member.IsKnownType;
-
+                    
                     var serializationLocation = member.SerializationLocation;
 
                     // it gets true only for basic data types
@@ -726,10 +726,10 @@ namespace YAXLib
                                 InvokeCustomSerializerToAttribute(member.MemberTypeWrapper.CustomSerializerType,
                                     elementValue, attrToCreate);
                             }
-                            else if (member.IsKnownType)
+                            else if (isKnownType && knownType.CanSerialize)
                             {
                                 // TODO: create a functionality to serialize to XAttributes
-                                //KnownTypes.Serialize(attrToCreate, member.MemberType);
+                                //knownType.Serialize(attrToCreate, member.MemberType);
                             }
                             else if (isCollectionSerially)
                             {
@@ -775,10 +775,10 @@ namespace YAXLib
                             valueToSet = InvokeCustomSerializerToValue(member.MemberTypeWrapper.CustomSerializerType,
                                 elementValue);
                         }
-                        else if (isKnownType)
+                        else if (isKnownType && knownType.CanSerialize)
                         {
                             var tempLoc = new XElement("temp");
-                            KnownTypes.Serialize(elementValue, tempLoc, string.Empty);
+                            knownType.Serialize(elementValue, tempLoc, string.Empty);
                             valueToSet = tempLoc.Value;
                         }
                         else if (isCollectionSerially)
@@ -832,11 +832,11 @@ namespace YAXLib
                             if (member.PreservesWhitespace)
                                 XMLUtils.AddPreserveSpaceAttribute(elemToFill, Options.Culture);
                         }
-                        else if (isKnownType)
+                        else if (isKnownType && knownType.CanSerialize)
                         {
                             var elemToFill = new XElement(member.Alias.OverrideNsIfEmpty(TypeNamespace));
                             parElem.Add(elemToFill);
-                            KnownTypes.Serialize(elementValue, elemToFill,
+                            knownType.Serialize(elementValue, elemToFill,
                                 member.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThen(XNamespace.None));
                             if (member.PreservesWhitespace)
                                 XMLUtils.AddPreserveSpaceAttribute(elemToFill, Options.Culture);
@@ -1471,7 +1471,9 @@ namespace YAXLib
             if (_type.IsGenericType && _type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
                 return DeserializeKeyValuePair(baseElement);
 
-            if (KnownTypes.IsKnowType(_type)) return KnownTypes.Deserialize(baseElement, _type, TypeNamespace);
+            var isKnownType = KnownTypes.TryGetKnownType(_type, Options, out var knownType);
+            
+            if (isKnownType && knownType.CanDeserialize) return knownType.Deserialize(baseElement, TypeNamespace);
 
             if ((_udtWrapper.IsTreatedAsCollection || _udtWrapper.IsTreatedAsDictionary) &&
                 !IsCreatedToDeserializeANonCollectionMember)
@@ -1485,9 +1487,7 @@ namespace YAXLib
 
             if (ReflectionUtils.IsBasicType(_type)) return ReflectionUtils.ConvertBasicType(baseElement.Value, _type, Options.Culture);
 
-            object o;
-            o = _desObject ?? Activator.CreateInstance(_type, new object[0]);
-            // o = m_desObject ?? m_type.InvokeMember(string.Empty, BindingFlags.CreateInstance, null, null, new object[0]);
+            var o = _desObject ?? Activator.CreateInstance(_type, new object[0]);
 
             foreach (var member in GetFieldsToBeSerialized())
             {
@@ -1516,7 +1516,7 @@ namespace YAXLib
                         member.Alias.OverrideNsIfEmpty(TypeNamespace));
                     if (attr == null) // if the parent element does not exist
                     {
-                        // loook for an element with the same name AND a yaxlib:realtype attribute
+                        // look for an element with the same name AND a yaxlib:realtype attribute
                         var elem = XMLUtils.FindElement(baseElement, serializationLocation,
                             member.Alias.OverrideNsIfEmpty(TypeNamespace));
                         if (elem != null && elem.Attribute_NamespaceSafe(Options.Namespace.Uri + Options.AttributeName.RealType,
@@ -2491,6 +2491,7 @@ namespace YAXLib
             XElement insertionLocation)
         {
             var serializer = new YAXSerializer(type, Options);
+            // Todo: The internal serializer should not change global options
             Options.MaxRecursion = Options.MaxRecursion == 0 ? 0 : Options.MaxRecursion - 1;
             serializer._serializedStack = _serializedStack;
             serializer._documentDefaultNamespace = _documentDefaultNamespace;
@@ -2767,7 +2768,7 @@ namespace YAXLib
         ///     This sequence is retrieved according to the field-types specified by the user.
         /// </summary>
         /// <returns>the sequence of fields to be serialized for the serializer's underlying type.</returns>
-        private IEnumerable<MemberWrapper> GetFieldsToBeSerialized()
+        internal IEnumerable<MemberWrapper> GetFieldsToBeSerialized()
         {
             return GetFieldsToBeSerialized(_udtWrapper).OrderBy(t => t.Order);
         }

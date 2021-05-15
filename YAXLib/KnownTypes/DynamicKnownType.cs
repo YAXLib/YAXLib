@@ -3,13 +3,16 @@
 
 using System;
 using System.Xml.Linq;
+using YAXLib.Options;
 
 namespace YAXLib
 {
     internal abstract class DynamicKnownType : IKnownType
     {
         private Type _type;
-
+        public abstract bool CanSerialize { get; }
+        public abstract bool CanDeserialize { get; }
+        public SerializerOptions Options { get; set; }
         public abstract string TypeName { get; }
 
         public Type Type

@@ -773,7 +773,6 @@ namespace YAXLib
         {
             return (T) srcObj.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance)
                 ?.GetValue(srcObj, null);
-            //return (T)srcObj.GetType().InvokeMember(propertyName, BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance, null, srcObj, null);
         }
 
         public static T InvokeIntIndexer<T>(object srcObj, string propertyName, int index)
@@ -796,6 +795,13 @@ namespace YAXLib
             var method = srcObj.GetType().GetMethod(methodName, argTypes);
             var result = method?.Invoke(srcObj, args);
             return result;
+        }
+
+        public static bool IsBaseClassOrSubclassOf(Type subType, string baseName)
+        {
+            if (baseName == null || subType == null) return false;
+            var baseType = Type.GetType(baseName);
+            return baseType != null && (subType.FullName == baseName || subType.IsSubclassOf(baseType));
         }
     }
 }

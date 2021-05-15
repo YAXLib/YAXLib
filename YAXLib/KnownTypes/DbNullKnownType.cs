@@ -8,6 +8,9 @@ namespace YAXLib
 {
     internal class DbNullKnownType : KnownType<DBNull>
     {
+        public override bool CanSerialize => true;
+        public override bool CanDeserialize => true;
+
         public override void Serialize(DBNull obj, XElement elem, XNamespace overridingNamespace)
         {
             if (obj != null)

@@ -8,6 +8,9 @@ namespace YAXLib
 {
     internal class XAttributeKnownType : KnownType<XAttribute>
     {
+        public override bool CanSerialize => true;
+        public override bool CanDeserialize => true;
+
         public override void Serialize(XAttribute obj, XElement elem, XNamespace overridingNamespace)
         {
             if (obj != null) elem.Add(obj);

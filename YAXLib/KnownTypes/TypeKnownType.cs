@@ -8,6 +8,9 @@ namespace YAXLib
 {
     internal class TypeKnownType : KnownType<Type>
     {
+        public override bool CanSerialize => true;
+        public override bool CanDeserialize => true;
+
         public override void Serialize(Type obj, XElement elem, XNamespace overridingNamespace)
         {
             if (obj != null)

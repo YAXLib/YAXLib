@@ -9,6 +9,8 @@ namespace YAXLib
 {
     internal class DataTableDynamicKnownType : DynamicKnownType
     {
+        public override bool CanSerialize => true;
+        public override bool CanDeserialize => true;
         public override string TypeName => "System.Data.DataTable";
 
         public override void Serialize(object obj, XElement elem, XNamespace overridingNamespace)

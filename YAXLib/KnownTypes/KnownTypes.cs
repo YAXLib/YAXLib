@@ -1,15 +1,11 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
-// The KnownDotNetTypes class is replaced by KnownTypes class.
-// The new design for KnownTypes is adopted from Tomanu's YAXLib fork
-// named YYAAXXLib. The fork can be found at:
-// http://tomanuyyaaxxlib.codeplex.com/
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using YAXLib.Options;
 
 namespace YAXLib
 {
@@ -18,10 +14,11 @@ namespace YAXLib
     /// </summary>
     internal class KnownTypes
     {
-        private static readonly Dictionary<Type, IKnownType> _dictKnownTypes = new Dictionary<Type, IKnownType>();
+        private static readonly Dictionary<Type, IKnownType> _dictKnownBaseTypes = new ();
 
-        private static readonly Dictionary<string, IKnownType> _dictDynamicKnownTypes =
-            new Dictionary<string, IKnownType>();
+        private static readonly Dictionary<Type, IKnownType> _dictKnownTypes = new ();
+
+        private static readonly Dictionary<string, IKnownType> _dictDynamicKnownTypes = new();
 
         static KnownTypes()
         {
@@ -37,6 +34,8 @@ namespace YAXLib
             AddDynamicKnownType(new RuntimeTypeDynamicKnownType());
             AddDynamicKnownType(new DataTableDynamicKnownType());
             AddDynamicKnownType(new DataSetDynamicKnownType());
+
+            AddKnownBaseType(new ExceptionKnownBaseType());
         }
 
         public static void Add(IKnownType kt)
@@ -44,55 +43,43 @@ namespace YAXLib
             _dictKnownTypes[kt.Type] = kt;
         }
 
+        public static void AddKnownBaseType(IKnownType kt)
+        {
+            _dictKnownBaseTypes[kt.Type] = kt;
+        }
+
         public static void AddDynamicKnownType(DynamicKnownType dkt)
         {
             _dictDynamicKnownTypes[dkt.TypeName] = dkt;
         }
 
-        public static bool IsKnowType(Type type)
+        public static bool TryGetKnownType(Type type, SerializerOptions options, out IKnownType knownType)
         {
-            return _dictKnownTypes.ContainsKey(type) || _dictDynamicKnownTypes.ContainsKey(type.FullName);
-        }
+            knownType = null;
 
-        public static void Serialize(object obj, XElement elem, XNamespace overridingNamespace)
-        {
-            if (obj == null)
-                return;
+            if (type == null)
+                return false;
 
-            if (_dictKnownTypes.ContainsKey(obj.GetType()))
-                _dictKnownTypes[obj.GetType()].Serialize(obj, elem, overridingNamespace);
-            else if (_dictDynamicKnownTypes.ContainsKey(obj.GetType().FullName))
-                _dictDynamicKnownTypes[obj.GetType().FullName].Serialize(obj, elem, overridingNamespace);
-        }
-
-        public static object Deserialize(XElement elem, Type type, XNamespace overridingNamespace)
-        {
             if (_dictKnownTypes.ContainsKey(type))
-                return _dictKnownTypes[type].Deserialize(elem, overridingNamespace);
-            if (_dictDynamicKnownTypes.ContainsKey(type.FullName))
-                return _dictDynamicKnownTypes[type.FullName].Deserialize(elem, overridingNamespace);
-            return null;
+            {
+                knownType = _dictKnownTypes[type];
+                knownType.Options = options;
+                return true;
+            }
+            if (type.FullName != null && _dictDynamicKnownTypes.ContainsKey(type.FullName))
+            {
+                knownType = _dictDynamicKnownTypes[type.FullName];
+                knownType.Options = options;
+                return true;
+            }
+            if (_dictKnownBaseTypes.Keys.Any(k => ReflectionUtils.IsBaseClassOrSubclassOf(type, k.FullName)))
+            {
+                knownType = _dictKnownBaseTypes[_dictKnownBaseTypes.Keys.First(k => ReflectionUtils.IsBaseClassOrSubclassOf(type, k.FullName))];
+                knownType.Options = options;
+                return true;
+            }
+
+            return false;
         }
     }
-
-    #region XElement
-
-    // Thanks go to CodePlex user tg73: 
-    // http://www.codeplex.com/site/users/view/tg73
-    // for providing this implementation in the following issue:
-    // http://yaxlib.codeplex.com/workitem/17676
-
-    #endregion
-
-    #region XAttribute
-
-    #endregion
-
-    #region TimeSpan
-
-    #endregion
-
-    #region DBNull
-
-    #endregion
 }
