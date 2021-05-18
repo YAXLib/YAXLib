@@ -2252,7 +2252,7 @@ namespace YAXLibTests
         public void MaxRecursionPreventsInfiniteLoop()
         {
             var ser = new YAXSerializer(typeof(CalculatedPropertiesCanCauseInfiniteLoop));
-            ser.MaxRecursion = 10;
+            ser.Options.MaxRecursion = 10;
             var result = ser.Serialize(CalculatedPropertiesCanCauseInfiniteLoop.GetSampleInstance());
 
             const string expectedResult =
@@ -2285,7 +2285,8 @@ namespace YAXLibTests
   </Reciprocal>
 </CalculatedPropertiesCanCauseInfiniteLoop>";
 
-            Assert.AreEqual(expectedResult, result);
+            Assert.That(result, Is.EqualTo(expectedResult));
+            Assert.That(ser.RecursionCount, Is.EqualTo(0));
         }
 
         [Test]

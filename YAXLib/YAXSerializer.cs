@@ -86,6 +86,11 @@ namespace YAXLib
         private UdtWrapper _udtWrapper;
 
         /// <summary>
+        ///     Gets or sets the number of recursions (number of total created <see cref="YAXSerializer"/> instances).
+        /// </summary>
+        internal int RecursionCount { get; set; } = 0;
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="YAXSerializer" /> class.
         /// </summary>
         /// <param name="type">The type of the object being serialized/deserialized.</param>
@@ -609,7 +614,7 @@ namespace YAXLib
                 _baseElement = baseElem;
             }
 
-            if (MaxRecursion == 1)
+            if(RecursionCount >= Options.MaxRecursion - 1)
             {
                 PushObjectToSerializationStack(obj);
                 return _baseElement;
@@ -2490,8 +2495,10 @@ namespace YAXLib
         private YAXSerializer NewInternalSerializer(Type type, XNamespace namespaceToOverride,
             XElement insertionLocation)
         {
-            var serializer = new YAXSerializer(type, Options);
-            Options.MaxRecursion = Options.MaxRecursion == 0 ? 0 : Options.MaxRecursion - 1;
+            RecursionCount = Options.MaxRecursion == 0 ? 0 : RecursionCount + 1;
+            var serializer = new YAXSerializer(type, Options) {RecursionCount = RecursionCount};
+            
+//Options.MaxRecursion = Options.MaxRecursion == 0 ? 0 : Options.MaxRecursion - 1;
             serializer._serializedStack = _serializedStack;
             serializer._documentDefaultNamespace = _documentDefaultNamespace;
             if (namespaceToOverride != null)
@@ -2508,6 +2515,8 @@ namespace YAXLib
         {
             if (serializer == null)
                 return;
+
+            if (RecursionCount > 0) RecursionCount--;
 
             if (popFromSerializationStack && _isSerializing && serializer._type != null &&
                 !serializer._type.IsValueType)
