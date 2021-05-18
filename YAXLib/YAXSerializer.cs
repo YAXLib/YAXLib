@@ -91,7 +91,7 @@ namespace YAXLib
         /// <summary>
         ///     Gets or sets the number of recursions (number of total created <see cref="YAXSerializer"/> instances).
         /// </summary>
-        internal int RecursionCount { get; set; } = 0;
+        internal int RecursionCount { get; set; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="YAXSerializer" /> class.

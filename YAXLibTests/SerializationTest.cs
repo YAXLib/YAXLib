@@ -2288,6 +2288,7 @@ namespace YAXLibTests
 </CalculatedPropertiesCanCauseInfiniteLoop>";
 
             Assert.That(result, Is.EqualTo(expectedResult));
+            Assert.That(ser.Options.MaxRecursion, Is.EqualTo(10));
             Assert.That(ser.RecursionCount, Is.EqualTo(0));
         }
 

@@ -651,6 +651,7 @@ namespace YAXLibTests
             var result = ser.Serialize(CalculatedPropertiesCanCauseInfiniteLoop.GetSampleInstance());
             var deserializedInstance = ser.Deserialize(result) as CalculatedPropertiesCanCauseInfiniteLoop;
             Assert.IsNotNull(deserializedInstance);
+            Assert.That(ser.Options.MaxRecursion, Is.EqualTo(10));
             Assert.That(deserializedInstance.Data, Is.EqualTo(2.0M));
             Assert.That(ser.RecursionCount, Is.EqualTo(0));
         }
