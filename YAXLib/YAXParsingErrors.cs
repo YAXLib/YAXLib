@@ -4,6 +4,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using YAXLib.Enums;
+using YAXLib.Exceptions;
 
 namespace YAXLib
 {

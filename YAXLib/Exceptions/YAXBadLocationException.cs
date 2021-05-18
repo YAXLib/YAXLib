@@ -3,7 +3,7 @@
 
 using System.Globalization;
 
-namespace YAXLib
+namespace YAXLib.Exceptions
 {
     /// <summary>
     ///     Raised when the location of serialization specified cannot be

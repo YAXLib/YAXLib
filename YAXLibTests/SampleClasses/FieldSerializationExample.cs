@@ -3,6 +3,8 @@
 
 using System.Text;
 using YAXLib;
+using YAXLib.Attributes;
+using YAXLib.Enums;
 
 namespace YAXLibTests.SampleClasses
 {

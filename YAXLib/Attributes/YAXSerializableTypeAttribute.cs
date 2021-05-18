@@ -2,8 +2,9 @@
 // Licensed under the MIT license.
 
 using System;
+using YAXLib.Enums;
 
-namespace YAXLib
+namespace YAXLib.Attributes
 {
     /// <summary>
     ///     Add this attribute to types, structs or classes which you want to override

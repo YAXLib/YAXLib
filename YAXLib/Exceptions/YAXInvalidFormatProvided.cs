@@ -4,7 +4,7 @@
 using System;
 using System.Globalization;
 
-namespace YAXLib
+namespace YAXLib.Exceptions
 {
     /// <summary>
     ///     Raised when an object cannot be formatted with the format string provided.

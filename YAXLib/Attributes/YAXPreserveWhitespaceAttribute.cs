@@ -3,7 +3,7 @@
 
 using System;
 
-namespace YAXLib
+namespace YAXLib.Attributes
 {
     /// <summary>
     ///     Adds the attribute xml:space="preserve" to the serialized element, so that the deserializer would

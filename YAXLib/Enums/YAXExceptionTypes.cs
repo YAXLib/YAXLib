@@ -1,7 +1,7 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
-namespace YAXLib
+namespace YAXLib.Enums
 {
     /// <summary>
     ///     Enumerates different possible behaviours of the library toward exceptions

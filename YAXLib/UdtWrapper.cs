@@ -3,6 +3,9 @@
 
 using System;
 using System.Xml.Linq;
+using YAXLib.Attributes;
+using YAXLib.Enums;
+using YAXLib.Exceptions;
 
 namespace YAXLib
 {

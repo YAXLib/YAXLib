@@ -4,7 +4,7 @@
 using System.Globalization;
 using System.Xml;
 
-namespace YAXLib
+namespace YAXLib.Exceptions
 {
     /// <summary>
     ///     Raised when the default value specified by the <c>YAXErrorIfMissedAttribute</c> could not be assigned to the

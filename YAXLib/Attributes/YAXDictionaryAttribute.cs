@@ -2,8 +2,9 @@
 // Licensed under the MIT license.
 
 using System;
+using YAXLib.Enums;
 
-namespace YAXLib
+namespace YAXLib.Attributes
 {
     /// <summary>
     ///     Controls the serialization of generic Dictionary instances.
