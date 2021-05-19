@@ -1,7 +1,7 @@
 [3.00] Commits until May 21, 2021
 
    **Changes:**
-   * Fix: `YAXSerializer` leaves `SerializerOptions.MaxRecursion` (and obsolete `YAXSerializer.MaxRecursion` unchanged [#154](https://github.com/YAXLib/YAXLib/pull/154)
+   * Fix: `YAXSerializer` leaves `SerializerOptions.MaxRecursion` (and obsolete `YAXSerializer.MaxRecursion` unchanged ([#154](https://github.com/YAXLib/YAXLib/pull/154))
    * Serialization and de-serialization can be culture-specific ([#80](https://github.com/YAXLib/YAXLib/pull/80), [#139](https://github.com/YAXLib/YAXLib/pull/139))
      * Fully compatible with v2.x (using CultureInfo.InvariantCulture as the default setting)
      * **Limitation**: Serialization and de-serialization **must** use the same culture setting
