@@ -6,14 +6,13 @@ using System.Threading;
 
 namespace YAXLibTests.SampleClasses
 {
-    // No [Serializable] attribute
-    public class ExceptionNotSerializable : Exception
+    public class CustomException : Exception
     {
-        public ExceptionNotSerializable(string message) : this()
+        public CustomException(string message) : this()
         {
             Info = message;
         }
-        public ExceptionNotSerializable()
+        public CustomException()
         {
             Info = "Parameterless constructor";
             DivideByZeroException = new DivideByZeroException("1/0", new AbandonedMutexException());
@@ -40,7 +39,7 @@ namespace YAXLibTests.SampleClasses
 
         public void CreateNotSerializableException()
         {
-            var ex = new ExceptionNotSerializable("Exception has no Serializable attribute");
+            var ex = new CustomException("This is a custom exception");
             ex.Data.Add("TheKey", "TheValue");
             throw ex;
         }

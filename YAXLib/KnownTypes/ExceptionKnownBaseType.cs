@@ -9,12 +9,11 @@ namespace YAXLib
 {
     internal class ExceptionKnownBaseType : KnownType<Exception>
     {
-        internal const string ObjectGraphElementName = "Exception-Graph";
         private int _recursion;
 
         public override bool CanSerialize => true;
         public override bool CanDeserialize => true;
-        internal bool SerializeObjectGraph { get; set; } = true;
+
 
         public override void Serialize(Exception obj, XElement elem, XNamespace overridingNamespace)
         {
@@ -29,13 +28,6 @@ namespace YAXLib
                 elem.Name = nameof(Exception);
                 // Unprefixed attributes use the default namespace, i.e. mostly from the element
                 elem.Add(new XAttribute("type", obj.GetType().AssemblyQualifiedName ?? string.Empty));
-
-                if (SerializeObjectGraph && TrySerializeObjectGraph(obj, out var value))
-                {
-                    var objElement = new XElement(ObjectGraphElementName, overridingNamespace, value);
-                    elem.Add(new XComment("Base64 encoded result from " + typeof(System.Runtime.Serialization.Formatters.Binary.BinaryFormatter).FullName));
-                    elem.Add(objElement);
-                }
             }
 
             foreach (var member in new YAXSerializer(obj.GetType(), new SerializerOptions{MaxRecursion = 1}).GetFieldsToBeSerialized())
@@ -84,12 +76,6 @@ namespace YAXLib
 
         public override Exception? Deserialize(XElement elem, XNamespace overridingNamespace)
         {
-            // Only the Exception can be deserialized
-            if (SerializeObjectGraph && TryDeserializeObjectGraph(elem, out var exception))
-            {
-                return exception;
-            }
-
             var exType = Type.GetType(elem.Attribute("type")?.Value ?? string.Empty);
             if (exType != null)
             {
@@ -98,51 +84,6 @@ namespace YAXLib
             }
 
             return null;
-        }
-
-        private static bool TrySerializeObjectGraph(object obj, out string? value)
-        {
-            try
-            {
-                using var stream = new System.IO.MemoryStream();
-                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                formatter.Serialize(stream, obj);
-                stream.Flush();
-                value = Convert.ToBase64String(stream.GetBuffer(), 0, (int) stream.Length);
-                return true;
-            }
-            catch
-            {
-                // Not marked as Serializable
-                // Nothing to do
-            }
-            
-            value = null;
-            return false;
-        }
-
-        private static bool TryDeserializeObjectGraph(XElement elem, out Exception? exception)
-        {
-            try
-            {
-                var oGraph = XMLUtils.FindElement(elem, ".", ObjectGraphElementName);
-                if (oGraph != null)
-                {
-                    using var stream = new System.IO.MemoryStream(Convert.FromBase64String(oGraph.Value));
-                    stream.Seek(0, System.IO.SeekOrigin.Begin);
-                    var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                    exception = formatter.Deserialize(stream) as Exception;
-                    stream.Close();
-                    return true;
-                }
-            }
-            catch
-            {
-                // Nothing to do
-            }
-
-            exception = null;
-            return false;
         }
     }
 }

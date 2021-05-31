@@ -2295,38 +2295,7 @@ namespace YAXLibTests
         /// <see cref="Exception"/>s are serialized using the <see cref="ExceptionKnownBaseType"/>.
         /// </summary>
         [Test]
-        public void Exception_Serializable()
-        {
-            try
-            {
-                // throws System exceptions which are all ISerializable
-                new ExceptionTestSample().CreateInnerSystemExceptions();
-            }
-            catch (Exception ex)
-            {
-                // Use serializer with default MaxRecursion
-                var ser = new YAXSerializer(ex.GetType());
-                
-                var exceptionSerialized = ser.Serialize(ex);
-                var deserialized = (Exception) ser.Deserialize(exceptionSerialized);
-                Assert.That(exceptionSerialized, Does.Contain("<InnerException type=\"System.IndexOutOfRangeException\">"));
-                Assert.That(exceptionSerialized, Does.Contain(ExceptionKnownBaseType.ObjectGraphElementName));
-                
-                // InnerExceptions are serialized for ISerializable Exceptions
-                Assert.That(deserialized, Is.TypeOf(typeof(ArgumentOutOfRangeException)));
-                Assert.That(deserialized.InnerException, Is.TypeOf(typeof(IndexOutOfRangeException)));
-                // Exception messages are deserialized, too:
-                Assert.That(deserialized.Message, Does.Contain("x-axis"));
-            }
-        }
-
-        /// <summary>
-        /// All subclasses of <see cref="Exception"/>s are considered as
-        /// <see cref="IKnownType"/>, specifically a known "base type".
-        /// <see cref="Exception"/>s are serialized using the <see cref="ExceptionKnownBaseType"/>.
-        /// </summary>
-        [Test]
-        public void Exception_not_Serializable()
+        public void Serialize_Exception()
         {
             try
             {
@@ -2338,9 +2307,9 @@ namespace YAXLibTests
                 var ser = new YAXSerializer(ex.GetType());
                 
                 var exceptionSerialized = ser.Serialize(ex);
-                var deserialized = (ExceptionNotSerializable) ser.Deserialize(exceptionSerialized);
+                var deserialized = (CustomException) ser.Deserialize(exceptionSerialized);
                 Assert.That(exceptionSerialized, Does.Contain("<Exception type=\"" + ex.GetType().AssemblyQualifiedName + "\""));
-                Assert.That(exceptionSerialized, Does.Contain(((ExceptionNotSerializable)ex).Info));
+                Assert.That(exceptionSerialized, Does.Contain(((CustomException)ex).Info));
                 // InnerExceptions cannot be deserialized
                 Assert.That(deserialized.InnerException, Is.Null);
                 Assert.That(ser.Deserialize("<dummy></dummy>"), Is.Null);
