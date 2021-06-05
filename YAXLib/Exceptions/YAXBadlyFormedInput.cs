@@ -4,7 +4,7 @@
 using System.Globalization;
 using System.Xml;
 
-namespace YAXLib
+namespace YAXLib.Exceptions
 {
     /// <summary>
     ///     Raised when the value provided for some property in the XML input, cannot be

@@ -3,6 +3,8 @@
 
 using System.Collections.Generic;
 using YAXLib;
+using YAXLib.Attributes;
+using YAXLib.Enums;
 
 // test class created to discuss:
 // http://yaxlib.codeplex.com/discussions/287166

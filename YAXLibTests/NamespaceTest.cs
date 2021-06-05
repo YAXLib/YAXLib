@@ -3,6 +3,7 @@
 
 using NUnit.Framework;
 using YAXLib;
+using YAXLib.Enums;
 using YAXLibTests.SampleClasses;
 using YAXLibTests.SampleClasses.Namespace;
 
@@ -32,7 +33,7 @@ namespace YAXLibTests
             const string result =
                 @"<!-- This example shows usage of a number of custom namespaces -->
 <ns1:MultipleNamespaceSample xmlns:ns1=""http://namespaces.org/ns1"" xmlns:ns2=""http://namespaces.org/ns2"" xmlns:ns3=""http://namespaces.org/ns3"">
-  <ns1:BoolItem>True</ns1:BoolItem>
+  <ns1:BoolItem>true</ns1:BoolItem>
   <ns2:StringItem>This is a test string</ns2:StringItem>
   <ns3:IntItem>10</ns3:IntItem>
 </ns1:MultipleNamespaceSample>";
@@ -493,14 +494,14 @@ namespace YAXLibTests
     <AssemblyName>$safeprojectname$</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <DebugSymbols>False</DebugSymbols>
-    <Optimize>False</Optimize>
+    <DebugSymbols>false</DebugSymbols>
+    <Optimize>false</Optimize>
     <WarningLevel>0</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <DebugSymbols>True</DebugSymbols>
+    <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>False</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -508,9 +509,9 @@ namespace YAXLibTests
     <DocumentationFile>bin\Debug\$safeprojectname$.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <DebugSymbols>False</DebugSymbols>
+    <DebugSymbols>false</DebugSymbols>
     <DebugType>pdbonly</DebugType>
-    <Optimize>True</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -519,31 +520,31 @@ namespace YAXLibTests
   <ItemGroup>
     <Reference Include=""$generatedproject$.EFDAL.Interfaces"">
       <HintPath>..\bin\$generatedproject$.EFDAL.Interfaces.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
+      <SpecificVersion>false</SpecificVersion>
     </Reference>
     <Reference Include=""System"">
-      <SpecificVersion>False</SpecificVersion>
+      <SpecificVersion>false</SpecificVersion>
     </Reference>
     <Reference Include=""System.Core"">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
-      <SpecificVersion>False</SpecificVersion>
+      <SpecificVersion>false</SpecificVersion>
     </Reference>
     <Reference Include=""nHydrate.EFCore, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL"">
       <HintPath>..\bin\nHydrate.EFCore.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
+      <SpecificVersion>false</SpecificVersion>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include=""$generatedproject$.EFDAL.Interfaces"">
       <HintPath>..\bin\$generatedproject$.EFDAL.Interfaces.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
+      <SpecificVersion>false</SpecificVersion>
     </Reference>
     <Reference Include=""System"">
-      <SpecificVersion>False</SpecificVersion>
+      <SpecificVersion>false</SpecificVersion>
     </Reference>
     <Reference Include=""System.Core"">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
-      <SpecificVersion>False</SpecificVersion>
+      <SpecificVersion>false</SpecificVersion>
     </Reference>
   </ItemGroup>
   <Import Project=""$(MSBuildToolsPath)\Microsoft.CSharp.targets"" />

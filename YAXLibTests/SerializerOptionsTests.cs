@@ -2,8 +2,10 @@
 // Licensed under the MIT license.
 
 using System.Xml.Linq;
+using FluentAssertions;
 using NUnit.Framework;
 using YAXLib;
+using YAXLib.Enums;
 using YAXLib.Options;
 
 namespace YAXLibTests
@@ -30,21 +32,6 @@ namespace YAXLibTests
             };
         }
 
-        [Test]
-        public void Get_Set_All_Options_Test()
-        {
-            var opt1 = GetDefaultOptions();
-            var opt2 = GetNonDefaultOptions();
-
-            Assert.IsFalse(opt1.ExceptionBehavior == opt2.ExceptionBehavior);
-            Assert.IsFalse(opt1.ExceptionHandlingPolicies == opt2.ExceptionHandlingPolicies);
-            Assert.IsFalse(opt1.AttributeName.Dimensions == opt2.AttributeName.Dimensions);
-            Assert.IsFalse(opt1.Namespace.Prefix == opt2.Namespace.Prefix);
-            Assert.IsFalse(opt1.Namespace.Uri == opt2.Namespace.Uri);
-            Assert.IsFalse(opt1.MaxRecursion == opt2.MaxRecursion);
-            Assert.IsFalse(opt1.SerializationOptions == opt2.SerializationOptions);
-        }
-
         /// <summary>
         /// Get YAXSerializer properties which are wrappers to <see cref="SerializerOptions"/>
         /// </summary>
@@ -54,14 +41,14 @@ namespace YAXLibTests
             var opt = GetNonDefaultOptions();
             var ser = new YAXSerializer(typeof(SerializerOptions), opt);
 
-            Assert.IsTrue(ser.DefaultExceptionType == opt.ExceptionBehavior);
-            Assert.IsTrue(ser.SerializationOption == opt.SerializationOptions);
-            Assert.IsTrue(ser.ExceptionHandlingPolicy == opt.ExceptionHandlingPolicies);
-            Assert.IsTrue(ser.YaxLibNamespacePrefix == opt.Namespace.Prefix);
-            Assert.IsTrue(ser.YaxLibNamespaceUri == opt.Namespace.Uri);
-            Assert.IsTrue(ser.DimensionsAttributeName == opt.AttributeName.Dimensions);
-            Assert.IsTrue(ser.RealTypeAttributeName == opt.AttributeName.RealType);
-            Assert.IsTrue(ser.MaxRecursion == opt.MaxRecursion);
+            ser.DefaultExceptionType.Should().Be(opt.ExceptionBehavior);
+            ser.SerializationOption.Should().Be(opt.SerializationOptions);
+            ser.ExceptionHandlingPolicy.Should().Be(opt.ExceptionHandlingPolicies);
+            ser.YaxLibNamespacePrefix.Should().Be(opt.Namespace.Prefix);
+            ser.YaxLibNamespaceUri.Should().Be(opt.Namespace.Uri);
+            ser.DimensionsAttributeName.Should().Be(opt.AttributeName.Dimensions);
+            ser.RealTypeAttributeName.Should().Be(opt.AttributeName.RealType);
+            ser.MaxRecursion.Should().Be(opt.MaxRecursion);
         }
         
         /// <summary>
@@ -78,12 +65,11 @@ namespace YAXLibTests
             ser.DimensionsAttributeName = opt.AttributeName.Dimensions;
             ser.RealTypeAttributeName = opt.AttributeName.RealType;
             ser.MaxRecursion = opt.MaxRecursion;
-            
-            Assert.IsTrue(ser.YaxLibNamespacePrefix == opt.Namespace.Prefix);
-            Assert.IsTrue(ser.YaxLibNamespaceUri == opt.Namespace.Uri);
-            Assert.IsTrue(ser.DimensionsAttributeName == opt.AttributeName.Dimensions);
-            Assert.IsTrue(ser.RealTypeAttributeName == opt.AttributeName.RealType);
-            Assert.IsTrue(ser.MaxRecursion == opt.MaxRecursion);
+            ser.YaxLibNamespacePrefix.Should().Be(opt.Namespace.Prefix);
+            ser.YaxLibNamespaceUri.Should().Be(opt.Namespace.Uri);
+            ser.DimensionsAttributeName.Should().Be(opt.AttributeName.Dimensions);
+            ser.RealTypeAttributeName.Should().Be(opt.AttributeName.RealType);
+            ser.MaxRecursion.Should().Be(opt.MaxRecursion);
         }
     }
 }

@@ -3,6 +3,7 @@
 
 using System;
 using System.Xml.Linq;
+using YAXLib.Exceptions;
 
 namespace YAXLib
 {

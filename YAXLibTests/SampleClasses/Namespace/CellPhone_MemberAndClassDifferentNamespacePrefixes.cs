@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using YAXLib;
+using YAXLib.Attributes;
 
 namespace YAXLibTests.SampleClasses.Namespace
 {

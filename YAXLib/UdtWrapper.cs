@@ -3,6 +3,9 @@
 
 using System;
 using System.Xml.Linq;
+using YAXLib.Attributes;
+using YAXLib.Enums;
+using YAXLib.Exceptions;
 
 namespace YAXLib
 {
@@ -184,7 +187,7 @@ namespace YAXLib
         /// <returns>
         ///     <c>true</c> if serialization of null objects is not allowd; otherwise, <c>false</c>.
         /// </returns>
-        public bool IsNotAllowdNullObjectSerialization =>
+        public bool IsNotAllowedNullObjectSerialization =>
             (SerializationOption & YAXSerializationOptions.DontSerializeNullObjects) ==
             YAXSerializationOptions.DontSerializeNullObjects;
 
@@ -198,7 +201,7 @@ namespace YAXLib
         /// <summary>
         ///     Determines whether properties with no setters should be serialized
         /// </summary>
-        public bool DontSerializePropertiesWithNoSetter =>
+        public bool DoNotSerializePropertiesWithNoSetter =>
             (SerializationOption & YAXSerializationOptions.DontSerializePropertiesWithNoSetter) ==
             YAXSerializationOptions.DontSerializePropertiesWithNoSetter;
 

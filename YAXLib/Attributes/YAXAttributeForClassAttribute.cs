@@ -3,7 +3,7 @@
 
 using System;
 
-namespace YAXLib
+namespace YAXLib.Attributes
 {
     /// <summary>
     ///     Makes a property to appear as an attribute for the enclosing class (i.e. the parent element) if possible.

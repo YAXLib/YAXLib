@@ -5,6 +5,7 @@ using System;
 using System.Globalization;
 using NUnit.Framework;
 using YAXLib;
+using YAXLib.Enums;
 using YAXLibTests.SampleClasses;
 using YAXLibTests.SampleClasses.PolymorphicSerialization;
 using YAXLibTests.SampleClasses.SelfReferencingObjects;
@@ -638,19 +639,21 @@ namespace YAXLibTests
                 YAXSerializationOptions.DontSerializePropertiesWithNoSetter);
             var result = ser.Serialize(CalculatedPropertiesCanCauseInfiniteLoop.GetSampleInstance());
 
-            var deserialzedInstance = ser.Deserialize(result) as CalculatedPropertiesCanCauseInfiniteLoop;
-            Assert.IsNotNull(deserialzedInstance);
+            var deserializedInstance = ser.Deserialize(result) as CalculatedPropertiesCanCauseInfiniteLoop;
+            Assert.IsNotNull(deserializedInstance);
         }
 
         [Test]
         public void MaxRecursionPreventsInfiniteLoop()
         {
             var ser = new YAXSerializer(typeof(CalculatedPropertiesCanCauseInfiniteLoop));
-            ser.MaxRecursion = 10;
+            ser.Options.MaxRecursion = 10;
             var result = ser.Serialize(CalculatedPropertiesCanCauseInfiniteLoop.GetSampleInstance());
-            var deserialzedInstance = ser.Deserialize(result) as CalculatedPropertiesCanCauseInfiniteLoop;
-            Assert.IsNotNull(deserialzedInstance);
-            Assert.AreEqual(2.0M, deserialzedInstance.Data);
+            var deserializedInstance = ser.Deserialize(result) as CalculatedPropertiesCanCauseInfiniteLoop;
+            Assert.IsNotNull(deserializedInstance);
+            Assert.That(ser.Options.MaxRecursion, Is.EqualTo(10));
+            Assert.That(deserializedInstance.Data, Is.EqualTo(2.0M));
+            Assert.That(ser.RecursionCount, Is.EqualTo(0));
         }
 
         [Test]

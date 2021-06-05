@@ -4,6 +4,7 @@
 using System;
 using NUnit.Framework;
 using YAXLib;
+using YAXLib.Enums;
 
 namespace YAXLibTests
 {

@@ -4,6 +4,7 @@
 using System;
 using System.Linq;
 using YAXLib;
+using YAXLib.Attributes;
 
 namespace YAXLibTests.SampleClasses
 {
@@ -65,10 +66,10 @@ namespace YAXLibTests.SampleClasses
                 Date2 = new DateTime(2011, 9, 20, 4, 10, 30),
                 Dec1 = 192389183919123.18232131m,
                 Dec2 = 19232389.18391912318232131m,
-                Number1 = 123123.1233,
-                Number2 = 32243.67676,
-                Number3 = 21313.123123,
-                Numbers = new[] {23213.2132, 123.213, 123.23e32}
+                Number1 = 123123.1233f,
+                Number2 = 32243.67676f,
+                Number3 = 21313.123123f,
+                Numbers = new[] {23213.2132d, 123.213d, 123.23e32d}
             };
         }
 

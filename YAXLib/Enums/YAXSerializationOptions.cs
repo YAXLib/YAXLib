@@ -3,7 +3,7 @@
 
 using System;
 
-namespace YAXLib
+namespace YAXLib.Enums
 {
     /// <summary>
     ///     Enumerates different serialization options which could be set at construction time.

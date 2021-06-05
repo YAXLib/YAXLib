@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
+using YAXLib.Attributes;
+using YAXLib.Enums;
+using YAXLib.Exceptions;
 
 namespace YAXLib
 {
@@ -608,7 +611,7 @@ namespace YAXLib
             else if (attr is YAXAttributeForClassAttribute)
             {
                 // it is required that YAXCustomSerializerAttribute is processed earlier
-                if (ReflectionUtils.IsBasicType(MemberType) || CustomSerializerType != null ||
+                if (ReflectionUtils.IsBasicType(MemberType) || HasCustomSerializer || MemberTypeWrapper.HasCustomSerializer ||
                     _collectionAttributeInstance != null && _collectionAttributeInstance.SerializationType ==
                     YAXCollectionSerializationTypes.Serially)
                 {
@@ -619,7 +622,7 @@ namespace YAXLib
             else if (attr is YAXValueForClassAttribute)
             {
                 // it is required that YAXCustomSerializerAttribute is processed earlier
-                if (ReflectionUtils.IsBasicType(MemberType) || CustomSerializerType != null ||
+                if (ReflectionUtils.IsBasicType(MemberType) || HasCustomSerializer || MemberTypeWrapper.HasCustomSerializer ||
                     _collectionAttributeInstance != null && _collectionAttributeInstance.SerializationType ==
                     YAXCollectionSerializationTypes.Serially)
                 {
@@ -630,7 +633,7 @@ namespace YAXLib
             else if (attr is YAXAttributeForAttribute)
             {
                 // it is required that YAXCustomSerializerAttribute is processed earlier
-                if (ReflectionUtils.IsBasicType(MemberType) || CustomSerializerType != null ||
+                if (ReflectionUtils.IsBasicType(MemberType) || HasCustomSerializer ||
                     _collectionAttributeInstance != null && _collectionAttributeInstance.SerializationType ==
                     YAXCollectionSerializationTypes.Serially)
                 {
@@ -659,7 +662,7 @@ namespace YAXLib
             else if (attr is YAXValueForAttribute)
             {
                 // it is required that YAXCustomSerializerAttribute is processed earlier
-                if (ReflectionUtils.IsBasicType(MemberType) || CustomSerializerType != null ||
+                if (ReflectionUtils.IsBasicType(MemberType) || HasCustomSerializer ||
                     _collectionAttributeInstance != null && _collectionAttributeInstance.SerializationType ==
                     YAXCollectionSerializationTypes.Serially)
                 {

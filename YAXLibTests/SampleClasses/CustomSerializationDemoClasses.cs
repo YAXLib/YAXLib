@@ -5,10 +5,11 @@ using System;
 using System.Text;
 using System.Xml.Linq;
 using YAXLib;
+using YAXLib.Attributes;
 
 namespace YAXLibTests.SampleClasses
 {
-    [YAXCustomSerializer(typeof(CustomMessageSerializer))]
+    [YAXCustomSerializer(typeof(CustomMessageClassSerializer))]
     public class Message
     {
         public string MessageText { get; set; }
@@ -23,7 +24,7 @@ namespace YAXLibTests.SampleClasses
     }
 
     [ShowInDemoApplication]
-    public class CustomSerializationTests
+    public class CustomSerializationDemoClasses
     {
         [YAXCustomSerializer(typeof(CustomTitleSerializer))]
         [YAXElementFor("SomeTitle")]
@@ -36,7 +37,7 @@ namespace YAXLibTests.SampleClasses
             return GeneralToStringProvider.GeneralToString(this);
         }
 
-        public static CustomSerializationTests GetSampleInstance()
+        public static CustomSerializationDemoClasses GetSampleInstance()
         {
             var message = new Message
             {
@@ -46,7 +47,7 @@ namespace YAXLibTests.SampleClasses
                 BoldLength = 3
             };
 
-            return new CustomSerializationTests
+            return new CustomSerializationDemoClasses
             {
                 Title = "Important Note",
                 Message = message
@@ -54,10 +55,8 @@ namespace YAXLibTests.SampleClasses
         }
     }
 
-    public class CustomMessageSerializer : ICustomSerializer<Message>
+    public class CustomMessageClassSerializer : ICustomSerializer<Message>
     {
-        #region ICustomSerializer<Message> Members
-
         public void SerializeToAttribute(Message objectToSerialize, XAttribute attrToFill)
         {
             throw new NotImplementedException();
@@ -78,10 +77,6 @@ namespace YAXLibTests.SampleClasses
         {
             throw new NotImplementedException();
         }
-
-        #endregion
-
-        #region ICustomDeserializer<Message> Members
 
         public Message DeserializeFromAttribute(XAttribute attrib)
         {
@@ -125,30 +120,26 @@ namespace YAXLibTests.SampleClasses
         {
             throw new NotImplementedException();
         }
-
-        #endregion
     }
 
     public class CustomTitleSerializer : ICustomSerializer<string>
     {
-        #region ICustomDeserializer<string> Members
-
         public string DeserializeFromAttribute(XAttribute attrib)
         {
-            return RetreiveValue(attrib.Value);
+            return RetrieveValue(attrib.Value);
         }
 
         public string DeserializeFromElement(XElement element)
         {
-            return RetreiveValue(element.Value);
+            return RetrieveValue(element.Value);
         }
 
         public string DeserializeFromValue(string value)
         {
-            return RetreiveValue(value);
+            return RetrieveValue(value);
         }
 
-        private string RetreiveValue(string str)
+        private string RetrieveValue(string str)
         {
             var sb = new StringBuilder();
 
@@ -158,10 +149,6 @@ namespace YAXLibTests.SampleClasses
 
             return sb.ToString();
         }
-
-        #endregion
-
-        #region ICustomSerializer<string> Members
 
         public void SerializeToAttribute(string objectToSerialize, XAttribute attrToFill)
         {
@@ -186,7 +173,5 @@ namespace YAXLibTests.SampleClasses
 
             return sb.ToString();
         }
-
-        #endregion
     }
 }
