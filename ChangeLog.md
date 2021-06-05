@@ -1,6 +1,7 @@
-[3.00] Commits until May 21, 2021
+[3.00] Commits until June 5, 2021
 
    **Changes:**
+   * Fix: `Exception`s can now be serialized properly, resolving [#22](https://github.com/YAXLib/YAXLib/issues/2) and [#62](https://github.com/YAXLib/YAXLib/issues/62) ([#152](https://github.com/YAXLib/YAXLib/pull/152))
    * Fix: `YAXSerializer` leaves `SerializerOptions.MaxRecursion` (and obsolete `YAXSerializer.MaxRecursion` unchanged ([#154](https://github.com/YAXLib/YAXLib/pull/154))
    * Serialization and de-serialization can be culture-specific ([#80](https://github.com/YAXLib/YAXLib/pull/80), [#139](https://github.com/YAXLib/YAXLib/pull/139))
      * Fully compatible with v2.x (using CultureInfo.InvariantCulture as the default setting)
