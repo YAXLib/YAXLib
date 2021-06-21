@@ -5,6 +5,7 @@
 [![AppVeyor build status linux](https://img.shields.io/appveyor/job/build/yaxlib/yaxlib/linux/master?label=linux%20build)](https://ci.appveyor.com/project/yaxlib/yaxlib/branch/master)
 [![codecov](https://codecov.io/gh/YAXLib/YAXLib/branch/master/graph/badge.svg?token=9VHIEiyUt8)](https://codecov.io/gh/YAXLib/YAXLib) 
 [![NuGet](https://img.shields.io/nuget/v/YAXLib.svg)](https://www.nuget.org/packages/YAXLib/)
+[![NuGet](https://img.shields.io/nuget/vpre/YAXLib.svg)](https://www.nuget.org/packages/YAXLib/)
 
 *YAXLib* is a flexible XML serialization library that lets developers design freely the XML file structure, choose among private and public fields to be serialized, and serialize all known collection classes and arrays (single-dimensional, multi-dimensional, and jagged arrays) in the .NET Framework. 
 
