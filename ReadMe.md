@@ -173,13 +173,14 @@ And this is the result of XML serialization:
   </Owner>
 </Warehouse>
 ```
+**And even more: You can deserialize this `XML` back to an instance of the `Warehouse` class.**
 
 ## Contributors
 
 * [Sina Iravanian](https://github.com/sinairv)
 * [Julian Verdurmen](https://github.com/304NotModified)
-* [axuno gGmbH](https://github.com/axunonb)
-* and many others. See [Change Log](https://github.com/sinairv/YAXLib/blob/master/ChangeLog.md) for the list of all the people who kindly contributed to YAXLib.
+* [axuno gGmbH](https://github.com/axuno)
+* and many others. See [Change Log](https://github.com/YAXLib/YAXLib/blob/master/ChangeLog.md) for the list of all the people who kindly contributed to YAXLib.
 
 ## Logo
 
