@@ -1,9 +1,27 @@
-[2.16.0] Feb 14, 2021
-   * Now supporting netstandard2.0 netstandard2.1 net461 net462 net472 net48 net5.0
-   * Dropped support of netstandard1.6
-   * Extended unit tests for netstandard
-   * Enabled SourceLink
+[3.00] Commits until June 5, 2021
+
+   **Changes:**
+   * Fix: `Exception`s can now be serialized properly, resolving [#22](https://github.com/YAXLib/YAXLib/issues/2) and [#62](https://github.com/YAXLib/YAXLib/issues/62) ([#152](https://github.com/YAXLib/YAXLib/pull/152))
+   * Fix: `YAXSerializer` leaves `SerializerOptions.MaxRecursion` (and obsolete `YAXSerializer.MaxRecursion` unchanged ([#154](https://github.com/YAXLib/YAXLib/pull/154))
+   * Serialization and de-serialization can be culture-specific ([#80](https://github.com/YAXLib/YAXLib/pull/80), [#139](https://github.com/YAXLib/YAXLib/pull/139))
+     * Fully compatible with v2.x (using CultureInfo.InvariantCulture as the default setting)
+     * **Limitation**: Serialization and de-serialization **must** use the same culture setting
+   * Fix `YAXAttributeForClass` and `YAXValueForClass` attributes are ignored when a `YAXCustomSerializer` is not an attribute for the property, but on the property's type ([#143](https://github.com/YAXLib/YAXLib/pull/143), [#97](https://github.com/YAXLib/YAXLib/issues/97))
+   * Introduced `SerializerOptions` for instanciating `YAXSerializer` ([#137](https://github.com/YAXLib/YAXLib/pull/137)). Marked 2.x constructors as obsolete (will be removed in v4)
+   * Removed Microsoft.DotNet.PlatformAbstractions dependency ([#127](https://github.com/YAXLib/YAXLib/pull/127)) 
+   * Enabled SourceLink and Deterministic Build ([#125](https://github.com/YAXLib/YAXLib/pull/125))
+   * Now supporting .NET Standard 2.0+ and .NET 4.6.1+ ([#124](https://github.com/YAXLib/YAXLib/pull/124))
+   * Added cross-framework compatibility between .NET Framework 2.x-4.x and .NET Standard ([#123](https://github.com/YAXLib/YAXLib/pull/123))
+   * Ingrated fork [YAXLib.Redux](https://github.com/MhpSoftware/YAXLib.Redux) ([#122](https://github.com/YAXLib/YAXLib/pull/122))
    * SemVer versioning
+   
+   **Breaking changes:**
+    
+* Booleans are serialized as `ToLowerInvariant()`, see the docs [here](https://docs.microsoft.com/en-us/dotnet/api/system.boolean.tostring?view=net-5.0). De-serialization is backward compatible. ([#78](https://github.com/YAXLib/YAXLib/issues/78))
+* `ICustomDeserializer` has been removed. It was not used in `YAXLib` ([#150](https://github.com/YAXLib/YAXLib/pull/150))
+* Corrected typos (UdtWrapper.YAXSerializer.DimentionsAttributeName -> YAXSerializer.DimensionsAttributeName) ([#135](https://github.com/YAXLib/YAXLib/pull/135)) 
+* Corrected typos (UdtWrapper.IsNotAllowdNullObjectSerialization -> UdtWrapper.IsNotAllowedNullObjectSerialization, UdtWrapper.DontSerializePropertiesWithNoSetter -> UdtWrapper.DoNotSerializePropertiesWithNoSetter) ([#144](https://github.com/YAXLib/YAXLib/pull/144))
+* Dropped support of netstandard1.6
 
 [2.15] Feb 18, 2017
    * Added support for .NET Core. Huge thanks go to [axuno gGmbH](https://github.com/axunonb) for developing the support for .NET Core.
