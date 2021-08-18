@@ -1,3 +1,7 @@
+[3.01] August 19, 2021
+
+  * Nullable `Enum` will now serialize `YaxEnum` alias
+
 [3.00] Commits until June 5, 2021
 
    **Changes:**

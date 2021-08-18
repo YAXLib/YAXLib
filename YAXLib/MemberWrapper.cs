@@ -104,13 +104,16 @@ namespace YAXLib
             _isProperty = memberInfo.MemberType == MemberTypes.Property;
 
             Alias = StringUtils.RefineSingleElement(_memberInfo.Name);
-
             if (_isProperty)
+            {
                 _propertyInfoInstance = (PropertyInfo) memberInfo;
+                _memberType = _propertyInfoInstance.PropertyType;
+            }
             else
+            {
                 _fieldInfoInstance = (FieldInfo) memberInfo;
-
-            _memberType = _isProperty ? _propertyInfoInstance.PropertyType : _fieldInfoInstance.FieldType;
+                _memberType = _fieldInfoInstance.FieldType;
+            }
 
             _memberTypeWrapper = TypeWrappersPool.Pool.GetTypeWrapper(MemberType, callerSerializer);
             if (_memberTypeWrapper.HasNamespace)
@@ -147,8 +150,7 @@ namespace YAXLib
             // then use those of the member-type
             if (_collectionAttributeInstance == null && _memberTypeWrapper.CollectionAttributeInstance != null)
                 _collectionAttributeInstance = _memberTypeWrapper.CollectionAttributeInstance;
-            _memberInfo.GetCustomAttributes(true);
-
+            
             if (_dictionaryAttributeInstance == null && _memberTypeWrapper.DictionaryAttributeInstance != null)
                 _dictionaryAttributeInstance = _memberTypeWrapper.DictionaryAttributeInstance;
         }

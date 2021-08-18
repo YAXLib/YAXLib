@@ -27,7 +27,7 @@ namespace YAXLib
         /// <summary>
         ///     the underlying type for this instance of <c>TypeWrapper</c>
         /// </summary>
-        private readonly Type _udtType = typeof(object);
+        private readonly Type _udtType;
 
         /// <summary>
         ///     Alias for the type
@@ -63,7 +63,10 @@ namespace YAXLib
         /// <summary>
         ///     Initializes a new instance of the <see cref="UdtWrapper" /> class.
         /// </summary>
-        /// <param name="udtType">The underlying type to create the wrapper around.</param>
+        /// <param name="udtType">
+        /// The underlying type to create the wrapper around.
+        /// If the the type is <see cref="Nullable"/>, the underlying type of the <see cref="Nullable"/> is used.
+        /// </param>
         /// <param name="callerSerializer">
         ///     reference to the serializer
         ///     instance which is building this instance.
@@ -71,7 +74,9 @@ namespace YAXLib
         public UdtWrapper(Type udtType, YAXSerializer callerSerializer)
         {
             _isTypeDictionary = false;
-            _udtType = udtType;
+            _udtType = ReflectionUtils.IsNullable(udtType, out var nullableUnderlyingType)
+                ? nullableUnderlyingType
+                : udtType;
             _isTypeCollection = ReflectionUtils.IsCollectionType(_udtType);
             _isTypeDictionary = ReflectionUtils.IsIDictionary(_udtType);
 
@@ -171,10 +176,7 @@ namespace YAXLib
             {
                 if (IsEnum)
                 {
-                    if (_enumWrapper == null)
-                        _enumWrapper = new EnumWrapper(_udtType);
-
-                    return _enumWrapper;
+                    return _enumWrapper ??= new EnumWrapper(_udtType);
                 }
 
                 return null;
