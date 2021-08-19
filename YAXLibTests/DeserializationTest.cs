@@ -6,6 +6,7 @@ using System.Globalization;
 using NUnit.Framework;
 using YAXLib;
 using YAXLib.Enums;
+using YAXLib.Options;
 using YAXLibTests.SampleClasses;
 using YAXLibTests.SampleClasses.PolymorphicSerialization;
 using YAXLibTests.SampleClasses.SelfReferencingObjects;
@@ -185,7 +186,11 @@ namespace YAXLibTests
         public void DesEmptyNullableTest()
         {
             const string xml = @"<NullableSample2 />";
-            var serializer = new YAXSerializer(typeof(NullableSample2), YAXExceptionHandlingPolicies.DoNotThrow);
+            var serializer = new YAXSerializer(typeof(NullableSample2),
+                new SerializerOptions {
+                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
+                    SerializationOptions = YAXSerializationOptions.DontSerializeNullObjects
+                });
             var got = (NullableSample2) serializer.Deserialize(xml);
 
             Assert.That(got, Is.Not.Null);

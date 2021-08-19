@@ -702,41 +702,136 @@ namespace YAXLibTests
         }
 
         [Test]
-        public void NullableSample2Test()
+        public void NullableSample2_Serialize()
         {
-            const string result =
+            const string expected =
                 @"<NullableSample2 Number=""10"">
   <DateTime>1980-04-11T13:37:01.2345678Z</DateTime>
   <Decimal>1234.56789</Decimal>
   <Boolean>true</Boolean>
-  <Enum>Third</Enum>
+  <Enum>Autumn or fall</Enum>
 </NullableSample2>";
-            var serializer = new YAXSerializer(typeof(NullableSample2), YAXExceptionHandlingPolicies.DoNotThrow,
-                YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
-            var got = serializer.Serialize(NullableSample2.GetSampleInstance());
+            var serializer = new YAXSerializer(typeof(NullableSample2),
+                new SerializerOptions {
+                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
+                    ExceptionBehavior = YAXExceptionTypes.Warning,
+                    SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+                });
+            var original = NullableSample2.GetSampleInstance();
+            var got = serializer.Serialize(original);
 
-            Console.WriteLine(got);
-            Assert.That(got, Is.EqualTo(result));
+            // Assert
+            got.Should().BeEquivalentTo(expected);
         }
 
         [Test]
-        public void NullableSample2WithNullAttributeTest()
+        public void NullableSample2_Deserialize()
         {
-            const string result =
-                @"<NullableSample2>
+            const string xml =
+                @"<NullableSample2 Number=""10"">
   <DateTime>1980-04-11T13:37:01.2345678Z</DateTime>
   <Decimal>1234.56789</Decimal>
   <Boolean>true</Boolean>
-  <Enum>Third</Enum>
+  <Enum>Autumn or fall</Enum>
 </NullableSample2>";
-            var serializer = new YAXSerializer(typeof(NullableSample2), YAXExceptionHandlingPolicies.DoNotThrow,
-                YAXExceptionTypes.Warning, YAXSerializationOptions.DontSerializeNullObjects);
-            var sample = NullableSample2.GetSampleInstance();
-            sample.Number = null;
-            var got = serializer.Serialize(sample);
+            var serializer = new YAXSerializer(typeof(NullableSample2),
+                new SerializerOptions {
+                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
+                    ExceptionBehavior = YAXExceptionTypes.Warning,
+                    SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+                });
+            var original = NullableSample2.GetSampleInstance();
+            var des = (NullableSample2) serializer.Deserialize(xml);
 
-            Console.WriteLine(got);
-            Assert.That(got, Is.EqualTo(result));
+            // Assert
+            des.Should().BeEquivalentTo(original);
+        }
+
+        [Test]
+        public void NullableSample2WithNullAttribute_Serialize()
+        {
+            const string expected =
+                @"<NullableSample2 Number=""10"">
+  <DateTime>1980-04-11T13:37:01.2345678Z</DateTime>
+  <Decimal>1234.56789</Decimal>
+  <Boolean>true</Boolean>
+  <Enum>Autumn or fall</Enum>
+</NullableSample2>";
+            var serializer = new YAXSerializer(typeof(NullableSample2),
+                new SerializerOptions {
+                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
+                    ExceptionBehavior = YAXExceptionTypes.Warning,
+                    SerializationOptions = YAXSerializationOptions.DontSerializeNullObjects
+                });
+
+            var original = NullableSample2.GetSampleInstance();
+            
+            var got = serializer.Serialize(original);
+
+            // Assert
+            got.Should().BeEquivalentTo(expected);
+        }
+
+        [Test]
+        public void NullableSample2WithNullAttribute_Deserialize()
+        {
+            const string xml =
+                @"<NullableSample2 Number=""10"">
+  <DateTime>1980-04-11T13:37:01.2345678Z</DateTime>
+  <Decimal>1234.56789</Decimal>
+  <Boolean>true</Boolean>
+  <Enum>Autumn or fall</Enum>
+</NullableSample2>";
+            var serializer = new YAXSerializer(typeof(NullableSample2),
+                new SerializerOptions {
+                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
+                    ExceptionBehavior = YAXExceptionTypes.Warning,
+                    SerializationOptions = YAXSerializationOptions.DontSerializeNullObjects
+                });
+
+            var original = NullableSample2.GetSampleInstance();
+            var des = (NullableSample2) serializer.Deserialize(xml);
+
+            // Assert
+            des.Should().BeEquivalentTo(original);
+        }
+
+        [Test]
+        public void NullableSample1WithNullAttribute_Serialize()
+        {
+            const string expected =
+                @"<NullableSample1>
+  <Text>Hello World</Text>
+  <TestEnumProperty>yax-enum-for-EnumOne</TestEnumProperty>
+  <TestEnumNullableProperty>yax-enum-for-EnumTwo</TestEnumNullableProperty>
+  <TestEnumField>yax-enum-for-EnumOne</TestEnumField>
+  <TestEnumNullableField>yax-enum-for-EnumThree</TestEnumNullableField>
+</NullableSample1>";
+            var original = NullableSample1.GetSampleInstance();
+            var serializer = new YAXSerializer(typeof(NullableSample1));
+            var got = serializer.Serialize(original);
+
+            // Assert
+            got.Should().BeEquivalentTo(expected);
+        }
+
+        [Test]
+        public void NullableSample1WithNullAttribute_Deserialize()
+        {
+            const string xml =
+                @"<NullableSample1>
+  <Text>Hello World</Text>
+  <TestEnumProperty>yax-enum-for-EnumOne</TestEnumProperty>
+  <TestEnumNullableProperty>yax-enum-for-EnumTwo</TestEnumNullableProperty>
+  <TestEnumField>yax-enum-for-EnumOne</TestEnumField>
+  <TestEnumNullableField>yax-enum-for-EnumThree</TestEnumNullableField>
+</NullableSample1>";
+            var original = NullableSample1.GetSampleInstance();
+            var serializer = new YAXSerializer(typeof(NullableSample1));
+            var des = (NullableSample1) serializer.Deserialize(xml);
+
+            // Assert
+            des.Should().BeEquivalentTo(original);
         }
 
         [Test]
