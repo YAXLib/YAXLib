@@ -57,12 +57,12 @@ namespace YAXLibTests.SampleClasses
 
     public class CustomMessageClassSerializer : ICustomSerializer<Message>
     {
-        public void SerializeToAttribute(Message objectToSerialize, XAttribute attrToFill)
+        public void SerializeToAttribute(Message objectToSerialize, XAttribute attrToFill, ISerializationContext serializationContext)
         {
             throw new NotImplementedException();
         }
 
-        public void SerializeToElement(Message objectToSerialize, XElement elemToFill)
+        public void SerializeToElement(Message objectToSerialize, XElement elemToFill, ISerializationContext serializationContext)
         {
             var message = objectToSerialize.MessageText;
             var beforeBold = message.Substring(0, objectToSerialize.BoldIndex);
@@ -73,17 +73,17 @@ namespace YAXLibTests.SampleClasses
             elemToFill.Add(new XText(afterBold));
         }
 
-        public string SerializeToValue(Message objectToSerialize)
+        public string SerializeToValue(Message objectToSerialize, ISerializationContext serializationContext)
         {
             throw new NotImplementedException();
         }
 
-        public Message DeserializeFromAttribute(XAttribute attrib)
+        public Message DeserializeFromAttribute(XAttribute attrib, ISerializationContext serializationContext)
         {
             throw new NotImplementedException();
         }
 
-        public Message DeserializeFromElement(XElement element)
+        public Message DeserializeFromElement(XElement element, ISerializationContext serializationContext)
         {
             var wholeMessage = "";
             var boldIndex = -1;
@@ -116,7 +116,7 @@ namespace YAXLibTests.SampleClasses
             };
         }
 
-        public Message DeserializeFromValue(string value)
+        public Message DeserializeFromValue(string value, ISerializationContext serializationContext)
         {
             throw new NotImplementedException();
         }
@@ -124,17 +124,17 @@ namespace YAXLibTests.SampleClasses
 
     public class CustomTitleSerializer : ICustomSerializer<string>
     {
-        public string DeserializeFromAttribute(XAttribute attrib)
+        public string DeserializeFromAttribute(XAttribute attrib, ISerializationContext serializationContext)
         {
             return RetrieveValue(attrib.Value);
         }
 
-        public string DeserializeFromElement(XElement element)
+        public string DeserializeFromElement(XElement element, ISerializationContext serializationContext)
         {
             return RetrieveValue(element.Value);
         }
 
-        public string DeserializeFromValue(string value)
+        public string DeserializeFromValue(string value, ISerializationContext serializationContext)
         {
             return RetrieveValue(value);
         }
@@ -150,17 +150,17 @@ namespace YAXLibTests.SampleClasses
             return sb.ToString();
         }
 
-        public void SerializeToAttribute(string objectToSerialize, XAttribute attrToFill)
+        public void SerializeToAttribute(string objectToSerialize, XAttribute attrToFill, ISerializationContext serializationContext)
         {
             attrToFill.Value = CreateMixedValue(objectToSerialize);
         }
 
-        public void SerializeToElement(string objectToSerialize, XElement elemToFill)
+        public void SerializeToElement(string objectToSerialize, XElement elemToFill, ISerializationContext serializationContext)
         {
             elemToFill.Value = CreateMixedValue(objectToSerialize);
         }
 
-        public string SerializeToValue(string objectToSerialize)
+        public string SerializeToValue(string objectToSerialize, ISerializationContext serializationContext)
         {
             return CreateMixedValue(objectToSerialize);
         }

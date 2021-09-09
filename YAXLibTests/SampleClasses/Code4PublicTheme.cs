@@ -161,22 +161,22 @@ namespace YAXLibTests.SampleClasses
 
     internal class ColorSerializer : ICustomSerializer<Color>
     {
-        public void SerializeToAttribute(Color objectToSerialize, XAttribute attrToFill)
+        public void SerializeToAttribute(Color objectToSerialize, XAttribute attrToFill, ISerializationContext serializationContext)
         {
             attrToFill.Value = ColorTo6CharHtmlString(objectToSerialize);
         }
 
-        public void SerializeToElement(Color objectToSerialize, XElement elemToFill)
+        public void SerializeToElement(Color objectToSerialize, XElement elemToFill, ISerializationContext serializationContext)
         {
             elemToFill.Value = ColorTo6CharHtmlString(objectToSerialize);
         }
 
-        public string SerializeToValue(Color objectToSerialize)
+        public string SerializeToValue(Color objectToSerialize, ISerializationContext serializationContext)
         {
             return ColorTo6CharHtmlString(objectToSerialize);
         }
 
-        public Color DeserializeFromAttribute(XAttribute attrib)
+        public Color DeserializeFromAttribute(XAttribute attrib, ISerializationContext serializationContext)
         {
             if (TryParseColor(attrib.Value, out var color))
                 return color;
@@ -184,7 +184,7 @@ namespace YAXLibTests.SampleClasses
             throw new YAXBadlyFormedInput(attrib.Name.ToString(), attrib.Value, attrib);
         }
 
-        public Color DeserializeFromElement(XElement element)
+        public Color DeserializeFromElement(XElement element, ISerializationContext serializationContext)
         {
             if (TryParseColor(element.Value, out var color))
                 return color;
@@ -192,7 +192,7 @@ namespace YAXLibTests.SampleClasses
             throw new YAXBadlyFormedInput(element.Name.ToString(), element.Value, element);
         }
 
-        public Color DeserializeFromValue(string value)
+        public Color DeserializeFromValue(string value, ISerializationContext serializationContext)
         {
             if (TryParseColor(value, out var color))
                 return color;

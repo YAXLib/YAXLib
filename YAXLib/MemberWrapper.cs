@@ -339,6 +339,11 @@ namespace YAXLib
         /// <value>The type of the member.</value>
         public Type MemberType => _memberType;
 
+        public FieldInfo FieldInfo => _fieldInfoInstance;
+
+        public MemberInfo MemberInfo => _memberInfo;
+        public PropertyInfo PropertyInfo => _propertyInfoInstance;
+
         /// <summary>
         ///     Gets the type wrapper instance corresponding to the member-type of this instance.
         /// </summary>

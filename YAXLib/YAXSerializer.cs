@@ -653,7 +653,7 @@ namespace YAXLib
             // check if the main class/type has defined custom serializers
             if (_udtWrapper.HasCustomSerializer)
             {
-                InvokeCustomSerializerToElement(_udtWrapper.CustomSerializerType, obj, _baseElement);
+                InvokeCustomSerializerToElement(_udtWrapper.CustomSerializerType, obj, _baseElement, null, _udtWrapper);
             }
             else if (KnownTypes.IsKnowType(_type))
             {
@@ -726,13 +726,11 @@ namespace YAXLib
 
                             if (member.HasCustomSerializer)
                             {
-                                InvokeCustomSerializerToAttribute(member.CustomSerializerType, elementValue,
-                                    attrToCreate);
+                                InvokeCustomSerializerToAttribute(member.CustomSerializerType, elementValue, attrToCreate, member);
                             }
                             else if (member.MemberTypeWrapper.HasCustomSerializer)
                             {
-                                InvokeCustomSerializerToAttribute(member.MemberTypeWrapper.CustomSerializerType,
-                                    elementValue, attrToCreate);
+                                InvokeCustomSerializerToAttribute(member.MemberTypeWrapper.CustomSerializerType, elementValue, attrToCreate, member);
                             }
                             else if (member.IsKnownType)
                             {
@@ -776,12 +774,11 @@ namespace YAXLib
                         string valueToSet;
                         if (member.HasCustomSerializer)
                         {
-                            valueToSet = InvokeCustomSerializerToValue(member.CustomSerializerType, elementValue);
+                            valueToSet = InvokeCustomSerializerToValue(member.CustomSerializerType, elementValue, member);
                         }
                         else if (member.MemberTypeWrapper.HasCustomSerializer)
                         {
-                            valueToSet = InvokeCustomSerializerToValue(member.MemberTypeWrapper.CustomSerializerType,
-                                elementValue);
+                            valueToSet = InvokeCustomSerializerToValue(member.MemberTypeWrapper.CustomSerializerType, elementValue, member);
                         }
                         else if (isKnownType)
                         {
@@ -832,10 +829,9 @@ namespace YAXLib
                             var elemToFill = new XElement(member.Alias.OverrideNsIfEmpty(TypeNamespace));
                             parElem.Add(elemToFill);
                             if (member.HasCustomSerializer)
-                                InvokeCustomSerializerToElement(member.CustomSerializerType, elementValue, elemToFill);
+                                InvokeCustomSerializerToElement(member.CustomSerializerType, elementValue, elemToFill, member, null);
                             else if (member.MemberTypeWrapper.HasCustomSerializer)
-                                InvokeCustomSerializerToElement(member.MemberTypeWrapper.CustomSerializerType,
-                                    elementValue, elemToFill);
+                                InvokeCustomSerializerToElement(member.MemberTypeWrapper.CustomSerializerType, elementValue, elemToFill, null, member.MemberTypeWrapper);
 
                             if (member.PreservesWhitespace)
                                 XMLUtils.AddPreserveSpaceAttribute(elemToFill, Options.Culture);
@@ -1462,7 +1458,7 @@ namespace YAXLib
             if (baseElement == null) return _desObject;
 
             if (_udtWrapper.HasCustomSerializer)
-                return InvokeCustomDeserializerFromElement(_udtWrapper.CustomSerializerType, baseElement);
+                return InvokeCustomDeserializerFromElement(_udtWrapper.CustomSerializerType, baseElement, null, _udtWrapper);
 
             var realTypeAttr = baseElement.Attribute_NamespaceSafe(Options.Namespace.Uri + Options.AttributeName.RealType,
                 _documentDefaultNamespace);
@@ -1700,11 +1696,13 @@ namespace YAXLib
 
                     object desObj;
                     if (member.IsSerializedAsAttribute)
-                        desObj = InvokeCustomDeserializerFromAttribute(deserType, xattrValue);
+                        desObj = InvokeCustomDeserializerFromAttribute(deserType, xattrValue, member);
                     else if (member.IsSerializedAsElement)
-                        desObj = InvokeCustomDeserializerFromElement(deserType, xelemValue);
+                        desObj = InvokeCustomDeserializerFromElement(deserType, xelemValue, 
+                            member.HasCustomSerializer ? member : null,
+                            member.MemberTypeWrapper.HasCustomSerializer ? member.MemberTypeWrapper : null);
                     else if (member.IsSerializedAsValue)
-                        desObj = InvokeCustomDeserializerFromValue(deserType, elemValue);
+                        desObj = InvokeCustomDeserializerFromValue(deserType, elemValue, member);
                     else
                         throw new Exception("unknown situation");
 
@@ -2690,45 +2688,40 @@ namespace YAXLib
             return pair;
         }
 
-        private static object InvokeCustomDeserializerFromElement(Type customDeserType, XElement elemToDeser)
+        private static object InvokeCustomDeserializerFromElement(Type customDeserType, XElement elemToDeser, MemberWrapper memberWrapper, UdtWrapper udtWrapper)
         {
             var customDeserializer = Activator.CreateInstance(customDeserType, new object[0]);
-            return customDeserType.InvokeMethod("DeserializeFromElement", customDeserializer,
-                new object[] {elemToDeser});
+            return customDeserType.InvokeMethod("DeserializeFromElement", customDeserializer, new object[] {elemToDeser, new SerializationContext(memberWrapper, udtWrapper)});
         }
 
-        private static object InvokeCustomDeserializerFromAttribute(Type customDeserType, XAttribute attrToDeser)
+        private static object InvokeCustomDeserializerFromAttribute(Type customDeserType, XAttribute attrToDeser, MemberWrapper memberWrapper)
         {
             var customDeserializer = Activator.CreateInstance(customDeserType, new object[0]);
-            return customDeserType.InvokeMethod("DeserializeFromAttribute", customDeserializer,
-                new object[] {attrToDeser});
+            return customDeserType.InvokeMethod("DeserializeFromAttribute", customDeserializer, new object[] {attrToDeser, new SerializationContext(memberWrapper) });
         }
 
-        private static object InvokeCustomDeserializerFromValue(Type customDeserType, string valueToDeser)
+        private static object InvokeCustomDeserializerFromValue(Type customDeserType, string valueToDeser, MemberWrapper memberWrapper)
         {
             var customDeserializer = Activator.CreateInstance(customDeserType, new object[0]);
-            return customDeserType.InvokeMethod("DeserializeFromValue", customDeserializer,
-                new object[] {valueToDeser});
+            return customDeserType.InvokeMethod("DeserializeFromValue", customDeserializer, new object[] {valueToDeser, new SerializationContext(memberWrapper) });
         }
 
-        private static void InvokeCustomSerializerToElement(Type customSerType, object objToSerialize,
-            XElement elemToFill)
+        private static void InvokeCustomSerializerToElement(Type customSerType, object objToSerialize, XElement elemToFill, MemberWrapper memberWrapper, UdtWrapper udtWrapper)
         {
             var customSerializer = Activator.CreateInstance(customSerType, new object[0]);
-            customSerType.InvokeMethod("SerializeToElement", customSerializer, new[] {objToSerialize, elemToFill});
+            customSerType.InvokeMethod("SerializeToElement", customSerializer, new[] {objToSerialize, elemToFill, new SerializationContext(memberWrapper, udtWrapper) });
         }
 
-        private static void InvokeCustomSerializerToAttribute(Type customSerType, object objToSerialize,
-            XAttribute attrToFill)
+        private static void InvokeCustomSerializerToAttribute(Type customSerType, object objToSerialize, XAttribute attrToFill, MemberWrapper memberWrapper)
         {
             var customSerializer = Activator.CreateInstance(customSerType, new object[0]);
-            customSerType.InvokeMethod("SerializeToAttribute", customSerializer, new[] {objToSerialize, attrToFill});
+            customSerType.InvokeMethod("SerializeToAttribute", customSerializer, new[] {objToSerialize, attrToFill, new SerializationContext(memberWrapper) });
         }
 
-        private static string InvokeCustomSerializerToValue(Type customSerType, object objToSerialize)
+        private static string InvokeCustomSerializerToValue(Type customSerType, object objToSerialize, MemberWrapper memberWrapper)
         {
             var customSerializer = Activator.CreateInstance(customSerType, new object[0]);
-            return (string) customSerType.InvokeMethod("SerializeToValue", customSerializer, new[] {objToSerialize});
+            return (string) customSerType.InvokeMethod("SerializeToValue", customSerializer, new[] {objToSerialize, new SerializationContext(memberWrapper) });
         }
 
         /// <summary>

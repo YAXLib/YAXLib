@@ -9,32 +9,32 @@ namespace YAXLibTests.SampleClasses.CustomSerialization
 {
     public class FieldLevelSerializer : ICustomSerializer<string>
     {
-        public void SerializeToAttribute(string objectToSerialize, XAttribute attrToFill)
+        public void SerializeToAttribute(string objectToSerialize, XAttribute attrToFill, ISerializationContext serializationContext)
         {
             attrToFill.Value = "ATTR_" + objectToSerialize;
         }
 
-        public void SerializeToElement(string objectToSerialize, XElement elemToFill)
+        public void SerializeToElement(string objectToSerialize, XElement elemToFill, ISerializationContext serializationContext)
         {
             elemToFill.Add(new XText("ELE__" + objectToSerialize));
         }
 
-        public string SerializeToValue(string objectToSerialize)
+        public string SerializeToValue(string objectToSerialize, ISerializationContext serializationContext)
         {
             return "VAL__" + objectToSerialize;
         }
 
-        public string DeserializeFromAttribute(XAttribute attrib)
+        public string DeserializeFromAttribute(XAttribute attrib, ISerializationContext serializationContext)
         {
             return attrib.Value.Substring(5);
         }
 
-        public string DeserializeFromElement(XElement element)
+        public string DeserializeFromElement(XElement element, ISerializationContext serializationContext)
         {
             return element.Value.Substring(5);
         }
 
-        public string DeserializeFromValue(string value)
+        public string DeserializeFromValue(string value, ISerializationContext serializationContext)
         {
             return value.Substring(5);
         }
