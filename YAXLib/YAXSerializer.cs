@@ -26,6 +26,8 @@ namespace YAXLib
     /// </summary>
     public class YAXSerializer
     {
+        #region Fields
+
         /// <summary>
         ///     A map of namespaces to their prefixes (if any) to be added ultimately to the xml result
         /// </summary>
@@ -88,10 +90,9 @@ namespace YAXLib
         /// </summary>
         private UdtWrapper _udtWrapper;
 
-        /// <summary>
-        ///     Gets or sets the number of recursions (number of total created <see cref="YAXSerializer"/> instances).
-        /// </summary>
-        internal int RecursionCount { get; set; }
+        #endregion
+
+        #region Constructors
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="YAXSerializer" /> class.
@@ -171,6 +172,15 @@ namespace YAXLib
             if (_udtWrapper.HasNamespace)
                 TypeNamespace = _udtWrapper.Namespace;
         }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        ///     Gets or sets the number of recursions (number of total created <see cref="YAXSerializer"/> instances).
+        /// </summary>
+        internal int RecursionCount { get; set; }
 
         internal XNamespace TypeNamespace { get; set; }
 
@@ -278,12 +288,16 @@ namespace YAXLib
             set => Options.MaxRecursion = value;
         }
 
+        #endregion
+
         internal void SetNamespaceToOverrideEmptyNamespace(XNamespace otherNamespace)
         {
             // if namespace info is not already set during construction, 
             // then set it from the other YAXSerializer instance
             if (otherNamespace.IsEmpty() && !HasTypeNamespace) TypeNamespace = otherNamespace;
         }
+
+        #region Public methods
 
         /// <summary>
         ///     Serializes the specified object and returns a string containing the XML.
@@ -465,6 +479,10 @@ namespace YAXLib
         {
             TypeWrappersPool.CleanUp();
         }
+
+        #endregion
+
+        #region Private methods
 
         /// <summary>
         ///     Serializes the object into an <c>XDocument</c> object.
@@ -2822,5 +2840,7 @@ namespace YAXLib
                 exceptionType == YAXExceptionTypes.Error)
                 throw ex;
         }
+
+        #endregion
     }
 }
