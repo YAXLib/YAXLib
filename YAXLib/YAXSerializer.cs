@@ -15,6 +15,7 @@ using System.Xml.Linq;
 using YAXLib.Attributes;
 using YAXLib.Enums;
 using YAXLib.Exceptions;
+using YAXLib.Helpers;
 using YAXLib.Options;
 
 namespace YAXLib
@@ -26,15 +27,17 @@ namespace YAXLib
     /// </summary>
     public class YAXSerializer
     {
-        /// <summary>
-        ///     A map of namespaces to their prefixes (if any) to be added ultimately to the xml result
-        /// </summary>
-        private readonly Dictionary<XNamespace, string> _namespaceToPrefix = new Dictionary<XNamespace, string>();
+        #region Fields
 
         /// <summary>
         ///     The list of all errors that have occurred.
         /// </summary>
         private readonly YAXParsingErrors _parsingErrors;
+
+        /// <summary>
+        ///     A manager that keeps a map of namespaces to their prefixes (if any) to be added ultimately to the xml result
+        /// </summary>
+        private readonly XmlNamespaceManager _xmlNamespaceManager;
 
         /// <summary>
         ///     a reference to the base xml element used during serialization.
@@ -88,10 +91,9 @@ namespace YAXLib
         /// </summary>
         private UdtWrapper _udtWrapper;
 
-        /// <summary>
-        ///     Gets or sets the number of recursions (number of total created <see cref="YAXSerializer"/> instances).
-        /// </summary>
-        internal int RecursionCount { get; set; }
+        #endregion
+
+        #region Constructors
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="YAXSerializer" /> class.
@@ -167,10 +169,22 @@ namespace YAXLib
             
             // this must be the last call
             _parsingErrors = new YAXParsingErrors();
+            _xmlNamespaceManager = new XmlNamespaceManager();
             _udtWrapper = TypeWrappersPool.Pool.GetTypeWrapper(_type, this);
             if (_udtWrapper.HasNamespace)
                 TypeNamespace = _udtWrapper.Namespace;
         }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        ///     Gets or sets the number of recursions (number of total created <see cref="YAXSerializer"/> instances).
+        /// </summary>
+        internal int RecursionCount { get; set; }
+
+        internal XmlNamespaceManager XmlNamespaceManager => _xmlNamespaceManager;
 
         internal XNamespace TypeNamespace { get; set; }
 
@@ -278,12 +292,16 @@ namespace YAXLib
             set => Options.MaxRecursion = value;
         }
 
+        #endregion
+
         internal void SetNamespaceToOverrideEmptyNamespace(XNamespace otherNamespace)
         {
             // if namespace info is not already set during construction, 
             // then set it from the other YAXSerializer instance
             if (otherNamespace.IsEmpty() && !HasTypeNamespace) TypeNamespace = otherNamespace;
         }
+
+        #region Public methods
 
         /// <summary>
         ///     Serializes the specified object and returns a string containing the XML.
@@ -466,6 +484,10 @@ namespace YAXLib
             TypeWrappersPool.CleanUp();
         }
 
+        #endregion
+
+        #region Private methods
+
         /// <summary>
         ///     Serializes the object into an <c>XDocument</c> object.
         /// </summary>
@@ -509,7 +531,7 @@ namespace YAXLib
                 if (_udtWrapper.PreservesWhitespace)
                     XMLUtils.AddPreserveSpaceAttribute(elemResult, Options.Culture);
                 if (elemResult.Parent == null)
-                    AddNamespacesToElement(elemResult);
+                    _xmlNamespaceManager.AddNamespacesToElement(elemResult, _documentDefaultNamespace, Options, _udtWrapper);
                 return elemResult;
             }
 
@@ -519,7 +541,7 @@ namespace YAXLib
                 if (_udtWrapper.PreservesWhitespace)
                     XMLUtils.AddPreserveSpaceAttribute(elemResult, Options.Culture);
                 if (elemResult.Parent == null)
-                    AddNamespacesToElement(elemResult);
+                    _xmlNamespaceManager.AddNamespacesToElement(elemResult, _documentDefaultNamespace, Options, _udtWrapper);
                 return elemResult;
             }
 
@@ -530,7 +552,7 @@ namespace YAXLib
                 if (_udtWrapper.PreservesWhitespace)
                     XMLUtils.AddPreserveSpaceAttribute(elemResult, Options.Culture);
                 if (elemResult.Parent == null)
-                    AddNamespacesToElement(elemResult);
+                    _xmlNamespaceManager.AddNamespacesToElement(elemResult, _documentDefaultNamespace, Options, _udtWrapper);
                 return elemResult;
             }
 
@@ -550,7 +572,7 @@ namespace YAXLib
 
                 AddMetadataAttribute(elem, Options.Namespace.Uri + Options.AttributeName.RealType, obj.GetType().FullName,
                     _documentDefaultNamespace);
-                AddNamespacesToElement(elem);
+                _xmlNamespaceManager.AddNamespacesToElement(elem, _documentDefaultNamespace, Options, _udtWrapper);
 
                 return elem;
             }
@@ -669,7 +691,7 @@ namespace YAXLib
                 // iterate through public properties
                 foreach (var member in GetFieldsToBeSerialized())
                 {
-                    if (member.HasNamespace) RegisterNamespace(member.Namespace, member.NamespacePrefix);
+                    if (member.HasNamespace) _xmlNamespaceManager.RegisterNamespace(member.Namespace, member.NamespacePrefix);
 
                     if (!member.CanRead)
                         continue;
@@ -720,7 +742,7 @@ namespace YAXLib
                                     : elementValue,
                                 _documentDefaultNamespace, Options.Culture);
 
-                            RegisterNamespace(member.Alias.OverrideNsIfEmpty(TypeNamespace).Namespace, null);
+                            _xmlNamespaceManager.RegisterNamespace(member.Alias.OverrideNsIfEmpty(TypeNamespace).Namespace, null);
 
                             if (attrToCreate == null) throw new YAXBadLocationException(serializationLocation);
 
@@ -916,7 +938,7 @@ namespace YAXLib
                     _baseElement.Remove();
             } // end of else if it has no custom serializers
 
-            if (_baseElement.Parent == null) AddNamespacesToElement(_baseElement);
+            if (_baseElement.Parent == null) _xmlNamespaceManager.AddNamespacesToElement(_baseElement, _documentDefaultNamespace, Options, _udtWrapper);
 
             return _baseElement;
         }
@@ -931,82 +953,13 @@ namespace YAXLib
         {
             var elemName = className.OverrideNsIfEmpty(wrapper.Namespace);
             if (elemName.Namespace == wrapper.Namespace)
-                RegisterNamespace(elemName.Namespace, wrapper.NamespacePrefix);
+                _xmlNamespaceManager.RegisterNamespace(elemName.Namespace, wrapper.NamespacePrefix);
             else
-                RegisterNamespace(elemName.Namespace, null);
+                _xmlNamespaceManager.RegisterNamespace(elemName.Namespace, null);
 
             return new XElement(elemName, null);
         }
 
-        /// <summary>
-        ///     Registers the namespace to be added to the root element of the serialized document.
-        /// </summary>
-        /// <param name="ns">The namespace to be added</param>
-        /// <param name="prefix">The prefix for the namespace.</param>
-        private void RegisterNamespace(XNamespace ns, string prefix)
-        {
-            if (!ns.IsEmpty())
-                return;
-
-            if (_namespaceToPrefix.ContainsKey(ns))
-            {
-                var existingPrefix = _namespaceToPrefix[ns];
-                // override the prefix only if already existing namespace has no prefix assigned
-                if (string.IsNullOrEmpty(existingPrefix))
-                    _namespaceToPrefix[ns] = prefix;
-            }
-            else
-            {
-                _namespaceToPrefix.Add(ns, prefix);
-            }
-        }
-
-        private void ImportNamespaces(YAXSerializer otherSerializer)
-        {
-            foreach (var pair in otherSerializer._namespaceToPrefix) RegisterNamespace(pair.Key, pair.Value);
-        }
-
-        private void AddNamespacesToElement(XElement rootNode)
-        {
-            var nsNoPrefix = new List<XNamespace>();
-            foreach (var ns in _namespaceToPrefix.Keys)
-            {
-                var prefix = _namespaceToPrefix[ns];
-                if (string.IsNullOrEmpty(prefix))
-                {
-                    nsNoPrefix.Add(ns);
-                }
-                else // if it has a prefix assigned
-                {
-                    // if no namespace with this prefix already exists
-                    if (rootNode.GetNamespaceOfPrefix(prefix) == null)
-                    {
-                        rootNode.AddAttributeNamespaceSafe(XNamespace.Xmlns + prefix, ns, _documentDefaultNamespace, Options.Culture);
-                    }
-                    else // if this prefix is already added
-                    {
-                        // check the namespace associated with this prefix
-                        var existing = rootNode.GetNamespaceOfPrefix(prefix);
-                        if (existing != ns)
-                            throw new InvalidOperationException(string.Format(
-                                "You cannot have two different namespaces with the same prefix." +
-                                Environment.NewLine +
-                                "Prefix: {0}, Namespaces: \"{1}\", and \"{2}\"",
-                                prefix, ns, existing));
-                    }
-                }
-            }
-
-            // if the main type wrapper has a default (no prefix) namespace
-            if (_udtWrapper.Namespace.IsEmpty() && string.IsNullOrEmpty(_udtWrapper.NamespacePrefix))
-                // it will be added automatically
-                nsNoPrefix.Remove(_udtWrapper.Namespace);
-
-            // now generate namespaces for those without prefix
-            foreach (var ns in nsNoPrefix)
-                rootNode.AddAttributeNamespaceSafe(XNamespace.Xmlns + rootNode.GetRandomPrefix(), ns,
-                    _documentDefaultNamespace, Options.Culture);
-        }
 
         /// <summary>
         ///     Makes the element corresponding to the member specified.
@@ -1028,7 +981,7 @@ namespace YAXLib
         {
             moveDescOnly = false;
 
-            RegisterNamespace(member.Namespace, member.NamespacePrefix);
+            _xmlNamespaceManager.RegisterNamespace(member.Namespace, member.NamespacePrefix);
 
             XElement elemToAdd;
             if (member.IsTreatedAsDictionary)
@@ -1112,7 +1065,7 @@ namespace YAXLib
             {
                 eachElementName = StringUtils.RefineSingleElement(collectionAttrInst.EachElementName);
                 if (eachElementName.Namespace.IsEmpty())
-                    RegisterNamespace(eachElementName.Namespace, null);
+                    _xmlNamespaceManager.RegisterNamespace(eachElementName.Namespace, null);
                 eachElementName =
                     eachElementName.OverrideNsIfEmpty(
                         elementName.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
@@ -1124,7 +1077,7 @@ namespace YAXLib
                 {
                     eachElementName = StringUtils.RefineSingleElement(dicAttrInst.EachPairName);
                     if (eachElementName.Namespace.IsEmpty())
-                        RegisterNamespace(eachElementName.Namespace, null);
+                        _xmlNamespaceManager.RegisterNamespace(eachElementName.Namespace, null);
                     eachElementName =
                         eachElementName.OverrideNsIfEmpty(elementName.Namespace.IfEmptyThen(TypeNamespace)
                             .IfEmptyThenNone());
@@ -1145,13 +1098,13 @@ namespace YAXLib
 
                 keyAlias = StringUtils.RefineSingleElement(dicAttrInst.KeyName ?? "Key");
                 if (keyAlias.Namespace.IsEmpty())
-                    RegisterNamespace(keyAlias.Namespace, null);
+                    _xmlNamespaceManager.RegisterNamespace(keyAlias.Namespace, null);
                 keyAlias = keyAlias.OverrideNsIfEmpty(
                     elementName.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
 
                 valueAlias = StringUtils.RefineSingleElement(dicAttrInst.ValueName ?? "Value");
                 if (valueAlias.Namespace.IsEmpty())
-                    RegisterNamespace(valueAlias.Namespace, null);
+                    _xmlNamespaceManager.RegisterNamespace(valueAlias.Namespace, null);
                 valueAlias =
                     valueAlias.OverrideNsIfEmpty(elementName.Namespace.IfEmptyThen(TypeNamespace).IfEmptyThenNone());
             }
@@ -1329,7 +1282,7 @@ namespace YAXLib
                 {
                     eachElementName = StringUtils.RefineSingleElement(collectionAttrInst.EachElementName);
                     if (eachElementName.Namespace.IsEmpty())
-                        RegisterNamespace(eachElementName.Namespace, null);
+                        _xmlNamespaceManager.RegisterNamespace(eachElementName.Namespace, null);
                     eachElementName =
                         eachElementName.OverrideNsIfEmpty(elementName.Namespace.IfEmptyThen(TypeNamespace)
                             .IfEmptyThenNone());
@@ -2524,7 +2477,7 @@ namespace YAXLib
                 _serializedStack.Pop();
 
             if (importNamespaces)
-                ImportNamespaces(serializer);
+                _xmlNamespaceManager.ImportNamespaces(serializer);
             _parsingErrors.AddRange(serializer.ParsingErrors);
         }
 
@@ -2783,7 +2736,7 @@ namespace YAXLib
             if (!_udtWrapper.SuppressMetadataAttributes)
             {
                 parent.AddAttributeNamespaceSafe(attrName, attrValue, documentDefaultNamespace, Options.Culture);
-                RegisterNamespace(Options.Namespace.Uri, Options.Namespace.Prefix);
+                _xmlNamespaceManager.RegisterNamespace(Options.Namespace.Uri, Options.Namespace.Prefix);
             }
         }
 
@@ -2815,5 +2768,7 @@ namespace YAXLib
                 exceptionType == YAXExceptionTypes.Error)
                 throw ex;
         }
+
+        #endregion
     }
 }
