@@ -3,6 +3,7 @@
 
 using NUnit.Framework;
 using YAXLib;
+using YAXLib.Exceptions;
 using YAXLibTests.SampleClasses.CustomSerialization;
 
 namespace YAXLibTests
@@ -10,6 +11,14 @@ namespace YAXLibTests
     [TestFixture]
     public class CustomSerializerTests
     {
+        [Test]
+        public void Custom_Serializer_Not_Implementing_Proper_Interface_Should_Throw()
+        {
+            var s = new YAXSerializer(typeof(ISampleInterface));
+            var original = new IllegalTypeOfClassSerializer();
+            Assert.Throws<YAXException>(()=> s.Serialize(original));
+        }
+
         [Test]
         public void Custom_Class_Level_Serializer_Element()
         {
@@ -105,6 +114,52 @@ namespace YAXLibTests
             
             Assert.That(xml, Is.EqualTo(expectedXml));
             Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()));
+        }
+
+        [Test]
+        public void Custom_NonGenericClass_Interface_Serializer()
+        {
+            // Use an interface as type to serialize a non-generic class
+
+            var s = new YAXSerializer(typeof(ISampleInterface));
+            var original = (ISampleInterface) new NonGenericClassWithInterface
+            { 
+                Id = 12345,
+                Name = "The " + nameof(ISampleInterface.Name)
+            };
+            var xml = s.Serialize(original);
+            var deserialized = (ISampleInterface) s.Deserialize(xml);
+            var expectedXmlPart = 
+                $@"
+  <Id>{original.Id}</Id>
+  <Name>{original.Name}</Name>
+</ISampleInterface>";
+            Assert.That(xml, Does.Contain(expectedXmlPart), "Serialized XML");
+            Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()), "Deserialized Object");
+        }
+
+        [Test]
+        public void Custom_GenericClass_Interface_Serializer()
+        {
+            // Use an interface as type to serialize a generic class
+
+            var s = new YAXSerializer(typeof(ISampleInterface));
+            var original = (ISampleInterface) new GenericClassWithInterface<int>
+            { 
+                Something = 9876,
+                Id = 12345,
+                Name = "The " + nameof(ISampleInterface.Name)
+            };
+            var xml = s.Serialize(original);
+            var deserialized = (ISampleInterface) s.Deserialize(xml);
+            var expectedXmlPart = 
+                $@"
+  <Id>{original.Id}</Id>
+  <Name>{original.Name}</Name>
+</ISampleInterface>";
+
+            Assert.That(xml, Does.Contain(expectedXmlPart), "Serialized XML");
+            Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()), "Deserialized Object");
         }
     }
 }
