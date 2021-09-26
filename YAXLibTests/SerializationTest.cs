@@ -2487,22 +2487,6 @@ namespace YAXLibTests
             const string expectedResult = "<Object />";
 
             Assert.That(result, Is.EqualTo(expectedResult));
-        }
-
-        [Test]
-        public void GenericConstructorTest()
-        {
-            const string result =
-                @"<!-- This example demonstrates serailizing a very simple class -->
-<Book>
-  <Title>Inside C#</Title>
-  <Author>Tom Archer &amp; Andrew Whitechapel</Author>
-  <PublishYear>2002</PublishYear>
-  <Price>30.5</Price>
-</Book>";
-            var serializer = new YAXSerializer<Book>();
-            var got = serializer.Serialize(Book.GetSampleInstance());
-            Assert.That(got, Is.EqualTo(result));
-        }
+        }        
     }
 }
