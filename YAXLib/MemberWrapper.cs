@@ -711,20 +711,22 @@ namespace YAXLib
                 if (!ReflectionUtils.IsArray(MemberType))
                     IsAttributedAsNotCollection = true;
             }
-            else if (attr is YAXCustomSerializerAttribute)
+            else if (attr is YAXCustomSerializerAttribute customSerializerAttribute)
             {
-                var serType = (attr as YAXCustomSerializerAttribute).CustomSerializerType;
+                var serType = customSerializerAttribute.CustomSerializerType;
 
-                Type genTypeArg;
                 var isDesiredInterface =
                     ReflectionUtils.IsDerivedFromGenericInterfaceType(serType, typeof(ICustomSerializer<>),
-                        out genTypeArg);
+                        out var genTypeArg);
 
                 if (!isDesiredInterface)
                     throw new YAXException(
-                        "The provided custom serialization type is not derived from the proper interface");
-                if (genTypeArg != MemberType)
-                    throw new YAXException("The generic argument of the class and the member type do not match");
+                        $"The provided custom serialization type '{serType.AssemblyQualifiedName}' is not derived from the proper interface.");
+
+                if (!genTypeArg.IsAssignableFrom(MemberType))
+                    throw new YAXException(
+                        $"The generic argument of the class '{MemberType.AssemblyQualifiedName}' is not assignable from '{genTypeArg.AssemblyQualifiedName}'.");
+
                 CustomSerializerType = serType;
             }
             else if (attr is YAXPreserveWhitespaceAttribute)
