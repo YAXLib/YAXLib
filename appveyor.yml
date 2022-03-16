@@ -3,7 +3,7 @@ environment:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true 
   matrix:
   - job_name: windows
-    appveyor_build_worker_image: Visual Studio 2019
+    appveyor_build_worker_image: Visual Studio 2022
   - job_name: linux
     appveyor_build_worker_image: Ubuntu
 matrix:
@@ -42,7 +42,7 @@ for:
     deploy:
     - provider: NuGet
       api_key:
-        secure: l21iXr00++8acaUmTEzdn5GnOwFf5/N4/K+QNdhMHNN3VsLruodH4v5CAdON0Lf+
+        secure: MDEy3s/MsVPa+RLi3gzmjZrS2IjQKI3Nw72+wZoNaX7SGY6o7IdmVZYRY8/2E7/t
       on:
         branch: master
   
