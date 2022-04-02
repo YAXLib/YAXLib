@@ -835,6 +835,29 @@ namespace YAXLibTests
         }
 
         [Test]
+        public void Duplicate_Enum_Alias_Should_Throw()
+        {
+            const string duplicateAlias = "yax-enum-for-EnumThree";
+            const string xml =
+                @"<NullableSample3>
+  <Text>Hello World</Text>
+  <TestEnumProperty>yax-enum-for-EnumOne</TestEnumProperty>
+  <TestEnumNullableProperty>yax-enum-for-EnumTwo</TestEnumNullableProperty>
+  <TestEnumField>yax-enum-for-EnumOne</TestEnumField>
+  <TestEnumNullableField>" + duplicateAlias + @"</TestEnumNullableField>
+</NullableSample3>";
+            var original = NullableSample3.GetSampleInstance();
+            var serializer = new YAXSerializer(typeof(NullableSample3));
+
+            Assert.That(code: () => serializer.Serialize(original),
+                Throws.TypeOf<YAXEnumAliasException>()
+                    .And.Message.Contains(duplicateAlias));
+            Assert.That(code: () => _ = serializer.Deserialize(xml),
+                Throws.TypeOf<YAXEnumAliasException>()
+                    .And.Message.Contains(duplicateAlias));
+        }
+
+        [Test]
         public void ListHolderClassTest()
         {
             const string result =
@@ -928,7 +951,7 @@ namespace YAXLibTests
         public void TimeSpanTest()
         {
             const string result =
-                @"<!-- This example shows serialization and deserialization of TimeSpan obejcts -->
+                @"<!-- This example shows serialization and deserialization of TimeSpan objects -->
 <TimeSpanSample>
   <TheTimeSpan>2.03:45:02.3000000</TheTimeSpan>
   <AnotherTimeSpan>2.03:45:02.3000000</AnotherTimeSpan>
@@ -949,6 +972,31 @@ namespace YAXLibTests
             Assert.That(got, Is.EqualTo(result));
         }
 
+        [Test]
+        public void TimeSpanTest_UsingTicks()
+        {
+            var timeSpan = new TimeSpan(12, 13, 14);
+            var xml1 = "<TimeSpan>" + timeSpan + "</TimeSpan>";
+            var xml2 = "<TimeSpan><Ticks>" + timeSpan.Ticks + "</Ticks></TimeSpan>";
+            var serializer = new YAXSerializer(typeof(TimeSpan));
+            
+            var deserialized1 = serializer.Deserialize(xml1);
+            var deserialized2 = serializer.Deserialize(xml2);
+
+            Assert.That(deserialized1, Is.EqualTo(timeSpan));
+            Assert.That(deserialized2, Is.EqualTo(timeSpan));
+        }
+
+        [Test]
+        public void TimeSpanTest_Bad_Format_Should_Throw()
+        {
+            var xml1 = "<TimeSpan>no-time-span</TimeSpan>";
+            var xml2 = "<TimeSpan><Ticks>not-a-long</Ticks></TimeSpan>";
+            var serializer = new YAXSerializer(typeof(TimeSpan));
+            
+            Assert.That(code: () => serializer.Deserialize(xml1), Throws.TypeOf<YAXBadlyFormedInput>());
+            Assert.That(code: () => serializer.Deserialize(xml2), Throws.TypeOf<YAXBadlyFormedInput>());
+        }
 
         [Test]
         public void FieldSerializationSampleTest()

@@ -16,7 +16,20 @@ namespace YAXLibTests
         {
             var s = new YAXSerializer(typeof(ISampleInterface));
             var original = new IllegalTypeOfClassSerializer();
-            Assert.Throws<YAXException>(()=> s.Serialize(original));
+            Assert.That(code: ()=> s.Serialize(original), Throws.TypeOf<YAXObjectTypeMismatch>());
+        }
+
+        [Test]
+        public void Custom_Interface_Serializer_Should_Throw_If_Missing_Interface()
+        {
+            var s = new YAXSerializer(typeof(ISampleInterface));
+            var original = new GenericClassWithoutInterface<int>
+            { 
+                Something = 9876,
+                Id = 12345,
+                Name = "The " + nameof(ISampleInterface.Name)
+            };
+            Assert.That(code: ()=> s.Serialize(original), Throws.TypeOf<YAXObjectTypeMismatch>());
         }
 
         [Test]
@@ -144,7 +157,7 @@ namespace YAXLibTests
             // Use an interface as type to serialize a generic class
 
             var s = new YAXSerializer(typeof(ISampleInterface));
-            var original = (ISampleInterface) new GenericClassWithInterface<int>
+            var original = new GenericClassWithInterface<int>
             { 
                 Something = 9876,
                 Id = 12345,

@@ -13,8 +13,6 @@ namespace YAXLib.Exceptions
     /// </summary>
     public class YAXObjectTypeMismatch : YAXException
     {
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="YAXObjectTypeMismatch" /> class.
         /// </summary>
@@ -25,10 +23,6 @@ namespace YAXLib.Exceptions
             ExpectedType = expectedType;
             ReceivedType = receivedType;
         }
-
-        #endregion
-
-        #region Properties
 
         /// <summary>
         ///     Gets the expected type.
@@ -54,7 +48,5 @@ namespace YAXLib.Exceptions
                 "Expected an object of type '{0}' but received an object of type '{1}'.",
                 ExpectedType.Name,
                 ReceivedType.Name);
-
-        #endregion
     }
 }

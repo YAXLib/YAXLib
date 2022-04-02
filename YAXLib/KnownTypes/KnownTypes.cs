@@ -18,20 +18,20 @@ namespace YAXLib
     /// </summary>
     internal class KnownTypes
     {
-        private static readonly Dictionary<Type, IKnownType> _dictKnownTypes = new Dictionary<Type, IKnownType>();
+        private static readonly Dictionary<Type, IKnownType> _dictKnownTypes = new();
 
-        private static readonly Dictionary<string, IKnownType> _dictDynamicKnownTypes =
-            new Dictionary<string, IKnownType>();
+        private static readonly Dictionary<string, IKnownType> _dictDynamicKnownTypes = new();
 
         static KnownTypes()
         {
-            // NOTE: known-types MUST be registered here
+            // Register all known types
+
             Add(new TimeSpanKnownType());
             Add(new XElementKnownType());
             Add(new XAttributeKnownType());
             Add(new DbNullKnownType());
-
             Add(new TypeKnownType());
+
             AddDynamicKnownType(new RectangleDynamicKnownType());
             AddDynamicKnownType(new ColorDynamicKnownType());
             AddDynamicKnownType(new RuntimeTypeDynamicKnownType());
@@ -74,25 +74,4 @@ namespace YAXLib
             return null;
         }
     }
-
-    #region XElement
-
-    // Thanks go to CodePlex user tg73: 
-    // http://www.codeplex.com/site/users/view/tg73
-    // for providing this implementation in the following issue:
-    // http://yaxlib.codeplex.com/workitem/17676
-
-    #endregion
-
-    #region XAttribute
-
-    #endregion
-
-    #region TimeSpan
-
-    #endregion
-
-    #region DBNull
-
-    #endregion
 }

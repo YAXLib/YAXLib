@@ -381,9 +381,9 @@ namespace YAXLib
         /// <param name="attr">The attribute to process.</param>
         private void ProcessYAXAttribute(object attr)
         {
-            if (attr is YAXCommentAttribute)
+            if (attr is YAXCommentAttribute commentAttribute)
             {
-                var comment = (attr as YAXCommentAttribute).Comment;
+                var comment = commentAttribute.Comment;
                 if (!string.IsNullOrEmpty(comment))
                 {
                     var comments = comment.Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries);
@@ -392,9 +392,8 @@ namespace YAXLib
                     Comment = comments;
                 }
             }
-            else if (attr is YAXSerializableTypeAttribute)
+            else if (attr is YAXSerializableTypeAttribute theAttr)
             {
-                var theAttr = attr as YAXSerializableTypeAttribute;
                 FieldsToSerialize = theAttr.FieldsToSerialize;
                 if (theAttr.IsSerializationOptionSet())
                 {
@@ -402,9 +401,9 @@ namespace YAXLib
                     _isSerializationOptionSetByAttribute = true;
                 }
             }
-            else if (attr is YAXSerializeAsAttribute)
+            else if (attr is YAXSerializeAsAttribute attribute)
             {
-                Alias = StringUtils.RefineSingleElement((attr as YAXSerializeAsAttribute).SerializeAs);
+                Alias = StringUtils.RefineSingleElement(attribute.SerializeAs);
             }
             else if (attr is YAXNotCollectionAttribute)
             {
@@ -420,12 +419,12 @@ namespace YAXLib
                         out var genTypeArg);
 
                 if (!isDesiredSerializerInterface)
-                    throw new YAXException(
-                        $"The provided custom serialization type '{serType.AssemblyQualifiedName}' is not derived from the proper Interface.");
+                    throw new YAXObjectTypeMismatch(typeof(ICustomSerializer<>), serType);
                 
+                // Reason for missing unit test coverage (?):
+                // Usually this case throws before
                 if (!genTypeArg.IsAssignableFrom(UnderlyingType))
-                    throw new YAXException(
-                        $"The generic argument of the class '{UnderlyingType.AssemblyQualifiedName}' is not assignable from '{genTypeArg.AssemblyQualifiedName}'.");
+                    throw new YAXObjectTypeMismatch(UnderlyingType, genTypeArg);
 
                 CustomSerializerType = serType;
             }
@@ -433,9 +432,8 @@ namespace YAXLib
             {
                 PreservesWhitespace = true;
             }
-            else if (attr is YAXNamespaceAttribute)
+            else if (attr is YAXNamespaceAttribute nsAttrib)
             {
-                var nsAttrib = attr as YAXNamespaceAttribute;
                 Namespace = nsAttrib.Namespace;
                 NamespacePrefix = nsAttrib.Prefix;
             }

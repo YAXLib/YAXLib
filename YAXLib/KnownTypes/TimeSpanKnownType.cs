@@ -20,15 +20,12 @@ namespace YAXLib
             if (elemTicks == null)
             {
                 var strTimeSpanString = elem.Value;
-                TimeSpan timeSpanResult;
-                if (!TimeSpan.TryParse(strTimeSpanString, out timeSpanResult))
+                if (!TimeSpan.TryParse(strTimeSpanString, out var timeSpanResult))
                     throw new YAXBadlyFormedInput(elem.Name.ToString(), elem.Value, elem);
                 return timeSpanResult;
             }
 
-            var strTicks = elemTicks.Value;
-            long ticks;
-            if (!long.TryParse(strTicks, out ticks)) throw new YAXBadlyFormedInput("Ticks", elemTicks.Value, elemTicks);
+            if (!long.TryParse(elemTicks.Value, out var ticks)) throw new YAXBadlyFormedInput("Ticks", elemTicks.Value, elemTicks);
             return new TimeSpan(ticks);
         }
     }

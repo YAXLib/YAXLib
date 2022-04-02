@@ -720,12 +720,10 @@ namespace YAXLib
                         out var genTypeArg);
 
                 if (!isDesiredInterface)
-                    throw new YAXException(
-                        $"The provided custom serialization type '{serType.AssemblyQualifiedName}' is not derived from the proper interface.");
+                    throw new YAXObjectTypeMismatch(typeof(ICustomSerializer<>), serType);
 
                 if (!genTypeArg.IsAssignableFrom(MemberType))
-                    throw new YAXException(
-                        $"The generic argument of the class '{MemberType.AssemblyQualifiedName}' is not assignable from '{genTypeArg.AssemblyQualifiedName}'.");
+                    throw new YAXObjectTypeMismatch(MemberType, genTypeArg);
 
                 CustomSerializerType = serType;
             }

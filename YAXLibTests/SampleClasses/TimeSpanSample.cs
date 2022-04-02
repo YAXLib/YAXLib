@@ -9,7 +9,7 @@ using YAXLib.Attributes;
 namespace YAXLibTests.SampleClasses
 {
     [ShowInDemoApplication]
-    [YAXComment("This example shows serialization and deserialization of TimeSpan obejcts")]
+    [YAXComment("This example shows serialization and deserialization of TimeSpan objects")]
     public class TimeSpanSample
     {
         public TimeSpan TheTimeSpan { get; set; }
@@ -24,9 +24,10 @@ namespace YAXLibTests.SampleClasses
 
         public static TimeSpanSample GetSampleInstance()
         {
-            var dic = new Dictionary<TimeSpan, int>();
-            dic.Add(new TimeSpan(2, 3, 45, 2, 300), 1);
-            dic.Add(new TimeSpan(3, 1, 40, 1, 200), 2);
+            var dic = new Dictionary<TimeSpan, int> {
+                { new TimeSpan(2, 3, 45, 2, 300), 1 },
+                { new TimeSpan(3, 1, 40, 1, 200), 2 }
+            };
 
             return new TimeSpanSample
             {

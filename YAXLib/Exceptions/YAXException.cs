@@ -8,7 +8,7 @@ namespace YAXLib.Exceptions
     /// <summary>
     ///     The base for all exception classes of YAXLib
     /// </summary>
-    public class YAXException : Exception
+    public abstract class YAXException : Exception
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="YAXException" /> class.
