@@ -46,5 +46,5 @@ jobs:
           dotnet add ./YAXLibTests/YAXLibTests.csproj package AltCover
           dotnet restore YAXLib.sln --verbosity quiet
           dotnet build YAXLib.sln --verbosity minimal --configuration release --no-restore /p:IncludeSymbols=true
-          dotnet test YAXLib.sln --no-build --verbosity normal /p:configuration=release /p:AltCover=true /p:AltCoverXmlReport="coverage.xml" /p:AltCoverStrongNameKey="../Key/YAXLib.Key.snk" /p:AltCoverAssemblyExcludeFilter="YAXLibTests|NUnit3.TestAdapter" /p:AltCoverLineCover="true"
+          dotnet test YAXLib.sln --no-build --verbosity normal /p:configuration=release /p:AltCover=true /p:AltCoverXmlReport="coverage.xml" /p:AltCoverStrongNameKey="../Key/YAXLib.Key.snk" /p:AltCoverAssemblyExcludeFilter="YAXLibTests|NUnit3.TestAdapter"
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
