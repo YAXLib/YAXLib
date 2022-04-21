@@ -25,6 +25,22 @@ namespace YAXLibTests
         }
 
         [Test]
+        public void TypeKnowTypeSerialization()
+        {
+            var typeExample = TypeKnownTypeSample.GetSampleInstance();
+            var serializer = new YAXSerializer(typeof(TypeKnownTypeSample));
+            var xml = @"<TypeKnownTypeSample>
+  <TheType>YAXLibTests.KnownTypeTests</TheType>
+</TypeKnownTypeSample>";
+            
+            var serialized = serializer.Serialize(typeExample);
+            var deserialized = (TypeKnownTypeSample) serializer.Deserialize(serialized);
+
+            Assert.That(serialized, Is.EqualTo(xml));
+            Assert.That(deserialized.TheType.UnderlyingSystemType, Is.EqualTo(typeExample.TheType.UnderlyingSystemType));
+        }
+
+        [Test]
         public void TestSingleKnownTypeSerialization()
         {
             var typeToTest = typeof(Color);

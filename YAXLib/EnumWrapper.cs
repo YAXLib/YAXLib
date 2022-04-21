@@ -15,7 +15,7 @@ namespace YAXLib
     internal class EnumWrapper
     {
         /// <summary>
-        ///     maps real enum names to their corresponding user defined aliases
+        ///     Maps real enum names to their corresponding user defined aliases
         /// </summary>
         private readonly Dictionary<string, string> _enumMembers = new Dictionary<string, string>();
 
@@ -41,18 +41,15 @@ namespace YAXLib
                     var originalName = m.Name;
                     var alias = originalName;
                     foreach (var attr in m.GetCustomAttributes(false))
-                        if (attr is YAXEnumAttribute)
-                            alias = (attr as YAXEnumAttribute).Alias;
+                        if (attr is YAXEnumAttribute enumAttr)
+                            alias = enumAttr.Alias;
 
-                    if (alias != originalName)
-                    {
-                        if (!_enumMembers.ContainsKey(alias))
-                            _enumMembers.Add(m.Name, alias);
-                        else if (!_enumMembers.ContainsKey(originalName))
-                            _enumMembers.Add(m.Name, originalName);
-                        else
-                            throw new YAXException("Enum alias already exists");
-                    }
+                    if (alias == originalName) continue;
+                    
+                    if (!_enumMembers.ContainsKey(originalName) && !_enumMembers.ContainsValue(alias))
+                        _enumMembers.Add(m.Name, alias);
+                    else
+                        throw new YAXEnumAliasException($"Enum alias '{alias}' for original name '{originalName}' already exists.");
                 }
         }
 

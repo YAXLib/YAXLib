@@ -32,7 +32,7 @@ for:
     test_script:
       - dotnet test YAXLibTests
       - nuget.exe install OpenCover -ExcludeVersion
-      - OpenCover\tools\OpenCover.Console.exe -register:appveyor -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:"test -f net5.0  -c debug YAXLibTests" -filter:"+[YAXLib]*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:coverage.xml -oldstyle
+      - OpenCover\tools\OpenCover.Console.exe -register:appveyor -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:"test -f net6.0  -c debug YAXLibTests" -filter:"+[YAXLib]*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:coverage.xml -oldstyle
       - "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%"
       - pip install codecov
       - codecov -f "coverage.xml"
@@ -56,5 +56,5 @@ for:
       - dotnet build YAXLib -f netstandard2.0 
     test_script:
       - dotnet restore YAXLibTests --verbosity quiet
-      - dotnet build YAXLibTests -f net5.0
-      - dotnet test YAXLibTests -f net5.0
+      - dotnet build YAXLibTests -f net6.0
+      - dotnet test YAXLibTests -f net6.0
