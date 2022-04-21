@@ -33,6 +33,19 @@ namespace YAXLibTests.SampleClasses.CustomSerialization
         }
     }
 
+    [YAXCustomSerializer(typeof(InterfaceSerializer))]
+    public class GenericClassWithoutInterface<T>
+    {
+        [YAXErrorIfMissed(YAXExceptionTypes.Ignore)]
+        public T Something { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public override string ToString()
+        {
+            return Id + Name;
+        }
+    }
+
     [YAXCustomSerializer(typeof(string))]
     public class IllegalTypeOfClassSerializer : ISampleInterface
     {

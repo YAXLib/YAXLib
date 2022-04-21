@@ -11,7 +11,7 @@ namespace YAXLib
         public override void Serialize(Type obj, XElement elem, XNamespace overridingNamespace)
         {
             if (obj != null)
-                elem.Value = obj.FullName;
+                elem.Value = obj.FullName ?? string.Empty;
         }
 
         public override Type Deserialize(XElement elem, XNamespace overridingNamespace)
