@@ -456,7 +456,7 @@ namespace YAXLib
             {
                 _namespace = value;
                 // explicit namespace definition overrides namespace definitions in SerializeAs attributes.
-                _alias = _namespace + _alias.LocalName;
+                _alias = _namespace + _alias?.LocalName;
             }
         }
 
@@ -551,7 +551,7 @@ namespace YAXLib
         public bool IsAllowedToBeSerialized(YAXSerializationFields serializationFields,
             bool dontSerializePropertiesWithNoSetter)
         {
-            if (dontSerializePropertiesWithNoSetter && _isProperty && !_propertyInfoInstance.CanWrite)
+            if (_propertyInfoInstance != null && dontSerializePropertiesWithNoSetter && _isProperty && !_propertyInfoInstance.CanWrite)
                 return false;
 
             if (serializationFields == YAXSerializationFields.AllFields)
@@ -613,10 +613,10 @@ namespace YAXLib
         {
             if (attr is YAXCommentAttribute)
             {
-                var comment = (attr as YAXCommentAttribute).Comment;
+                var comment = (attr as YAXCommentAttribute)?.Comment;
                 if (!string.IsNullOrEmpty(comment))
                 {
-                    var comments = comment.Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries);
+                    var comments = comment!.Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries);
                     for (var i = 0; i < comments.Length; i++) comments[i] = string.Format(" {0} ", comments[i].Trim());
 
                     Comment = comments;
@@ -648,7 +648,7 @@ namespace YAXLib
                     SerializationLocation = ".";
                 }
             }
-            else if (attr is YAXAttributeForAttribute)
+            else if (attr is YAXAttributeForAttribute forAttribute)
             {
                 // it is required that YAXCustomSerializerAttribute is processed earlier
                 if (ReflectionUtils.IsBasicType(MemberType) || HasCustomSerializer ||
@@ -656,7 +656,7 @@ namespace YAXLib
                     YAXCollectionSerializationTypes.Serially)
                 {
                     IsSerializedAsAttribute = true;
-                    StringUtils.ExttractPathAndAliasFromLocationString((attr as YAXAttributeForAttribute).Parent,
+                    StringUtils.ExttractPathAndAliasFromLocationString(forAttribute.Parent,
                         out var path, out var alias);
 
                     SerializationLocation = path;
@@ -664,18 +664,18 @@ namespace YAXLib
                         Alias = StringUtils.RefineSingleElement(alias);
                 }
             }
-            else if (attr is YAXElementForAttribute)
+            else if (attr is YAXElementForAttribute attribute)
             {
                 IsSerializedAsElement = true;
 
-                StringUtils.ExttractPathAndAliasFromLocationString((attr as YAXElementForAttribute).Parent, out var path,
+                StringUtils.ExttractPathAndAliasFromLocationString(attribute.Parent, out var path,
                     out var alias);
 
                 SerializationLocation = path;
                 if (!string.IsNullOrEmpty(alias))
                     Alias = StringUtils.RefineSingleElement(alias);
             }
-            else if (attr is YAXValueForAttribute)
+            else if (attr is YAXValueForAttribute valueForAttribute)
             {
                 // it is required that YAXCustomSerializerAttribute is processed earlier
                 if (ReflectionUtils.IsBasicType(MemberType) || HasCustomSerializer ||
@@ -684,7 +684,7 @@ namespace YAXLib
                 {
                     IsSerializedAsValue = true;
 
-                    StringUtils.ExttractPathAndAliasFromLocationString((attr as YAXValueForAttribute).Parent, out var path,
+                    StringUtils.ExttractPathAndAliasFromLocationString(valueForAttribute.Parent, out var path,
                         out var alias);
 
                     SerializationLocation = path;
@@ -696,9 +696,9 @@ namespace YAXLib
             {
                 IsAttributedAsDontSerialize = true;
             }
-            else if (attr is YAXSerializeAsAttribute)
+            else if (attr is YAXSerializeAsAttribute asAttribute)
             {
-                Alias = StringUtils.RefineSingleElement((attr as YAXSerializeAsAttribute).SerializeAs);
+                Alias = StringUtils.RefineSingleElement(asAttribute.SerializeAs);
             }
             else if (attr is YAXCollectionAttribute)
             {
@@ -716,9 +716,9 @@ namespace YAXLib
                     DefaultValue = temp.DefaultValue;
                 }
             }
-            else if (attr is YAXFormatAttribute)
+            else if (attr is YAXFormatAttribute formatAttribute)
             {
-                Format = (attr as YAXFormatAttribute).Format;
+                Format = formatAttribute.Format;
             }
             else if (attr is YAXNotCollectionAttribute)
             {
@@ -751,9 +751,8 @@ namespace YAXLib
                 // this should not happen
                 throw new Exception("This attribute is not applicable to fields and properties!");
             }
-            else if (attr is YAXNamespaceAttribute)
+            else if (attr is YAXNamespaceAttribute nsAttrib)
             {
-                var nsAttrib = attr as YAXNamespaceAttribute;
                 Namespace = nsAttrib.Namespace;
                 NamespacePrefix = nsAttrib.Prefix;
             }
