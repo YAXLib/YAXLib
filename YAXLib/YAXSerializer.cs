@@ -14,6 +14,7 @@ using System.Xml.Linq;
 using YAXLib.Attributes;
 using YAXLib.Enums;
 using YAXLib.Exceptions;
+using YAXLib.Helpers;
 using YAXLib.Options;
 
 namespace YAXLib
