@@ -2535,6 +2535,6 @@ namespace YAXLibTests
             const string expectedResult = "<Object />";
 
             Assert.That(result, Is.EqualTo(expectedResult));
-        }
+        }        
     }
 }
