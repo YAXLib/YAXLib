@@ -156,12 +156,12 @@ namespace YAXLib
             })
         {
         }
-        
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="YAXSerializer" /> class.
         /// </summary>
         /// <param name="t">The type of the object being serialized/de-serialized.</param>
-        /// <param name="options">The <see cref="SerializationOption"/> settings to influence the process of serialization or de-serialization</param>
+        /// <param name="options">The <see cref="SerializerOptions"/> settings to influence the process of serialization or de-serialization</param>
         public YAXSerializer(Type t, SerializerOptions options)
         {
             _type = t;
