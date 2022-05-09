@@ -7,7 +7,10 @@ using YAXLib;
 
 namespace YAXLibTests.SampleClasses.CustomSerialization
 {
-    public class FieldLevelSerializer : ICustomSerializer<string>
+    public class FieldLevelSerializer : PropertyLevelSerializer
+    { }
+
+    public class PropertyLevelSerializer : ICustomSerializer<string>
     {
         public void SerializeToAttribute(string objectToSerialize, XAttribute attrToFill, ISerializationContext serializationContext)
         {

@@ -1,84 +1,46 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+#nullable enable
 using System;
 using System.Reflection;
+using YAXLib.Options;
 
 namespace YAXLib
 {
     /// <summary>
-    /// Provides information about which Types and/or members being (de)serialized.
-    /// </summary>
-    internal class SerializationContext : ISerializationContext
-    {
-        public SerializationContext(MemberWrapper memberWrapper, UdtWrapper udtWrapper)
-        : this(memberWrapper)
-        {
-            ClassType = udtWrapper?.UnderlyingType;
-        }
-
-        public SerializationContext(MemberWrapper memberWrapper)
-        {
-            FieldInfo = memberWrapper?.FieldInfo;
-            MemberInfo = memberWrapper?.MemberInfo;
-            PropertyInfo = memberWrapper?.PropertyInfo;
-            MemberType = memberWrapper?.MemberType;
-        }
-
-        /// <summary>
-        /// The field info of the field.
-        /// </summary>
-        public FieldInfo FieldInfo { get; }
-
-        /// <summary>
-        /// The member info of the field.
-        /// </summary>
-        public MemberInfo MemberInfo { get; }
-
-        /// <summary>
-        /// The property info of the field.
-        /// </summary>
-        public PropertyInfo PropertyInfo { get; }
-
-        /// <summary>
-        /// The type of the member
-        /// </summary>
-        public Type MemberType { get; }
-
-        /// <summary>
-        /// The type of the class
-        /// </summary>
-        public Type ClassType { get; }
-    }
-
-    /// <summary>
-    /// Provides information about which Types and/or members being (de)serialized.
+    /// Provides information about which <see cref="Type"/>s and/or members being serialized or deserialized.
     /// </summary>
     public interface ISerializationContext
     {
         /// <summary>
-        /// The field info of the field.
+        /// The member's <see cref="FieldInfo"/> for property serialization, else <see langref="null"/>.
         /// </summary>
-        FieldInfo FieldInfo { get; }
+        FieldInfo? FieldInfo { get; }
 
         /// <summary>
-        /// The member info of the field.
+        /// The member's <see cref="MemberInfo"/> for member serialization, else <see langref="null"/>.
         /// </summary>
-        MemberInfo MemberInfo { get; }
+        MemberInfo? MemberInfo { get; }
 
         /// <summary>
-        /// The property info of the field.
+        /// The member's <see cref="PropertyInfo"/> for property serialization, else <see langref="null"/>.
         /// </summary>
-        PropertyInfo PropertyInfo { get; }
+        PropertyInfo? PropertyInfo { get; }
 
         /// <summary>
-        /// The type of the member
+        /// The member's <see cref="Type"/> for member serialization, else <see langref="null"/>.
         /// </summary>
-        Type MemberType { get; }
+        Type? MemberType { get; }
 
         /// <summary>
-        /// The type of the class
+        /// The class' <see cref="Type"/> for class level serialization, else <see langref="null"/>.
         /// </summary>
-        Type ClassType { get; }
+        Type? ClassType { get; }
+
+        /// <summary>
+        /// Gets the <see cref="Options.SerializerOptions"/> of the <see cref="YAXSerializer"/> instance.
+        /// </summary>
+        SerializerOptions SerializerOptions { get; }
     }
 }

@@ -1,9 +1,12 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+using System;
+using System.Reflection;
 using NUnit.Framework;
 using YAXLib;
 using YAXLib.Exceptions;
+using YAXLib.Options;
 using YAXLibTests.SampleClasses.CustomSerialization;
 
 namespace YAXLibTests
@@ -86,21 +89,21 @@ namespace YAXLibTests
         {
             // The custom serializer handles Body property
             
-            var original = new FieldLevelSample
+            var original = new PropertyLevelSample
             {
                 Id = "1234", // default serializer
                 Title = "This is the title", // default serializer
                 Body = "Just a short message body" // use custom serializer
             };
-            var s = new YAXSerializer(typeof(FieldLevelSample));
+            var s = new YAXSerializer(typeof(PropertyLevelSample));
             var xml = s.Serialize(original);
-            var deserialized = (FieldLevelSample) s.Deserialize(xml);
+            var deserialized = (PropertyLevelSample) s.Deserialize(xml);
             var expectedXml = 
-                @"<FieldLevelSample>
+                @"<PropertyLevelSample>
   <Id>1234</Id>
   <Title>This is the title</Title>
   <Body>ELE__Just a short message body</Body>
-</FieldLevelSample>";
+</PropertyLevelSample>";
             
             Assert.That(xml, Is.EqualTo(expectedXml));
             Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()));
