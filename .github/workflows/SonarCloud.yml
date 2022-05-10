@@ -36,13 +36,17 @@ jobs:
         run: |
           New-Item -Path .\.sonar\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+      - name: Set YAXLib environment
+        shell: powershell
+        run: |
+         echo "repository_owner_lc=$Env:GITHUB_REPOSITORY_OWNER".ToLower() | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"${{ github.event.repository.owner.login }}_YAXLib" /o:"${{ github.event.repository.owner.login }}" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="**/coverage*.xml"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"${{ env.repository_owner_lc }}_YAXLib" /o:"${{ env.repository_owner_lc }}" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="**/coverage*.xml"
           dotnet add ./YAXLibTests/YAXLibTests.csproj package AltCover
           dotnet restore YAXLib.sln --verbosity quiet
           dotnet build YAXLib.sln --verbosity minimal --configuration release --no-restore /p:IncludeSymbols=true
