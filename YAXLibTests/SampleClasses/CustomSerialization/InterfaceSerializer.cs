@@ -17,8 +17,18 @@ namespace YAXLibTests.SampleClasses.CustomSerialization
 
         public void SerializeToElement(ISampleInterface objectToSerialize, XElement elemToFill, ISerializationContext serializationContext)
         {
-            elemToFill.Add(new XElement("Id", objectToSerialize.Id));
-            elemToFill.Add(new XElement("Name", objectToSerialize.Name));
+            // Serialize ISampleInterface members
+            elemToFill.Add(new XElement("C_Id", objectToSerialize.Id));
+            elemToFill.Add(new XElement("C_Name", objectToSerialize.Name));
+
+            // Serialize another class member as comment
+            // only when serializing GenericClassWithInterface
+            var classType = serializationContext.ClassType!;
+            if (classType.IsGenericType && classType.GetGenericTypeDefinition() == typeof(GenericClassWithInterface<>))
+            {
+                var valueOfT = objectToSerialize.GetType().GetProperty("Something")?.GetValue(objectToSerialize);
+                elemToFill.Add(new XComment($"Value of 'Something': '{valueOfT}'"));
+            }
         }
 
         public string SerializeToValue(ISampleInterface objectToSerialize, ISerializationContext serializationContext)
@@ -33,7 +43,13 @@ namespace YAXLibTests.SampleClasses.CustomSerialization
 
         public ISampleInterface DeserializeFromElement(XElement element, ISerializationContext serializationContext)
         {
-            throw new NotImplementedException();
+            var o = (ISampleInterface) Activator.CreateInstance(serializationContext.ClassType!);
+            if (element.HasElements)
+            {
+                o.Id = int.Parse(element.Element("C_" + nameof(ISampleInterface.Id))!.Value);
+                o.Name = element.Element("C_" + nameof(ISampleInterface.Name))!.Value;
+            }
+            return o;
         }
 
         public ISampleInterface DeserializeFromValue(string value, ISerializationContext serializationContext)

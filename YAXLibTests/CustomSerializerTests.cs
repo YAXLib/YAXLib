@@ -136,6 +136,7 @@ namespace YAXLibTests
         public void Custom_NonGenericClass_Interface_Serializer()
         {
             // Use an interface as type to serialize a non-generic class
+            // with a custom serializer
 
             var s = new YAXSerializer(typeof(ISampleInterface));
             var original = (ISampleInterface) new NonGenericClassWithInterface
@@ -144,12 +145,16 @@ namespace YAXLibTests
                 Name = "The " + nameof(ISampleInterface.Name)
             };
             var xml = s.Serialize(original);
+            // Deserialization makes use of SerializationContext
             var deserialized = (ISampleInterface) s.Deserialize(xml);
             var expectedXmlPart = 
                 $@"
-  <Id>{original.Id}</Id>
-  <Name>{original.Name}</Name>
+  <C_Id>{original.Id}</C_Id>
+  <C_Name>{original.Name}</C_Name>
 </ISampleInterface>";
+            
+            // Note: Prefix "C_" is evidence for custom serializer was invoked
+            // during serialization and deserialization
             Assert.That(xml, Does.Contain(expectedXmlPart), "Serialized XML");
             Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()), "Deserialized Object");
         }
@@ -158,22 +163,31 @@ namespace YAXLibTests
         public void Custom_GenericClass_Interface_Serializer()
         {
             // Use an interface as type to serialize a generic class
+            // with a custom serializer
 
             var s = new YAXSerializer(typeof(ISampleInterface));
             var original = new GenericClassWithInterface<int>
             { 
-                Something = 9876,
                 Id = 12345,
-                Name = "The " + nameof(ISampleInterface.Name)
+                Name = "The " + nameof(ISampleInterface.Name),
+                // 'Something' is not an ISampleInterface member
+                Something = 9876
             };
             var xml = s.Serialize(original);
+
+            // Deserialization makes use of SerializationContext
             var deserialized = (ISampleInterface) s.Deserialize(xml);
+            
+            // Comment for 'Something' is just for demonstration
             var expectedXmlPart = 
                 $@"
-  <Id>{original.Id}</Id>
-  <Name>{original.Name}</Name>
+  <C_Id>{original.Id}</C_Id>
+  <C_Name>{original.Name}</C_Name>
+  <!--Value of 'Something': '9876'-->
 </ISampleInterface>";
 
+            // Note: Prefix "C_" is evidence for custom serializer was invoked
+            // during serialization and deserialization
             Assert.That(xml, Does.Contain(expectedXmlPart), "Serialized XML");
             Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()), "Deserialized Object");
         }

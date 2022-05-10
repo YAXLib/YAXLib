@@ -1408,9 +1408,6 @@ namespace YAXLib
 
             if (baseElement == null) return _desObject;
 
-            if (_udtWrapper.HasCustomSerializer)
-                return InvokeCustomDeserializerFromElement(_udtWrapper.CustomSerializerType, baseElement, null, _udtWrapper, Options);
-
             var realTypeAttr = baseElement.Attribute_NamespaceSafe(Options.Namespace.Uri + Options.AttributeName.RealType,
                 _documentDefaultNamespace);
             if (realTypeAttr != null)
@@ -1422,6 +1419,10 @@ namespace YAXLib
                     _udtWrapper = TypeWrappersPool.Pool.GetTypeWrapper(_type, this);
                 }
             }
+
+            // HasCustomSerializer must be tested after analyzing any RealType attribute 
+            if (_udtWrapper.HasCustomSerializer)
+                return InvokeCustomDeserializerFromElement(_udtWrapper.CustomSerializerType, baseElement, null, _udtWrapper, Options);
 
             if (_type.IsGenericType && _type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
                 return DeserializeKeyValuePair(baseElement);
