@@ -736,31 +736,24 @@ namespace YAXLib
         }
 
         /// <summary>
-        ///     Test whether the <see cref="MemberInfo"/> parameter is part of a .NET module.
+        ///     Test whether the <see cref="MemberInfo"/> parameter is part of a .NET assembly.
         /// </summary>
         /// <remarks>
         ///     Might require modifications when supporting future versions of .NET.
         /// </remarks>
         /// <param name="memberInfo"></param>
-        /// <returns>Returns <see langword="true"/>, if the <see cref="MemberInfo"/> parameter is part of a .NET module, else <see langword="false"/>.</returns>
-        /// <summary>
-        ///     Test whether the <see cref="MemberInfo"/> parameter is part of a .NET module.
-        /// </summary>
-        /// <remarks>
-        ///     Might require modifications when supporting future versions of .NET.
-        /// </remarks>
-        /// <returns>Returns <see langword="true"/>, if the <see cref="MemberInfo"/> parameter is part of a .NET module, else <see langword="false"/>.</returns>
+        /// <returns>Returns <see langword="true"/>, if the <see cref="MemberInfo"/> parameter is part of a .NET assembly, else <see langword="false"/>.</returns>
         public static bool IsPartOfNetFx(MemberInfo memberInfo)
         {
-            var moduleName = memberInfo.Module.Name;
+            var assemblyName = memberInfo.DeclaringType.Assembly.GetName().Name;
 #if NETSTANDARD
-            return moduleName.StartsWith("System.", StringComparison.OrdinalIgnoreCase) ||
-                   moduleName.StartsWith("mscorlib.", StringComparison.OrdinalIgnoreCase) ||
-                   moduleName.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase);
+            return assemblyName.StartsWith("System.", StringComparison.OrdinalIgnoreCase) ||
+                   assemblyName.StartsWith("mscorlib.", StringComparison.OrdinalIgnoreCase) ||
+                   assemblyName.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase);
 #else
-            return moduleName.Equals("mscorlib.dll", StringComparison.OrdinalIgnoreCase)
-                   || moduleName.Equals("System.dll", StringComparison.OrdinalIgnoreCase)
-                   || moduleName.Equals("System.Core.dll", StringComparison.OrdinalIgnoreCase);
+            return assemblyName.Equals("mscorlib", StringComparison.OrdinalIgnoreCase)
+                   || assemblyName.Equals("System", StringComparison.OrdinalIgnoreCase)
+                   || assemblyName.Equals("System.Core", StringComparison.OrdinalIgnoreCase);
 #endif
         }
 
