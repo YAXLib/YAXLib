@@ -5,7 +5,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -1550,6 +1549,7 @@ namespace YAXLib
                     var canContinue = false;
                     var elem = XMLUtils.FindElement(baseElement, serializationLocation,
                         member.Alias.OverrideNsIfEmpty(TypeNamespace));
+
                     if (elem == null) // such element is not found
                     {
                         if ((member.IsTreatedAsCollection || member.IsTreatedAsDictionary) &&
@@ -1585,6 +1585,15 @@ namespace YAXLib
                                 }
                             }
                         }
+                        else if (_udtWrapper.IsNotAllowedNullObjectSerialization && member.DefaultValue is null)
+                        {
+                            // Any missing elements are allowed for deserialization:
+                            // * Don't set a value - uses default or initial value
+                            // * Ignore member.TreatErrorsAs
+                            // * Don't register YAXElementMissingException
+                            // * Skip Phase 2
+                            continue;
+                        }
 
                         if (!canContinue)
                             OnExceptionOccurred(new YAXElementMissingException(
@@ -1602,7 +1611,7 @@ namespace YAXLib
                     xelemValue = elem;
                 }
 
-                // Phase2: Now try to retrieve elemValue's value, based on values gathered in xelemValue, xattrValue, and elemValue
+                // Phase 2: Now try to retrieve elemValue's value, based on values gathered in xelemValue, xattrValue, and elemValue
                 if (_exceptionOccurredDuringMemberDeserialization)
                 {
                     if (_desObject == null
