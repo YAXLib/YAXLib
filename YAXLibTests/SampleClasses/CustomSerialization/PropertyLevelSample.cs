@@ -5,14 +5,14 @@ using YAXLib.Attributes;
 
 namespace YAXLibTests.SampleClasses.CustomSerialization
 {
-    public class FieldLevelSample
+    public class PropertyLevelSample
     {
-        public string Id;
-
-        public string Title;
-
-        [YAXCustomSerializer(typeof(FieldLevelSerializer))]
-        public string Body;
+        public string Id { get; set; }
+        
+        public string Title { get; set; }
+        
+        [YAXCustomSerializer(typeof(PropertyLevelSerializer))]
+        public string Body { get; set; }
 
         public override string ToString()
         {
