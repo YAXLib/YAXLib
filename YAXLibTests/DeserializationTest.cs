@@ -3,6 +3,7 @@
 
 using System;
 using System.Globalization;
+using FluentAssertions;
 using NUnit.Framework;
 using YAXLib;
 using YAXLib.Enums;
@@ -50,8 +51,12 @@ namespace YAXLibTests
 
         private static YAXSerializer SerializeDeserialize(object obj, out object gottonObject)
         {
-            var serializer = new YAXSerializer(obj.GetType(), YAXExceptionHandlingPolicies.DoNotThrow,
-                YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer(obj.GetType(),
+                new SerializerOptions {
+                    SerializationOptions = YAXSerializationOptions.SerializeNullObjects,
+                    ExceptionBehavior = YAXExceptionTypes.Warning,
+                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow
+                });
             var serResult = serializer.Serialize(obj);
             gottonObject = serializer.Deserialize(serResult);
             return serializer;
@@ -371,7 +376,7 @@ namespace YAXLibTests
         public void DesSerializationOptionsSampleTest()
         {
             object obj = SerializationOptionsSample.GetSampleInstance();
-            PerformTest(obj);
+            PerformTest(obj); // uses YAXSerializationOptions.SerializeNullObjects
 
             var input1 =
                 @"<SerializationOptionsSample>
@@ -379,6 +384,8 @@ namespace YAXLibTests
   <!-- if the serialization options of the serializer is changed -->
   <ObjectWithOptionsSet>
     <StrNotNull>SomeString</StrNotNull>
+    <!-- StrNull : no element -->
+    <!-- SomeValueType : no element -->
   </ObjectWithOptionsSet>
   <!-- Str2Null must be serialized when it is null, even -->
   <!-- if the serialization options of the serializer is changed -->
@@ -397,11 +404,11 @@ namespace YAXLibTests
             var serializer = new YAXSerializer(typeof(SerializationOptionsSample),
                 YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning,
                 YAXSerializationOptions.DontSerializeNullObjects);
-            var gottonObject = serializer.Deserialize(input1) as SerializationOptionsSample;
+            var gottonObject = (SerializationOptionsSample) serializer.Deserialize(input1);
 
-            Assert.That(123, Is.EqualTo(gottonObject.ObjectWithOptionsSet.SomeValueType));
-            Assert.That(gottonObject.ObjectWithOptionsSet.StrNull, Is.Null);
-            Assert.That(1, Is.EqualTo(serializer.ParsingErrors.Count));
+            Assert.That(gottonObject.ObjectWithOptionsSet.SomeValueType, Is.EqualTo(123), "Missing element: DefaultValue from attribute should be used");
+            Assert.That(gottonObject.ObjectWithOptionsSet.StrNull, Is.Null, "Empty element: Deserializes as null");
+            Assert.That(serializer.ParsingErrors.Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -724,6 +731,41 @@ namespace YAXLibTests
             Assert.That(deserialzedInstance.Items[0], Is.InstanceOf<DerivedItem>());
             Assert.That(deserialzedInstance.Items[0].Data, Is.EqualTo("Some Data"));
             Assert.That(deserialzedInstance.Items.Length, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void Global_Option_DontSerializeNullObjects_Should_Serialize_And_Deserialize()
+        {
+            var serializer = new YAXSerializer(typeof(SerializationOptionsSample.MissingElementsSample1),
+                new SerializerOptions { SerializationOptions = YAXSerializationOptions.DontSerializeNullObjects });
+            
+            var customer = new SerializationOptionsSample.MissingElementsSample1 { Id = 1234 }; // leave both nullable properties null
+            var xml = serializer.Serialize(customer);
+            var deserializedCustomer = serializer.Deserialize(xml) as SerializationOptionsSample.MissingElementsSample1;
+
+            xml.Should().NotContain("cust_name", "null string? should not be serialized");
+            xml.Should().NotContain("option", "null int? should not be serialized");
+            deserializedCustomer.Should().BeEquivalentTo(customer, "Missing elements should deserialize with default values");
+        }
+
+        [Test]
+        public void Attribute_Option_DontSerializeNullObjects_Should_Serialize_And_Deserialize()
+        {
+            var serializer =
+                new YAXSerializer(typeof(SerializationOptionsSample.MissingElementsSample2), 
+                    new SerializerOptions
+                    {
+                        // will be overridden by YAXSerializableType attribute in this test
+                        SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+                    });
+            
+            var customer = new SerializationOptionsSample.MissingElementsSample2 { Id = 1234 }; // leave both nullable properties null
+            var xml = serializer.Serialize(customer);
+            var deserializedCustomer = serializer.Deserialize(xml) as SerializationOptionsSample.MissingElementsSample2;
+
+            xml.Should().NotContain("cust_name", "null string? should not be serialized");
+            xml.Should().NotContain("option", "null int? should not be serialized");
+            deserializedCustomer.Should().BeEquivalentTo(customer, "Missing elements should deserialize with default values");
         }
     }
 }
