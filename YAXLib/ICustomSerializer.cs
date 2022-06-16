@@ -21,7 +21,8 @@ namespace YAXLib
         /// </summary>
         /// <param name="objectToSerialize">The object to serialize.</param>
         /// <param name="attrToFill">The XML attribute to fill.</param>
-        void SerializeToAttribute(T objectToSerialize, XAttribute attrToFill);
+        /// <param name="serializationContext">Contains information about member/type that specified the custom serializer</param>
+        void SerializeToAttribute(T objectToSerialize, XAttribute attrToFill, ISerializationContext serializationContext);
 
 
         /// <summary>
@@ -30,23 +31,26 @@ namespace YAXLib
         /// </summary>
         /// <param name="objectToSerialize">The object to serialize.</param>
         /// <param name="elemToFill">The XML element to fill.</param>
-        void SerializeToElement(T objectToSerialize, XElement elemToFill);
+        /// <param name="serializationContext">Contains information about member/type that specified the custom serializer</param>
+        void SerializeToElement(T objectToSerialize, XElement elemToFill, ISerializationContext serializationContext);
 
         /// <summary>
         ///     Serializes the given object to an string to be used as a value for an
         ///     XML element.
         /// </summary>
         /// <param name="objectToSerialize">The object to serialize.</param>
+        /// <param name="serializationContext">type that specified the custom serializer></param>
         /// <returns></returns>
-        string SerializeToValue(T objectToSerialize);
+        string SerializeToValue(T objectToSerialize, ISerializationContext serializationContext);
 
         /// <summary>
         ///     Deserializes from an xml attribute, and returns the retrieved value.
         ///     You will normally need to use XAttribute.Value property only.
         /// </summary>
         /// <param name="attrib">The attribute to deserialize.</param>
+        /// <param name="serializationContext">Contains information about member/type that specified the custom serializer</param>
         /// <returns></returns>
-        T DeserializeFromAttribute(XAttribute attrib);
+        T DeserializeFromAttribute(XAttribute attrib, ISerializationContext serializationContext);
 
         /// <summary>
         ///     Deserializes from an xml element, and returns the retrieved value.
@@ -54,14 +58,16 @@ namespace YAXLib
         ///     XElement.Attributes(), and XElement.Elements() only.
         /// </summary>
         /// <param name="element">The element to deserialize.</param>
+        /// <param name="serializationContext"></param>
         /// <returns></returns>
-        T DeserializeFromElement(XElement element);
+        T DeserializeFromElement(XElement element, ISerializationContext serializationContext);
 
         /// <summary>
         ///     Deserializes from a string value which has been serialized as the content of an element
         /// </summary>
         /// <param name="value">The string value to deserialize.</param>
+        /// <param name="serializationContext">Contains information about member/type that specified the custom serializer</param>
         /// <returns></returns>
-        T DeserializeFromValue(string value);
+        T DeserializeFromValue(string value, ISerializationContext serializationContext);
     }
 }
