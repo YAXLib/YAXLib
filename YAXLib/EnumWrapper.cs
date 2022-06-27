@@ -31,7 +31,7 @@ namespace YAXLib
         public EnumWrapper(Type t)
         {
             if (!t.IsEnum)
-                throw new ArithmeticException();
+                throw new ArgumentException($"The type of '{nameof(t)}' is not an Enum", nameof(t));
 
             _enumType = t;
 

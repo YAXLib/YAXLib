@@ -9,10 +9,8 @@ namespace YAXLib.Attributes
     ///     Specifies the order upon which a field or property is serialized / deserialized.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class YAXElementOrder : YAXBaseAttribute
+    public class YAXElementOrder : YAXBaseAttribute, IYaxMemberLevelAttribute
     {
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="YAXElementOrder" /> class.
         /// </summary>
@@ -26,15 +24,15 @@ namespace YAXLib.Attributes
             Order = order;
         }
 
-        #endregion
-
-        #region Properties
-
         /// <summary>
         ///     The order used to prioritize serialization and deserialization.
         /// </summary>
         public int Order { get; }
 
-        #endregion
+        /// <inheritdoc/>
+        void IYaxMemberLevelAttribute.Setup(MemberWrapper memberWrapper)
+        {
+            memberWrapper.Order = Order;
+        }
     }
 }

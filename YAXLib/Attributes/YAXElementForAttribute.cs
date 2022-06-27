@@ -10,10 +10,8 @@ namespace YAXLib.Attributes
     ///     for another element. This attribute is applicable to fields and properties.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class YAXElementForAttribute : YAXBaseAttribute
+    public class YAXElementForAttribute : YAXBaseAttribute, IYaxMemberLevelAttribute
     {
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="YAXElementForAttribute" /> class.
         /// </summary>
@@ -23,16 +21,23 @@ namespace YAXLib.Attributes
             Parent = parent;
         }
 
-        #endregion
-
-        #region Properties
-
         /// <summary>
         ///     Gets or sets the element of which the property becomes a child element.
         /// </summary>
         /// <value>The element of which the property becomes a child element.</value>
         public string Parent { get; set; }
 
-        #endregion
+        /// <inheritdoc/>
+        void IYaxMemberLevelAttribute.Setup(MemberWrapper memberWrapper)
+        {
+            memberWrapper.IsSerializedAsElement = true;
+
+            StringUtils.ExtractPathAndAliasFromLocationString(Parent, out var path,
+                out var alias);
+
+            memberWrapper.SerializationLocation = path;
+            if (!string.IsNullOrEmpty(alias))
+                memberWrapper.Alias = StringUtils.RefineSingleElement(alias);
+        }
     }
 }

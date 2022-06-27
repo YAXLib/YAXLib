@@ -10,10 +10,16 @@ namespace YAXLib.Attributes
     ///     This attribute is applicable to fields and properties.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class YAXValueForClassAttribute : YAXBaseAttribute
+    public class YAXValueForClassAttribute : YAXBaseAttribute, IYaxMemberLevelAttribute
     {
-        #region Constructors
-
-        #endregion
+        /// <inheritdoc/>
+        void IYaxMemberLevelAttribute.Setup(MemberWrapper memberWrapper)
+        {
+            if (memberWrapper.IsAllowedToProcess())            
+            {
+                memberWrapper.IsSerializedAsValue = true;
+                memberWrapper.SerializationLocation = ".";
+            }
+        }
     }
 }
