@@ -24,7 +24,7 @@ namespace YAXLib
     ///     policy.
     ///     This class also supports serializing most of the collection classes such as the Dictionary generic class.
     /// </summary>
-    public class YAXSerializer
+    public class YAXSerializer : IYAXSerializer<object>
     {
         #region Fields
 
@@ -190,7 +190,7 @@ namespace YAXLib
         internal bool HasTypeNamespace => TypeNamespace.IsEmpty();
 
         /// <summary>
-        ///     Gets the <see cref="SerializationOption"/> settings
+        ///     Gets the <see cref="SerializerOptions"/> settings
         ///     to influence the process of serialization or de-serialization of <see cref="YAXSerializer"/>s.
         /// </summary>
         public SerializerOptions Options { get; }
