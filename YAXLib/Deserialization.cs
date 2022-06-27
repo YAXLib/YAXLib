@@ -209,7 +209,7 @@ internal class Deserialization
         else if (member.IsSerializedAsValue)
             desObj = InvokeCustomDeserializerFromValue(customSerializerType, deserializedValue, member, _ys.UdtWrapper, _ys);
         else
-            throw new Exception("unknown situation");
+            throw new YAXDeserializationException(null);
 
         try
         {

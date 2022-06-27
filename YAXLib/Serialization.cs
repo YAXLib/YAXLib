@@ -415,7 +415,6 @@ namespace YAXLib
                         alias = typeWrapper.Alias.LocalName;
                     }
 
-                    // TODO: see how namespace is handled in other parts of the code and do the same thing
                     elemToAdd.Name = XName.Get(alias, elemToAdd.Name.Namespace.NamespaceName);
                 }
                 else

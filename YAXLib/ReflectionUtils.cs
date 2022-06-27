@@ -81,14 +81,11 @@ namespace YAXLib
         public static int[] GetArrayDimensions(object ar)
         {
             var dims = Array.Empty<int>();
-            if (IsArray(ar.GetType()))
+            if (IsArray(ar.GetType()) && ar is Array arObj)
             {
-                if (ar is Array arObj)
-                {
-                    dims = new int[arObj.Rank];
-                    for (var i = 0; i < dims.Length; i++)
-                        dims[i] = arObj.GetLength(i);
-                }
+                dims = new int[arObj.Rank];
+                for (var i = 0; i < dims.Length; i++)
+                    dims[i] = arObj.GetLength(i);
             }
 
             return dims;
@@ -609,11 +606,12 @@ namespace YAXLib
             // is IFormattable
             // accept parameterless ToString
             // accept ctor of string
-            if (IsIFormattable(type) && !HasOneReadWriteProperty(type))
-                if (null != type.GetConstructor(new[] {typeof(string)}))
-                    if (null != type.GetMethod("ToString", Type.EmptyTypes) &&
-                        null != type.GetMethod("ToString", new[] {typeof(string)}))
-                        return true;
+            if (IsIFormattable(type)
+                && !HasOneReadWriteProperty(type)
+                && null != type.GetConstructor(new[] { typeof(string) })
+                && null != type.GetMethod("ToString", Type.EmptyTypes)
+                && null != type.GetMethod("ToString", new[] { typeof(string) }))
+                return true;
 
             return false;
         }
