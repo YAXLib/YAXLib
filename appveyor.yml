@@ -31,11 +31,6 @@ for:
           dotnet pack YAXLib --verbosity minimal --configuration release /p:IncludeSymbols=true /p:SymbolPackageFormat=snupkg /p:PackageOutputPath=../artifacts /p:ContinuousIntegrationBuild=true /p:Version=$version /p:FileVersion=$versionFile
     test_script:
       - dotnet test YAXLibTests
-      - nuget.exe install OpenCover -ExcludeVersion
-      - OpenCover\tools\OpenCover.Console.exe -register:appveyor -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:"test -f net6.0  -c debug YAXLibTests" -filter:"+[YAXLib]*" -excludebyattribute:*.ExcludeFromCodeCoverage* -hideskipped:All -output:coverage.xml -oldstyle
-      - "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%"
-      - pip install codecov
-      - codecov -f "coverage.xml"
     artifacts:
       - path: 'artifacts\*.nupkg'
       - path: 'artifacts\*.snupkg'
