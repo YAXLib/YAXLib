@@ -5,6 +5,8 @@ using System;
 using NUnit.Framework;
 using YAXLib;
 using YAXLib.Enums;
+using YAXLib.Options;
+using YAXLibTests.SampleClasses.Namespace;
 
 namespace YAXLibTests
 {
@@ -19,18 +21,22 @@ namespace YAXLibTests
         {
             try
             {
-                var ser = new YAXSerializer(typeof(double), YAXExceptionHandlingPolicies.ThrowErrorsOnly,
-                    YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+                var ser = new YAXSerializer<double>(new SerializerOptions {
+                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowErrorsOnly,
+                    ExceptionBehavior = YAXExceptionTypes.Warning,
+                    SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+                });
+
                 var d = 0.55;
                 var xml = ser.Serialize(d);
-                var deseredInstance = ser.Deserialize(xml);
-                Assert.AreEqual(d, deseredInstance);
+                var deserializedInstance = ser.Deserialize(xml);
+                Assert.AreEqual(d, deserializedInstance);
 
                 d = double.MaxValue;
                 xml = ser.Serialize(d);
-                deseredInstance = ser.Deserialize(xml);
+                deserializedInstance = ser.Deserialize(xml);
                 // Causes a System.OverflowException {"Value was either too large or too small for a Double."}
-                Assert.AreEqual(d, deseredInstance);
+                Assert.AreEqual(d, deserializedInstance);
             }
             catch (Exception ex)
             {
@@ -43,12 +49,15 @@ namespace YAXLibTests
         {
             try
             {
-                var ser = new YAXSerializer(typeof(double), YAXExceptionHandlingPolicies.ThrowErrorsOnly,
-                    YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+                var ser = new YAXSerializer<double>(new SerializerOptions {
+                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowErrorsOnly,
+                    ExceptionBehavior = YAXExceptionTypes.Warning,
+                    SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+                });
                 var d = double.MinValue;
                 var xml = ser.Serialize(d);
-                var deseredInstance = ser.Deserialize(xml);
-                Assert.AreEqual(d, deseredInstance);
+                var deserializedInstance = ser.Deserialize(xml);
+                Assert.AreEqual(d, deserializedInstance);
             }
             catch (Exception ex)
             {
@@ -61,12 +70,16 @@ namespace YAXLibTests
         {
             try
             {
-                var ser = new YAXSerializer(typeof(float), YAXExceptionHandlingPolicies.ThrowErrorsOnly,
-                    YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+                var ser = new YAXSerializer<float>(new SerializerOptions {
+                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowErrorsOnly,
+                    ExceptionBehavior = YAXExceptionTypes.Warning,
+                    SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+                });
+
                 var f = float.MaxValue;
                 var xml = ser.Serialize(f);
-                var deseredInstance = ser.Deserialize(xml);
-                Assert.AreEqual(f, deseredInstance);
+                var deserializedInstance = ser.Deserialize(xml);
+                Assert.AreEqual(f, deserializedInstance);
             }
             catch (Exception ex)
             {
@@ -79,16 +92,19 @@ namespace YAXLibTests
         {
             try
             {
-                var ser = new YAXSerializer(typeof(float), YAXExceptionHandlingPolicies.ThrowErrorsOnly,
-                    YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+                var ser = new YAXSerializer<float>(new SerializerOptions {
+                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowErrorsOnly,
+                    ExceptionBehavior = YAXExceptionTypes.Warning,
+                    SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+                });
                 var f = float.MinValue;
                 var xml = ser.Serialize(f);
-                var deseredInstance = ser.Deserialize(xml);
-                Assert.AreEqual(f, deseredInstance);
+                var deserializedInstance = ser.Deserialize(xml);
+                Assert.AreEqual(f, deserializedInstance);
             }
             catch (Exception ex)
             {
-                Assert.Fail("No exception should have been throwned, but received:" + Environment.NewLine + ex);
+                Assert.Fail("No exception should have been thrown, but received:" + Environment.NewLine + ex);
             }
         }
     }

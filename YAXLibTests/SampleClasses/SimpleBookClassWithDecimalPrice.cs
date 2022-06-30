@@ -6,7 +6,7 @@ using YAXLib.Attributes;
 
 namespace YAXLibTests.SampleClasses
 {
-    [YAXComment("This example demonstrates serailizing a very simple class")]
+    [YAXComment("This example demonstrates serializing a very simple class")]
     public class SimpleBookClassWithDecimalPrice
     {
         public string Title { get; set; }
