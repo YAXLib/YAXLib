@@ -125,7 +125,7 @@ namespace YAXLib
 
             InitInstance();
 
-            TreatErrorsAs = callerSerializer?.DefaultExceptionType ?? YAXExceptionTypes.Error;
+            TreatErrorsAs = callerSerializer?.Options.ExceptionBehavior ?? YAXExceptionTypes.Error;
 
             // discover YAXCustomSerializerAttributes earlier, because some other attributes depend on it
             var attrsToProcessEarlier = new HashSet<Type>
