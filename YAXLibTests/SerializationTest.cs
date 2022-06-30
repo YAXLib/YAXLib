@@ -29,10 +29,9 @@ namespace YAXLibTests
         [Test]
         public void BasicTypeSerializationTest()
         {
-            var objs = new object[] {123, 654.321, "SomeString", 24234L};
-            var types = new[] {typeof(int), typeof(double), typeof(string), typeof(long)};
-            var serializedResults = new[]
-            {
+            var objs = new object[] { 123, 654.321, "SomeString", 24234L };
+            var types = new[] { typeof(int), typeof(double), typeof(string), typeof(long) };
+            var serializedResults = new[] {
                 "<Int32>123</Int32>", "<Double>654.321</Double>", "<String>SomeString</String>", "<Int64>24234</Int64>"
             };
 
@@ -183,10 +182,11 @@ namespace YAXLibTests
             var serResult1 = serializer.Serialize(CultureSample.GetSampleInstance());
             serializer.Options.Culture = CultureInfo.InvariantCulture;
             var serResult2 = serializer.Serialize(CultureSample.GetSampleInstance());
-            
-            serResult1.Should().NotBeEquivalentTo(serResult2, because:"cultures with different number formats are used");
+
+            serResult1.Should()
+                .NotBeEquivalentTo(serResult2, because: "cultures with different number formats are used");
         }
-        
+
         [TestCase("fr-FR", "fa-IR")]
         [TestCase("", "fr-FR")]
         [TestCase("fr-FR", "en-US")]
@@ -209,7 +209,7 @@ namespace YAXLibTests
   <Dec1>{instance.Dec1.ToString(CultureInfo.InvariantCulture)}</Dec1>
   <Date1>{instance.Date1.ToString(CultureInfo.InvariantCulture)}</Date1>
 </CultureSample>";
-            
+
             CultureInfo.CurrentCulture = new CultureInfo(cultName1);
             var serializer = new YAXSerializer(typeof(CultureSample));
             var serResult = serializer.Serialize(CultureSample.GetSampleInstance());
@@ -217,9 +217,10 @@ namespace YAXLibTests
             CultureInfo.CurrentCulture = new CultureInfo(cultName2);
             serializer = new YAXSerializer(typeof(CultureSample));
             var desResult = serializer.Deserialize(serResult) as CultureSample;
-            
+
             serResult.Should().BeEquivalentTo(expected, because: "this is our result XML literal");
-            desResult.Should().BeEquivalentTo(CultureSample.GetSampleInstance(), because: "this is the original object");
+            desResult.Should()
+                .BeEquivalentTo(CultureSample.GetSampleInstance(), because: "this is the original object");
         }
 
         [Test]
@@ -333,7 +334,7 @@ namespace YAXLibTests
         public void DictionaryWithNullValue()
         {
             const string theKey = "TheKey";
-            var d = new Dictionary<string, object> {{theKey, null}};
+            var d = new Dictionary<string, object> { { theKey, null } };
             var serializer = new YAXSerializer<Dictionary<string, object>>(new SerializerOptions {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
@@ -352,7 +353,7 @@ namespace YAXLibTests
         public void DictionaryWithNullValueShouldNotCrash()
         {
             const string theKey = "TheKey";
-            var d = new Dictionary<string, object> {{theKey, null}};
+            var d = new Dictionary<string, object> { { theKey, null } };
             var serializer = new YAXSerializer<Dictionary<string, object>>(new SerializerOptions {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
@@ -536,7 +537,7 @@ namespace YAXLibTests
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
             });
-            
+
             var got = serializer.Serialize(FormattingExample.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
@@ -564,8 +565,10 @@ namespace YAXLibTests
 
         [TestCase("mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")] // NETFRAMEWORK2.x
         [TestCase("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")] // NETFRAMEWORK4.x
-        [TestCase("System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NETSTANDARD
-        [TestCase("System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NET5.0
+        [TestCase(
+            "System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NETSTANDARD
+        [TestCase(
+            "System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NET5.0
         public void MoreComplexExample_CrossFramework_Test(string coreLibName)
         {
             var result =
@@ -852,7 +855,7 @@ namespace YAXLibTests
                 });
 
             var original = NullableSample2.GetSampleInstance();
-            
+
             var got = serializer.Serialize(original);
 
             // Assert
@@ -1005,7 +1008,7 @@ namespace YAXLibTests
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
             });
-            
+
             var got = serializer.Serialize(NamesExample.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
@@ -1090,7 +1093,7 @@ namespace YAXLibTests
             var xml1 = "<TimeSpan>" + timeSpan + "</TimeSpan>";
             var xml2 = "<TimeSpan><Ticks>" + timeSpan.Ticks + "</Ticks></TimeSpan>";
             var serializer = new YAXSerializer(typeof(TimeSpan));
-            
+
             var deserialized1 = serializer.Deserialize(xml1);
             var deserialized2 = serializer.Deserialize(xml2);
 
@@ -1104,7 +1107,7 @@ namespace YAXLibTests
             var xml1 = "<TimeSpan>no-time-span</TimeSpan>";
             var xml2 = "<TimeSpan><Ticks>not-a-long</Ticks></TimeSpan>";
             var serializer = new YAXSerializer(typeof(TimeSpan));
-            
+
             Assert.That(code: () => serializer.Deserialize(xml1), Throws.TypeOf<YAXBadlyFormedInput>());
             Assert.That(code: () => serializer.Deserialize(xml2), Throws.TypeOf<YAXBadlyFormedInput>());
         }
@@ -2039,11 +2042,13 @@ namespace YAXLibTests
 
         [TestCase("mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")] // NETFRAMEWORK2.x
         [TestCase("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")] // NETFRAMEWORK4.x
-        [TestCase("System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NETSTANDARD
-        [TestCase("System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NET5.0
+        [TestCase(
+            "System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NETSTANDARD
+        [TestCase(
+            "System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NET5.0
         public void PolymorphicSerializationThroughList_CrossFramework_Test(string coreLibName)
         {
-            var lst = new List<int> {1, 2, 3};
+            var lst = new List<int> { 1, 2, 3 };
             var ser = new YAXSerializer(typeof(object));
             var xmlResult = ser.Serialize(lst);
 
@@ -2064,11 +2069,14 @@ namespace YAXLibTests
 
         [TestCase("mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")] // NETFRAMEWORK2.x
         [TestCase("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")] // NETFRAMEWORK4.x
-        [TestCase("System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NETSTANDARD
-        [TestCase("System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NET5.0
-        public void PolymorphicSerializationThroughListWhichMayContainYaxlibNamespace_CrossFramework_Test(string coreLibName)
+        [TestCase(
+            "System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NETSTANDARD
+        [TestCase(
+            "System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")] // NET5.0
+        public void PolymorphicSerializationThroughListWhichMayContainYaxlibNamespace_CrossFramework_Test(
+            string coreLibName)
         {
-            var lst = new List<object> {1, 2, 3};
+            var lst = new List<object> { 1, 2, 3 };
             var ser = new YAXSerializer(typeof(object));
             var xmlResult = ser.Serialize(lst);
 
@@ -2092,8 +2100,7 @@ namespace YAXLibTests
         {
             const string expectedResult = @"<dashed-sample dashed-name=""Name"" />";
 
-            var sample = new DashedSample
-            {
+            var sample = new DashedSample {
                 DashedName = "Name"
             };
 
@@ -2441,7 +2448,7 @@ namespace YAXLibTests
                     SerializationOptions = YAXSerializationOptions.ThrowUponSerializingCyclingReferences
                 });
 
-                var result = ser.Serialize(DirectSelfReferringObject.GetSampleInstanceWithCycle());
+                _ = ser.Serialize(DirectSelfReferringObject.GetSampleInstanceWithCycle());
             });
         }
 
@@ -2471,7 +2478,7 @@ namespace YAXLibTests
                 var ser = new YAXSerializer<IndirectSelfReferringObject>(new SerializerOptions {
                     SerializationOptions = YAXSerializationOptions.ThrowUponSerializingCyclingReferences
                 });
-                var result = ser.Serialize(IndirectSelfReferringObject.GetSampleInstanceWithLoop());
+                _ = ser.Serialize(IndirectSelfReferringObject.GetSampleInstanceWithLoop());
             });
         }
 
@@ -2509,7 +2516,7 @@ namespace YAXLibTests
                     SerializationOptions = YAXSerializationOptions.ThrowUponSerializingCyclingReferences
                 });
 
-                var result = ser.Serialize(IndirectSelfReferringObject.GetSampleInstanceWithLoop());
+                _ = ser.Serialize(IndirectSelfReferringObject.GetSampleInstanceWithLoop());
             });
         }
 
@@ -2741,6 +2748,6 @@ namespace YAXLibTests
             const string expectedResult = "<Object />";
 
             Assert.That(result, Is.EqualTo(expectedResult));
-        }        
+        }
     }
 }

@@ -66,12 +66,12 @@ namespace DemoApplication
                              })
                 .Select(pair =>
                         {
-                            string sortKey = pair.Type.Name;
+                            var sortKey = pair.Type.Name;
                             var attr = pair.Attr;
-                            if (attr != null && !String.IsNullOrEmpty(attr.SortKey))
+                            if (attr != null && !string.IsNullOrEmpty(attr.SortKey))
                                 sortKey = attr.SortKey;
-                            string sampleInstanceMethod = "GetSampleInstance";
-                            if (attr != null && !String.IsNullOrEmpty(attr.GetSampleInstanceMethodName))
+                            var sampleInstanceMethod = "GetSampleInstance";
+                            if (attr != null && !string.IsNullOrEmpty(attr.GetSampleInstanceMethodName))
                                 sampleInstanceMethod = attr.GetSampleInstanceMethodName;
 
                             return
@@ -85,7 +85,7 @@ namespace DemoApplication
                 {
                     var type = tuple.Type;
                     var method = type.GetMethod(tuple.SampleInstanceMethod, new Type[0]);
-                    var instance = method.Invoke(null, null);
+                    var instance = method?.Invoke(null, null);
                     lstSampleClasses.Items.Add(new ClassInfoListItem(type, instance));
                 }
                 catch
@@ -97,7 +97,7 @@ namespace DemoApplication
             if (sb.Length > 0)
             {
                 MessageBox.Show("Please provide a parameterless public static method called \"GetSampleInstance\" for the following classes:"
-                    + Environment.NewLine + sb.ToString());
+                    + Environment.NewLine + sb);
             }
         }
 
@@ -126,11 +126,11 @@ namespace DemoApplication
             OnDeserialize(true);
         }
 
-         private void OnDeserialize(bool openFromFile)
+        private void OnDeserialize(bool openFromFile)
         {
             rtbParsingErrors.Text = "";
-            object selItem = lstSampleClasses.SelectedItem;
-            if (selItem == null || !(selItem is ClassInfoListItem))
+            var selItem = lstSampleClasses.SelectedItem;
+            if (selItem is not ClassInfoListItem info)
                 return;
 
             string fileName = null;
@@ -141,7 +141,6 @@ namespace DemoApplication
                 fileName = openFileDialog1.FileName;
             }
 
-            var info = selItem as ClassInfoListItem;
             var defaultExType = GetSelectedDefaultExceptionType();
             var exPolicy = GetSelectedExceptionHandlingPolicy();
             var serOption = GetSelectedSerializationOption();
@@ -193,8 +192,8 @@ namespace DemoApplication
 
         private void OnSerialize(bool saveToFile)
         {
-            object selItem = lstSampleClasses.SelectedItem;
-            if (selItem == null || !(selItem is ClassInfoListItem))
+            var selItem = lstSampleClasses.SelectedItem;
+            if (selItem is not ClassInfoListItem info)
                 return;
 
             string fileName = null;
@@ -205,7 +204,6 @@ namespace DemoApplication
                 fileName = saveFileDialog1.FileName;
             }
 
-            var info = selItem as ClassInfoListItem;
             var defaultExType = GetSelectedDefaultExceptionType();
             var exPolicy = GetSelectedExceptionHandlingPolicy();
             var serOption = GetSelectedSerializationOption();
