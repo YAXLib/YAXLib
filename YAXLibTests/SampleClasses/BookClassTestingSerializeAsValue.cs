@@ -17,7 +17,7 @@ namespace YAXLibTests.SampleClasses
     }
 
     [ShowInDemoApplication]
-    public class BookClassTesgingSerializeAsValue
+    public class BookClassTestingSerializeAsValue
     {
         [YAXValueFor(".")] public double Price { get; set; }
 
@@ -35,7 +35,7 @@ namespace YAXLibTests.SampleClasses
             return GeneralToStringProvider.GeneralToString(this);
         }
 
-        public static BookClassTesgingSerializeAsValue GetSampleInstance()
+        public static BookClassTestingSerializeAsValue GetSampleInstance()
         {
             var theCollection = new List<SomeCollectionItem>();
 
@@ -43,7 +43,7 @@ namespace YAXLibTests.SampleClasses
             theCollection.Add(new SomeCollectionItem {Value = "value2", SomeElement = "elem2"});
             theCollection.Add(new SomeCollectionItem {Value = "value3", SomeElement = "elem3"});
 
-            return new BookClassTesgingSerializeAsValue
+            return new BookClassTestingSerializeAsValue
             {
                 Author = "Tom Archer & Andrew Whitechapel",
                 PublishYear = 2002,

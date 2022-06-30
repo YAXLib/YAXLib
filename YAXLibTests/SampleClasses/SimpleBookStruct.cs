@@ -7,7 +7,7 @@ using YAXLib.Attributes;
 namespace YAXLibTests.SampleClasses
 {
     [ShowInDemoApplication(SortKey = "002")]
-    [YAXComment("This example demonstrates serailizing a very simple struct")]
+    [YAXComment("This example demonstrates serializing a very simple struct")]
     public struct BookStruct
     {
         public string Title { get; set; }

@@ -8,7 +8,7 @@ using YAXLib.Attributes;
 namespace YAXLibTests.SampleClasses
 {
     [ShowInDemoApplication(SortKey = "003")]
-    [YAXComment("This example demonstrates serailizing a very simple class, but with partial priority ordering.")]
+    [YAXComment("This example demonstrates serializing a very simple class, but with partial priority ordering.")]
     public class BookClassWithOrdering
     {
         private string _author;

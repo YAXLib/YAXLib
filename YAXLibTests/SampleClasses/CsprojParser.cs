@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using YAXLib;
 using YAXLib.Attributes;
 using YAXLib.Enums;
+using YAXLib.Options;
 
 namespace YAXLibTests.SampleClasses
 {
@@ -12,10 +13,11 @@ namespace YAXLibTests.SampleClasses
     {
         public static ProjectBuildDefinition Parse(string xml)
         {
-            var yaxSer = new YAXSerializer(typeof(ProjectBuildDefinition),
-                YAXExceptionHandlingPolicies.DoNotThrow,
-                YAXExceptionTypes.Ignore,
-                YAXSerializationOptions.DontSerializeNullObjects);
+            var yaxSer = new YAXSerializer<ProjectBuildDefinition>(new SerializerOptions {
+                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
+                ExceptionBehavior = YAXExceptionTypes.Ignore,
+                SerializationOptions = YAXSerializationOptions.DontSerializeNullObjects
+            });
 
             return yaxSer.Deserialize(xml) as ProjectBuildDefinition;
         }
@@ -24,10 +26,11 @@ namespace YAXLibTests.SampleClasses
         {
             var project = Parse(xml);
 
-            var yaxSer = new YAXSerializer(typeof(ProjectBuildDefinition),
-                YAXExceptionHandlingPolicies.DoNotThrow,
-                YAXExceptionTypes.Ignore,
-                YAXSerializationOptions.DontSerializeNullObjects);
+            var yaxSer = new YAXSerializer<ProjectBuildDefinition>(new SerializerOptions {
+                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
+                ExceptionBehavior = YAXExceptionTypes.Ignore,
+                SerializationOptions = YAXSerializationOptions.DontSerializeNullObjects
+            });
 
             return yaxSer.Serialize(project);
         }

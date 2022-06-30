@@ -1,12 +1,7 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using YAXLib;
 using YAXLibTests.SampleClasses;
@@ -26,7 +21,7 @@ namespace YAXLibTests
         public void GenericSerializationTest()
         {
             const string result =
-                @"<!-- This example demonstrates serailizing a very simple class -->
+                @"<!-- This example demonstrates serializing a very simple class -->
 <Book>
   <Title>Inside C#</Title>
   <Author>Tom Archer &amp; Andrew Whitechapel</Author>
@@ -42,7 +37,7 @@ namespace YAXLibTests
         public void GenericDeserializationTest()
         {
             const string xml =
-                @"<!-- This example demonstrates serailizing a very simple class -->
+                @"
 <Book>
   <Title>Inside C#</Title>
   <Author>Tom Archer &amp; Andrew Whitechapel</Author>

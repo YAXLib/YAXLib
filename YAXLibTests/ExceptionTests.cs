@@ -7,6 +7,7 @@ using NUnit.Framework;
 using YAXLib;
 using YAXLib.Enums;
 using YAXLib.Exceptions;
+using YAXLib.Options;
 using YAXLibTests.SampleClasses;
 
 namespace YAXLibTests
@@ -18,8 +19,10 @@ namespace YAXLibTests
         {
             var ex = Assert.Throws<YAXAttributeAlreadyExistsException>(() =>
             {
-                var serializer = new YAXSerializer(typeof(ClassWithDuplicateYaxAttribute),
-                    YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error);
+                var serializer = new YAXSerializer<ClassWithDuplicateYaxAttribute>(new SerializerOptions {
+                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
+                    ExceptionBehavior = YAXExceptionTypes.Error
+                });
                 serializer.Serialize(ClassWithDuplicateYaxAttribute.GetSampleInstance());
             });
 
@@ -40,8 +43,10 @@ namespace YAXLibTests
 
             var ex = Assert.Throws<YAXBadlyFormedXML>(() =>
             {
-                var serializer = new YAXSerializer(typeof(Book), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
-                    YAXExceptionTypes.Error);
+                var serializer = new YAXSerializer<Book>(new SerializerOptions {
+                    ExceptionBehavior = YAXExceptionTypes.Error,
+                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors
+                });
                 serializer.Deserialize(badXml);
             });
 
@@ -67,8 +72,11 @@ namespace YAXLibTests
 
             var ex = Assert.Throws<YAXBadlyFormedInput>(() =>
             {
-                var serializer = new YAXSerializer(typeof(Book), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
-                    YAXExceptionTypes.Error, YAXSerializationOptions.DisplayLineInfoInExceptions);
+                var serializer = new YAXSerializer<Book>(new SerializerOptions {
+                    ExceptionBehavior = YAXExceptionTypes.Error,
+                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
+                    SerializationOptions = YAXSerializationOptions.DisplayLineInfoInExceptions
+                });
                 serializer.Deserialize(bookXml);
             });
             Assert.True(ex.HasLineInfo);
@@ -91,8 +99,10 @@ namespace YAXLibTests
 
             var ex = Assert.Throws<YAXBadlyFormedInput>(() =>
             {
-                var serializer = new YAXSerializer(typeof(Book), YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
-                    YAXExceptionTypes.Error);
+                var serializer = new YAXSerializer<Book>(new SerializerOptions {
+                    ExceptionBehavior = YAXExceptionTypes.Error,
+                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors
+                });
                 serializer.Deserialize(bookXml);
             });
             Assert.False(ex.HasLineInfo);
@@ -106,7 +116,9 @@ namespace YAXLibTests
         {
             var ex = Assert.Throws<YAXObjectTypeMismatch>(() =>
             {
-                var serializer = new YAXSerializer(typeof(Book), YAXExceptionHandlingPolicies.ThrowErrorsOnly);
+                var serializer = new YAXSerializer(typeof(Book), new SerializerOptions {
+                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowErrorsOnly
+                });
                 serializer.Serialize(new ClassWithDuplicateYaxAttribute());
             });
 
@@ -130,9 +142,11 @@ namespace YAXLibTests
 
             var ex = Assert.Throws<YAXElementValueMissingException>(() =>
             {
-                var serializer = new YAXSerializer(typeof(BookClassTesgingSerializeAsValue),
-                    YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error,
-                    YAXSerializationOptions.DisplayLineInfoInExceptions);
+                var serializer = new YAXSerializer<BookClassTestingSerializeAsValue>(new SerializerOptions {
+                    ExceptionBehavior = YAXExceptionTypes.Error,
+                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
+                    SerializationOptions = YAXSerializationOptions.DisplayLineInfoInExceptions
+                });
                 serializer.Deserialize(bookXml);
             });
             Assert.True(ex.HasLineInfo);
@@ -154,9 +168,11 @@ namespace YAXLibTests
 
             var ex = Assert.Throws<YAXElementMissingException>(() =>
             {
-                var serializer = new YAXSerializer(typeof(CollectionSeriallyAsAttribute),
-                    YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error,
-                    YAXSerializationOptions.DisplayLineInfoInExceptions);
+                var serializer = new YAXSerializer<CollectionSeriallyAsAttribute>(new SerializerOptions {
+                    ExceptionBehavior = YAXExceptionTypes.Error,
+                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
+                    SerializationOptions = YAXSerializationOptions.DisplayLineInfoInExceptions
+                });
                 serializer.Deserialize(collectionXml);
             });
             Assert.True(ex.HasLineInfo);
@@ -176,9 +192,11 @@ namespace YAXLibTests
 
             var ex = Assert.Throws<YAXDefaultValueCannotBeAssigned>(() =>
             {
-                var serializer = new YAXSerializer(typeof(BookWithBadDefaultValue),
-                    YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error,
-                    YAXSerializationOptions.DisplayLineInfoInExceptions);
+                var serializer = new YAXSerializer<BookWithBadDefaultValue>(new SerializerOptions {
+                    ExceptionBehavior = YAXExceptionTypes.Error,
+                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
+                    SerializationOptions = YAXSerializationOptions.DisplayLineInfoInExceptions
+                });
                 serializer.Deserialize(bookXml);
             });
             Assert.True(ex.HasLineInfo);
@@ -225,17 +243,6 @@ namespace YAXLibTests
             var ex = Assert.Throws<YAXElementValueMissingException>(() =>
             {
                 throw new YAXElementValueMissingException(testName);
-            });
-            StringAssert.Contains(testName, ex.Message);
-        }
-
-        [Test]
-        public void YAXElementValueAlreadyExistsExceptionLegacyConstructor()
-        {
-            var testName = "Test";
-            var ex = Assert.Throws<YAXElementValueAlreadyExistsException>(() =>
-            {
-                throw new YAXElementValueAlreadyExistsException(testName);
             });
             StringAssert.Contains(testName, ex.Message);
         }
@@ -304,19 +311,6 @@ namespace YAXLibTests
             var testName = "Test";
             var ex = Assert.Throws<YAXBadlyFormedXML>(() => { throw new YAXBadlyFormedXML(new Exception(testName)); });
             StringAssert.Contains(testName, ex.Message);
-        }
-
-        [Test]
-        public void YAXInvalidFormatProvidedLegacyConstructor()
-        {
-            var testInput = "BadInput";
-            var testType = typeof(string);
-            var ex = Assert.Throws<YAXInvalidFormatProvided>(() =>
-            {
-                throw new YAXInvalidFormatProvided(testType, testInput);
-            });
-            StringAssert.Contains(testType.Name, ex.Message);
-            StringAssert.Contains(testInput, ex.Message);
         }
 
         [Test]

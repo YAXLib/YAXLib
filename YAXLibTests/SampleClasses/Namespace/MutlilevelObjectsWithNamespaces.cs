@@ -7,7 +7,7 @@ using YAXLib.Attributes;
 namespace YAXLibTests.SampleClasses.Namespace
 {
     [YAXNamespace("http://namespace.org/default")]
-    public class MutlilevelObjectsWithNamespaces
+    public class MultilevelObjectsWithNamespaces
     {
         public Class1Parent Parent1 { get; set; }
         public Class2Parent Parent2 { get; set; }
@@ -17,7 +17,7 @@ namespace YAXLibTests.SampleClasses.Namespace
             return GeneralToStringProvider.GeneralToString(this);
         }
 
-        public static MutlilevelObjectsWithNamespaces GetSampleInstance()
+        public static MultilevelObjectsWithNamespaces GetSampleInstance()
         {
             var parent1 = new Class1Parent
             {
@@ -39,7 +39,7 @@ namespace YAXLibTests.SampleClasses.Namespace
                 }
             };
 
-            return new MutlilevelObjectsWithNamespaces
+            return new MultilevelObjectsWithNamespaces
             {
                 Parent1 = parent1,
                 Parent2 = parent2
