@@ -8,7 +8,7 @@ using YAXLib.Attributes;
 namespace YAXLibTests.SampleClasses
 {
     [ShowInDemoApplication(SortKey = "001")]
-    [YAXComment("This example demonstrates serailizing a very simple class")]
+    [YAXComment("This example demonstrates serializing a very simple class")]
     public class Book : IEquatable<Book>
     {
         public string Title { get; set; }

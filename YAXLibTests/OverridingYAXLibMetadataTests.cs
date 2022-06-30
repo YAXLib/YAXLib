@@ -4,6 +4,7 @@
 using NUnit.Framework;
 using YAXLib;
 using YAXLib.Enums;
+using YAXLib.Options;
 using YAXLibTests.SampleClasses;
 
 namespace YAXLibTests
@@ -14,12 +15,11 @@ namespace YAXLibTests
         [Test]
         public void CanOverrideAllMetadata()
         {
-            var ser = new YAXSerializer(typeof(YAXLibMetadataOverridingWithNamespace));
-
-            ser.YaxLibNamespacePrefix = "yax";
-            ser.YaxLibNamespaceUri = "http://namespace.org/yax";
-            ser.DimensionsAttributeName = "dm";
-            ser.RealTypeAttributeName = "type";
+            var ser = new YAXSerializer(typeof(YAXLibMetadataOverridingWithNamespace),
+                new SerializerOptions {
+                    Namespace = { Prefix = "yax", Uri = "http://namespace.org/yax" },
+                    AttributeName = { Dimensions = "dm", RealType = "type" }
+                });
 
             var sampleInstance = YAXLibMetadataOverridingWithNamespace.GetSampleInstance();
             var result = ser.Serialize(sampleInstance);
@@ -47,12 +47,11 @@ namespace YAXLibTests
         [Test]
         public void CanUseTheDefaultNamespace()
         {
-            var ser = new YAXSerializer(typeof(YAXLibMetadataOverridingWithNamespace));
-
-            ser.YaxLibNamespacePrefix = string.Empty;
-            ser.YaxLibNamespaceUri = "http://namespace.org/sample";
-            ser.DimensionsAttributeName = "dm";
-            ser.RealTypeAttributeName = "type";
+            var ser = new YAXSerializer(typeof(YAXLibMetadataOverridingWithNamespace),
+                new SerializerOptions {
+                    Namespace = { Prefix = string.Empty, Uri = "http://namespace.org/sample" },
+                    AttributeName = { Dimensions = "dm", RealType = "type" }
+                });
 
             var sampleInstance = YAXLibMetadataOverridingWithNamespace.GetSampleInstance();
             var result = ser.Serialize(sampleInstance);
@@ -80,8 +79,9 @@ namespace YAXLibTests
         [Test]
         public void CanSuppressMetadata()
         {
-            var ser = new YAXSerializer(typeof(YAXLibMetadataOverriding),
-                YAXSerializationOptions.SuppressMetadataAttributes);
+            var ser = new YAXSerializer<YAXLibMetadataOverriding>(
+                new SerializerOptions { SerializationOptions = YAXSerializationOptions.SuppressMetadataAttributes }
+            );
 
             var sampleInstance = YAXLibMetadataOverriding.GetSampleInstance();
             var result = ser.Serialize(sampleInstance);
@@ -104,8 +104,9 @@ namespace YAXLibTests
         [Test]
         public void CanSuppressMetadataButUseCustomNamespace()
         {
-            var ser = new YAXSerializer(typeof(YAXLibMetadataOverridingWithNamespace),
-                YAXSerializationOptions.SuppressMetadataAttributes);
+            var ser = new YAXSerializer<YAXLibMetadataOverridingWithNamespace>(
+                new SerializerOptions { SerializationOptions = YAXSerializationOptions.SuppressMetadataAttributes }
+            );
 
             var sampleInstance = YAXLibMetadataOverridingWithNamespace.GetSampleInstance();
             var result = ser.Serialize(sampleInstance);

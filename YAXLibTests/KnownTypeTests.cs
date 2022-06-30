@@ -7,6 +7,7 @@ using System.Xml.Linq;
 using NUnit.Framework;
 using YAXLib;
 using YAXLib.Enums;
+using YAXLib.Options;
 using YAXLibTests.SampleClasses;
 
 namespace YAXLibTests
@@ -72,8 +73,11 @@ namespace YAXLibTests
             inst.TheElement = null;
             inst.TheAttribute = null;
 
-            var ser = new YAXSerializer(typeof(ClassContainingXElement), YAXExceptionHandlingPolicies.ThrowErrorsOnly,
-                YAXExceptionTypes.Warning, YAXSerializationOptions.SerializeNullObjects);
+            var ser = new YAXSerializer<ClassContainingXElement>(new SerializerOptions {
+                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowErrorsOnly,
+                ExceptionBehavior = YAXExceptionTypes.Warning,
+                SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+            });
 
             try
             {
@@ -99,9 +103,12 @@ namespace YAXLibTests
     <Height>40</Height>
   </Rect>
 </RectangleDynamicKnownTypeSample>";
-            var serializer = new YAXSerializer(typeof(RectangleDynamicKnownTypeSample),
-                YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning,
-                YAXSerializationOptions.SerializeNullObjects);
+            
+            var serializer = new YAXSerializer<RectangleDynamicKnownTypeSample>(new SerializerOptions {
+                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
+                ExceptionBehavior = YAXExceptionTypes.Warning,
+                SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+            });
             var got = serializer.Serialize(RectangleDynamicKnownTypeSample.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
@@ -149,14 +156,15 @@ namespace YAXLibTests
   </TheDataSet>
 </DataSetAndDataTableKnownTypeSample>";
 
-            var serializer = new YAXSerializer(typeof(DataSetAndDataTableKnownTypeSample),
-                YAXExceptionHandlingPolicies.DoNotThrow, YAXExceptionTypes.Warning,
-                YAXSerializationOptions.SerializeNullObjects);
+            var serializer = new YAXSerializer<DataSetAndDataTableKnownTypeSample>(new SerializerOptions {
+                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
+                ExceptionBehavior = YAXExceptionTypes.Warning,
+                SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+            });
             var got = serializer.Serialize(DataSetAndDataTableKnownTypeSample.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-
-
+        
         [Test]
         public void TestExtensionMethod()
         {

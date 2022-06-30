@@ -10,6 +10,7 @@ using YAXLibTests.SampleClasses;
 using System.Linq;
 using YAXLib.Enums;
 using YAXLib.Exceptions;
+using YAXLib.Options;
 using YAXLibTests;
 
 namespace DemoApplication
@@ -125,7 +126,7 @@ namespace DemoApplication
             OnDeserialize(true);
         }
 
-        private void OnDeserialize(bool openFromFile)
+         private void OnDeserialize(bool openFromFile)
         {
             rtbParsingErrors.Text = "";
             object selItem = lstSampleClasses.SelectedItem;
@@ -141,15 +142,18 @@ namespace DemoApplication
             }
 
             var info = selItem as ClassInfoListItem;
-            YAXExceptionTypes defaultExType = GetSelectedDefaultExceptionType();
-            YAXExceptionHandlingPolicies exPolicy = GetSelectedExceptionHandlingPolicy();
-            YAXSerializationOptions serOption = GetSelectedSerializationOption();
+            var defaultExType = GetSelectedDefaultExceptionType();
+            var exPolicy = GetSelectedExceptionHandlingPolicy();
+            var serOption = GetSelectedSerializationOption();
 
             try
             {
-                object deserializedObject = null;
-                YAXSerializer serializer = new YAXSerializer(info.ClassType, exPolicy, defaultExType, serOption);
-                serializer.MaxRecursion = Convert.ToInt32(numMaxRecursion.Value);
+                object deserializedObject;
+                var serializer = new YAXSerializer(info.ClassType, new SerializerOptions {
+                    ExceptionHandlingPolicies = exPolicy,
+                    ExceptionBehavior = defaultExType,
+                    SerializationOptions = serOption, MaxRecursion = Convert.ToInt32(numMaxRecursion.Value)
+                });
 
                 if (openFromFile)
                     deserializedObject = serializer.DeserializeFromFile(fileName);
@@ -162,12 +166,12 @@ namespace DemoApplication
                 {
                     rtbDeserializeOutput.Text = deserializedObject.ToString();
 
-                    if (deserializedObject is List<string>)
+                    if (deserializedObject is List<string> list)
                     {
-                        StringBuilder sb = new StringBuilder();
-                        foreach (var item in deserializedObject as List<string>)
+                        var sb = new StringBuilder();
+                        foreach (var item in list)
                         {
-                            sb.AppendLine(item.ToString());
+                            sb.AppendLine(item);
                         }
                         MessageBox.Show(sb.ToString());
                     }
@@ -201,15 +205,18 @@ namespace DemoApplication
                 fileName = saveFileDialog1.FileName;
             }
 
-            ClassInfoListItem info = selItem as ClassInfoListItem;
-            YAXExceptionTypes defaultExType = GetSelectedDefaultExceptionType();
-            YAXExceptionHandlingPolicies exPolicy = GetSelectedExceptionHandlingPolicy();
-            YAXSerializationOptions serOption = GetSelectedSerializationOption();
+            var info = selItem as ClassInfoListItem;
+            var defaultExType = GetSelectedDefaultExceptionType();
+            var exPolicy = GetSelectedExceptionHandlingPolicy();
+            var serOption = GetSelectedSerializationOption();
 
             try
             {
-                YAXSerializer serializer = new YAXSerializer(info.ClassType, exPolicy, defaultExType, serOption);
-                serializer.MaxRecursion = Convert.ToInt32(numMaxRecursion.Value);
+                var serializer = new YAXSerializer(info.ClassType, new SerializerOptions {
+                    ExceptionHandlingPolicies = exPolicy,
+                    ExceptionBehavior = defaultExType,
+                    SerializationOptions = serOption, MaxRecursion = Convert.ToInt32(numMaxRecursion.Value)
+                });
 
                 if (saveToFile)
                     serializer.SerializeToFile(info.SampleObject, fileName);
@@ -219,11 +226,11 @@ namespace DemoApplication
             }
             catch (YAXException ex)
             {
-                MessageBox.Show("YAXException handled:\r\n\r\n" + ex.ToString());
+                MessageBox.Show("YAXException handled:\r\n\r\n" + ex);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Other Exception handled:\r\n\r\n" + ex.ToString());
+                MessageBox.Show("Other Exception handled:\r\n\r\n" + ex);
             }
         }
     }
