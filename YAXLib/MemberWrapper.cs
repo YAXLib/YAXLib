@@ -93,7 +93,7 @@ namespace YAXLib
             }
 
             InitInstance();
-            
+
             TreatErrorsAs = callerSerializer?.Options.ExceptionBehavior ?? YAXExceptionTypes.Error;
 
             // discover YAXCustomSerializerAttributes earlier, because some other attributes depend on it

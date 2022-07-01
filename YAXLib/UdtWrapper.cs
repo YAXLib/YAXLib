@@ -64,7 +64,7 @@ namespace YAXLib
             FieldsToSerialize = YAXSerializationFields.PublicPropertiesOnly;
             IsAttributedAsNotCollection = false;
 
-            SetYAXSerializerOptions(callerSerializer);
+            SetYAXSerializationOptions(callerSerializer);
             
             foreach (var attr in _udtType.GetCustomAttributes(true))
                 if (attr is IYaxTypeLevelAttribute typeLevelAttribute) typeLevelAttribute.Setup(this);
@@ -302,7 +302,7 @@ namespace YAXLib
         ///     Sets the serializer options.
         /// </summary>
         /// <param name="caller">The caller serializer.</param>
-        public void SetYAXSerializerOptions(YAXSerializer caller)
+        public void SetYAXSerializationOptions(YAXSerializer caller)
         {
             if (!_isSerializationOptionSetByAttribute)
                 SerializationOptions = caller != null
