@@ -106,59 +106,6 @@ namespace YAXLib
         /// <summary>
         ///     Initializes a new instance of the <see cref="YAXSerializer" /> class.
         /// </summary>
-        /// <param name="type">The type of the object being serialized/deserialized.</param>
-        /// <param name="serializationOptions">The serialization option flags.</param>
-        [Obsolete("Will be removed in v4. Use YAXSerializer(Type) or YAXSerializer(Type, SerializerOptions) instead.")]
-        public YAXSerializer(Type type, YAXSerializationOptions serializationOptions)
-            : this(type, YAXExceptionHandlingPolicies.ThrowWarningsAndErrors, YAXExceptionTypes.Error,
-                serializationOptions)
-        {
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="YAXSerializer" /> class.
-        /// </summary>
-        /// <param name="type">The type of the object being serialized/deserialized.</param>
-        /// <param name="exceptionPolicy">The exception handling policy.</param>
-        [Obsolete("Will be removed in v4. Use YAXSerializer(Type) or YAXSerializer(Type, SerializerOptions) instead.")]
-        public YAXSerializer(Type type, YAXExceptionHandlingPolicies exceptionPolicy)
-            : this(type, exceptionPolicy, YAXExceptionTypes.Error, YAXSerializationOptions.SerializeNullObjects)
-        {
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="YAXSerializer" /> class.
-        /// </summary>
-        /// <param name="type">The type of the object being serialized/deserialized.</param>
-        /// <param name="exceptionPolicy">The exception handling policy.</param>
-        /// <param name="defaultExType">The exceptions are treated as the value specified, unless otherwise specified.</param>
-        [Obsolete("Will be removed in v4. Use YAXSerializer(Type) or YAXSerializer(Type, SerializerOptions) instead.")]
-        public YAXSerializer(Type type, YAXExceptionHandlingPolicies exceptionPolicy, YAXExceptionTypes defaultExType)
-            : this(type, exceptionPolicy, defaultExType, YAXSerializationOptions.SerializeNullObjects)
-        {
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="YAXSerializer" /> class.
-        /// </summary>
-        /// <param name="t">The type of the object being serialized/deserialized.</param>
-        /// <param name="exceptionPolicy">The exception handling policy.</param>
-        /// <param name="defaultExType">The exceptions are treated as the value specified, unless otherwise specified.</param>
-        /// <param name="option">The serialization option.</param>
-        [Obsolete("Will be removed in v4. Use YAXSerializer(Type) or YAXSerializer(Type, SerializerOptions) instead.")]
-        public YAXSerializer(Type t, YAXExceptionHandlingPolicies exceptionPolicy, YAXExceptionTypes defaultExType,
-            YAXSerializationOptions option) : this(t,
-            new SerializerOptions {
-                ExceptionHandlingPolicies = exceptionPolicy, 
-                ExceptionBehavior = defaultExType,
-                SerializationOptions = option
-            })
-        {
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="YAXSerializer" /> class.
-        /// </summary>
         /// <param name="t">The type of the object being serialized/de-serialized.</param>
         /// <param name="options">The <see cref="SerializerOptions"/> settings to influence the process of serialization or de-serialization</param>
         public YAXSerializer(Type t, SerializerOptions options)
@@ -196,27 +143,6 @@ namespace YAXLib
         public SerializerOptions Options { get; }
 
         /// <summary>
-        ///     Gets the default type of the exception.
-        /// </summary>
-        /// <value>The default type of the exception.</value>
-        [Obsolete("Will be removed in v4. Use SerializerOptions.ExceptionBehavior instead.")]
-        public YAXExceptionTypes DefaultExceptionType => Options.ExceptionBehavior;
-
-        /// <summary>
-        ///     Gets the serialization option.
-        /// </summary>
-        /// <value>The serialization option.</value>
-        [Obsolete("Will be removed in v4. Use SerializerOptions.SerializationOptions instead.")]
-        public YAXSerializationOptions SerializationOption => Options.SerializationOptions;
-
-        /// <summary>
-        ///     Gets the exception handling policy.
-        /// </summary>
-        /// <value>The exception handling policy.</value>
-        [Obsolete("Will be removed in v4. Use SerializerOptions.ExceptionHandlingPolicies instead.")]
-        public YAXExceptionHandlingPolicies ExceptionHandlingPolicy => Options.ExceptionHandlingPolicies;
-
-        /// <summary>
         ///     Gets the parsing errors.
         /// </summary>
         /// <value>The parsing errors.</value>
@@ -236,60 +162,6 @@ namespace YAXLib
         ///     Gets or sets a value indicating whether XML elements or attributes should be removed after being deserialized
         /// </summary>
         private bool RemoveDeserializedXmlNodes { get; set; }
-
-        /// <summary>
-        ///     The URI address which holds the xmlns:yaxlib definition.
-        /// </summary>
-        [Obsolete("Will be removed in v4. Use SerializerOptions.Namespace.Uri instead.")]
-        public XNamespace YaxLibNamespaceUri
-        {
-            get => Options.Namespace.Uri;
-            set => Options.Namespace.Uri = value;
-        }
-
-        /// <summary>
-        ///     The prefix used for the xml namespace
-        /// </summary>
-        [Obsolete("Will be removed in v4. Use SerializerOptions.Namespace.Prefix instead.")]
-        public string YaxLibNamespacePrefix
-        {
-            get => Options.Namespace.Prefix;
-            set => Options.Namespace.Prefix = value; 
-        }
-
-        /// <summary>
-        ///     The attribute name used to deserialize meta-data for multi-dimensional arrays.
-        /// </summary>
-        [Obsolete("Will be removed in v4. Use SerializerOptions.AttributeName.Dimensions instead.")]
-        public string DimensionsAttributeName
-        {
-            get => Options.AttributeName.Dimensions;
-            set => Options.AttributeName.Dimensions = value;
-        }
-
-        /// <summary>
-        ///     The attribute name used to deserialize meta-data for real types of objects serialized through
-        ///     a reference to their base class or interface.
-        /// </summary>
-        [Obsolete("Will be removed in v4. Use SerializerOptions.AttributeName.RealType instead.")]
-        public string RealTypeAttributeName
-        {
-            get => Options.AttributeName.RealType;
-            set => Options.AttributeName.RealType = value;
-        }
-
-        /// <summary>
-        ///     Specifies the maximum serialization depth (default 300).
-        ///     This roughly equals the maximum element depth of the resulting XML.
-        ///     0 means unlimited.
-        ///     1 means an empty XML tag with no content.
-        /// </summary>
-        [Obsolete("Will be removed in v4. Use SerializerOptions.MaxRecursion instead.")]
-        public int MaxRecursion
-        {
-            get => Options.MaxRecursion;
-            set => Options.MaxRecursion = value;
-        }
 
         #endregion
 

@@ -75,7 +75,7 @@ namespace YAXLib
                 }
                 else
                 {
-                    result.SetYAXSerializerOptions(caller);
+                    result.SetYAXSerializationOptions(caller);
                 }
 
                 return result;

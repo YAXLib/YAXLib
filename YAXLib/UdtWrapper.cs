@@ -85,7 +85,7 @@ namespace YAXLib
             FieldsToSerialize = YAXSerializationFields.PublicPropertiesOnly;
             IsAttributedAsNotCollection = false;
 
-            SetYAXSerializerOptions(callerSerializer);
+            SetYAXSerializationOptions(callerSerializer);
             
             foreach (var attr in _udtType.GetCustomAttributes(true))
                 if (attr is YAXBaseAttribute)
@@ -131,7 +131,7 @@ namespace YAXLib
         ///     Gets the serialization options.
         /// </summary>
         /// <value>The serialization options.</value>
-        public YAXSerializationOptions SerializationOption { get; private set; }
+        public YAXSerializationOptions SerializationOptions { get; private set; }
 
         /// <summary>
         ///     Gets a value indicating whether this instance is attributed as not collection.
@@ -190,21 +190,21 @@ namespace YAXLib
         ///     <c>true</c> if serialization of null objects is not allowd; otherwise, <c>false</c>.
         /// </returns>
         public bool IsNotAllowedNullObjectSerialization =>
-            (SerializationOption & YAXSerializationOptions.DontSerializeNullObjects) ==
+            (SerializationOptions & YAXSerializationOptions.DontSerializeNullObjects) ==
             YAXSerializationOptions.DontSerializeNullObjects;
 
         /// <summary>
         ///     Determines whether cycling referrences must be ignored, or an exception needs to be thrown
         /// </summary>
         public bool ThrowUponSerializingCyclingReferences =>
-            (SerializationOption & YAXSerializationOptions.ThrowUponSerializingCyclingReferences) ==
+            (SerializationOptions & YAXSerializationOptions.ThrowUponSerializingCyclingReferences) ==
             YAXSerializationOptions.ThrowUponSerializingCyclingReferences;
 
         /// <summary>
         ///     Determines whether properties with no setters should be serialized
         /// </summary>
         public bool DoNotSerializePropertiesWithNoSetter =>
-            (SerializationOption & YAXSerializationOptions.DontSerializePropertiesWithNoSetter) ==
+            (SerializationOptions & YAXSerializationOptions.DontSerializePropertiesWithNoSetter) ==
             YAXSerializationOptions.DontSerializePropertiesWithNoSetter;
 
         /// <summary>
@@ -213,7 +213,7 @@ namespace YAXLib
         ///     Useful when generating XML intended for another system's consumption.
         /// </summary>
         public bool SuppressMetadataAttributes =>
-            (SerializationOption & YAXSerializationOptions.SuppressMetadataAttributes) ==
+            (SerializationOptions & YAXSerializationOptions.SuppressMetadataAttributes) ==
             YAXSerializationOptions.SuppressMetadataAttributes;
 
         /// <summary>
@@ -322,11 +322,11 @@ namespace YAXLib
         ///     Sets the serializer options.
         /// </summary>
         /// <param name="caller">The caller serializer.</param>
-        public void SetYAXSerializerOptions(YAXSerializer caller)
+        public void SetYAXSerializationOptions(YAXSerializer caller)
         {
             if (!_isSerializationOptionSetByAttribute)
-                SerializationOption = caller != null
-                    ? caller.SerializationOption
+                SerializationOptions = caller != null
+                    ? caller.Options.SerializationOptions
                     : YAXSerializationOptions.SerializeNullObjects;
         }
 
@@ -397,7 +397,7 @@ namespace YAXLib
                 FieldsToSerialize = theAttr.FieldsToSerialize;
                 if (theAttr.IsSerializationOptionSet())
                 {
-                    SerializationOption = theAttr.Options;
+                    SerializationOptions = theAttr.Options;
                     _isSerializationOptionSetByAttribute = true;
                 }
             }
