@@ -2762,10 +2762,13 @@ namespace YAXLibTests
   <_privateFieldFromBaseLevel1>12</_privateFieldFromBaseLevel1>
   <_privateFieldFromBaseLevel2>22</_privateFieldFromBaseLevel2>
 </ClassFlaggedToIncludePrivateBaseTypeFields>";
+            var original = new ClassFlaggedToIncludePrivateBaseTypeFields();
             var ser = new YAXSerializer<ClassFlaggedToIncludePrivateBaseTypeFields>();
-            var xml = ser.Serialize(new ClassFlaggedToIncludePrivateBaseTypeFields());
+            var xml = ser.Serialize(original);
+            var deserialized = ser.Deserialize(xml);
 
             Assert.That(xml, Is.EqualTo(expected));
+            deserialized.Should().BeEquivalentTo(original);
         }
 
         [Test]
@@ -2777,10 +2780,13 @@ namespace YAXLibTests
   <InternalPropertyFromBaseLevel2>21</InternalPropertyFromBaseLevel2>
   <_privateFieldFromLevel0>2</_privateFieldFromLevel0>
 </ClassFlaggedToExcludePrivateBaseTypeFields>";
+            var original = new ClassFlaggedToExcludePrivateBaseTypeFields();
             var ser = new YAXSerializer<ClassFlaggedToExcludePrivateBaseTypeFields>();
-            var xml = ser.Serialize(new ClassFlaggedToExcludePrivateBaseTypeFields());
+            var xml = ser.Serialize(original);
+            var deserialized = ser.Deserialize(xml);
 
             Assert.That(xml, Is.EqualTo(expected));
+            deserialized.Should().BeEquivalentTo(original);
         }
     }
 }
