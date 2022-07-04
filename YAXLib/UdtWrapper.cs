@@ -127,6 +127,9 @@ namespace YAXLib
         /// <value>The fields to be serialized.</value>
         public YAXSerializationFields FieldsToSerialize { get; private set; }
 
+        /// <inheritdoc cref="YAXSerializableTypeAttribute.IncludePrivateMembersFromBaseTypes"/>>
+        public bool IncludePrivateMembersFromBaseTypes { get; private set; }
+
         /// <summary>
         ///     Gets the serialization options.
         /// </summary>
@@ -395,6 +398,8 @@ namespace YAXLib
             else if (attr is YAXSerializableTypeAttribute theAttr)
             {
                 FieldsToSerialize = theAttr.FieldsToSerialize;
+                IncludePrivateMembersFromBaseTypes = theAttr.IncludePrivateMembersFromBaseTypes;
+
                 if (theAttr.IsSerializationOptionSet())
                 {
                     SerializationOptions = theAttr.Options;

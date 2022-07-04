@@ -2569,8 +2569,9 @@ namespace YAXLib
         /// <returns>the sequence of fields to be serialized for the specified type</returns>
         private IEnumerable<MemberWrapper> GetFieldsToBeSerialized(UdtWrapper typeWrapper)
         {
-            foreach (var member in typeWrapper.UnderlyingType.GetMembers(BindingFlags.Instance |
-                                                                         BindingFlags.NonPublic | BindingFlags.Public))
+            foreach (var member in typeWrapper.UnderlyingType.GetMembers(
+                         BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, 
+                         typeWrapper.IncludePrivateMembersFromBaseTypes))
             {
                 var name0 = member.Name[0];
                 if ((char.IsLetter(name0) ||

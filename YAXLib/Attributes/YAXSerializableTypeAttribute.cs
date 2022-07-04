@@ -22,6 +22,7 @@ namespace YAXLib.Attributes
         public YAXSerializableTypeAttribute()
         {
             FieldsToSerialize = YAXSerializationFields.PublicPropertiesOnly;
+            IncludePrivateMembersFromBaseTypes = false;
         }
 
         #endregion
@@ -80,6 +81,12 @@ namespace YAXLib.Attributes
                 _isOptionSet = true;
             }
         }
+
+        /// <summary>
+        ///     If set to <see langword="true"/>, private fields from <see cref="Type.BaseType"/>s
+        ///     can be searched for fields to serialize. Default is <see langword="false"/>.
+        /// </summary>
+        public bool IncludePrivateMembersFromBaseTypes { get; set; }
 
         #endregion
     }
