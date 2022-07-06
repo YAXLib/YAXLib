@@ -24,7 +24,7 @@ namespace YAXLib
     ///     policy.
     ///     This class also supports serializing most of the collection classes such as the Dictionary generic class.
     /// </summary>
-    public class YAXSerializer : IYAXSerializer<object>
+    public class YAXSerializer : IYAXSerializer<object>, IYAXMultiStateDeserializer<object>
     {
         #region Fields
 
