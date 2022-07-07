@@ -16,21 +16,21 @@ namespace YAXLib;
 
 internal class Deserialization
 {
-    private readonly YAXSerializer _ys;
+    private readonly YAXSerializer _serializer;
     
     /// <summary>
     ///     Reference to a pre assigned deserialization base object
     /// </summary>
-    private object _desObject;
+    private object _deserializationObject;
 
     /// <summary>
     ///     Specifies whether an exception is occurred during the de-serialization of the current member
     /// </summary>
     private bool _exceptionOccurredDuringMemberDeserialization;
 
-    public Deserialization(YAXSerializer yaxSerializer)
+    public Deserialization(YAXSerializer serializer)
     {
-        _ys = yaxSerializer;
+        _serializer = serializer;
     }
 
     /// <summary>
@@ -40,9 +40,9 @@ internal class Deserialization
     /// <param name="obj">The object used as the base object in the next stage of de-serialization.</param>
     public void SetDeserializationBaseObject(object obj)
     {
-        if (obj != null && !_ys.Type.IsInstanceOfType(obj)) throw new YAXObjectTypeMismatch(_ys.Type, obj.GetType());
+        if (obj != null && !_serializer.Type.IsInstanceOfType(obj)) throw new YAXObjectTypeMismatch(_serializer.Type, obj.GetType());
 
-        _desObject = obj;
+        _deserializationObject = obj;
     }
 
     /// <summary>
@@ -67,22 +67,22 @@ internal class Deserialization
     /// <returns>object containing the deserialized data</returns>
     internal object DeserializeBase(XElement baseElement)
     {
-        _ys.IsSerializing = false;
+        _serializer.IsSerializing = false;
 
-        if (baseElement == null) return _desObject;
+        if (baseElement == null) return _deserializationObject;
 
         ProcessRealTypeAttribute(baseElement);
 
         // HasCustomSerializer must be tested after analyzing any RealType attribute 
-        if (_ys.UdtWrapper.HasCustomSerializer)
-            return InvokeCustomDeserializerFromElement(_ys.UdtWrapper.CustomSerializerType, baseElement, null, _ys.UdtWrapper, _ys);
+        if (_serializer.UdtWrapper.HasCustomSerializer)
+            return InvokeCustomDeserializerFromElement(_serializer.UdtWrapper.CustomSerializerType, baseElement, null, _serializer.UdtWrapper, _serializer);
 
         // Deserialize objects with special treatment
 
-        if (_ys.Type.IsGenericType && _ys.Type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
+        if (_serializer.Type.IsGenericType && _serializer.Type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
             return DeserializeKeyValuePair(baseElement);
 
-        if (KnownTypes.IsKnowType(_ys.Type)) return KnownTypes.Deserialize(baseElement, _ys.Type, _ys.TypeNamespace);
+        if (KnownTypes.IsKnowType(_serializer.Type)) return KnownTypes.Deserialize(baseElement, _serializer.Type, _serializer.TypeNamespace);
 
         if (TryDeserializeAsDictionary(baseElement, out var resultObject)) 
             return resultObject;
@@ -90,7 +90,7 @@ internal class Deserialization
         if (TryDeserializeAsCollection(baseElement, out resultObject)) 
             return resultObject;
 
-        if (ReflectionUtils.IsBasicType(_ys.Type)) return ReflectionUtils.ConvertBasicType(baseElement.Value, _ys.Type, _ys.Options.Culture);
+        if (ReflectionUtils.IsBasicType(_serializer.Type)) return ReflectionUtils.ConvertBasicType(baseElement.Value, _serializer.Type, _serializer.Options.Culture);
 
         // Run the default deserialization algorithm
         return DeserializeDefault(baseElement);
@@ -106,9 +106,9 @@ internal class Deserialization
         _exceptionOccurredDuringMemberDeserialization = true;
         if (exceptionType == YAXExceptionTypes.Ignore) return;
 
-        _ys.ParsingErrors.AddException(ex, exceptionType);
-        if (_ys.Options.ExceptionHandlingPolicies == YAXExceptionHandlingPolicies.ThrowWarningsAndErrors ||
-            _ys.Options.ExceptionHandlingPolicies == YAXExceptionHandlingPolicies.ThrowErrorsOnly &&
+        _serializer.ParsingErrors.AddException(ex, exceptionType);
+        if (_serializer.Options.ExceptionHandlingPolicies == YAXExceptionHandlingPolicies.ThrowWarningsAndErrors ||
+            _serializer.Options.ExceptionHandlingPolicies == YAXExceptionHandlingPolicies.ThrowErrorsOnly &&
             exceptionType == YAXExceptionTypes.Error)
             throw ex;
     }
@@ -122,9 +122,9 @@ internal class Deserialization
     /// <returns>The deserialized object</returns>
     private object DeserializeDefault(XElement baseElement)
     {
-        var resultObject = _desObject ?? Activator.CreateInstance(_ys.Type, Array.Empty<object>());
+        var resultObject = _deserializationObject ?? Activator.CreateInstance(_serializer.Type, Array.Empty<object>());
 
-        foreach (var member in _ys.GetFieldsToBeSerialized())
+        foreach (var member in _serializer.GetFieldsToBeSerialized())
         {
             if (!IsAnythingToDeserialize(member)) continue;
 
@@ -199,17 +199,17 @@ internal class Deserialization
 
         object desObj;
         if (member.IsSerializedAsAttribute)
-            desObj = InvokeCustomDeserializerFromAttribute(customSerializerType, xAttributeValue, member, _ys.UdtWrapper,
-                _ys);
+            desObj = InvokeCustomDeserializerFromAttribute(customSerializerType, xAttributeValue, member, _serializer.UdtWrapper,
+                _serializer);
         else if (member.IsSerializedAsElement)
             desObj = InvokeCustomDeserializerFromElement(customSerializerType, xElementValue,
                 member.HasCustomSerializer ? member : null,
                 member.MemberTypeWrapper.HasCustomSerializer ? member.MemberTypeWrapper : null,
-                _ys);
+                _serializer);
         else if (member.IsSerializedAsValue)
-            desObj = InvokeCustomDeserializerFromValue(customSerializerType, deserializedValue, member, _ys.UdtWrapper, _ys);
+            desObj = InvokeCustomDeserializerFromValue(customSerializerType, deserializedValue, member, _serializer.UdtWrapper, _serializer);
         else
-            throw new YAXDeserializationException(null);
+            throw new YAXDeserializationException(baseElement, "Missing information how to deserialize the field.");
 
         try
         {
@@ -219,7 +219,7 @@ internal class Deserialization
         {
             OnExceptionOccurred(
                 new YAXPropertyCannotBeAssignedTo(member.Alias.LocalName,
-                    xAttributeValue ?? xElementValue ?? baseElement as IXmlLineInfo), _ys.Options.ExceptionBehavior);
+                    GetXmlLineInfo(xAttributeValue, xElementValue, baseElement)), _serializer.Options.ExceptionBehavior);
         }
     }
 
@@ -227,42 +227,21 @@ internal class Deserialization
         XElement xElementValue, MemberWrapper member)
     {
         // i.e. if it was NOT resuming deserialization,
-        if (_desObject != null) 
+        if (_deserializationObject != null) 
             return false;
             
         // set default value, otherwise existing value for the member is kept
 
-        if (!member.MemberType.IsValueType && _ys.UdtWrapper.IsNotAllowedNullObjectSerialization)
+        if (!member.MemberType.IsValueType && _serializer.UdtWrapper.IsNotAllowedNullObjectSerialization)
         {
-            try
-            {
-                member.SetValue(resultObject, null);
-            }
-            catch
-            {
-                OnExceptionOccurred(
-                    new YAXDefaultValueCannotBeAssigned(member.Alias.LocalName, member.DefaultValue,
-                        xAttributeValue ?? xElementValue ?? baseElement as IXmlLineInfo, _ys.Options.Culture), _ys.Options.ExceptionBehavior);
-                return false;
-            }
-            return true;
+            return TrySetDefaultValue(resultObject, null, member,
+                GetXmlLineInfo(xAttributeValue, xElementValue, baseElement));
         }
             
         if (member.DefaultValue != null)
         {
-            try
-            {
-                member.SetValue(resultObject, member.DefaultValue);
-            }
-            catch
-            {
-                OnExceptionOccurred(
-                    new YAXDefaultValueCannotBeAssigned(member.Alias.LocalName, member.DefaultValue,
-                        xAttributeValue ?? xElementValue ?? baseElement as IXmlLineInfo, _ys.Options.Culture), _ys.Options.ExceptionBehavior);
-                return false;
-            }
-
-            return true;
+            return TrySetDefaultValue(resultObject, member.DefaultValue, member,
+                GetXmlLineInfo(xAttributeValue, xElementValue, baseElement));
         }
 
         if (!member.MemberType.IsValueType)
@@ -274,6 +253,31 @@ internal class Deserialization
         return false;
     }
 
+    private bool TrySetDefaultValue(object resultObject, object resultValue, MemberWrapper member, IXmlLineInfo lineInfo)
+    {
+        try
+        {
+            member.SetValue(resultObject, resultValue);
+        }
+        catch
+        {
+            OnExceptionOccurred(
+                new YAXDefaultValueCannotBeAssigned(member.Alias.LocalName, member.DefaultValue,
+                    lineInfo, _serializer.Options.Culture), _serializer.Options.ExceptionBehavior);
+            return false;
+        }
+
+        return true;
+    }
+
+#nullable enable
+    private static IXmlLineInfo? GetXmlLineInfo(IXmlLineInfo? attribute, IXmlLineInfo? element,
+        IXmlLineInfo? baseElement)
+    {
+        return attribute ?? element ?? baseElement;
+    }
+#nullable disable
+
     private bool DeserializeFromXmlElement(XElement baseElement, string serializationLocation, MemberWrapper member, object resultObject,
         ref string deserializedValue, ref bool isHelperElementCreated, ref XElement xElementValue)
     {
@@ -281,7 +285,7 @@ internal class Deserialization
 
         var canContinue = false;
         var elem = XMLUtils.FindElement(baseElement, serializationLocation,
-            member.Alias.OverrideNsIfEmpty(_ys.TypeNamespace));
+            member.Alias.OverrideNsIfEmpty(_serializer.TypeNamespace));
 
         if (elem != null)
         {
@@ -312,7 +316,7 @@ internal class Deserialization
         {
             // try to fix this problem by creating a helper element, maybe all its children are placed somewhere else
             var helperElement = XMLUtils.CreateElement(baseElement, serializationLocation,
-                member.Alias.OverrideNsIfEmpty(_ys.TypeNamespace));
+                member.Alias.OverrideNsIfEmpty(_serializer.TypeNamespace));
             if (helperElement != null)
             {
                 isHelperElementCreated = true;
@@ -324,7 +328,7 @@ internal class Deserialization
                 }
             }
         }
-        else if (_ys.UdtWrapper.IsNotAllowedNullObjectSerialization && member.DefaultValue is null)
+        else if (_serializer.UdtWrapper.IsNotAllowedNullObjectSerialization && member.DefaultValue is null)
         {
             // Any missing elements are allowed for deserialization:
             // * Don't set a value - uses default or initial value
@@ -337,10 +341,8 @@ internal class Deserialization
         if (!canContinue)
             OnExceptionOccurred(new YAXElementMissingException(
                     StringUtils.CombineLocationAndElementName(serializationLocation,
-                        member.Alias.OverrideNsIfEmpty(_ys.TypeNamespace)), baseElement),
-                !member.MemberType.IsValueType && _ys.UdtWrapper.IsNotAllowedNullObjectSerialization
-                    ? YAXExceptionTypes.Ignore
-                    : member.TreatErrorsAs);
+                        member.Alias.OverrideNsIfEmpty(_serializer.TypeNamespace)), baseElement),
+                GetExceptionType(member));
 
         xElementValue = elem;
         return false;
@@ -355,9 +357,7 @@ internal class Deserialization
         {
             OnExceptionOccurred(new YAXElementMissingException(
                     serializationLocation, baseElement),
-                !member.MemberType.IsValueType && _ys.UdtWrapper.IsNotAllowedNullObjectSerialization
-                    ? YAXExceptionTypes.Ignore
-                    : member.TreatErrorsAs);
+                GetExceptionType(member));
         }
         else
         {
@@ -366,9 +366,9 @@ internal class Deserialization
             {
                 // look for an element with the same name AND a yaxlib:realtype attribute
                 var innerElement = XMLUtils.FindElement(baseElement, serializationLocation,
-                    member.Alias.OverrideNsIfEmpty(_ys.TypeNamespace));
+                    member.Alias.OverrideNsIfEmpty(_serializer.TypeNamespace));
                 if (innerElement != null &&
-                    innerElement.Attribute_NamespaceSafe(_ys.Options.Namespace.Uri + _ys.Options.AttributeName.RealType, _ys.DocumentDefaultNamespace) != null)
+                    innerElement.Attribute_NamespaceSafe(_serializer.Options.Namespace.Uri + _serializer.Options.AttributeName.RealType, _serializer.DocumentDefaultNamespace) != null)
                 {
                     deserializedValue = innerElement.Value;
                     xElementValue = innerElement;
@@ -378,9 +378,7 @@ internal class Deserialization
                     OnExceptionOccurred(
                         new YAXElementValueMissingException(serializationLocation,
                             innerElement ?? baseElement),
-                        !member.MemberType.IsValueType && _ys.UdtWrapper.IsNotAllowedNullObjectSerialization
-                            ? YAXExceptionTypes.Ignore
-                            : member.TreatErrorsAs);
+                        GetExceptionType(member));
                 }
             }
             else
@@ -400,13 +398,13 @@ internal class Deserialization
 
         // find the parent element from its location
         var attr = XMLUtils.FindAttribute(baseElement, serializationLocation,
-            member.Alias.OverrideNsIfEmpty(_ys.TypeNamespace));
+            member.Alias.OverrideNsIfEmpty(_serializer.TypeNamespace));
         if (attr == null) // if the parent element does not exist
         {
             // look for an element with the same name AND a yaxlib:realtype attribute
             var elem = XMLUtils.FindElement(baseElement, serializationLocation,
-                member.Alias.OverrideNsIfEmpty(_ys.TypeNamespace));
-            if (elem != null && elem.Attribute_NamespaceSafe(_ys.Options.Namespace.Uri + _ys.Options.AttributeName.RealType, _ys.DocumentDefaultNamespace) != null)
+                member.Alias.OverrideNsIfEmpty(_serializer.TypeNamespace));
+            if (elem != null && elem.Attribute_NamespaceSafe(_serializer.Options.Namespace.Uri + _serializer.Options.AttributeName.RealType, _serializer.DocumentDefaultNamespace) != null)
             {
                 deserializedValue = elem.Value;
                 xElementValue = elem;
@@ -416,9 +414,7 @@ internal class Deserialization
                 OnExceptionOccurred(new YAXAttributeMissingException(
                         StringUtils.CombineLocationAndElementName(serializationLocation, member.Alias),
                         elem ?? baseElement),
-                    !member.MemberType.IsValueType && _ys.UdtWrapper.IsNotAllowedNullObjectSerialization
-                        ? YAXExceptionTypes.Ignore
-                        : member.TreatErrorsAs);
+                    GetExceptionType(member));
             }
         }
         else
@@ -430,6 +426,14 @@ internal class Deserialization
         return deserializedValue;
     }
 
+    private YAXExceptionTypes GetExceptionType(MemberWrapper member)
+    {
+        return !member.MemberType.IsValueType 
+               && _serializer.UdtWrapper.IsNotAllowedNullObjectSerialization
+            ? YAXExceptionTypes.Ignore
+            : member.TreatErrorsAs;
+    }
+    
     private static bool IsAnythingToDeserialize(MemberWrapper member)
     {
         if (!member.CanWrite)
@@ -444,9 +448,9 @@ internal class Deserialization
     private bool TryDeserializeAsCollection(XElement baseElement, out object resultObject)
     {
         resultObject = null;
-        if (!_ys.UdtWrapper.IsTreatedAsCollection || IsCreatedToDeserializeANonCollectionMember) return false;
+        if (!_serializer.UdtWrapper.IsTreatedAsCollection || IsCreatedToDeserializeANonCollectionMember) return false;
 
-        resultObject = DeserializeCollectionValue(_ys.Type, baseElement, _ys.UdtWrapper.Alias, _ys.UdtWrapper.CollectionAttributeInstance);
+        resultObject = DeserializeCollectionValue(_serializer.Type, baseElement, _serializer.UdtWrapper.Alias, _serializer.UdtWrapper.CollectionAttributeInstance);
 
         return true;
     }
@@ -454,24 +458,24 @@ internal class Deserialization
     private bool TryDeserializeAsDictionary(XElement baseElement, out object resultObject)
     {
         resultObject = null;
-        if (!_ys.UdtWrapper.IsTreatedAsDictionary || IsCreatedToDeserializeANonCollectionMember) return false;
-        if (_ys.UdtWrapper.DictionaryAttributeInstance == null) return false;
+        if (!_serializer.UdtWrapper.IsTreatedAsDictionary || IsCreatedToDeserializeANonCollectionMember) return false;
+        if (_serializer.UdtWrapper.DictionaryAttributeInstance == null) return false;
 
-        resultObject = DeserializeTaggedDictionaryValue(baseElement, _ys.UdtWrapper.Alias, _ys.Type, _ys.UdtWrapper.CollectionAttributeInstance, _ys.UdtWrapper.DictionaryAttributeInstance);
+        resultObject = DeserializeTaggedDictionaryValue(baseElement, _serializer.UdtWrapper.Alias, _serializer.Type, _serializer.UdtWrapper.CollectionAttributeInstance, _serializer.UdtWrapper.DictionaryAttributeInstance);
         return true;
     }
 
     private void ProcessRealTypeAttribute(XElement baseElement)
     {
-        var realTypeAttr = baseElement.Attribute_NamespaceSafe(_ys.Options.Namespace.Uri + _ys.Options.AttributeName.RealType, _ys.DocumentDefaultNamespace);
+        var realTypeAttr = baseElement.Attribute_NamespaceSafe(_serializer.Options.Namespace.Uri + _serializer.Options.AttributeName.RealType, _serializer.DocumentDefaultNamespace);
             
         if (realTypeAttr == null) return;
 
         var theRealType = ReflectionUtils.GetTypeByName(realTypeAttr.Value);
         if (theRealType == null) return;
 
-        _ys.Type = theRealType;
-        _ys.UdtWrapper = TypeWrappersPool.Pool.GetTypeWrapper(_ys.Type, _ys);
+        _serializer.Type = theRealType;
+        _serializer.UdtWrapper = TypeWrappersPool.Pool.GetTypeWrapper(_serializer.Type, _serializer);
     }
 
     /// <summary>
@@ -508,7 +512,7 @@ internal class Deserialization
 
         // return if such an element exists
         return elem.Element(
-                   eachElementName.OverrideNsIfEmpty(member.Namespace.IfEmptyThen(_ys.TypeNamespace)
+                   eachElementName.OverrideNsIfEmpty(member.Namespace.IfEmptyThen(_serializer.TypeNamespace)
                        .IfEmptyThenNone())) !=
                null;
     }
@@ -528,9 +532,9 @@ internal class Deserialization
         if (elem == null)
             throw new ArgumentNullException(nameof(elem));
 
-        var typeWrapper = TypeWrappersPool.Pool.GetTypeWrapper(type, _ys);
+        var typeWrapper = TypeWrappersPool.Pool.GetTypeWrapper(type, _serializer);
 
-        foreach (var member in _ys.GetFieldsToBeSerialized(typeWrapper))
+        foreach (var member in _serializer.GetFieldsToBeSerialized(typeWrapper))
         {
             if (!IsAnythingToDeserialize(member)) continue;
 
@@ -542,7 +546,7 @@ internal class Deserialization
                 return true;
 
             if (ReflectionUtils.IsBasicType(member.MemberType) || member.IsTreatedAsCollection ||
-                member.IsTreatedAsDictionary || member.MemberType == _ys.Type) continue;
+                member.IsTreatedAsDictionary || member.MemberType == _serializer.Type) continue;
 
             // try to create a helper element 
             var helperElement = XMLUtils.CreateElement(elem, member.SerializationLocation, member.Alias);
@@ -567,7 +571,7 @@ internal class Deserialization
 
         // maybe it has got a realtype attribute and hence have turned into an element
         var elem = XMLUtils.FindElement(xElement, member.SerializationLocation, member.Alias);
-        return elem?.Attribute_NamespaceSafe(_ys.Options.Namespace.Uri + _ys.Options.AttributeName.RealType, _ys.DocumentDefaultNamespace) != null;
+        return elem?.Attribute_NamespaceSafe(_serializer.Options.Namespace.Uri + _serializer.Options.AttributeName.RealType, _serializer.DocumentDefaultNamespace) != null;
     }
 
     /// <summary>
@@ -623,17 +627,17 @@ internal class Deserialization
     /// <param name="xElementValue"></param>
     private bool TrySetValueDefault(object obj, MemberWrapper member, Type memberType, XElement xElementValue)
     {
-        var namespaceToOverride = member.Namespace.IfEmptyThen(_ys.TypeNamespace).IfEmptyThenNone();
-        var serializer = _ys.NewInternalSerializer(memberType, namespaceToOverride, null);
+        var namespaceToOverride = member.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThenNone();
+        var serializer = _serializer.NewInternalSerializer(memberType, namespaceToOverride, null);
 
         serializer.Deserialization.IsCreatedToDeserializeANonCollectionMember =
             !(member.IsTreatedAsDictionary || member.IsTreatedAsCollection);
 
-        if (_desObject != null) // i.e. it is in resuming mode
+        if (_deserializationObject != null) // i.e. it is in resuming mode
             serializer.SetDeserializationBaseObject(member.GetValue(obj));
 
         var convertedObj = serializer.Deserialization.DeserializeBase(xElementValue);
-        _ys.FinalizeNewSerializer(serializer, false);
+        _serializer.FinalizeNewSerializer(serializer, false);
 
         try
         {
@@ -642,7 +646,7 @@ internal class Deserialization
         }
         catch
         {
-            OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias.LocalName, xElementValue), _ys.Options.ExceptionBehavior);
+            OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias.LocalName, xElementValue), _serializer.Options.ExceptionBehavior);
         }
 
         return false;
@@ -660,7 +664,7 @@ internal class Deserialization
             if (ReflectionUtils.IsNullable(memberType) && string.IsNullOrEmpty(elemValue))
                 convertedObj = member.DefaultValue;
             else
-                convertedObj = ReflectionUtils.ConvertBasicType(elemValue, memberType, _ys.Options.Culture);
+                convertedObj = ReflectionUtils.ConvertBasicType(elemValue, memberType, _serializer.Options.Culture);
 
             try
             {
@@ -669,7 +673,7 @@ internal class Deserialization
             }
             catch
             {
-                OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias.LocalName, xElementValue), _ys.Options.ExceptionBehavior);
+                OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias.LocalName, xElementValue), _serializer.Options.ExceptionBehavior);
             }
         }
         catch (Exception ex)
@@ -688,7 +692,7 @@ internal class Deserialization
             {
                 OnExceptionOccurred(
                     new YAXDefaultValueCannotBeAssigned(member.Alias.LocalName, member.DefaultValue,
-                        xElementValue, _ys.Options.Culture), _ys.Options.ExceptionBehavior);
+                        xElementValue, _serializer.Options.Culture), _serializer.Options.ExceptionBehavior);
             }
         }
 
@@ -710,7 +714,7 @@ internal class Deserialization
         }
         catch
         {
-            OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias.LocalName, xElementValue), _ys.Options.ExceptionBehavior);
+            OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias.LocalName, xElementValue), _serializer.Options.ExceptionBehavior);
         }
 
         return false;
@@ -730,7 +734,7 @@ internal class Deserialization
         catch
         {
             OnExceptionOccurred(
-                new YAXDefaultValueCannotBeAssigned(member.Alias.LocalName, member.DefaultValue, xElementValue, _ys.Options.Culture),
+                new YAXDefaultValueCannotBeAssigned(member.Alias.LocalName, member.DefaultValue, xElementValue, _serializer.Options.Culture),
                 member.TreatErrorsAs);
         }
 
@@ -742,7 +746,7 @@ internal class Deserialization
         // try to retrieve the real-type if specified
         if (xElementValue == null || isRealTypeAttributeNotRelevant) return;
 
-        var realTypeAttribute = xElementValue.Attribute_NamespaceSafe(_ys.Options.Namespace.Uri + _ys.Options.AttributeName.RealType, _ys.DocumentDefaultNamespace);
+        var realTypeAttribute = xElementValue.Attribute_NamespaceSafe(_serializer.Options.Namespace.Uri + _serializer.Options.AttributeName.RealType, _serializer.DocumentDefaultNamespace);
 
         if (realTypeAttribute == null) return;
 
@@ -828,7 +832,7 @@ internal class Deserialization
             catch
             {
                 OnExceptionOccurred(
-                    new YAXCannotAddObjectToCollection(memberAlias.ToString(), dataItem, xElement), _ys.Options.ExceptionBehavior);
+                    new YAXCannotAddObjectToCollection(memberAlias.ToString(), dataItem, xElement), _serializer.Options.ExceptionBehavior);
             }
 
         return true;
@@ -854,7 +858,7 @@ internal class Deserialization
             catch
             {
                 OnExceptionOccurred(
-                    new YAXCannotAddObjectToCollection(memberAlias.ToString(), dataItems[i], xElement), _ys.Options.ExceptionBehavior);
+                    new YAXCannotAddObjectToCollection(memberAlias.ToString(), dataItems[i], xElement), _serializer.Options.ExceptionBehavior);
             }
 
         stack = st;
@@ -904,7 +908,7 @@ internal class Deserialization
             catch
             {
                 OnExceptionOccurred(
-                    new YAXCannotAddObjectToCollection(memberAlias.ToString(), lstItem, xElement), _ys.Options.ExceptionBehavior);
+                    new YAXCannotAddObjectToCollection(memberAlias.ToString(), lstItem, xElement), _serializer.Options.ExceptionBehavior);
             }
         }
 
@@ -932,7 +936,7 @@ internal class Deserialization
             catch
             {
                 OnExceptionOccurred(
-                    new YAXCannotAddObjectToCollection(memberAlias.ToString(), dataItem, xElement), _ys.Options.ExceptionBehavior);
+                    new YAXCannotAddObjectToCollection(memberAlias.ToString(), dataItem, xElement), _serializer.Options.ExceptionBehavior);
             }
         }
 
@@ -947,7 +951,7 @@ internal class Deserialization
 
         if (!ReflectionUtils.IsArray(collType)) return false;
 
-        var dimsAttr = xElement.Attribute_NamespaceSafe(_ys.Options.Namespace.Uri + _ys.Options.AttributeName.Dimensions, _ys.DocumentDefaultNamespace);
+        var dimsAttr = xElement.Attribute_NamespaceSafe(_serializer.Options.Namespace.Uri + _serializer.Options.AttributeName.Dimensions, _serializer.DocumentDefaultNamespace);
         var dims = Array.Empty<int>();
         if (dimsAttr != null) dims = StringUtils.ParseArrayDimsString(dimsAttr.Value);
 
@@ -969,7 +973,7 @@ internal class Deserialization
                 catch
                 {
                     OnExceptionOccurred(
-                        new YAXCannotAddObjectToCollection(memberAlias.ToString(), dataItems[i], xElement), _ys.Options.ExceptionBehavior);
+                        new YAXCannotAddObjectToCollection(memberAlias.ToString(), dataItems[i], xElement), _serializer.Options.ExceptionBehavior);
                 }
             }
         }
@@ -987,7 +991,7 @@ internal class Deserialization
                 catch
                 {
                     OnExceptionOccurred(
-                        new YAXCannotAddObjectToCollection(memberAlias.ToString(), dataItems[i], xElement), _ys.Options.ExceptionBehavior);
+                        new YAXCannotAddObjectToCollection(memberAlias.ToString(), dataItems[i], xElement), _serializer.Options.ExceptionBehavior);
                 }
         }
 
@@ -1013,7 +1017,7 @@ internal class Deserialization
         {
             eachElemName = StringUtils.RefineSingleElement(collAttrInstance.EachElementName);
             eachElemName =
-                eachElemName.OverrideNsIfEmpty(memberAlias.Namespace.IfEmptyThen(_ys.TypeNamespace)
+                eachElemName.OverrideNsIfEmpty(memberAlias.Namespace.IfEmptyThen(_serializer.TypeNamespace)
                     .IfEmptyThenNone());
         }
 
@@ -1024,7 +1028,7 @@ internal class Deserialization
             var curElementType = collItemType;
             var curElementIsPrimitive = isPrimitive;
 
-            var realTypeAttribute = childElem.Attribute_NamespaceSafe(_ys.Options.Namespace.Uri + _ys.Options.AttributeName.RealType, _ys.DocumentDefaultNamespace);
+            var realTypeAttribute = childElem.Attribute_NamespaceSafe(_serializer.Options.Namespace.Uri + _serializer.Options.AttributeName.RealType, _serializer.DocumentDefaultNamespace);
             if (realTypeAttribute != null)
             {
                 var theRealType = ReflectionUtils.GetTypeByName(realTypeAttribute.Value);
@@ -1046,20 +1050,20 @@ internal class Deserialization
             {
                 try
                 {
-                    dataItems.Add(ReflectionUtils.ConvertBasicType(childElem.Value, curElementType, _ys.Options.Culture));
+                    dataItems.Add(ReflectionUtils.ConvertBasicType(childElem.Value, curElementType, _serializer.Options.Culture));
                 }
                 catch
                 {
                     OnExceptionOccurred(
-                        new YAXBadlyFormedInput(childElem.Name.ToString(), childElem.Value, childElem), _ys.Options.ExceptionBehavior);
+                        new YAXBadlyFormedInput(childElem.Name.ToString(), childElem.Value, childElem), _serializer.Options.ExceptionBehavior);
                 }
             }
             else
             {
-                var namespaceToOverride = memberAlias.Namespace.IfEmptyThen(_ys.TypeNamespace).IfEmptyThenNone();
-                var ser = _ys.NewInternalSerializer(curElementType, namespaceToOverride, null);
+                var namespaceToOverride = memberAlias.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThenNone();
+                var ser = _serializer.NewInternalSerializer(curElementType, namespaceToOverride, null);
                 dataItems.Add(ser.Deserialization.DeserializeBase(childElem));
-                _ys.FinalizeNewSerializer(ser, false);
+                _serializer.FinalizeNewSerializer(ser, false);
             }
         }
     }
@@ -1089,11 +1093,11 @@ internal class Deserialization
         foreach (var wordItem in items)
             try
             {
-                dataItems.Add(ReflectionUtils.ConvertBasicType(wordItem, collItemType, _ys.Options.Culture));
+                dataItems.Add(ReflectionUtils.ConvertBasicType(wordItem, collItemType, _serializer.Options.Culture));
             }
             catch
             {
-                OnExceptionOccurred(new YAXBadlyFormedInput(memberAlias.ToString(), elemValue, xElement), _ys.Options.ExceptionBehavior);
+                OnExceptionOccurred(new YAXBadlyFormedInput(memberAlias.ToString(), elemValue, xElement), _serializer.Options.ExceptionBehavior);
             }
     }
 
@@ -1104,13 +1108,13 @@ internal class Deserialization
         // The collection type has an empty constructor
         if (!ReflectionUtils.IsInstantiableCollection(colType)) return false;
 
-        var namespaceToOverride = memberAlias.Namespace.IfEmptyThen(_ys.TypeNamespace).IfEmptyThenNone();
-        var containerSer = _ys.NewInternalSerializer(colType, namespaceToOverride, null);
+        var namespaceToOverride = memberAlias.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThenNone();
+        var containerSer = _serializer.NewInternalSerializer(colType, namespaceToOverride, null);
         containerSer.Deserialization.IsCreatedToDeserializeANonCollectionMember = true;
         containerSer.Deserialization.RemoveDeserializedXmlNodes = true;
 
         containerObj = containerSer.Deserialization.DeserializeBase(xElement);
-        _ys.FinalizeNewSerializer(containerSer, false);
+        _serializer.FinalizeNewSerializer(containerSer, false);
             
         return true;
     }
@@ -1140,7 +1144,7 @@ internal class Deserialization
         }
         else
         {
-            var memberAlias = member.Alias.OverrideNsIfEmpty(_ys.TypeNamespace);
+            var memberAlias = member.Alias.OverrideNsIfEmpty(_serializer.TypeNamespace);
             colObject = DeserializeCollectionValue(colType, xelemValue, memberAlias,
                 member.CollectionAttributeInstance);
         }
@@ -1151,7 +1155,7 @@ internal class Deserialization
         }
         catch
         {
-            OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias.LocalName, xelemValue), _ys.Options.ExceptionBehavior);
+            OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias.LocalName, xelemValue), _serializer.Options.ExceptionBehavior);
         }
     }
 
@@ -1185,24 +1189,24 @@ internal class Deserialization
             throw new ArgumentException("Type must be a Dictionary", nameof(type));
 
         // deserialize non-collection fields
-        var namespaceToOverride = alias.Namespace.IfEmptyThen(_ys.TypeNamespace).IfEmptyThenNone();
-        var containerSer = _ys.NewInternalSerializer(type, namespaceToOverride, null);
+        var namespaceToOverride = alias.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThenNone();
+        var containerSer = _serializer.NewInternalSerializer(type, namespaceToOverride, null);
         containerSer.Deserialization.IsCreatedToDeserializeANonCollectionMember = true;
         containerSer.Deserialization.RemoveDeserializedXmlNodes = true;
         var dic = containerSer.Deserialization.DeserializeBase(xElementValue);
-        _ys.FinalizeNewSerializer(containerSer, false);
+        _serializer.FinalizeNewSerializer(containerSer, false);
 
         // deserialize collection fields
         ReflectionUtils.IsIEnumerable(type, out var pairType);
         XName eachElementName = StringUtils.RefineSingleElement(ReflectionUtils.GetTypeFriendlyName(pairType));
-        var keyAlias = alias.Namespace.IfEmptyThen(_ys.TypeNamespace).IfEmptyThenNone() + "Key";
-        var valueAlias = alias.Namespace.IfEmptyThen(_ys.TypeNamespace).IfEmptyThenNone() + "Value";
+        var keyAlias = alias.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThenNone() + "Key";
+        var valueAlias = alias.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThenNone() + "Value";
 
         if (collAttributeInstance is { EachElementName: { } })
         {
             eachElementName = StringUtils.RefineSingleElement(collAttributeInstance.EachElementName);
             eachElementName =
-                eachElementName.OverrideNsIfEmpty(alias.Namespace.IfEmptyThen(_ys.TypeNamespace).IfEmptyThenNone());
+                eachElementName.OverrideNsIfEmpty(alias.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThenNone());
         }
 
         GetDictionaryAttributeDetails(dictAttrInstance, alias, ref eachElementName, ref keyAlias, ref valueAlias);
@@ -1239,7 +1243,7 @@ internal class Deserialization
             {
                 OnExceptionOccurred(
                     new YAXCannotAddObjectToCollection(alias.LocalName,
-                        new KeyValuePair<object, object>(key, value), childElem), _ys.Options.ExceptionBehavior);
+                        new KeyValuePair<object, object>(key, value), childElem), _serializer.Options.ExceptionBehavior);
             }
         }
 
@@ -1253,22 +1257,22 @@ internal class Deserialization
         if (isValueAttribute)
         {
             value = ReflectionUtils.ConvertBasicType(
-                childElem.Attribute_NamespaceSafe(valueAlias, _ys.DocumentDefaultNamespace).Value, valueType, _ys.Options.Culture);
+                childElem.Attribute_NamespaceSafe(valueAlias, _serializer.DocumentDefaultNamespace).Value, valueType, _serializer.Options.Culture);
         }
         else if (isValueContent)
         {
-            value = ReflectionUtils.ConvertBasicType(childElem.GetXmlContent(), valueType, _ys.Options.Culture);
+            value = ReflectionUtils.ConvertBasicType(childElem.GetXmlContent(), valueType, _serializer.Options.Culture);
         }
         else if (ReflectionUtils.IsBasicType(valueType))
         {
-            value = ReflectionUtils.ConvertBasicType(childElem.Element(valueAlias)!.Value, valueType, _ys.Options.Culture);
+            value = ReflectionUtils.ConvertBasicType(childElem.Element(valueAlias)!.Value, valueType, _serializer.Options.Culture);
         }
         else
         {
-            valueSerializer ??= _ys.NewInternalSerializer(valueType, valueAlias.Namespace, null);
+            valueSerializer ??= _serializer.NewInternalSerializer(valueType, valueAlias.Namespace, null);
 
             value = valueSerializer.Deserialization.DeserializeBase(childElem.Element(valueAlias));
-            _ys.FinalizeNewSerializer(valueSerializer, false);
+            _serializer.FinalizeNewSerializer(valueSerializer, false);
         }
 
         return value;
@@ -1281,22 +1285,22 @@ internal class Deserialization
         if (isKeyAttribute)
         {
             key = ReflectionUtils.ConvertBasicType(
-                xElement.Attribute_NamespaceSafe(keyAlias, _ys.DocumentDefaultNamespace).Value, keyType, _ys.Options.Culture);
+                xElement.Attribute_NamespaceSafe(keyAlias, _serializer.DocumentDefaultNamespace).Value, keyType, _serializer.Options.Culture);
         }
         else if (isKeyContent)
         {
-            key = ReflectionUtils.ConvertBasicType(xElement.GetXmlContent(), keyType, _ys.Options.Culture);
+            key = ReflectionUtils.ConvertBasicType(xElement.GetXmlContent(), keyType, _serializer.Options.Culture);
         }
         else if (ReflectionUtils.IsBasicType(keyType))
         {
-            key = ReflectionUtils.ConvertBasicType(xElement.Element(keyAlias)!.Value, keyType, _ys.Options.Culture);
+            key = ReflectionUtils.ConvertBasicType(xElement.Element(keyAlias)!.Value, keyType, _serializer.Options.Culture);
         }
         else
         {
-            keySerializer ??= _ys.NewInternalSerializer(keyType, keyAlias.Namespace, null);
+            keySerializer ??= _serializer.NewInternalSerializer(keyType, keyAlias.Namespace, null);
 
             key = keySerializer.Deserialization.DeserializeBase(xElement.Element(keyAlias));
-            _ys.FinalizeNewSerializer(keySerializer, false);
+            _serializer.FinalizeNewSerializer(keySerializer, false);
         }
 
         return key;
@@ -1334,20 +1338,20 @@ internal class Deserialization
         {
             eachElementName = StringUtils.RefineSingleElement(dictAttrInstance.EachPairName);
             eachElementName =
-                eachElementName.OverrideNsIfEmpty(alias.Namespace.IfEmptyThen(_ys.TypeNamespace).IfEmptyThenNone());
+                eachElementName.OverrideNsIfEmpty(alias.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThenNone());
         }
 
         if (dictAttrInstance.KeyName != null)
         {
             keyAlias = StringUtils.RefineSingleElement(dictAttrInstance.KeyName);
-            keyAlias = keyAlias.OverrideNsIfEmpty(alias.Namespace.IfEmptyThen(_ys.TypeNamespace).IfEmptyThenNone());
+            keyAlias = keyAlias.OverrideNsIfEmpty(alias.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThenNone());
         }
 
         if (dictAttrInstance.ValueName != null)
         {
             valueAlias = StringUtils.RefineSingleElement(dictAttrInstance.ValueName);
             valueAlias =
-                valueAlias.OverrideNsIfEmpty(alias.Namespace.IfEmptyThen(_ys.TypeNamespace).IfEmptyThenNone());
+                valueAlias.OverrideNsIfEmpty(alias.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThenNone());
         }
     }
 
@@ -1368,7 +1372,7 @@ internal class Deserialization
         }
         catch
         {
-            OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias.LocalName, xelemValue), _ys.Options.ExceptionBehavior);
+            OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias.LocalName, xelemValue), _serializer.Options.ExceptionBehavior);
         }
     }
 
@@ -1386,7 +1390,7 @@ internal class Deserialization
     {
         bool isFound;
 
-        if (isAttribute && childElem.Attribute_NamespaceSafe(alias, _ys.DocumentDefaultNamespace) != null)
+        if (isAttribute && childElem.Attribute_NamespaceSafe(alias, _serializer.DocumentDefaultNamespace) != null)
         {
             isFound = true;
         }
@@ -1419,7 +1423,7 @@ internal class Deserialization
         var elem = childElem.Element(alias);
         if (elem == null) return false;
 
-        var realTypeAttr = elem.Attribute_NamespaceSafe(_ys.Options.Namespace.Uri + _ys.Options.AttributeName.RealType, _ys.DocumentDefaultNamespace);
+        var realTypeAttr = elem.Attribute_NamespaceSafe(_serializer.Options.Namespace.Uri + _serializer.Options.AttributeName.RealType, _serializer.DocumentDefaultNamespace);
 
         if (realTypeAttr == null) 
             return true; // we found a child element (but without yaxlib:realtype attribute)
@@ -1443,12 +1447,12 @@ internal class Deserialization
     /// <returns>a <c>KeyValuePair</c> instance containing the deserialized data</returns>
     private object DeserializeKeyValuePair(XElement baseElement)
     {
-        var genArgs = _ys.Type.GetGenericArguments();
+        var genArgs = _serializer.Type.GetGenericArguments();
         var keyType = genArgs[0];
         var valueType = genArgs[1];
 
-        var xNameKey = _ys.TypeNamespace.IfEmptyThenNone() + "Key";
-        var xNameValue = _ys.TypeNamespace.IfEmptyThenNone() + "Value";
+        var xNameKey = _serializer.TypeNamespace.IfEmptyThenNone() + "Key";
+        var xNameValue = _serializer.TypeNamespace.IfEmptyThenNone() + "Value";
 
         object keyValue, valueValue;
         if (ReflectionUtils.IsBasicType(keyType))
@@ -1456,7 +1460,7 @@ internal class Deserialization
             try
             {
                 keyValue = ReflectionUtils.ConvertBasicType(
-                    baseElement.Element(xNameKey)?.Value, keyType, _ys.Options.Culture);
+                    baseElement.Element(xNameKey)?.Value, keyType, _serializer.Options.Culture);
             }
             catch (NullReferenceException)
             {
@@ -1474,16 +1478,16 @@ internal class Deserialization
         }
         else
         {
-            var ser = _ys.NewInternalSerializer(keyType, xNameKey.Namespace.IfEmptyThenNone(), null);
+            var ser = _serializer.NewInternalSerializer(keyType, xNameKey.Namespace.IfEmptyThenNone(), null);
             keyValue = ser.Deserialization.DeserializeBase(baseElement.Element(xNameKey));
-            _ys.FinalizeNewSerializer(ser, false);
+            _serializer.FinalizeNewSerializer(ser, false);
         }
 
         if (ReflectionUtils.IsBasicType(valueType))
         {
             try
             {
-                valueValue = ReflectionUtils.ConvertBasicType(baseElement.Element(xNameValue)?.Value, valueType, _ys.Options.Culture);
+                valueValue = ReflectionUtils.ConvertBasicType(baseElement.Element(xNameValue)?.Value, valueType, _serializer.Options.Culture);
             }
             catch (NullReferenceException)
             {
@@ -1501,12 +1505,12 @@ internal class Deserialization
         }
         else
         {
-            var ser = _ys.NewInternalSerializer(valueType, xNameValue.Namespace.IfEmptyThenNone(), null);
+            var ser = _serializer.NewInternalSerializer(valueType, xNameValue.Namespace.IfEmptyThenNone(), null);
             valueValue = ser.Deserialization.DeserializeBase(baseElement.Element(xNameValue));
-            _ys.FinalizeNewSerializer(ser, false);
+            _serializer.FinalizeNewSerializer(ser, false);
         }
 
-        var pair = Activator.CreateInstance(_ys.Type, keyValue, valueValue);
+        var pair = Activator.CreateInstance(_serializer.Type, keyValue, valueValue);
         return pair;
     }
 
@@ -1516,7 +1520,7 @@ internal class Deserialization
     internal LoadOptions GetXmlLoadOptions()
     {
         var options = LoadOptions.None;
-        if (_ys.Options.SerializationOptions.HasFlag(YAXSerializationOptions.DisplayLineInfoInExceptions))
+        if (_serializer.Options.SerializationOptions.HasFlag(YAXSerializationOptions.DisplayLineInfoInExceptions))
             options |= LoadOptions.SetLineInfo;
         return options;
     }
