@@ -13,18 +13,20 @@ using YAXLib.Exceptions;
 using YAXLib.Options;
 using YAXLibTests.SampleClasses;
 using YAXLibTests.SampleClasses.SelfReferencingObjects;
-using GuidAsBasicType = YAXLibTests.SampleClasses.GuidAsBasicType;
+using YAXLibTests.TestHelpers;
 
 namespace YAXLibTests
 {
-    [TestFixture]
-    public class SerializationTest
+    abstract public class SerializationTestBase
     {
         [OneTimeSetUp]
         public void TestFixtureSetUp()
         {
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
         }
+
+        protected abstract IYAXSerializer<object> CreateSerializer<T>(SerializerOptions options = null);
+        protected abstract YAXSerializer CreateSerializer(Type type, SerializerOptions options = null);
 
         [Test]
         public void BasicTypeSerializationTest()
@@ -37,11 +39,11 @@ namespace YAXLibTests
 
             for (var i = 0; i < objs.Length; i++)
             {
-                var serializer = new YAXSerializer(objs[i].GetType());
+                var serializer = CreateSerializer(objs[i].GetType());
                 var got = serializer.Serialize(objs[i]);
                 Assert.That(got, Is.EqualTo(serializedResults[i]));
 
-                var deser = new YAXSerializer(types[i]);
+                var deser = CreateSerializer(types[i]);
                 var obj = deser.Deserialize(got);
                 Assert.That(objs[i], Is.EqualTo(obj));
             }
@@ -58,7 +60,8 @@ namespace YAXLibTests
   <PublishYear>2002</PublishYear>
   <Price>30.5</Price>
 </Book>";
-            var serializer = new YAXSerializer<Book>(new SerializerOptions {
+            var serializer = CreateSerializer<Book>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -76,14 +79,16 @@ namespace YAXLibTests
                 {
                     var th = new Thread(() =>
                         {
-                            var serializer = new YAXSerializer<Book>(new SerializerOptions {
+                            var serializer = CreateSerializer<Book>(new SerializerOptions
+                            {
                                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                                 ExceptionBehavior = YAXExceptionTypes.Warning,
                                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
                             });
                             var got = serializer.Serialize(Book.GetSampleInstance());
 
-                            var deserializer = new YAXSerializer<Book>(new SerializerOptions {
+                            var deserializer = CreateSerializer<Book>(new SerializerOptions
+                            {
                                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                                 ExceptionBehavior = YAXExceptionTypes.Warning,
                                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -113,7 +118,8 @@ namespace YAXLibTests
   <PublishYear>2002</PublishYear>
   <Price>32.20</Price>
 </SimpleBookClassWithDecimalPrice>";
-            var serializer = new YAXSerializer<SimpleBookClassWithDecimalPrice>(new SerializerOptions {
+            var serializer = CreateSerializer<SimpleBookClassWithDecimalPrice>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -145,8 +151,9 @@ namespace YAXLibTests
   <Date1>{instance.Date1.ToString(culture)}</Date1>
 </CultureSample>";
 
-            var serializer = new YAXSerializer(typeof(CultureSample),
-                new SerializerOptions {
+            var serializer = CreateSerializer(typeof(CultureSample),
+                new SerializerOptions
+                {
                     ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                     ExceptionBehavior = YAXExceptionTypes.Warning,
                     SerializationOptions = YAXSerializationOptions.SerializeNullObjects,
@@ -155,8 +162,9 @@ namespace YAXLibTests
             var serResult = serializer.Serialize(CultureSample.GetSampleInstance());
 
             CultureInfo.CurrentCulture = new CultureInfo(cultName);
-            serializer = new YAXSerializer(typeof(CultureSample),
-                new SerializerOptions {
+            serializer = CreateSerializer(typeof(CultureSample),
+                new SerializerOptions
+                {
                     ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                     ExceptionBehavior = YAXExceptionTypes.Warning,
                     SerializationOptions = YAXSerializationOptions.SerializeNullObjects,
@@ -172,8 +180,9 @@ namespace YAXLibTests
         [Test]
         public void Serializing_DeSerializing_Different_Culture()
         {
-            var serializer = new YAXSerializer(typeof(CultureSample),
-                new SerializerOptions {
+            var serializer = CreateSerializer(typeof(CultureSample),
+                new SerializerOptions
+                {
                     ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                     ExceptionBehavior = YAXExceptionTypes.Warning,
                     SerializationOptions = YAXSerializationOptions.SerializeNullObjects,
@@ -211,11 +220,11 @@ namespace YAXLibTests
 </CultureSample>";
 
             CultureInfo.CurrentCulture = new CultureInfo(cultName1);
-            var serializer = new YAXSerializer(typeof(CultureSample));
+            var serializer = CreateSerializer(typeof(CultureSample));
             var serResult = serializer.Serialize(CultureSample.GetSampleInstance());
 
             CultureInfo.CurrentCulture = new CultureInfo(cultName2);
-            serializer = new YAXSerializer(typeof(CultureSample));
+            serializer = CreateSerializer(typeof(CultureSample));
             var desResult = serializer.Deserialize(serResult) as CultureSample;
 
             serResult.Should().BeEquivalentTo(expected, because: "this is our result XML literal");
@@ -234,7 +243,8 @@ namespace YAXLibTests
   <PublishYear>1998</PublishYear>
   <Price>38.75</Price>
 </BookStruct>";
-            var serializer = new YAXSerializer<BookStruct>(new SerializerOptions {
+            var serializer = CreateSerializer<BookStruct>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -259,7 +269,8 @@ namespace YAXLibTests
   <Publisher>MIT Press</Publisher>
   <Editor>MIT Productions</Editor>
 </BookClassWithOrdering>";
-            var serializer = new YAXSerializer<BookClassWithOrdering>(new SerializerOptions {
+            var serializer = CreateSerializer<BookClassWithOrdering>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -279,7 +290,8 @@ namespace YAXLibTests
   <Address>No. 10, Some Ave., Some City, Some Country</Address>
   <Area>120000.5</Area>
 </WarehouseSimple>";
-            var serializer = new YAXSerializer<WarehouseSimple>(new SerializerOptions {
+            var serializer = CreateSerializer<WarehouseSimple>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -299,7 +311,8 @@ namespace YAXLibTests
     <SurfaceArea>120000.5</SurfaceArea>
   </SiteInfo>
 </WarehouseStructured>";
-            var serializer = new YAXSerializer<WarehouseStructured>(new SerializerOptions {
+            var serializer = CreateSerializer<WarehouseStructured>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -320,7 +333,8 @@ namespace YAXLibTests
   </SiteInfo>
   <StoreableItems>Item3, Item6, Item9, Item12</StoreableItems>
 </WarehouseWithArray>";
-            var serializer = new YAXSerializer<WarehouseWithArray>(new SerializerOptions {
+            var serializer = CreateSerializer<WarehouseWithArray>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -335,14 +349,15 @@ namespace YAXLibTests
         {
             const string theKey = "TheKey";
             var d = new Dictionary<string, object> { { theKey, null } };
-            var serializer = new YAXSerializer<Dictionary<string, object>>(new SerializerOptions {
+            var serializer = CreateSerializer<Dictionary<string, object>>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.DontSerializeNullObjects
             });
 
             var got = serializer.Serialize(d);
-            var gotDes = serializer.Deserialize(got) as Dictionary<string, object>;
+            var gotDes = (Dictionary<string, object>) serializer.Deserialize(got);
             Assert.AreEqual(d[theKey], gotDes[theKey]);
         }
 
@@ -354,7 +369,8 @@ namespace YAXLibTests
         {
             const string theKey = "TheKey";
             var d = new Dictionary<string, object> { { theKey, null } };
-            var serializer = new YAXSerializer<Dictionary<string, object>>(new SerializerOptions {
+            var serializer = CreateSerializer<Dictionary<string, object>>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -386,7 +402,8 @@ namespace YAXLibTests
     <ItemInfo Item=""Item12"" Count=""25"" />
   </ItemQuantities>
 </WarehouseWithDictionary>";
-            var serializer = new YAXSerializer<WarehouseWithDictionary>(new SerializerOptions {
+            var serializer = CreateSerializer<WarehouseWithDictionary>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -417,7 +434,8 @@ namespace YAXLibTests
     <Age>50</Age>
   </Owner>
 </WarehouseNestedObjectExample>";
-            var serializer = new YAXSerializer<WarehouseNestedObjectExample>(new SerializerOptions {
+            var serializer = CreateSerializer<WarehouseNestedObjectExample>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -436,7 +454,8 @@ namespace YAXLibTests
   <LanguageName>C#</LanguageName>
   <IsCaseSensitive>true</IsCaseSensitive>
 </ProgrammingLanguage>";
-            var serializer = new YAXSerializer<ProgrammingLanguage>(new SerializerOptions {
+            var serializer = CreateSerializer<ProgrammingLanguage>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -454,7 +473,8 @@ namespace YAXLibTests
 <ColorExample>
   <TheColor>#FF0000FF</TheColor>
 </ColorExample>";
-            var serializer = new YAXSerializer<ColorExample>(new SerializerOptions {
+            var serializer = CreateSerializer<ColorExample>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -486,7 +506,8 @@ namespace YAXLibTests
     </FirstLevelClass>
   </items>
 </MultilevelClass>";
-            var serializer = new YAXSerializer<MultilevelClass>(new SerializerOptions {
+            var serializer = CreateSerializer<MultilevelClass>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -532,7 +553,8 @@ namespace YAXLibTests
                 FormattingExample.GetSampleInstance().ModificationDate.ToString("d")
             );
 
-            var serializer = new YAXSerializer<FormattingExample>(new SerializerOptions {
+            var serializer = CreateSerializer<FormattingExample>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -552,7 +574,8 @@ namespace YAXLibTests
 <PathsExample>
   <Paths>C:\SomeFile.txt;C:\SomeFolder\SomeFile.txt;C:\Some Folder With Space Such As\Program Files</Paths>
 </PathsExample>";
-            var serializer = new YAXSerializer<PathsExample>(new SerializerOptions {
+            var serializer = CreateSerializer<PathsExample>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -561,7 +584,6 @@ namespace YAXLibTests
             var got = serializer.Serialize(PathsExample.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-
 
         [TestCase("mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")] // NETFRAMEWORK2.x
         [TestCase("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")] // NETFRAMEWORK4.x
@@ -609,7 +631,8 @@ namespace YAXLibTests
   </Students>
 </MoreComplexExample>";
 
-            var serializer = new YAXSerializer<MoreComplexExample>(new SerializerOptions {
+            var serializer = CreateSerializer<MoreComplexExample>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -705,7 +728,8 @@ namespace YAXLibTests
     </KeyValuePairOfDictionaryOfDoubleDictionaryOfInt32Int32DictionaryOfDictionaryOfStringStringListOfDouble>
   </SomeDic>
 </NestedDicSample>";
-            var serializer = new YAXSerializer<NestedDicSample>(new SerializerOptions {
+            var serializer = CreateSerializer<NestedDicSample>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -742,7 +766,8 @@ namespace YAXLibTests
     </KeyValuePairOfGuidInt32>
   </SomeDic>
 </GUIDTest>", g1.ToString(), g2.ToString(), g3.ToString(), g4.ToString());
-            var serializer = new YAXSerializer<GUIDTest>(new SerializerOptions {
+            var serializer = CreateSerializer<GUIDTest>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -762,7 +787,8 @@ namespace YAXLibTests
   <PublishYear>2002</PublishYear>
   <PurchaseYear />
 </NullableClass>";
-            var serializer = new YAXSerializer<NullableClass>(new SerializerOptions {
+            var serializer = CreateSerializer<NullableClass>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -781,7 +807,8 @@ namespace YAXLibTests
   <Title>Inside C#</Title>
   <PublishYear>2002</PublishYear>
 </NullableClassAttribute>";
-            var serializer = new YAXSerializer<NullableClassAttribute>(new SerializerOptions {
+            var serializer = CreateSerializer<NullableClassAttribute>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -801,8 +828,9 @@ namespace YAXLibTests
   <Boolean>true</Boolean>
   <Enum>Autumn or fall</Enum>
 </NullableSample2>";
-            var serializer = new YAXSerializer(typeof(NullableSample2),
-                new SerializerOptions {
+            var serializer = CreateSerializer(typeof(NullableSample2),
+                new SerializerOptions
+                {
                     ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                     ExceptionBehavior = YAXExceptionTypes.Warning,
                     SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -824,8 +852,9 @@ namespace YAXLibTests
   <Boolean>true</Boolean>
   <Enum>Autumn or fall</Enum>
 </NullableSample2>";
-            var serializer = new YAXSerializer(typeof(NullableSample2),
-                new SerializerOptions {
+            var serializer = CreateSerializer(typeof(NullableSample2),
+                new SerializerOptions
+                {
                     ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                     ExceptionBehavior = YAXExceptionTypes.Warning,
                     SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -847,8 +876,9 @@ namespace YAXLibTests
   <Boolean>true</Boolean>
   <Enum>Autumn or fall</Enum>
 </NullableSample2>";
-            var serializer = new YAXSerializer(typeof(NullableSample2),
-                new SerializerOptions {
+            var serializer = CreateSerializer(typeof(NullableSample2),
+                new SerializerOptions
+                {
                     ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                     ExceptionBehavior = YAXExceptionTypes.Warning,
                     SerializationOptions = YAXSerializationOptions.DontSerializeNullObjects
@@ -872,8 +902,9 @@ namespace YAXLibTests
   <Boolean>true</Boolean>
   <Enum>Autumn or fall</Enum>
 </NullableSample2>";
-            var serializer = new YAXSerializer(typeof(NullableSample2),
-                new SerializerOptions {
+            var serializer = CreateSerializer(typeof(NullableSample2),
+                new SerializerOptions
+                {
                     ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                     ExceptionBehavior = YAXExceptionTypes.Warning,
                     SerializationOptions = YAXSerializationOptions.DontSerializeNullObjects
@@ -898,7 +929,7 @@ namespace YAXLibTests
   <TestEnumNullableField>yax-enum-for-EnumThree</TestEnumNullableField>
 </NullableSample1>";
             var original = NullableSample1.GetSampleInstance();
-            var serializer = new YAXSerializer(typeof(NullableSample1));
+            var serializer = CreateSerializer(typeof(NullableSample1));
             var got = serializer.Serialize(original);
 
             // Assert
@@ -917,7 +948,7 @@ namespace YAXLibTests
   <TestEnumNullableField>yax-enum-for-EnumThree</TestEnumNullableField>
 </NullableSample1>";
             var original = NullableSample1.GetSampleInstance();
-            var serializer = new YAXSerializer(typeof(NullableSample1));
+            var serializer = CreateSerializer(typeof(NullableSample1));
             var des = (NullableSample1) serializer.Deserialize(xml);
 
             // Assert
@@ -937,7 +968,7 @@ namespace YAXLibTests
   <TestEnumNullableField>" + duplicateAlias + @"</TestEnumNullableField>
 </NullableSample3>";
             var original = NullableSample3.GetSampleInstance();
-            var serializer = new YAXSerializer(typeof(NullableSample3));
+            var serializer = CreateSerializer(typeof(NullableSample3));
 
             Assert.That(code: () => serializer.Serialize(original),
                 Throws.TypeOf<YAXEnumAliasException>()
@@ -957,7 +988,8 @@ namespace YAXLibTests
     <String>Hello</String>
   </ListOfStrings>
 </ListHolderClass>";
-            var serializer = new YAXSerializer<ListHolderClass>(new SerializerOptions {
+            var serializer = CreateSerializer<ListHolderClass>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -975,8 +1007,9 @@ namespace YAXLibTests
   <String>Hi</String>
   <String>Hello</String>
 </ListOfString>";
-            var serializer = new YAXSerializer(ListHolderClass.GetSampleInstance().ListOfStrings.GetType(),
-                new SerializerOptions {
+            var serializer = CreateSerializer(ListHolderClass.GetSampleInstance().ListOfStrings.GetType(),
+                new SerializerOptions
+                {
                     ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                     ExceptionBehavior = YAXExceptionTypes.Warning,
                     SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -1003,7 +1036,8 @@ namespace YAXLibTests
     </PersonInfo>
   </Persons>
 </NamesExample>";
-            var serializer = new YAXSerializer<NamesExample>(new SerializerOptions {
+            var serializer = CreateSerializer<NamesExample>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -1029,7 +1063,8 @@ namespace YAXLibTests
     </skylab_config>
   </input>
 </Pricing>";
-            var serializer = new YAXSerializer<Request>(new SerializerOptions {
+            var serializer = CreateSerializer<Request>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -1047,7 +1082,8 @@ namespace YAXLibTests
   <Audio FileName=""filesname.jpg"">base64</Audio>
   <Image FileName=""filesname.jpg"">base64</Image>
 </AudioSample>";
-            var serializer = new YAXSerializer<AudioSample>(new SerializerOptions {
+            var serializer = CreateSerializer<AudioSample>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -1076,7 +1112,8 @@ namespace YAXLibTests
     </KeyValuePairOfTimeSpanInt32>
   </DicTimeSpans>
 </TimeSpanSample>";
-            var serializer = new YAXSerializer<TimeSpanSample>(new SerializerOptions {
+            var serializer = CreateSerializer<TimeSpanSample>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -1092,7 +1129,7 @@ namespace YAXLibTests
             var timeSpan = new TimeSpan(12, 13, 14);
             var xml1 = "<TimeSpan>" + timeSpan + "</TimeSpan>";
             var xml2 = "<TimeSpan><Ticks>" + timeSpan.Ticks + "</Ticks></TimeSpan>";
-            var serializer = new YAXSerializer(typeof(TimeSpan));
+            var serializer = CreateSerializer(typeof(TimeSpan));
 
             var deserialized1 = serializer.Deserialize(xml1);
             var deserialized2 = serializer.Deserialize(xml2);
@@ -1106,7 +1143,7 @@ namespace YAXLibTests
         {
             var xml1 = "<TimeSpan>no-time-span</TimeSpan>";
             var xml2 = "<TimeSpan><Ticks>not-a-long</Ticks></TimeSpan>";
-            var serializer = new YAXSerializer(typeof(TimeSpan));
+            var serializer = CreateSerializer(typeof(TimeSpan));
 
             Assert.That(code: () => serializer.Deserialize(xml1), Throws.TypeOf<YAXBadlyFormedInput>());
             Assert.That(code: () => serializer.Deserialize(xml2), Throws.TypeOf<YAXBadlyFormedInput>());
@@ -1122,7 +1159,8 @@ namespace YAXLibTests
   <_someInt>8</_someInt>
   <_someDouble>3.14</_someDouble>
 </FieldSerializationExample>";
-            var serializer = new YAXSerializer<FieldSerializationExample>(new SerializerOptions {
+            var serializer = CreateSerializer<FieldSerializationExample>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -1150,7 +1188,8 @@ namespace YAXLibTests
   <PublishYear>2002</PublishYear>
   <Price>30.5</Price>
 </MoreComplexBook>";
-            var serializer = new YAXSerializer<MoreComplexBook>(new SerializerOptions {
+            var serializer = CreateSerializer<MoreComplexBook>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -1179,7 +1218,8 @@ namespace YAXLibTests
   <PublishYear>2002</PublishYear>
   <Price>30.5</Price>
 </MoreComplexBook2>";
-            var serializer = new YAXSerializer<MoreComplexBook2>(new SerializerOptions {
+            var serializer = CreateSerializer<MoreComplexBook2>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -1205,7 +1245,8 @@ namespace YAXLibTests
   <Editor>Timothy Jones</Editor>
   <Editor>Oliver Twist</Editor>
 </MoreComplexBook3>";
-            var serializer = new YAXSerializer<MoreComplexBook3>(new SerializerOptions {
+            var serializer = CreateSerializer<MoreComplexBook3>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -1231,7 +1272,8 @@ namespace YAXLibTests
   <ItemInfo Item=""Item9"" Count=""600"" />
   <ItemInfo Item=""Item12"" Count=""25"" />
 </WarehouseWithDictionaryNoContainer>";
-            var serializer = new YAXSerializer<WarehouseWithDictionaryNoContainer>(new SerializerOptions {
+            var serializer = CreateSerializer<WarehouseWithDictionaryNoContainer>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -1268,7 +1310,8 @@ namespace YAXLibTests
   <ItemInfo Item=""Item9"" Count=""600"" />
   <ItemInfo Item=""Item12"" Count=""25"" />
 </WarehouseWithComments>";
-            var serializer = new YAXSerializer<WarehouseWithComments>(new SerializerOptions {
+            var serializer = CreateSerializer<WarehouseWithComments>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -1328,7 +1371,8 @@ namespace YAXLibTests
     </KeyValuePairOfInt32Seasons>
   </DicIntToSeason>
 </EnumsSample>";
-            var serializer = new YAXSerializer<EnumsSample>(new SerializerOptions {
+            var serializer = CreateSerializer<EnumsSample>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -1427,7 +1471,8 @@ namespace YAXLibTests
     </Array1OfInt32>
   </JaggedNotSerially>
 </MultiDimArraySample>";
-            var serializer = new YAXSerializer<MultiDimArraySample>(new SerializerOptions {
+            var serializer = CreateSerializer<MultiDimArraySample>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -1462,7 +1507,8 @@ namespace YAXLibTests
     </Array2OfInt32>
   </Array1>
 </AnotherArraySample>";
-            var serializer = new YAXSerializer<AnotherArraySample>(new SerializerOptions {
+            var serializer = CreateSerializer<AnotherArraySample>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -1471,7 +1517,6 @@ namespace YAXLibTests
             var got = serializer.Serialize(AnotherArraySample.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-
 
         [Test]
         public void CollectionOfInterfacesSampleTest()
@@ -1548,7 +1593,8 @@ namespace YAXLibTests
     </KeyValuePairOfInt32ISample>
   </DictInt2Sample>
 </CollectionOfInterfacesSample>";
-            var serializer = new YAXSerializer<CollectionOfInterfacesSample>(new SerializerOptions {
+            var serializer = CreateSerializer<CollectionOfInterfacesSample>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -1571,7 +1617,8 @@ namespace YAXLibTests
   <!-- Comment 2 for member -->
   <SomeInt>10</SomeInt>
 </MultipleCommentsTest>";
-            var serializer = new YAXSerializer<MultipleCommentsTest>(new SerializerOptions {
+            var serializer = CreateSerializer<MultipleCommentsTest>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -1601,7 +1648,8 @@ namespace YAXLibTests
     <KeyValuePairOfInt32NullableOfDouble Key=""3"" Value="""" />
   </DictInt2Nullable>
 </InterfaceMatchingSample>";
-            var serializer = new YAXSerializer<InterfaceMatchingSample>(new SerializerOptions {
+            var serializer = CreateSerializer<InterfaceMatchingSample>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -1708,7 +1756,8 @@ namespace YAXLibTests
             var possibleResult5 = string.Format(result, part3, part1, part2);
             var possibleResult6 = string.Format(result, part3, part2, part1);
 
-            var serializer = new YAXSerializer<NonGenericCollectionsSample>(new SerializerOptions {
+            var serializer = CreateSerializer<NonGenericCollectionsSample>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -1727,7 +1776,6 @@ namespace YAXLibTests
             Assert.That(result1Match || result2Match || result3Match || result4Match || result5Match || result6Match,
                 Is.True);
         }
-
 
         [Test]
         public void GenericCollectionsSampleTest()
@@ -1769,7 +1817,8 @@ namespace YAXLibTests
   </TheLinkedList>
 </GenericCollectionsSample>";
 
-            var serializer = new YAXSerializer<GenericCollectionsSample>(new SerializerOptions {
+            var serializer = CreateSerializer<GenericCollectionsSample>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -1792,7 +1841,8 @@ namespace YAXLibTests
   </Notes>
   <Author name=""Tom Archer &amp; Andrew Whitechapel"" />
 </PathAndAliasAssignmentSample>";
-            var serializer = new YAXSerializer<PathAndAliasAssignmentSample>(new SerializerOptions {
+            var serializer = CreateSerializer<PathAndAliasAssignmentSample>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -1813,7 +1863,8 @@ namespace YAXLibTests
     <Countries>Iran,Australia,United States of America,France</Countries>
   </Location>
 </CollectionSeriallyAsAttribute>";
-            var serializer = new YAXSerializer<CollectionSeriallyAsAttribute>(new SerializerOptions {
+            var serializer = CreateSerializer<CollectionSeriallyAsAttribute>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -1822,7 +1873,6 @@ namespace YAXLibTests
             var got = serializer.Serialize(CollectionSeriallyAsAttribute.GetSampleInstance());
             Assert.That(got, Is.EqualTo(result));
         }
-
 
         [Test]
         public void SerializationOptionsSampleTest()
@@ -1849,7 +1899,8 @@ namespace YAXLibTests
   </ObjectWithoutOptionsSet>
 </SerializationOptionsSample>";
 
-            var serializer = new YAXSerializer<SerializationOptionsSample>(new SerializerOptions {
+            var serializer = CreateSerializer<SerializationOptionsSample>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -1879,7 +1930,8 @@ namespace YAXLibTests
   </ObjectWithoutOptionsSet>
 </SerializationOptionsSample>";
 
-            serializer = new YAXSerializer<SerializationOptionsSample>(new SerializerOptions {
+            serializer = CreateSerializer<SerializationOptionsSample>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.DontSerializeNullObjects
@@ -1895,7 +1947,8 @@ namespace YAXLibTests
             var initialInstance = ClassContainingXElement.GetSampleInstance();
             var initialInstanceString = initialInstance.ToString();
 
-            var ser = new YAXSerializer<ClassContainingXElement>(new SerializerOptions {
+            var ser = CreateSerializer<ClassContainingXElement>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -1932,7 +1985,8 @@ namespace YAXLibTests
   <ObjValuedRandom yaxlib:realtype=""System.Random"" />
   <ObjNullRandom />
 </PropertylessClassesSample>";
-            var serializer = new YAXSerializer<PropertylessClassesSample>(new SerializerOptions {
+            var serializer = CreateSerializer<PropertylessClassesSample>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -2014,7 +2068,8 @@ namespace YAXLibTests
     </Pair>
   </DicValueAttrGuid>
 </GuidAsBasicType>";
-            var serializer = new YAXSerializer<GuidAsBasicType>(new SerializerOptions {
+            var serializer = CreateSerializer<GuidAsBasicType>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -2028,7 +2083,7 @@ namespace YAXLibTests
         public void PolymorphicSerializationThroughObjectTest()
         {
             object content = "this is just a simple test";
-            var ser = new YAXSerializer(typeof(object));
+            var ser = CreateSerializer(typeof(object));
             var xmlResult = ser.Serialize(content);
 
             var expectedResult =
@@ -2036,7 +2091,6 @@ namespace YAXLibTests
 
             Assert.That(xmlResult, Is.EqualTo(expectedResult));
             var desObj = ser.Deserialize(xmlResult);
-            var objStr = desObj.ToString();
             Assert.That(desObj.ToString(), Is.EqualTo(content.ToString()));
         }
 
@@ -2049,7 +2103,7 @@ namespace YAXLibTests
         public void PolymorphicSerializationThroughList_CrossFramework_Test(string coreLibName)
         {
             var lst = new List<int> { 1, 2, 3 };
-            var ser = new YAXSerializer(typeof(object));
+            var ser = CreateSerializer(typeof(object));
             var xmlResult = ser.Serialize(lst);
 
             var expectedResult =
@@ -2062,7 +2116,7 @@ namespace YAXLibTests
             Assert.That(xmlResult.StripTypeAssemblyVersion(), Is.EqualTo(expectedResult.StripTypeAssemblyVersion()));
             var desObj = ser.Deserialize(xmlResult);
             Assert.That(desObj.GetType(), Is.EqualTo(lst.GetType()));
-            var desLst = desObj as List<int>;
+            var desLst = (List<int>) desObj;
             Assert.That(lst, Has.Count.EqualTo(desLst.Count));
             Assert.That(lst, Is.EquivalentTo(desLst));
         }
@@ -2077,7 +2131,7 @@ namespace YAXLibTests
             string coreLibName)
         {
             var lst = new List<object> { 1, 2, 3 };
-            var ser = new YAXSerializer(typeof(object));
+            var ser = CreateSerializer(typeof(object));
             var xmlResult = ser.Serialize(lst);
 
             var expectedResult =
@@ -2090,7 +2144,7 @@ namespace YAXLibTests
             Assert.That(xmlResult.StripTypeAssemblyVersion(), Is.EqualTo(expectedResult.StripTypeAssemblyVersion()));
             var desObj = ser.Deserialize(xmlResult);
             Assert.That(desObj.GetType(), Is.EqualTo(lst.GetType()));
-            var desLst = desObj as List<object>;
+            var desLst = (List<object>)desObj;
             Assert.That(lst, Has.Count.EqualTo(desLst.Count));
             Assert.That(lst, Is.EquivalentTo(desLst));
         }
@@ -2100,11 +2154,12 @@ namespace YAXLibTests
         {
             const string expectedResult = @"<dashed-sample dashed-name=""Name"" />";
 
-            var sample = new DashedSample {
+            var sample = new DashedSample
+            {
                 DashedName = "Name"
             };
 
-            var ser = new YAXSerializer(typeof(DashedSample));
+            var ser = CreateSerializer(typeof(DashedSample));
             var got = ser.Serialize(sample);
             Assert.That(got, Is.EqualTo(expectedResult));
         }
@@ -2112,7 +2167,7 @@ namespace YAXLibTests
         [Test]
         public void AttributeForClassTest()
         {
-            var ser = new YAXSerializer(typeof(AttributeContainerSample));
+            var ser = CreateSerializer(typeof(AttributeContainerSample));
             var result = ser.Serialize(AttributeContainerSample.GetSampleInstance());
 
             const string expectedResult =
@@ -2126,7 +2181,7 @@ namespace YAXLibTests
         [Test]
         public void AttributeForSubclassTest()
         {
-            var ser = new YAXSerializer(typeof(AttributeSubclassSample));
+            var ser = CreateSerializer(typeof(AttributeSubclassSample));
             var result = ser.Serialize(AttributeSubclassSample.GetSampleInstance());
 
             const string expectedResult = @"<subclass url=""http://example.com/subclass/1"" page=""1"" />";
@@ -2136,7 +2191,7 @@ namespace YAXLibTests
         [Test]
         public void DictionaryKeyValueAsContentTest()
         {
-            var ser = new YAXSerializer(typeof(DictionaryKeyValueAsContent));
+            var ser = CreateSerializer(typeof(DictionaryKeyValueAsContent));
             var result = ser.Serialize(DictionaryKeyValueAsContent.GetSampleInstance());
 
             const string expectedResult =
@@ -2172,7 +2227,7 @@ namespace YAXLibTests
         public void AttributeForKeyInDictionaryTest()
         {
             var dictionary = DictionarySample.GetSampleInstance();
-            var ser = new YAXSerializer(typeof(DictionarySample));
+            var ser = CreateSerializer(typeof(DictionarySample));
             var result = ser.Serialize(dictionary);
 
             const string expectedResult =
@@ -2188,7 +2243,7 @@ namespace YAXLibTests
         public void AttributeForKeyInDictionaryPropertyTest()
         {
             var container = DictionaryContainerSample.GetSampleInstance();
-            var ser = new YAXSerializer(typeof(DictionaryContainerSample));
+            var ser = CreateSerializer(typeof(DictionaryContainerSample));
             var result = ser.Serialize(container);
 
             const string expectedResult =
@@ -2206,7 +2261,7 @@ namespace YAXLibTests
         public void CollectionWithExtraPropertiesTest()
         {
             var container = CollectionWithExtraProperties.GetSampleInstance();
-            var ser = new YAXSerializer(typeof(CollectionWithExtraProperties));
+            var ser = CreateSerializer(typeof(CollectionWithExtraProperties));
             var result = ser.Serialize(container);
 
             const string expectedResult =
@@ -2226,7 +2281,7 @@ namespace YAXLibTests
         public void CollectionWithExtraPropertiesAttributedAsNotCollectionTest()
         {
             var container = CollectionWithExtraPropertiesAttributedAsNotCollection.GetSampleInstance();
-            var ser = new YAXSerializer(typeof(CollectionWithExtraPropertiesAttributedAsNotCollection));
+            var ser = CreateSerializer(typeof(CollectionWithExtraPropertiesAttributedAsNotCollection));
             var result = ser.Serialize(container);
 
             const string expectedResult =
@@ -2242,7 +2297,7 @@ namespace YAXLibTests
         public void DictionaryWithExtraPropertiesTest()
         {
             var container = DictionaryWithExtraProperties.GetSampleInstance();
-            var ser = new YAXSerializer(typeof(DictionaryWithExtraProperties));
+            var ser = CreateSerializer(typeof(DictionaryWithExtraProperties));
             var result = ser.Serialize(container);
 
             const string expectedResult =
@@ -2270,7 +2325,7 @@ namespace YAXLibTests
         public void DictionaryWithExtraPropertiesAttributedAsNotCollectionTest()
         {
             var container = DictionaryWithExtraPropertiesAttributedAsNotCollection.GetSampleInstance();
-            var ser = new YAXSerializer(typeof(DictionaryWithExtraPropertiesAttributedAsNotCollection));
+            var ser = CreateSerializer(typeof(DictionaryWithExtraPropertiesAttributedAsNotCollection));
             var result = ser.Serialize(container);
 
             const string expectedResult =
@@ -2291,7 +2346,8 @@ namespace YAXLibTests
   <TheName>John</TheName>
   <TheGender>Unknown</TheGender>
 </Child>";
-            var serializer = new YAXSerializer<AttributeInheritance>(new SerializerOptions {
+            var serializer = CreateSerializer<AttributeInheritance>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -2310,7 +2366,8 @@ namespace YAXLibTests
   <CurrentAge>38.7</CurrentAge>
   <TheName>Sally</TheName>
 </Child>";
-            var serializer = new YAXSerializer<AttributeInheritanceWithPropertyOverride>(new SerializerOptions {
+            var serializer = CreateSerializer<AttributeInheritanceWithPropertyOverride>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -2323,7 +2380,7 @@ namespace YAXLibTests
         [Test]
         public void ListOfPolymorphicObjectsTest()
         {
-            var ser = new YAXSerializer(typeof(PolymorphicSampleList));
+            var ser = CreateSerializer(typeof(PolymorphicSampleList));
             var result = ser.Serialize(PolymorphicSampleList.GetSampleInstance());
 
             const string expectedResult =
@@ -2337,7 +2394,7 @@ namespace YAXLibTests
         [Test]
         public void OneLetterPathTest()
         {
-            var ser = new YAXSerializer(typeof(OneLetterAlias));
+            var ser = CreateSerializer(typeof(OneLetterAlias));
             var result = ser.Serialize(OneLetterAlias.GetSampleInstance());
 
             const string expectedResult =
@@ -2352,7 +2409,7 @@ namespace YAXLibTests
         [Test]
         public void IndexerPropertiesAreNotSerialized()
         {
-            var ser = new YAXSerializer(typeof(IndexerSample));
+            var ser = CreateSerializer(typeof(IndexerSample));
             var result = ser.Serialize(IndexerSample.GetSampleInstance());
 
             const string expectedResult =
@@ -2367,7 +2424,7 @@ namespace YAXLibTests
         [Test]
         public void SingleLetterPropertyNamesAreSerializedProperly()
         {
-            var ser = new YAXSerializer(typeof(SingleLetterPropertyNames));
+            var ser = CreateSerializer(typeof(SingleLetterPropertyNames));
             var result = ser.Serialize(SingleLetterPropertyNames.GetSampleInstance());
 
             const string expectedResult =
@@ -2392,7 +2449,7 @@ namespace YAXLibTests
         [Test]
         public void DelegatesAndFunctionPointersMustBeIgnored()
         {
-            var ser = new YAXSerializer(typeof(DelegateInstances));
+            var ser = CreateSerializer(typeof(DelegateInstances));
             var result = ser.Serialize(DelegateInstances.GetSampleInstance());
 
             const string expectedResult =
@@ -2406,7 +2463,7 @@ namespace YAXLibTests
         [Test]
         public void RepetitiveReferencesAreNotLoop()
         {
-            var ser = new YAXSerializer(typeof(RepetitiveReferenceIsNotLoop));
+            var ser = CreateSerializer(typeof(RepetitiveReferenceIsNotLoop));
             var result = ser.Serialize(RepetitiveReferenceIsNotLoop.GetSampleInstance());
 
             const string expectedResult =
@@ -2424,7 +2481,7 @@ namespace YAXLibTests
         [Test]
         public void SelfReferringTypeIsNotNecessarilyASelfReferringObject()
         {
-            var ser = new YAXSerializer(typeof(DirectSelfReferringObject));
+            var ser = CreateSerializer(typeof(DirectSelfReferringObject));
             var result = ser.Serialize(DirectSelfReferringObject.GetSampleInstance());
 
             const string expectedResult =
@@ -2444,7 +2501,8 @@ namespace YAXLibTests
         {
             Assert.Throws<YAXCannotSerializeSelfReferentialTypes>(() =>
             {
-                var ser = new YAXSerializer<DirectSelfReferringObject>(new SerializerOptions {
+                var ser = CreateSerializer<DirectSelfReferringObject>(new SerializerOptions
+                {
                     SerializationOptions = YAXSerializationOptions.ThrowUponSerializingCyclingReferences
                 });
 
@@ -2455,7 +2513,7 @@ namespace YAXLibTests
         [Test]
         public void SerializingAnIndirectSelfReferringTypeWithougLoopMustPass()
         {
-            var ser = new YAXSerializer(typeof(IndirectSelfReferringObject));
+            var ser = CreateSerializer(typeof(IndirectSelfReferringObject));
             var result = ser.Serialize(IndirectSelfReferringObject.GetSampleInstance());
 
             const string expectedResult =
@@ -2475,7 +2533,8 @@ namespace YAXLibTests
         {
             Assert.Throws<YAXCannotSerializeSelfReferentialTypes>(() =>
             {
-                var ser = new YAXSerializer<IndirectSelfReferringObject>(new SerializerOptions {
+                var ser = CreateSerializer<IndirectSelfReferringObject>(new SerializerOptions
+                {
                     SerializationOptions = YAXSerializationOptions.ThrowUponSerializingCyclingReferences
                 });
                 _ = ser.Serialize(IndirectSelfReferringObject.GetSampleInstanceWithLoop());
@@ -2486,7 +2545,8 @@ namespace YAXLibTests
         public void
             SerializingAnIndirectSelfReferringObjectMustPassWhenThrowUponSerializingCyclingReferencesOptionIsNotSet()
         {
-            var ser = new YAXSerializer<IndirectSelfReferringObject>(new SerializerOptions {
+            var ser = CreateSerializer<IndirectSelfReferringObject>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
                 ExceptionBehavior = YAXExceptionTypes.Error,
             });
@@ -2510,7 +2570,8 @@ namespace YAXLibTests
         {
             Assert.Throws<YAXCannotSerializeSelfReferentialTypes>(() =>
             {
-                var ser = new YAXSerializer<IndirectSelfReferringObject>(new SerializerOptions {
+                var ser = CreateSerializer<IndirectSelfReferringObject>(new SerializerOptions
+                {
                     ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
                     ExceptionBehavior = YAXExceptionTypes.Error,
                     SerializationOptions = YAXSerializationOptions.ThrowUponSerializingCyclingReferences
@@ -2524,7 +2585,8 @@ namespace YAXLibTests
         public void
             SerializingDirectSelfReferringObjectMustPassWhenThrowUponSerializingCyclingReferencesOptionIsNotSet()
         {
-            var ser = new YAXSerializer<DirectSelfReferringObject>(new SerializerOptions {
+            var ser = CreateSerializer<DirectSelfReferringObject>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
                 ExceptionBehavior = YAXExceptionTypes.Error
             });
@@ -2548,7 +2610,8 @@ namespace YAXLibTests
         {
             Assert.Throws<YAXCannotSerializeSelfReferentialTypes>(() =>
             {
-                var ser = new YAXSerializer<DirectSelfReferringObject>(new SerializerOptions {
+                var ser = CreateSerializer<DirectSelfReferringObject>(new SerializerOptions
+                {
                     ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
                     ExceptionBehavior = YAXExceptionTypes.Error,
                     SerializationOptions = YAXSerializationOptions.ThrowUponSerializingCyclingReferences
@@ -2562,7 +2625,8 @@ namespace YAXLibTests
         public void
             SerializingDirectSelfReferringObjectWithSelfCycleMustPassWhenThrowUponSerializingCyclingReferencesOptionIsNotSet()
         {
-            var ser = new YAXSerializer<DirectSelfReferringObject>(new SerializerOptions {
+            var ser = CreateSerializer<DirectSelfReferringObject>(new SerializerOptions
+            {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
                 ExceptionBehavior = YAXExceptionTypes.Error
             });
@@ -2584,7 +2648,8 @@ namespace YAXLibTests
         {
             Assert.Throws<YAXCannotSerializeSelfReferentialTypes>(() =>
             {
-                var ser = new YAXSerializer<DirectSelfReferringObject>(new SerializerOptions {
+                var ser = CreateSerializer<DirectSelfReferringObject>(new SerializerOptions
+                {
                     ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
                     ExceptionBehavior = YAXExceptionTypes.Error,
                     SerializationOptions = YAXSerializationOptions.ThrowUponSerializingCyclingReferences
@@ -2598,7 +2663,8 @@ namespace YAXLibTests
         public void
             InfiniteLoopCausedBySerializingCalculatedPropertiesCanBePreventedBySettingDontSerializePropertiesWithNoSetter()
         {
-            var ser = new YAXSerializer<CalculatedPropertiesCanCauseInfiniteLoop>(new SerializerOptions {
+            var ser = CreateSerializer<CalculatedPropertiesCanCauseInfiniteLoop>(new SerializerOptions
+            {
                 SerializationOptions = YAXSerializationOptions.DontSerializePropertiesWithNoSetter
             });
 
@@ -2615,11 +2681,8 @@ namespace YAXLibTests
         [Test]
         public void MaxRecursionPreventsInfiniteLoop()
         {
-            var ser = new YAXSerializer(typeof(CalculatedPropertiesCanCauseInfiniteLoop)) {
-                Options = {
-                    MaxRecursion = 10
-                }
-            };
+            var options = new SerializerOptions { MaxRecursion = 10 };
+            var ser = CreateSerializer<CalculatedPropertiesCanCauseInfiniteLoop>(options);
             var result = ser.Serialize(CalculatedPropertiesCanCauseInfiniteLoop.GetSampleInstance());
 
             const string expectedResult =
@@ -2654,7 +2717,7 @@ namespace YAXLibTests
 
             Assert.That(result, Is.EqualTo(expectedResult));
             Assert.That(ser.Options.MaxRecursion, Is.EqualTo(10));
-            Assert.That(ser.RecursionCount, Is.EqualTo(0));
+            Assert.That(ser.GetRecursionCount(), Is.EqualTo(0));
         }
 
         [Test]
@@ -2668,7 +2731,7 @@ namespace YAXLibTests
             }
             catch (Exception ex)
             {
-                var ser = new YAXSerializer<Exception>(new SerializerOptions { MaxRecursion = 10 });
+                var ser = CreateSerializer<Exception>(new SerializerOptions { MaxRecursion = 10 });
                 var exceptionSerialized = ser.Serialize(ex);
                 Assert.That(exceptionSerialized, Is.Not.Empty);
             }
@@ -2678,7 +2741,7 @@ namespace YAXLibTests
         public void PolymorphicDictionaryWithValueAsNull()
         {
             var dict = new Dictionary<string, object> { { "foo", null } };
-            var serializer = new YAXSerializer<Dictionary<string, object>>();
+            var serializer = CreateSerializer<Dictionary<string, object>>();
             var result = serializer.Serialize(dict);
 
             const string expectedResult =
@@ -2699,7 +2762,7 @@ namespace YAXLibTests
                 null,
                 "3"
             };
-            var serializer = new YAXSerializer<List<string>>();
+            var serializer = CreateSerializer<List<string>>();
             var result = serializer.Serialize(list);
             const string expectedResult =
                 @"<ListOfString>
@@ -2719,7 +2782,7 @@ namespace YAXLibTests
                 3
             };
 
-            var serializer = new YAXSerializer<List<object>>();
+            var serializer = CreateSerializer<List<object>>();
             var result = serializer.Serialize(list);
             const string expectedResult =
                 @"<ListOfObject xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
@@ -2733,7 +2796,7 @@ namespace YAXLibTests
         [Test]
         public void SerializingNullValues()
         {
-            var ser = new YAXSerializer<Book>();
+            var ser = CreateSerializer<Book>();
             var result = ser.Serialize(null);
             const string expectedResult = "<Book />";
 
@@ -2743,7 +2806,7 @@ namespace YAXLibTests
         [Test]
         public void PolymorphicSerializationOfNullValues()
         {
-            var ser = new YAXSerializer<object>();
+            var ser = CreateSerializer<object>();
             var result = ser.Serialize(null);
             const string expectedResult = "<Object />";
 

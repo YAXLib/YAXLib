@@ -1,4 +1,4 @@
-﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+﻿﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
 using System;
@@ -9,7 +9,6 @@ using System.Reflection;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
-using YAXLib.Enums;
 using YAXLib.Exceptions;
 using YAXLib.Options;
 
@@ -20,7 +19,7 @@ namespace YAXLib
     ///     policy.
     ///     This class also supports serializing most of the collection classes such as the Dictionary generic class.
     /// </summary>
-    public class YAXSerializer : IYAXSerializer<object>
+    public class YAXSerializer : IYAXSerializer<object>, IRecursionCounter
     {
         #region Public constructors
 
@@ -266,9 +265,9 @@ namespace YAXLib
         internal YAXSerializer NewInternalSerializer(Type type, XNamespace namespaceToOverride,
             XElement insertionLocation)
         {
-            RecursionCount = Options.MaxRecursion == 0 ? 0 : RecursionCount + 1;
+            _recursionCount = Options.MaxRecursion == 0 ? 0 : _recursionCount + 1;
             var serializer = new YAXSerializer(type, Options) {
-                RecursionCount = RecursionCount,
+                RecursionCount = _recursionCount,
                 SerializedStack = SerializedStack,
                 DocumentDefaultNamespace = DocumentDefaultNamespace
             };
@@ -288,7 +287,7 @@ namespace YAXLib
             if (serializer == null)
                 return;
 
-            if (RecursionCount > 0) RecursionCount--;
+            if (_recursionCount > 0) _recursionCount--;
 
             if (popFromSerializationStack && IsSerializing && serializer.Type != null &&
                 !serializer.Type.IsValueType)
@@ -395,7 +394,9 @@ namespace YAXLib
         /// <summary>
         ///     Gets or sets the number of recursions (number of total created <see cref="YAXSerializer"/> instances).
         /// </summary>
-        internal int RecursionCount { get; set; }
+        int IRecursionCounter.RecursionCount => _recursionCount;
+        
+        private int _recursionCount;
 
         /// <summary>
         ///     A manager that keeps a map of namespaces to their prefixes (if any) to be added ultimately to the xml result
