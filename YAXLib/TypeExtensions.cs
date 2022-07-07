@@ -39,8 +39,9 @@ namespace YAXLib
         public static List<MemberInfo> GetMembers(this Type t, BindingFlags bindingFlags,
             bool includeBaseTypePrivateMembers)
         {
-            var memberList = new List<MemberInfo>();
-            memberList.AddRange(t.GetMembers(bindingFlags));
+            var members = t.GetMembers(bindingFlags);
+            var memberList = new List<MemberInfo>(members.Length * 2);
+            memberList.AddRange(members);
             var currentType = t;
             while ((currentType = currentType.BaseType) != null && includeBaseTypePrivateMembers)
             {
