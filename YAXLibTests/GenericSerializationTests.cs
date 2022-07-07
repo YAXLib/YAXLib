@@ -1,20 +1,27 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+using System;
 using System.Globalization;
 using NUnit.Framework;
 using YAXLib;
+using YAXLib.Options;
 using YAXLibTests.SampleClasses;
+using YAXLibTests.TestHelpers;
 
 namespace YAXLibTests
 {
     [TestFixture]
-    public class GenericSerializationTests
+    public class GenericSerializationTests : SerializationTestBase
     {
-        [OneTimeSetUp]
-        public void TestFixtureSetUp()
+        protected override IYAXSerializer<object> CreateSerializer<T>(SerializerOptions options = null)
         {
-            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+            return new GenericSerializerWrapper<T>(new YAXSerializer<T>(options ?? new SerializerOptions()));
+        }
+
+        protected override YAXSerializer CreateSerializer(Type type, SerializerOptions options = null)
+        {
+            return new YAXSerializer(type, options ?? new SerializerOptions());
         }
 
         [Test]
