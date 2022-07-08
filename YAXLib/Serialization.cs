@@ -66,7 +66,7 @@ namespace YAXLib
 
             SetBaseElement(className);
 
-            if (_serializer.RecursionCount >= _serializer.Options.MaxRecursion - 1)
+            if (((IRecursionCounter) _serializer).RecursionCount >= _serializer.Options.MaxRecursion - 1)
             {
                 PushObjectToSerializationStack(obj);
                 return _baseElement;

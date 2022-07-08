@@ -267,10 +267,10 @@ namespace YAXLib
         {
             _recursionCount = Options.MaxRecursion == 0 ? 0 : _recursionCount + 1;
             var serializer = new YAXSerializer(type, Options) {
-                RecursionCount = _recursionCount,
                 SerializedStack = SerializedStack,
                 DocumentDefaultNamespace = DocumentDefaultNamespace
             };
+            ((IRecursionCounter) serializer).RecursionCount = _recursionCount;
 
             if (namespaceToOverride != null)
                 serializer.SetNamespaceToOverrideEmptyNamespace(namespaceToOverride);
@@ -295,6 +295,7 @@ namespace YAXLib
 
             if (importNamespaces)
                 XmlNamespaceManager.ImportNamespaces(serializer);
+            
             ParsingErrors.AddRange(serializer.ParsingErrors);
         }
 
@@ -394,8 +395,12 @@ namespace YAXLib
         /// <summary>
         ///     Gets or sets the number of recursions (number of total created <see cref="YAXSerializer"/> instances).
         /// </summary>
-        int IRecursionCounter.RecursionCount => _recursionCount;
-        
+        int IRecursionCounter.RecursionCount
+        {
+            get => _recursionCount;
+            set => _recursionCount = value;
+        }
+
         private int _recursionCount;
 
         /// <summary>

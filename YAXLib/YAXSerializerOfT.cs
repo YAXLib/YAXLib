@@ -53,6 +53,12 @@ namespace YAXLib
                 IRecursionCounter serializer = _serializer;
                 return serializer.RecursionCount;
             }
+
+            set
+            {
+                IRecursionCounter serializer = _serializer;
+                serializer.RecursionCount = value;
+            }
         }
 
         /// <summary>
