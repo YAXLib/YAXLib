@@ -13,7 +13,7 @@ namespace YAXLib
     ///     policy.
     ///     This class also supports serializing most of the collection classes such as the Dictionary generic class.
     /// </summary>
-    public class YAXSerializer<T> : IYAXSerializer<T>
+    public class YAXSerializer<T> : IYAXSerializer<T>, IRecursionCounter
     {
         private readonly YAXSerializer _serializer;
         
@@ -45,7 +45,16 @@ namespace YAXLib
         /// </summary>
         /// <value>The parsing errors.</value>
         public YAXParsingErrors ParsingErrors => _serializer.ParsingErrors;
-        
+
+        int IRecursionCounter.RecursionCount
+        {
+            get
+            {
+                IRecursionCounter serializer = _serializer;
+                return serializer.RecursionCount;
+            }
+        }
+
         /// <summary>
         ///     Serializes the specified object and returns a string containing the XML.
         /// </summary>

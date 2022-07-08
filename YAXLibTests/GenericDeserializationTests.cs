@@ -2,24 +2,25 @@
 // Licensed under the MIT license.
 
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using YAXLib;
+using YAXLib.Options;
 using YAXLibTests.SampleClasses;
+using YAXLibTests.TestHelpers;
 
 namespace YAXLibTests
 {
     [TestFixture]
-    public class GenericDeserializationTests
+    public class GenericDeserializationTests : DeserializationTestBase
     {
-        [OneTimeSetUp]
-        public void TestFixtureSetUp()
+        protected override IYAXSerializer<object> CreateSerializer<T>(SerializerOptions options = null)
         {
-            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+            return new GenericSerializerWrapper<T>(new YAXSerializer<T>(options ?? new SerializerOptions()));
+        }
+
+        protected override YAXSerializer CreateSerializer(Type type, SerializerOptions options = null)
+        {
+            return new YAXSerializer(type, options ?? new SerializerOptions());
         }
 
         [Test]
