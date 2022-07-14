@@ -22,28 +22,26 @@ namespace YAXLib.Enums
         DontSerializeNullObjects = 1,
 
         /// <summary>
-        ///     TODO: update the comment
-        ///     Prevents serialization of child objects that refer to a parent object which is already serialized, and hene causing
-        ///     a cycle or infinite loop
+        ///     Prevents that cycle references from child to parent objects cause an infinite loop.
         /// </summary>
         ThrowUponSerializingCyclingReferences = 2,
 
         /// <summary>
-        ///     Prevents serailization of properties with no setter
+        ///     Prevents serialization of properties with no setter
         /// </summary>
         DontSerializePropertiesWithNoSetter = 4,
 
         /// <summary>
         ///     Never add YAXLib metadata attributes (e.g., 'yaxlib:realtype') to the serialized XML (even when they would be
         ///     required for deserialization.)
-        ///     Useful when generating XML intended for another system's consumption.
+        ///     Useful when generating XML is targeting third party systems.
         /// </summary>
         SuppressMetadataAttributes = 8,
 
         /// <summary>
         ///     Provides line number and position (where available) in deserialization exceptions.
-        ///     Enabling this may have a performance impact
+        ///     Enabling this has a performance impact
         /// </summary>
-        DisplayLineInfoInExceptions = 16
+        DisplayLineInfoInExceptions = 16,
     }
 }

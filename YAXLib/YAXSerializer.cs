@@ -41,7 +41,7 @@ namespace YAXLib
         {
             Type = t;
             Options = options;
-            
+
             // this must be the last call
             ParsingErrors = new YAXParsingErrors();
             XmlNamespaceManager = new XmlNamespaceManager();
@@ -66,7 +66,7 @@ namespace YAXLib
         {
             return Serialization.SerializeXDocument(obj).ToString();
         }
-        
+
         /// <summary>
         ///     Serializes the specified object into a <c>TextWriter</c> instance.
         /// </summary>
@@ -96,7 +96,7 @@ namespace YAXLib
         {
             return Serialization.SerializeXDocument(obj);
         }
-        
+
         /// <summary>
         ///     Serializes the specified object to file.
         /// </summary>
@@ -280,7 +280,7 @@ namespace YAXLib
 
             if (importNamespaces)
                 XmlNamespaceManager.ImportNamespaces(serializer);
-            
+
             ParsingErrors.AddRange(serializer.ParsingErrors);
         }
 
@@ -305,10 +305,10 @@ namespace YAXLib
         /// <returns>the sequence of fields to be de/serialized for the specified type</returns>
         internal IEnumerable<MemberWrapper> GetFieldsToBeSerialized(UdtWrapper typeWrapper)
         {
-
 #pragma warning disable S3011 // disable sonar accessibility bypass warning
-            foreach (var member in typeWrapper.UnderlyingType.GetMembers(BindingFlags.Instance |
-                                                                         BindingFlags.NonPublic | BindingFlags.Public))
+            foreach (var member in typeWrapper.UnderlyingType.GetMembers(
+                         BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
+                         typeWrapper.IncludePrivateMembersFromBaseTypes))
 #pragma warning restore S3011 // enable sonar accessibility bypass warning
             {
                 if (!IsValidPropertyOrField(member)) continue;
@@ -323,7 +323,7 @@ namespace YAXLib
                         UdtWrapper.DoNotSerializePropertiesWithNoSetter)) yield return memInfo;
             }
         }
-        
+
         internal void FindDocumentDefaultNamespace()
         {
             if (UdtWrapper.HasNamespace && string.IsNullOrEmpty(UdtWrapper.NamespacePrefix))
@@ -401,7 +401,7 @@ namespace YAXLib
 
         private void SetNamespaceToOverrideEmptyNamespace(XNamespace otherNamespace)
         {
-            // if namespace info is not already set during construction, 
+            // if namespace info is not already set during construction,
             // then set it from the other YAXSerializer instance
             if (otherNamespace.IsEmpty() && !TypeNamespace.IsEmpty()) TypeNamespace = otherNamespace;
         }

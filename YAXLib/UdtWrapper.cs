@@ -65,7 +65,7 @@ namespace YAXLib
             IsAttributedAsNotCollection = false;
 
             SetYAXSerializationOptions(callerSerializer);
-            
+
             foreach (var attr in _udtType.GetCustomAttributes(true))
                 if (attr is IYaxTypeLevelAttribute typeLevelAttribute) typeLevelAttribute.Setup(this);
         }
@@ -107,6 +107,9 @@ namespace YAXLib
         /// </summary>
         /// <value>The fields to be serialized.</value>
         public YAXSerializationFields FieldsToSerialize { get; internal set; }
+
+        /// <inheritdoc cref="YAXSerializableTypeAttribute.IncludePrivateMembersFromBaseTypes"/>>
+        public bool IncludePrivateMembersFromBaseTypes { get; internal set; }
 
         /// <summary>
         ///     Gets the serialization options.
@@ -297,7 +300,7 @@ namespace YAXLib
         ///     the whole document).
         /// </remarks>
         public string NamespacePrefix { get; internal set; }
-        
+
         /// <summary>
         ///     Sets the serializer options.
         /// </summary>

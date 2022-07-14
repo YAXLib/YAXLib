@@ -20,6 +20,7 @@ namespace YAXLib.Attributes
         public YAXSerializableTypeAttribute()
         {
             FieldsToSerialize = YAXSerializationFields.PublicPropertiesOnly;
+            IncludePrivateMembersFromBaseTypes = false;
         }
 
         /// <summary>
@@ -67,14 +68,22 @@ namespace YAXLib.Attributes
             }
         }
 
+        /// <summary>
+        ///     If set to <see langword="true"/>, private fields from <see cref="Type.BaseType"/>s
+        ///     can be searched for fields to serialize. Default is <see langword="false"/>.
+        /// </summary>
+        public bool IncludePrivateMembersFromBaseTypes { get; set; }
+
         /// <inheritdoc/>
         void IYaxTypeLevelAttribute.Setup(UdtWrapper udtWrapper)
         {
             udtWrapper.FieldsToSerialize = FieldsToSerialize;
+            udtWrapper.IncludePrivateMembersFromBaseTypes = IncludePrivateMembersFromBaseTypes;
+
             if (IsSerializationOptionSet())
             {
                 udtWrapper.SetSerializationOptionsFromAttribute(Options);
-            } 
+            }
         }
     }
 }
