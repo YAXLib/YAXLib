@@ -12,10 +12,8 @@ namespace YAXLib.Attributes
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class |
                     AttributeTargets.Struct)]
-    public class YAXCollectionAttribute : YAXBaseAttribute
+    public class YAXCollectionAttribute : YAXBaseAttribute, IYaxMemberLevelAttribute, IYaxTypeLevelAttribute
     {
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="YAXCollectionAttribute" /> class.
         /// </summary>
@@ -27,10 +25,6 @@ namespace YAXLib.Attributes
             EachElementName = null;
             IsWhiteSpaceSeparator = true;
         }
-
-        #endregion
-
-        #region Properties
 
         /// <summary>
         ///     Gets or sets the type of the serialization of the collection.
@@ -56,14 +50,24 @@ namespace YAXLib.Attributes
 
         /// <summary>
         ///     Gets or sets a value indicating whether white space characters are to be
-        ///     treated as sparators or not.
+        ///     treated as separators or not.
         /// </summary>
         /// <value>
         ///     <c>true</c> if white space separator characters are to be
-        ///     treated as sparators; otherwise, <c>false</c>.
+        ///     treated as separators; otherwise, <c>false</c>.
         /// </value>
         public bool IsWhiteSpaceSeparator { get; set; }
 
-        #endregion
+        /// <inheritdoc/>
+        void IYaxMemberLevelAttribute.Setup(MemberWrapper memberWrapper)
+        {
+            memberWrapper.CollectionAttributeInstance = this;
+        }
+
+        /// <inheritdoc/>
+        void IYaxTypeLevelAttribute.Setup(UdtWrapper udtWrapper)
+        {
+            udtWrapper.CollectionAttributeInstance = this;
+        }
     }
 }

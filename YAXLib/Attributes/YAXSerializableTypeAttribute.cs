@@ -12,10 +12,8 @@ namespace YAXLib.Attributes
     ///     This attribute is applicable to classes and structures.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-    public class YAXSerializableTypeAttribute : YAXBaseAttribute
+    public class YAXSerializableTypeAttribute : YAXBaseAttribute, IYaxTypeLevelAttribute
     {
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="YAXSerializableTypeAttribute" /> class.
         /// </summary>
@@ -23,10 +21,6 @@ namespace YAXLib.Attributes
         {
             FieldsToSerialize = YAXSerializationFields.PublicPropertiesOnly;
         }
-
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         ///     Determines whether the serialization options property has been explicitly
@@ -41,10 +35,6 @@ namespace YAXLib.Attributes
             return _isOptionSet;
         }
 
-        #endregion
-
-        #region Private Fields
-
         /// <summary>
         ///     determines whether the serialization options property has been explicitly
         ///     set by the user.
@@ -55,10 +45,6 @@ namespace YAXLib.Attributes
         ///     Private variable to hold the serialization options
         /// </summary>
         private YAXSerializationOptions _serializationOptions = YAXSerializationOptions.SerializeNullObjects;
-
-        #endregion
-
-        #region Properties
 
         /// <summary>
         ///     Gets or sets the fields which YAXLib selects for serialization
@@ -81,6 +67,14 @@ namespace YAXLib.Attributes
             }
         }
 
-        #endregion
+        /// <inheritdoc/>
+        void IYaxTypeLevelAttribute.Setup(UdtWrapper udtWrapper)
+        {
+            udtWrapper.FieldsToSerialize = FieldsToSerialize;
+            if (IsSerializationOptionSet())
+            {
+                udtWrapper.SetSerializationOptionsFromAttribute(Options);
+            } 
+        }
     }
 }

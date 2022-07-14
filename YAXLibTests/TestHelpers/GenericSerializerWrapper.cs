@@ -1,9 +1,7 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
-using System;
 using System.IO;
-using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using YAXLib;
@@ -87,6 +85,7 @@ namespace YAXLibTests.TestHelpers
         public int RecursionCount
         {
             get => _serializer.GetRecursionCount();
+            set => _serializer.SetRecursionCount(value);
         }
 
         #endregion

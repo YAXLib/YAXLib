@@ -5,7 +5,6 @@ using System;
 using System.Xml.Linq;
 using YAXLib.Attributes;
 using YAXLib.Enums;
-using YAXLib.Exceptions;
 
 namespace YAXLib
 {
@@ -15,16 +14,6 @@ namespace YAXLib
     internal class UdtWrapper
     {
         /// <summary>
-        ///     boolean value indicating whether this instance is a wrapper around a collection type
-        /// </summary>
-        private readonly bool _isTypeCollection;
-
-        /// <summary>
-        ///     boolean value indicating whether this instance is a wrapper around a dictionary type
-        /// </summary>
-        private readonly bool _isTypeDictionary;
-
-        /// <summary>
         ///     the underlying type for this instance of <c>TypeWrapper</c>
         /// </summary>
         private readonly Type _udtType;
@@ -33,16 +22,6 @@ namespace YAXLib
         ///     Alias for the type
         /// </summary>
         private XName _alias;
-
-        /// <summary>
-        ///     The collection attribute instance
-        /// </summary>
-        private YAXCollectionAttribute _collectionAttributeInstance;
-
-        /// <summary>
-        ///     the dictionary attribute instance
-        /// </summary>
-        private YAXDictionaryAttribute _dictionaryAttributeInstance;
 
         /// <summary>
         ///     reference to an instance of <c>EnumWrapper</c> in case that the current instance is an enum.
@@ -73,12 +52,12 @@ namespace YAXLib
         /// </param>
         public UdtWrapper(Type udtType, YAXSerializer callerSerializer)
         {
-            _isTypeDictionary = false;
+            IsDictionaryType = false;
             _udtType = ReflectionUtils.IsNullable(udtType, out var nullableUnderlyingType)
                 ? nullableUnderlyingType
                 : udtType;
-            _isTypeCollection = ReflectionUtils.IsCollectionType(_udtType);
-            _isTypeDictionary = ReflectionUtils.IsIDictionary(_udtType);
+            IsCollectionType = ReflectionUtils.IsCollectionType(_udtType);
+            IsDictionaryType = ReflectionUtils.IsIDictionary(_udtType);
 
             Alias = StringUtils.RefineSingleElement(ReflectionUtils.GetTypeFriendlyName(_udtType));
             Comment = null;
@@ -88,8 +67,7 @@ namespace YAXLib
             SetYAXSerializationOptions(callerSerializer);
             
             foreach (var attr in _udtType.GetCustomAttributes(true))
-                if (attr is YAXBaseAttribute)
-                    ProcessYAXAttribute(attr);
+                if (attr is IYaxTypeLevelAttribute typeLevelAttribute) typeLevelAttribute.Setup(this);
         }
 
         /// <summary>
@@ -98,9 +76,12 @@ namespace YAXLib
         /// <value>The alias of the type.</value>
         public XName Alias
         {
-            get { return _alias; }
+            get
+            {
+                return _alias;
+            }
 
-            private set
+            internal set
             {
                 if (Namespace.IsEmpty())
                 {
@@ -119,13 +100,13 @@ namespace YAXLib
         ///     Gets an array of comments for the underlying type.
         /// </summary>
         /// <value>The array of comments for the underlying type.</value>
-        public string[] Comment { get; private set; }
+        public string[] Comment { get; internal set; }
 
         /// <summary>
         ///     Gets the fields to be serialized.
         /// </summary>
         /// <value>The fields to be serialized.</value>
-        public YAXSerializationFields FieldsToSerialize { get; private set; }
+        public YAXSerializationFields FieldsToSerialize { get; internal set; }
 
         /// <summary>
         ///     Gets the serialization options.
@@ -139,7 +120,7 @@ namespace YAXLib
         /// <value>
         ///     <c>true</c> if this instance is attributed as not collection; otherwise, <c>false</c>.
         /// </value>
-        public bool IsAttributedAsNotCollection { get; private set; }
+        public bool IsAttributedAsNotCollection { get; internal set; }
 
         /// <summary>
         ///     Gets a value indicating whether this instance has comment.
@@ -147,7 +128,7 @@ namespace YAXLib
         /// <value>
         ///     <c>true</c> if this instance has comment; otherwise, <c>false</c>.
         /// </value>
-        public bool HasComment => Comment != null && Comment.Length > 0;
+        public bool HasComment => Comment is { Length: > 0 };
 
         /// <summary>
         ///     Gets the underlying type corresponding to this wrapper.
@@ -222,7 +203,7 @@ namespace YAXLib
         /// <value>
         ///     <c>true</c> if this instance wraps around a collection type; otherwise, <c>false</c>.
         /// </value>
-        public bool IsCollectionType => _isTypeCollection;
+        public bool IsCollectionType { get; }
 
         /// <summary>
         ///     Gets a value indicating whether this instance wraps around a dictionary type.
@@ -230,7 +211,7 @@ namespace YAXLib
         /// <value>
         ///     <c>true</c> if this instance wraps around a dictionary type; otherwise, <c>false</c>.
         /// </value>
-        public bool IsDictionaryType => _isTypeDictionary;
+        public bool IsDictionaryType { get; }
 
         /// <summary>
         ///     Gets a value indicating whether this instance is treated as collection.
@@ -252,19 +233,19 @@ namespace YAXLib
         ///     Gets the collection attribute instance.
         /// </summary>
         /// <value>The collection attribute instance.</value>
-        public YAXCollectionAttribute CollectionAttributeInstance => _collectionAttributeInstance;
+        public YAXCollectionAttribute CollectionAttributeInstance { get; internal set; }
 
         /// <summary>
         ///     Gets the dictionary attribute instance.
         /// </summary>
         /// <value>The dictionary attribute instance.</value>
-        public YAXDictionaryAttribute DictionaryAttributeInstance => _dictionaryAttributeInstance;
+        public YAXDictionaryAttribute DictionaryAttributeInstance { get; internal set; }
 
         /// <summary>
         ///     Gets or sets the type of the custom serializer.
         /// </summary>
         /// <value>The type of the custom serializer.</value>
-        public Type CustomSerializerType { get; private set; }
+        public Type CustomSerializerType { get; internal set; }
 
         /// <summary>
         ///     Gets a value indicating whether this instance has custom serializer.
@@ -274,7 +255,7 @@ namespace YAXLib
         /// </value>
         public bool HasCustomSerializer => CustomSerializerType != null;
 
-        public bool PreservesWhitespace { get; private set; }
+        public bool PreservesWhitespace { get; internal set; }
 
         /// <summary>
         ///     Gets a value indicating whether this instance has a custom namespace
@@ -293,7 +274,7 @@ namespace YAXLib
         {
             get { return _namespace; }
 
-            private set
+            internal set
             {
                 _namespace = value;
                 // explicit namespace definition overrides namespace definitions in SerializeAs attributes.
@@ -315,9 +296,8 @@ namespace YAXLib
         ///     setting a default namespace for that element would make it apply to
         ///     the whole document).
         /// </remarks>
-        public string NamespacePrefix { get; private set; }
-
-
+        public string NamespacePrefix { get; internal set; }
+        
         /// <summary>
         ///     Sets the serializer options.
         /// </summary>
@@ -355,10 +335,9 @@ namespace YAXLib
         /// </exception>
         public override bool Equals(object obj)
         {
-            if (obj is UdtWrapper)
+            if (obj is UdtWrapper udtWrapper)
             {
-                var other = obj as UdtWrapper;
-                return _udtType == other._udtType;
+                return _udtType == udtWrapper.UnderlyingType;
             }
 
             return false;
@@ -376,79 +355,13 @@ namespace YAXLib
         }
 
         /// <summary>
-        ///     Processes the specified attribute.
+        /// Used by attributes when setting <see cref="YAXSerializationOptions"/>.
         /// </summary>
-        /// <param name="attr">The attribute to process.</param>
-        private void ProcessYAXAttribute(object attr)
+        /// <param name="options"></param>
+        internal void SetSerializationOptionsFromAttribute(YAXSerializationOptions options)
         {
-            if (attr is YAXCommentAttribute commentAttribute)
-            {
-                var comment = commentAttribute.Comment;
-                if (!string.IsNullOrEmpty(comment))
-                {
-                    var comments = comment.Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries);
-                    for (var i = 0; i < comments.Length; i++) comments[i] = string.Format(" {0} ", comments[i].Trim());
-
-                    Comment = comments;
-                }
-            }
-            else if (attr is YAXSerializableTypeAttribute theAttr)
-            {
-                FieldsToSerialize = theAttr.FieldsToSerialize;
-                if (theAttr.IsSerializationOptionSet())
-                {
-                    SerializationOptions = theAttr.Options;
-                    _isSerializationOptionSetByAttribute = true;
-                }
-            }
-            else if (attr is YAXSerializeAsAttribute attribute)
-            {
-                Alias = StringUtils.RefineSingleElement(attribute.SerializeAs);
-            }
-            else if (attr is YAXNotCollectionAttribute)
-            {
-                if (!ReflectionUtils.IsArray(_udtType))
-                    IsAttributedAsNotCollection = true;
-            }
-            else if (attr is YAXCustomSerializerAttribute customSerializerAttribute)
-            {
-                var serType = customSerializerAttribute.CustomSerializerType;
-
-                var isDesiredSerializerInterface =
-                    ReflectionUtils.IsDerivedFromGenericInterfaceType(serType, typeof(ICustomSerializer<>),
-                        out var genTypeArg);
-
-                if (!isDesiredSerializerInterface)
-                    throw new YAXObjectTypeMismatch(typeof(ICustomSerializer<>), serType);
-                
-                // Reason for missing unit test coverage (?):
-                // Usually this case throws before
-                if (!genTypeArg.IsAssignableFrom(UnderlyingType))
-                    throw new YAXObjectTypeMismatch(UnderlyingType, genTypeArg);
-
-                CustomSerializerType = serType;
-            }
-            else if (attr is YAXPreserveWhitespaceAttribute)
-            {
-                PreservesWhitespace = true;
-            }
-            else if (attr is YAXNamespaceAttribute nsAttrib)
-            {
-                Namespace = nsAttrib.Namespace;
-                NamespacePrefix = nsAttrib.Prefix;
-            }
-            else if (attr is YAXCollectionAttribute)
-            {
-                _collectionAttributeInstance = attr as YAXCollectionAttribute;
-            }
-            else if (attr is YAXDictionaryAttribute)
-            {
-                _dictionaryAttributeInstance = attr as YAXDictionaryAttribute;
-            }
-            else
-            {
-                throw new Exception("Attribute not applicable to types!");
-            }
+            SerializationOptions = options;
+            _isSerializationOptionSetByAttribute = true;
         }
     }
 }

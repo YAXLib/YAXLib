@@ -12,8 +12,4 @@ namespace YAXLib.Attributes
     public abstract class YAXBaseAttribute : Attribute
     {
     }
-
-    // TODO: rename to YAXContentFor in v3
-
-    // TODO: rename to YAXContentForClass in v3
 }

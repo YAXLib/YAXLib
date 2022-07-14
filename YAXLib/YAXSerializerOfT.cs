@@ -53,6 +53,12 @@ namespace YAXLib
                 IRecursionCounter serializer = _serializer;
                 return serializer.RecursionCount;
             }
+
+            set
+            {
+                IRecursionCounter serializer = _serializer;
+                serializer.RecursionCount = value;
+            }
         }
 
         /// <summary>
@@ -152,7 +158,7 @@ namespace YAXLib
         /// <returns>The deserialized object.</returns>
         public T DeserializeFromFile(string fileName)
         {
-            return (T) _serializer.Deserialize(fileName);
+            return (T) _serializer.DeserializeFromFile(fileName);
         }
 
         /// <summary>

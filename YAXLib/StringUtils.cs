@@ -154,7 +154,7 @@ namespace YAXLib
         /// <param name="locationString">The location string.</param>
         /// <param name="path">The path to be extracted.</param>
         /// <param name="alias">The alias to be extracted.</param>
-        public static void ExttractPathAndAliasFromLocationString(string locationString, out string path,
+        public static void ExtractPathAndAliasFromLocationString(string locationString, out string path,
             out string alias)
         {
             var poundIndex = locationString.IndexOf('#');
