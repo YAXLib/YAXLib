@@ -158,7 +158,7 @@ namespace YAXLib
         /// <returns>The deserialized object.</returns>
         public T DeserializeFromFile(string fileName)
         {
-            return (T) _serializer.Deserialize(fileName);
+            return (T) _serializer.DeserializeFromFile(fileName);
         }
 
         /// <summary>

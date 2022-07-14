@@ -188,18 +188,11 @@ namespace YAXLib
         /// <returns>The deserialized object</returns>
         public object Deserialize(XElement element)
         {
-            try
-            {
-                var xDocument = new XDocument();
-                xDocument.Add(element);
-                FindDocumentDefaultNamespace();
-                return Deserialization.DeserializeBase(element);
-            }
-            catch (XmlException ex)
-            {
-                Deserialization.OnExceptionOccurred(new YAXBadlyFormedXML(ex, ex.LineNumber, ex.LinePosition), Options.ExceptionBehavior);
-                return null;
-            }
+            // impossible to throw YAXBadlyFormedXML
+            var xDocument = new XDocument();
+            xDocument.Add(element);
+            FindDocumentDefaultNamespace();
+            return Deserialization.DeserializeBase(element);
         }
 
         /// <summary>
@@ -209,15 +202,7 @@ namespace YAXLib
         /// <returns>The deserialized object.</returns>
         public object DeserializeFromFile(string fileName)
         {
-            try
-            {
-                return Deserialize(File.ReadAllText(fileName));
-            }
-            catch (XmlException ex)
-            {
-                Deserialization.OnExceptionOccurred(new YAXBadlyFormedXML(ex, ex.LineNumber, ex.LinePosition), Options.ExceptionBehavior);
-                return null;
-            }
+            return Deserialize(File.ReadAllText(fileName));
         }
 
         /// <summary>

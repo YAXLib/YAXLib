@@ -3,6 +3,10 @@
 
 using System;
 using System.Globalization;
+using System.IO;
+using System.Text;
+using System.Xml;
+using System.Xml.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using YAXLib;
@@ -762,8 +766,8 @@ namespace YAXLibTests
             deserializedCustomer.Should().BeEquivalentTo(customer, "Missing elements should deserialize with default values");
         }
 
-        abstract protected IYAXSerializer<object> CreateSerializer<T>(SerializerOptions options = null);
-        abstract protected YAXSerializer CreateSerializer(Type type, SerializerOptions options = null);
+        protected abstract IYAXSerializer<object> CreateSerializer<T>(SerializerOptions options = null);
+        protected abstract YAXSerializer CreateSerializer(Type type, SerializerOptions options = null);
 
         [Test]
         public void Attribute_Option_DontSerializeNullObjects_Should_Serialize_And_Deserialize()
@@ -783,6 +787,85 @@ namespace YAXLibTests
             xml.Should().NotContain("cust_name", "null string? should not be serialized");
             xml.Should().NotContain("option", "null int? should not be serialized");
             deserializedCustomer.Should().BeEquivalentTo(customer, "Missing elements should deserialize with default values");
+        }
+
+        [Test]
+        public void DeserializeFromFile()
+        {
+            var book = Book.GetSampleInstance();
+            var file = Path.GetTempFileName();
+
+            var serializer = CreateSerializer<Book>(new SerializerOptions
+            {
+                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
+                ExceptionBehavior = YAXExceptionTypes.Warning,
+                SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+            });
+
+            serializer.SerializeToFile(book, file);
+            
+            var deserializedBook = (Book) serializer.DeserializeFromFile(file);
+            deserializedBook.Should().BeEquivalentTo(book);
+        }
+
+        [Test]
+        public void DeserializeFromXElement()
+        {
+            var book = Book.GetSampleInstance();
+            var serializer = CreateSerializer<Book>(new SerializerOptions
+            {
+                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
+                ExceptionBehavior = YAXExceptionTypes.Warning,
+                SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+            });
+            var xDocument = serializer.SerializeToXDocument(book);
+
+            var deserializedBook = serializer.Deserialize(xDocument.Root);
+            deserializedBook.Should().BeEquivalentTo(book);
+        }
+
+        [Test]
+        public void DeserializeFromTextReader()
+        {
+            var book = Book.GetSampleInstance();
+            var serializer = CreateSerializer<Book>(new SerializerOptions
+            {
+                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
+                ExceptionBehavior = YAXExceptionTypes.Warning,
+                SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+            });
+
+            using var stream = new MemoryStream();
+            using var streamWriter = new StreamWriter(stream);
+            using var streamReader = new StreamReader(stream);
+            serializer.Serialize(Book.GetSampleInstance(), streamWriter);
+            streamWriter.Flush();
+            stream.Position = 0;
+
+            var deserializedBook = serializer.Deserialize(streamReader);
+            deserializedBook.Should().BeEquivalentTo(book);
+        }
+
+        [Test]
+        public void DeserializeFromXmlReader()
+        {
+            var book = Book.GetSampleInstance();
+            var serializer = CreateSerializer<Book>(new SerializerOptions
+            {
+                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
+                ExceptionBehavior = YAXExceptionTypes.Warning,
+                SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+            });
+
+            using var stream = new MemoryStream();
+            using var xmlWriter = XmlWriter.Create(stream);
+            serializer.Serialize(Book.GetSampleInstance(), xmlWriter);
+            xmlWriter.Flush();
+            stream.Position = 0;
+
+            var xmlReader = XmlReader.Create(stream);
+            var deserializedBook = serializer.Deserialize(xmlReader);
+            deserializedBook.Should().BeEquivalentTo(book);
         }
     }
 }

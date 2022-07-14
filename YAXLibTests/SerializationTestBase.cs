@@ -4,7 +4,10 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using System.Text;
 using System.Threading;
+using System.Xml;
 using FluentAssertions;
 using NUnit.Framework;
 using YAXLib;
@@ -2811,6 +2814,91 @@ namespace YAXLibTests
             const string expectedResult = "<Object />";
 
             Assert.That(result, Is.EqualTo(expectedResult));
+        }
+
+        [Test]
+        public void SerializeToFile()
+        {
+            const string xml =
+                @"<?xml version=""1.0"" encoding=""utf-8""?>
+<!-- This example demonstrates serializing a very simple class -->
+<Book>
+  <Title>Inside C#</Title>
+  <Author>Tom Archer &amp; Andrew Whitechapel</Author>
+  <PublishYear>2002</PublishYear>
+  <Price>30.5</Price>
+</Book>";
+            var file = Path.GetTempFileName();
+
+            var serializer = CreateSerializer<Book>(new SerializerOptions
+            {
+                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
+                ExceptionBehavior = YAXExceptionTypes.Warning,
+                SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+            });
+
+            serializer.SerializeToFile(Book.GetSampleInstance(), file);
+
+            Assert.That(File.ReadAllText(file), Is.EqualTo(xml));
+        }
+
+        [Test]
+        public void SerializeWithTextWriter()
+        {
+            const string xml =
+                @"<!-- This example demonstrates serializing a very simple class -->
+<Book>
+  <Title>Inside C#</Title>
+  <Author>Tom Archer &amp; Andrew Whitechapel</Author>
+  <PublishYear>2002</PublishYear>
+  <Price>30.5</Price>
+</Book>";
+            var serializer = CreateSerializer<Book>(new SerializerOptions
+            {
+                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
+                ExceptionBehavior = YAXExceptionTypes.Warning,
+                SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+            });
+
+            using var stream = new MemoryStream();
+            using var streamWriter = new StreamWriter(stream);
+            using var streamReader = new StreamReader(stream);
+            serializer.Serialize(Book.GetSampleInstance(), streamWriter);
+            streamWriter.Flush();
+            stream.Position = 0;
+
+            Assert.That(streamReader.ReadToEnd(), Is.EqualTo(xml));
+        }
+
+        [Test]
+        public void SerializeWithXmlWriter()
+        {
+            const string xml =
+                @"<!-- This example demonstrates serializing a very simple class -->
+<Book>
+  <Title>Inside C#</Title>
+  <Author>Tom Archer &amp; Andrew Whitechapel</Author>
+  <PublishYear>2002</PublishYear>
+  <Price>30.5</Price>
+</Book>";
+            var serializer = CreateSerializer<Book>(new SerializerOptions
+            {
+                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
+                ExceptionBehavior = YAXExceptionTypes.Warning,
+                SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+            });
+
+            var settings = new XmlWriterSettings {
+                Indent = true,
+                IndentChars = ("  "),
+                OmitXmlDeclaration = true, 
+            };
+            var sb = new StringBuilder(500);
+            var xmlWriter = XmlWriter.Create(sb, settings);
+            serializer.Serialize(Book.GetSampleInstance(), xmlWriter);
+            xmlWriter.Flush();
+
+            Assert.That(sb.ToString(), Is.EqualTo(xml));
         }
     }
 }
