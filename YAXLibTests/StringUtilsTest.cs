@@ -62,7 +62,7 @@ namespace YAXLibTests
         private static void TestPathAndAlias(string locationString, string expectedPath, string expectedAlias)
         {
             string path, alias;
-            StringUtils.ExttractPathAndAliasFromLocationString(locationString, out path, out alias);
+            StringUtils.ExtractPathAndAliasFromLocationString(locationString, out path, out alias);
             Assert.That(path, Is.EqualTo(expectedPath));
             Assert.That(alias, Is.EqualTo(expectedAlias));
         }

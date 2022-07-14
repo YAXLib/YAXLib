@@ -15,7 +15,8 @@ namespace YAXLib.Exceptions
         ///     Initializes a new instance of the <see cref="YAXDeserializationException" /> class.
         /// </summary>
         /// <param name="lineInfo">IXmlLineInfo derived object, e.g. XElement, XAttribute containing line info</param>
-        public YAXDeserializationException(IXmlLineInfo lineInfo)
+        /// <param name="message">The message with exception details.</param>
+        public YAXDeserializationException(IXmlLineInfo lineInfo, string message = "") : base(message)
         {
             if (lineInfo != null &&
                 lineInfo.HasLineInfo())
@@ -31,9 +32,10 @@ namespace YAXLib.Exceptions
         /// </summary>
         /// <param name="lineNumber">The line number on which the error occurred</param>
         /// <param name="linePosition">The line position on which the error occurred</param>
-        public YAXDeserializationException(int lineNumber, int linePosition)
+        /// <param name="message">The message with exception details.</param>
+        public YAXDeserializationException(int lineNumber, int linePosition, string message = "") : base(message)
         {
-            HasLineInfo = true;
+            HasLineInfo = lineNumber != 0 && linePosition != 0;
             LineNumber = lineNumber;
             LinePosition = linePosition;
         }

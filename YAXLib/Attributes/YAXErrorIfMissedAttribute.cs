@@ -12,10 +12,8 @@ namespace YAXLib.Attributes
     ///     This attribute is applicable to fields and properties.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class YAXErrorIfMissedAttribute : YAXBaseAttribute
+    public class YAXErrorIfMissedAttribute : YAXBaseAttribute, IYaxMemberLevelAttribute
     {
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="YAXErrorIfMissedAttribute" /> class.
         /// </summary>
@@ -25,10 +23,6 @@ namespace YAXLib.Attributes
             TreatAs = treatAs;
             DefaultValue = null;
         }
-
-        #endregion
-
-        #region Properties
 
         /// <summary>
         ///     Gets or sets the value indicating this situation is going to be treated as Error or Warning.
@@ -44,6 +38,11 @@ namespace YAXLib.Attributes
         /// <value>The default value.</value>
         public object DefaultValue { get; set; }
 
-        #endregion
+        /// <inheritdoc/>
+        void IYaxMemberLevelAttribute.Setup(MemberWrapper memberWrapper)
+        {
+            memberWrapper.TreatErrorsAs = TreatAs;
+            memberWrapper.DefaultValue = DefaultValue;
+        }
     }
 }

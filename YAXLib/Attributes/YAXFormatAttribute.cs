@@ -13,10 +13,8 @@ namespace YAXLib.Attributes
     ///     This attribute is applicable to fields and properties.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class YAXFormatAttribute : YAXBaseAttribute
+    public class YAXFormatAttribute : YAXBaseAttribute, IYaxMemberLevelAttribute
     {
-        #region Constructors
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="YAXFormatAttribute" /> class.
         /// </summary>
@@ -26,10 +24,6 @@ namespace YAXLib.Attributes
             Format = format;
         }
 
-        #endregion
-
-        #region Properties
-
         /// <summary>
         ///     Gets or sets the format string needed to serialize data. The format string is the parameter
         ///     passed to the <c>ToString</c> method.
@@ -37,6 +31,10 @@ namespace YAXLib.Attributes
         /// <value></value>
         public string Format { get; set; }
 
-        #endregion
+        /// <inheritdoc/>
+        void IYaxMemberLevelAttribute.Setup(MemberWrapper memberWrapper)
+        {
+            memberWrapper.Format = Format;
+        }
     }
 }
