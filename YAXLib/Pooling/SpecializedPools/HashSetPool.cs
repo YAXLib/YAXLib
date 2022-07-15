@@ -15,7 +15,7 @@ internal sealed class HashSetPool<T> : CollectionPool<HashSet<T>, T>
 {
     private static readonly Lazy<HashSetPool<T>> Lazy = new(() => new HashSetPool<T>(),
         LazyThreadSafetyMode.PublicationOnly);
-        
+
     /// <summary>
     /// CTOR.
     /// </summary>

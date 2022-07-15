@@ -322,7 +322,7 @@ using YAXLib.Pooling.YAXLibPools;
             serializer.Initialize(type, Options);
             // Make it a child serializer
             InitializeAsChildSerializer(serializer, namespaceToOverride, insertionLocation);
-            
+
             return serializerPoolObject;
         }
 

@@ -13,6 +13,7 @@ public class SerializerPoolTests
     {
         SerializerPool.Instance.Clear();
         var sp = SerializerPool.Instance;
+
         return sp;
     }
 
@@ -20,7 +21,7 @@ public class SerializerPoolTests
     public void Create_New_Instance()
     {
         var sbp = GetSerializerPool();
-            
+
         Assert.That(() => sbp.Get(), Throws.Nothing);
         Assert.That(sbp.Pool.CountActive, Is.EqualTo(1));
         Assert.That(sbp.Pool.CountInactive, Is.EqualTo(0));
@@ -34,10 +35,10 @@ public class SerializerPoolTests
 
 
         var serializer = sp.Get();
-            
+
         // Returning an item should clear the StringBuilder
         Assert.That(() => sp.Return(serializer), Throws.Nothing);
-            
+
         Assert.That(sp.Pool.CountActive, Is.EqualTo(0));
         Assert.That(sp.Pool.CountInactive, Is.EqualTo(1));
         Assert.That(sp.Pool.CountAll, Is.EqualTo(1));
@@ -57,9 +58,9 @@ public class SerializerPoolTests
     public void Reset_Pool()
     {
         var sp = GetSerializerPool();
-            
+
         var savedObjectPoolType = sp.Pool.GetType();
-            
+
         var serializer = sp.Get();
         sp.Return(serializer);
         sp.Reset();
@@ -68,7 +69,7 @@ public class SerializerPoolTests
         Assert.That(sp.Pool.CountInactive, Is.EqualTo(0));
         Assert.That(sp.Pool.CountAll, Is.EqualTo(0));
     }
-        
+
     [Test]
     public void Dispose_Pool()
     {

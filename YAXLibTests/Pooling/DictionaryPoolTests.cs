@@ -12,6 +12,7 @@ public class DictionaryPoolTests
     {
         DictionaryPool<int, string>.Instance.Clear();
         var dp = DictionaryPool<int, string>.Instance;
+
         return dp;
     }
 
@@ -19,7 +20,7 @@ public class DictionaryPoolTests
     public void Create_New_Instance()
     {
         var dictPool = GetDictionaryPool();
-            
+
         Assert.That(() => dictPool.Get(), Throws.Nothing);
         Assert.That(dictPool.Pool.CountActive, Is.EqualTo(1));
         Assert.That(dictPool.Pool.CountInactive, Is.EqualTo(0));

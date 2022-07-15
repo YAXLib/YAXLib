@@ -19,7 +19,7 @@ internal class UdtWrapperCache : TypeCacheBase<UdtWrapper>
     {
         MaxCacheSize = DefaultCacheSize;
     }
-    
+
     /// <summary>
     ///     Gets the singleton instance of the <see cref="UdtWrapperCache"/>.
     /// </summary>
@@ -56,7 +56,7 @@ internal class UdtWrapperCache : TypeCacheBase<UdtWrapper>
             }
             else
                 udtWrapper.SetSerializationOptions(caller);
-                
+
             return udtWrapper;
         }
     }

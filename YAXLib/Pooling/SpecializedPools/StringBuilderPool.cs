@@ -15,7 +15,7 @@ internal sealed class StringBuilderPool : SpecializedPoolBase<StringBuilder>
 {
     private static readonly Lazy<StringBuilderPool> Lazy = new(() => new StringBuilderPool(),
         LazyThreadSafetyMode.PublicationOnly);
-        
+
     /// <summary>
     /// CTOR.
     /// </summary>
