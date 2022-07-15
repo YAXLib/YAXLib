@@ -5,6 +5,7 @@ using System;
 using NUnit.Framework;
 using YAXLib;
 using YAXLib.Options;
+using YAXLib.Pooling.YAXLibPools;
 using YAXLibTests.SampleClasses;
 using YAXLibTests.TestHelpers;
 
@@ -13,6 +14,31 @@ namespace YAXLibTests
     [TestFixture]
     public class GenericDeserializationTests : DeserializationTestBase
     {
+        [OneTimeSetUp]
+        public void TestFixtureSetup()
+        {
+            // Clear the pool for tests in here
+            SerializerPool.Instance.Clear();
+        }
+
+        [OneTimeTearDown]
+        public void TestFixtureFinalize()
+        {
+            Console.WriteLine(
+                $"{nameof(SerializerPool.Instance.Pool.CountAll)}: {SerializerPool.Instance.Pool.CountAll}");
+            Console.WriteLine(
+                $"{nameof(SerializerPool.Instance.Pool.CountActive)}: {SerializerPool.Instance.Pool.CountActive}");
+            Console.WriteLine(
+                $"{nameof(SerializerPool.Instance.Pool.CountInactive)}: {SerializerPool.Instance.Pool.CountInactive}");
+
+            // Is the cache in operation?
+            Assert.That(SerializerPool.Instance.Pool.CountAll, Is.GreaterThan(5));
+            // Are all items returned (most important when used correctly)?
+            Assert.That(SerializerPool.Instance.Pool.CountActive, Is.EqualTo(0));
+            // For plausibility
+            Assert.That(SerializerPool.Instance.Pool.CountInactive, Is.EqualTo(SerializerPool.Instance.Pool.CountAll));
+        }
+
         protected override IYAXSerializer<object> CreateSerializer<T>(SerializerOptions options = null)
         {
             return new GenericSerializerWrapper<T>(new YAXSerializer<T>(options ?? new SerializerOptions()));

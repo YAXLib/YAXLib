@@ -105,7 +105,7 @@ namespace YAXLib.Attributes
         private void CheckIntegrity()
         {
             if (_serializeKeyAs == _serializeValueAs && _serializeValueAs == YAXNodeTypes.Content)
-                throw new Exception("Key and Value cannot both be serialized as Content at the same time.");
+                throw new InvalidOperationException("Key and Value cannot both be serialized as Content at the same time.");
         }
     }
 }

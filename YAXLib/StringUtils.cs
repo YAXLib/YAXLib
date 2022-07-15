@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.Xml.Linq;
+using YAXLib.Pooling.SpecializedPools;
 
 namespace YAXLib
 {
@@ -28,7 +29,8 @@ namespace YAXLib
             // replace all back-slaches to slash
             elemAddr = elemAddr.Replace('\\', '/');
 
-            var sb = new StringBuilder(elemAddr.Length);
+            using var pooledObject = StringBuilderPool.Instance.Get(out var sb);
+            sb.Capacity = elemAddr.Length;
             var steps = elemAddr.SplitPathNamespaceSafe();
             foreach (var step in steps) sb.Append("/" + RefineSingleElement(step));
 
@@ -90,7 +92,8 @@ namespace YAXLib
                 return elemName.Substring(0, closingBrace + 1) + refinedLocalname;
             }
 
-            var sb = new StringBuilder(elemName.Length);
+            using var pooledObject = StringBuilderPool.Instance.Get(out var sb);
+            sb.Capacity = elemName.Length;
 
             // This uses the rules defined in http://www.w3.org/TR/xml/#NT-Name. 
             // Thanks go to [@asbjornu] for pointing to the W3C standard
@@ -264,7 +267,7 @@ namespace YAXLib
             for (var i = 0; i < dims.Length; i++)
             {
                 if (i != 0)
-                    sb.Append(",");
+                    sb.Append(',');
                 sb.Append(dims[i]);
             }
 
@@ -275,7 +278,7 @@ namespace YAXLib
         ///     Parses the array dimensions string, and returns the corresponding dimensions array.
         /// </summary>
         /// <param name="str">The string to parse.</param>
-        /// <returns>the dimensions array corresponiding to the given string</returns>
+        /// <returns>the dimensions array corresponding to the given string</returns>
         public static int[] ParseArrayDimsString(string str)
         {
             var strDims = str.Split(new[] {',', ' ', '\t'}, StringSplitOptions.RemoveEmptyEntries);

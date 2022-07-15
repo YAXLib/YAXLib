@@ -3,9 +3,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using YAXLib.Attributes;
 using YAXLib.Exceptions;
+using YAXLib.Pooling.SpecializedPools;
 
 namespace YAXLib
 {
@@ -64,7 +64,7 @@ namespace YAXLib
 
             if (components.Length > 0)
             {
-                var sb = new StringBuilder();
+                using var pooledObject = StringBuilderPool.Instance.Get(out var sb);
                 var realName = FindRealNameFromAlias(components[0]);
                 sb.Append(realName);
 
@@ -78,7 +78,7 @@ namespace YAXLib
                 return Enum.Parse(_enumType, sb.ToString());
             }
 
-            throw new Exception("Invalid enum alias");
+            throw new ArgumentException("Invalid enum alias", nameof(alias));
         }
 
         /// <summary>
@@ -94,31 +94,28 @@ namespace YAXLib
 
             if (components.Length == 1)
             {
-                string alias;
-                if (_enumMembers.TryGetValue(originalName, out alias))
-                    return alias;
-                return enumMember;
+                return _enumMembers.TryGetValue(originalName, out var alias)
+                    ? alias
+                    : enumMember;
             }
 
             if (components.Length > 1)
             {
-                var result = new StringBuilder();
+                using var pooledObject = StringBuilderPool.Instance.Get(out var result);
                 for (var i = 0; i < components.Length; i++)
                 {
                     if (i != 0)
                         result.Append(", ");
 
-                    string alias;
-                    if (_enumMembers.TryGetValue(components[i], out alias))
-                        result.Append(alias);
-                    else
-                        result.Append(components[i]);
+                    result.Append(_enumMembers.TryGetValue(components[i], out var alias)
+                        ? alias
+                        : components[i]);
                 }
 
                 return result.ToString();
             }
 
-            throw new Exception("Invalid enum member");
+            throw new ArgumentException("Invalid enum member", nameof(enumMember));
         }
 
         /// <summary>

@@ -6,6 +6,8 @@ using YAXLib.Enums;
 
 namespace YAXLibTests.SampleClasses;
 
+#pragma warning disable CS0414 // Any values are read using reflection in unit tests
+
 [YAXSerializableType(IncludePrivateMembersFromBaseTypes = true, FieldsToSerialize = YAXSerializationFields.AllFields)]
 public class ClassFlaggedToIncludePrivateBaseTypeFields : BaseLevel1
 {
@@ -37,3 +39,4 @@ public class BaseLevel2
 
     private int _privateFieldFromBaseLevel2 = 22;
 }
+#pragma warning restore CS0414

@@ -9,10 +9,13 @@ using System.Reflection;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
+using YAXLib.Caching;
 using YAXLib.Exceptions;
 using YAXLib.Options;
+using YAXLib.Pooling.ObjectPools;
+using YAXLib.Pooling.YAXLibPools;
 
-namespace YAXLib
+ namespace YAXLib
 {
     /// <summary>
     ///     An XML serialization class which lets developers design the XML file structure and select the exception handling
@@ -21,6 +24,62 @@ namespace YAXLib
     /// </summary>
     public class YAXSerializer : IYAXSerializer<object>, IRecursionCounter
     {
+        #region Object Pooling
+
+        /// <summary>
+        /// Creates a new <see cref="YAXSerializer"/> instance, that is partially initialized.
+        /// This CTOR is used for object pooling. After creating the instance,
+        /// <see cref="Initialize(System.Type,SerializerOptions)"/> must be called before using it.
+        /// The method is called by <see cref="SerializerPool"/>.
+        /// </summary>
+        internal YAXSerializer()
+        {
+            ParsingErrors = new YAXParsingErrors();
+            XmlNamespaceManager = new XmlNamespaceManager();
+
+            Serialization = new Serialization(this);
+            Deserialization = new Deserialization(this);
+        }
+
+        /// <summary>
+        /// This instance will be (re-) initialized it a way
+        /// that it has the same virgin state like an instance that
+        /// was created with one of the public CTORs.
+        /// </summary>
+        /// <param name="t"></param>
+        /// <param name="options"></param>
+        internal void Initialize(Type t, SerializerOptions options)
+        {
+            Type = t;
+            Options = options;
+
+            Deserialization.Initialize();
+            Serialization.Initialize();
+
+            UdtWrapper = UdtWrapperCache.Instance.GetOrAddItem(Type, this);
+            if (UdtWrapper.HasNamespace)
+                TypeNamespace = UdtWrapper.Namespace;
+        }
+
+        /// <summary>
+        /// Pre-initializes this instance so that it prepared for calling
+        /// <see cref="Initialize(System.Type,SerializerOptions)"/> after it is
+        /// taken from the object pool.
+        /// The method is called by <see cref="SerializerPool"/> on returning to the pool.
+        /// </summary>
+        internal void ReturnToPool()
+        {
+            _recursionCount = 0;
+            SerializedStack = null;
+            ParsingErrors.ClearErrors();
+            TypeNamespace = XNamespace.Get(string.Empty);
+            DocumentDefaultNamespace = XNamespace.Get(string.Empty);
+            XmlNamespaceManager.Initialize();
+            IsSerializing = false;
+        }
+
+        #endregion
+
         #region Public constructors
 
         /// <summary>
@@ -37,20 +96,9 @@ namespace YAXLib
         /// </summary>
         /// <param name="t">The type of the object being serialized/de-serialized.</param>
         /// <param name="options">The <see cref="SerializerOptions"/> settings to influence the process of serialization or de-serialization</param>
-        public YAXSerializer(Type t, SerializerOptions options)
+        public YAXSerializer(Type t, SerializerOptions options) : this()
         {
-            Type = t;
-            Options = options;
-
-            // this must be the last call
-            ParsingErrors = new YAXParsingErrors();
-            XmlNamespaceManager = new XmlNamespaceManager();
-            UdtWrapper = TypeWrappersPool.Pool.GetTypeWrapper(Type, this);
-            if (UdtWrapper.HasNamespace)
-                TypeNamespace = UdtWrapper.Namespace;
-
-            Serialization = new Serialization(this);
-            Deserialization = new Deserialization(this);
+            Initialize(t, options);
         }
 
         #endregion
@@ -220,11 +268,12 @@ namespace YAXLib
         #region Other public methods
 
         /// <summary>
-        ///     Cleans up auxiliary memory used by YAXLib during different sessions of serialization.
+        ///     Clears the static caches used across all <see cref="YAXSerializer"/> instances.
         /// </summary>
-        public static void CleanUpAuxiliaryMemory()
+        public static void ClearCache()
         {
-            TypeWrappersPool.CleanUp();
+            UdtWrapperCache.Instance.Clear();
+            MemberWrapperCache.Instance.Clear();
         }
 
         #endregion
@@ -235,7 +284,7 @@ namespace YAXLib
         ///     Gets the <see cref="SerializerOptions"/> settings
         ///     to influence the process of serialization or de-serialization of <see cref="YAXSerializer"/>s.
         /// </summary>
-        public SerializerOptions Options { get; }
+        public SerializerOptions Options { get; private set; }
 
         /// <summary>
         ///     Gets the parsing errors.
@@ -245,16 +294,49 @@ namespace YAXLib
 
         #endregion
 
-        #region Internal methods
+        #region Get and return a child serializer from/to object pool
 
-        internal YAXSerializer NewInternalSerializer(Type type, XNamespace namespaceToOverride,
-            XElement insertionLocation)
+        /// <summary>
+        /// Creates a new internal child <see cref="YAXSerializer"/> for recursive de/serialization.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="namespaceToOverride"></param>
+        /// <param name="insertionLocation"></param>
+        /// <param name="serializer">The initialized child serializer.</param>
+        /// <returns>
+        /// An <see cref="IDisposable"/> <see cref="PooledObject{T}"/> that will return
+        /// the serializer to the <see cref="SerializerPool"/> upon auto-disposal when out of scope.
+        /// Important: Add the <see langword="using"/> declaration to the local variable.
+        /// </returns>
+        /// <example>
+        /// using var serializerPooledObject
+        ///      = GetChildSerializer(type, namespaceToOverride, insertionLocation, out var serializer);
+        /// </example>
+        internal PooledObject<YAXSerializer> GetChildSerializer(Type type, XNamespace namespaceToOverride,
+            XElement insertionLocation, out YAXSerializer serializer)
         {
             _recursionCount = Options.MaxRecursion == 0 ? 0 : _recursionCount + 1;
-            var serializer = new YAXSerializer(type, Options) {
-                SerializedStack = SerializedStack,
-                DocumentDefaultNamespace = DocumentDefaultNamespace
-            };
+
+            // Get a standard serializer from the pool
+            var serializerPoolObject = SerializerPool.Instance.Get(out serializer);
+            serializer.Initialize(type, Options);
+            // Make it a child serializer
+            InitializeAsChildSerializer(serializer, namespaceToOverride, insertionLocation);
+
+            return serializerPoolObject;
+        }
+
+        /// <summary>
+        /// Initialize the standard serializer as child serializer
+        /// </summary>
+        /// <param name="serializer"></param>
+        /// <param name="namespaceToOverride"></param>
+        /// <param name="insertionLocation"></param>
+        private void InitializeAsChildSerializer(YAXSerializer serializer, XNamespace namespaceToOverride,
+            XElement insertionLocation)
+        {
+            serializer.SerializedStack = SerializedStack;
+            serializer.DocumentDefaultNamespace = DocumentDefaultNamespace;
             ((IRecursionCounter) serializer).RecursionCount = _recursionCount;
 
             if (namespaceToOverride != null)
@@ -262,11 +344,24 @@ namespace YAXLib
 
             if (insertionLocation != null)
                 serializer.Serialization.SetBaseElement(insertionLocation);
-
-            return serializer;
         }
 
-        internal void FinalizeNewSerializer(YAXSerializer serializer, bool importNamespaces,
+        /// <summary>
+        /// Perform some house-keeping after the child serializer has completed.
+        /// <para>
+        /// Note: <b>It is not guaranteed that this method always gets called</b>,
+        /// e.g. when de/serializing self-referencing classes (class members having
+        /// the same type as the class), or when an exception is thrown.
+        /// </para>
+        /// <para>
+        /// However, <see cref="GetChildSerializer"/> will return an object that is auto-disposed
+        /// when out of scope.
+        /// </para>
+        /// </summary>
+        /// <param name="serializer"></param>
+        /// <param name="importNamespaces"></param>
+        /// <param name="popFromSerializationStack"></param>
+        internal void FinalizeChildSerializer(YAXSerializer serializer, bool importNamespaces,
             bool popFromSerializationStack = true)
         {
             if (serializer == null)
@@ -274,8 +369,7 @@ namespace YAXLib
 
             if (_recursionCount > 0) _recursionCount--;
 
-            if (popFromSerializationStack && IsSerializing && serializer.Type != null &&
-                !serializer.Type.IsValueType)
+            if (popFromSerializationStack && IsSerializing && serializer.Type is { IsValueType: false })
                 SerializedStack.Pop();
 
             if (importNamespaces)
@@ -283,6 +377,10 @@ namespace YAXLib
 
             ParsingErrors.AddRange(serializer.ParsingErrors);
         }
+
+        #endregion
+
+        #region Internal methods
 
         /// <summary>
         ///     Gets the sequence of fields to be serialized or to be deserialized for the serializer's underlying type.
@@ -302,26 +400,38 @@ namespace YAXLib
         ///     The type wrapper for the type whose serializable
         ///     fields is going to be retrieved.
         /// </param>
-        /// <returns>the sequence of fields to be de/serialized for the specified type</returns>
+        /// <returns>The sequence of fields to be de/serialized for the specified type</returns>
         internal IEnumerable<MemberWrapper> GetFieldsToBeSerialized(UdtWrapper typeWrapper)
         {
+            if (!MemberWrapperCache.Instance.TryGetItem(typeWrapper.UnderlyingType, out var memberWrappers))
+            {
+
 #pragma warning disable S3011 // disable sonar accessibility bypass warning
             foreach (var member in typeWrapper.UnderlyingType.GetMembers(
                          BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
                          typeWrapper.IncludePrivateMembersFromBaseTypes))
 #pragma warning restore S3011 // enable sonar accessibility bypass warning
-            {
-                if (!IsValidPropertyOrField(member)) continue;
-                if (member is PropertyInfo prop && !CanSerializeProperty(prop)) continue;
+                {
+                    if (!IsValidPropertyOrField(member)) continue;
+                    if (member is PropertyInfo prop && !CanSerializeProperty(prop)) continue;
 
-                if ((typeWrapper.IsCollectionType || typeWrapper.IsDictionaryType)
-                    && ReflectionUtils.IsPartOfNetFx(member))
-                    continue;
+                    if ((typeWrapper.IsCollectionType || typeWrapper.IsDictionaryType)
+                        && ReflectionUtils.IsPartOfNetFx(member))
+                        continue;
 
-                var memInfo = new MemberWrapper(member, this);
-                if (memInfo.IsAllowedToBeSerialized(typeWrapper.FieldsToSerialize,
-                        UdtWrapper.DoNotSerializePropertiesWithNoSetter)) yield return memInfo;
+                    var memInfo = new MemberWrapper(member, this);
+                    // Note: The cache contains all generally allowed members
+                    memberWrappers.Add(memInfo);
+                }
+
+                _ = MemberWrapperCache.Instance.TryAdd(typeWrapper.UnderlyingType, memberWrappers);
             }
+
+            // Filter the members that are actually subject to be serialized
+            // according to settings and attributes.
+            // IsAllowedToBeSerialized evaluates only booleans, no reflection.
+            return memberWrappers.Where(mr => mr.IsAllowedToBeSerialized(typeWrapper.FieldsToSerialize,
+                UdtWrapper.DoNotSerializePropertiesWithNoSetter));
         }
 
         internal void FindDocumentDefaultNamespace()
@@ -391,7 +501,7 @@ namespace YAXLib
         /// <summary>
         ///     A manager that keeps a map of namespaces to their prefixes (if any) to be added ultimately to the xml result
         /// </summary>
-        internal XmlNamespaceManager XmlNamespaceManager { get; }
+        internal XmlNamespaceManager XmlNamespaceManager { get; private set; }
 
         internal XNamespace TypeNamespace { get; set; }
 
@@ -401,13 +511,14 @@ namespace YAXLib
 
         private void SetNamespaceToOverrideEmptyNamespace(XNamespace otherNamespace)
         {
-            // if namespace info is not already set during construction,
+            // If namespace info is not already set during construction,
             // then set it from the other YAXSerializer instance
             if (otherNamespace.IsEmpty() && !TypeNamespace.IsEmpty()) TypeNamespace = otherNamespace;
         }
 
         private static bool IsValidPropertyOrField(MemberInfo member)
         {
+            // Exclude names of compiler-generated backing fields like "<my_member>k__BackingField"
             var name0 = member.Name[0];
             return (char.IsLetter(name0) || name0 == '_') &&
                    (member.MemberType == MemberTypes.Property || member.MemberType == MemberTypes.Field);

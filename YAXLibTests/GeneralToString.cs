@@ -41,7 +41,7 @@ namespace YAXLibTests
                         for (var i = 0; i < rank; i++)
                         {
                             if (i != 0)
-                                ars.Append("*");
+                                ars.Append('*');
                             ars.Append(ar.GetLength(i));
                         }
 

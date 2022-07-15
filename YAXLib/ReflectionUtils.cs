@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using YAXLib.Caching;
 
 namespace YAXLib
 {
@@ -249,7 +250,7 @@ namespace YAXLib
         {
             if (IsIEnumerable(type, out var itemType))
                 return itemType;
-            throw new Exception("The specified type must be a collection");
+            throw new ArgumentException("The specified type must be a collection", nameof(type));
         }
 
         /// <summary>
@@ -491,7 +492,7 @@ namespace YAXLib
             object convertedObj;
             if (dstType.IsEnum)
             {
-                var typeWrapper = TypeWrappersPool.Pool.GetTypeWrapper(dstType, null);
+                var typeWrapper = UdtWrapperCache.Instance.GetOrAddItem(dstType, null);
                 convertedObj = typeWrapper.EnumWrapper.ParseAlias(value.ToString());
             }
             else if (dstType == typeof(DateTime))
@@ -519,7 +520,7 @@ namespace YAXLib
                     if (int.TryParse(strValue, out var boolIntValue))
                         convertedObj = boolIntValue != 0;
                     else
-                        throw new Exception("The specified value is not recognized as boolean: " + strValue);
+                        throw new ArgumentException($"The specified value {strValue} is not recognized as boolean", nameof(value));
                 }
             }
             else if (dstType == typeof(Guid))
@@ -684,12 +685,12 @@ namespace YAXLib
                     // Backward compatibility:
                     // if we get a yaxlib:realtype which is .Net Framework 2.x/3.x/4.x mscorlib, replace it with its equivalent
                     : @"\,\s+(mscorlib)\,\s+Version\=\d+(\.\d+)*\,\s+Culture=\b\w+\b\,\s+PublicKeyToken\=\b\w+\b";
-            
+
             var execAppFxName  = System.Text.RegularExpressions.Regex.Replace(name, pattern, name.GetType().Assembly.FullName);
-            
+
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-            // first search the 1st assembly (i.e. the mscorlib), then start from the last assembly backward, 
+            // first search the 1st assembly (i.e. the mscorlib), then start from the last assembly backward,
             // the last assemblies are user defined ones
             for (var i = assemblies.Length; i > 0; i--)
             {
