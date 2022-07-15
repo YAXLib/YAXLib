@@ -28,6 +28,7 @@ internal class MemberWrapperCache : TypeCacheAbstract<IList<MemberWrapper>>
 
     private MemberWrapperCache()
     {
+        MaxCacheSize = DefaultCacheSize;
     }
 
     /// <summary>
