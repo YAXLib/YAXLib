@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using YAXLib.Caching;
+using YAXLib.Pooling.SpecializedPools;
 
 namespace YAXLib
 {
@@ -99,20 +100,24 @@ namespace YAXLib
         /// <returns>The friendly name for the type</returns>
         public static string GetTypeFriendlyName(Type type)
         {
-            if (type == null) throw new ArgumentNullException("type");
+            if (type == null) throw new ArgumentNullException(nameof(type));
 
             var name = type.Name;
             if (type.IsGenericType)
             {
-                var backqIndex = name.IndexOf('`');
-                if (backqIndex == 0)
-                    throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Bad type name: {0}",
-                        name));
-                if (backqIndex > 0) name = name.Substring(0, backqIndex);
+                var backTickIndex = name.IndexOf('`');
+                name = backTickIndex switch {
+                    0 => throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture,
+                        "Bad type name: {0}", name)),
+                    > 0 => name.Substring(0, backTickIndex),
+                    _ => name
+                };
 
-                name += "Of";
-
-                foreach (var genType in type.GetGenericArguments()) name += GetTypeFriendlyName(genType);
+                using var poolObject = StringBuilderPool.Instance.Get(out var sb);
+                sb.Append(name);
+                sb.Append("Of");
+                foreach (var genType in type.GetGenericArguments()) sb.Append(GetTypeFriendlyName(genType));
+                name = sb.ToString();
             }
             else if (type.IsArray)
             {
@@ -159,18 +164,6 @@ namespace YAXLib
             return IsIEnumerable(type);
         }
 
-        /// <summary>
-        ///     Determines whether the specified type has implemented or is an <c>IEnumerable</c> or <c>IEnumerable&lt;&gt;</c>
-        /// </summary>
-        /// <param name="type">The type to check.</param>
-        /// <returns>
-        ///     <value><c>true</c> if the specified type is enumerable; otherwise, <c>false</c>.</value>
-        /// </returns>
-        public static bool IsIEnumerable(Type type)
-        {
-            return IsIEnumerable(type, out _);
-        }
-
         public static bool IsDerivedFromGenericInterfaceType(Type givenType, Type genericInterfaceType,
             out Type genericType)
         {
@@ -191,6 +184,17 @@ namespace YAXLib
             return false;
         }
 
+        /// <summary>
+        ///     Determines whether the specified type has implemented or is an <c>IEnumerable</c> or <c>IEnumerable&lt;&gt;</c>
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>
+        ///     <value><c>true</c> if the specified type is enumerable; otherwise, <c>false</c>.</value>
+        /// </returns>
+        public static bool IsIEnumerable(Type type)
+        {
+            return IsIEnumerable(type, out _);
+        }
 
         /// <summary>
         ///     Determines whether the specified type has implemented or is an <c>IEnumerable</c> or <c>IEnumerable&lt;&gt;</c> .
