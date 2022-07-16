@@ -4,8 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
@@ -15,7 +13,7 @@ using YAXLib.Options;
 using YAXLib.Pooling.ObjectPools;
 using YAXLib.Pooling.YAXLibPools;
 
- namespace YAXLib
+namespace YAXLib
 {
     /// <summary>
     ///     An XML serialization class which lets developers design the XML file structure and select the exception handling
