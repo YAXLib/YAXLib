@@ -4,7 +4,6 @@
 using System;
 using NUnit.Framework;
 using YAXLib;
-using YAXLib.Options;
 using YAXLibTests.SampleClasses.CustomSerialization;
 
 namespace YAXLibTests
@@ -14,19 +13,32 @@ namespace YAXLibTests
     {
         [TestCase(typeof(PropertyLevelSample))]
         [TestCase(typeof(FieldLevelSample))]
-        public void SerializationContext_All_Set_For_Class_And_Members(Type sampleType)
+        public void SerializationContext_All_Set_For_Fields_And_Properties(Type sampleType)
         {
             const string memberName = "Title";
-            var udtWrapper = new UdtWrapper(sampleType, null);
+            var serializer = new YAXSerializer(sampleType);
+            var udtWrapper = serializer.UdtWrapper;
             var memberInfo = udtWrapper.UnderlyingType.GetMember(memberName)[0];
-            var memberWrapper = new MemberWrapper(memberInfo, null);
-            var sc = new SerializationContext(memberWrapper, udtWrapper, new SerializerOptions());
+            var memberWrapper = new MemberWrapper(memberInfo, serializer.Options);
+            var sc = new SerializationContext(memberWrapper, udtWrapper, serializer);
 
-            Assert.That(sc.SerializerOptions, Is.Not.Null);
+            Assert.That(sc.SerializerOptions, Is.EqualTo(serializer.Options));
             Assert.That(sc.ClassType!.Name, Is.EqualTo(sampleType.Name));
             Assert.That(sc.MemberType!.UnderlyingSystemType.Name, Is.EqualTo(nameof(String)));
             Assert.That(sc.MemberInfo!.Name, Is.EqualTo(memberName));
             Assert.That(sc.PropertyInfo != null ? sc.PropertyInfo!.Name : sc.FieldInfo!.Name, Is.EqualTo(memberName));
+        }
+
+        [Test]
+        public void SerializationContext_All_Set_For_ClassLevel()
+        {
+            var sampleType = typeof(ClassLevelSample);
+            var serializer = new YAXSerializer(sampleType);
+            var udtWrapper = serializer.UdtWrapper;
+            var sc = new SerializationContext(null, udtWrapper, serializer);
+
+            Assert.That(sc.SerializerOptions, Is.EqualTo(serializer.Options));
+            Assert.That(sc.ClassType!.Name, Is.EqualTo(sampleType.Name));
         }
     }
 }

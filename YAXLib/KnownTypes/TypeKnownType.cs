@@ -1,20 +1,23 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+#nullable enable
 using System;
 using System.Xml.Linq;
 
-namespace YAXLib
+namespace YAXLib.KnownTypes
 {
-    internal class TypeKnownType : KnownType<Type>
+    internal class TypeKnownType : KnownTypeAbstract<Type>
     {
-        public override void Serialize(Type obj, XElement elem, XNamespace overridingNamespace)
+        /// <inheritdoc />
+        public override void Serialize(Type? obj, XElement elem, XNamespace overridingNamespace, ISerializationContext serializationContext)
         {
             if (obj != null)
                 elem.Value = obj.FullName ?? string.Empty;
         }
 
-        public override Type Deserialize(XElement elem, XNamespace overridingNamespace)
+        /// <inheritdoc />
+        public override Type? Deserialize(XElement elem, XNamespace overridingNamespace, ISerializationContext serializationContext)
         {
             return ReflectionUtils.GetTypeByName(elem.Value);
         }

@@ -5,32 +5,34 @@ using System;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace YAXLib
+namespace YAXLib.KnownTypes
 {
-    internal class DataSetDynamicKnownType : DynamicKnownType
+    internal class DataSetDynamicKnownType : DynamicKnownTypeAbstract
     {
+        /// <inheritdoc />
         public override string TypeName => "System.Data.DataSet";
 
-        public override void Serialize(object obj, XElement elem, XNamespace overridingNamespace)
+        /// <inheritdoc />
+        public override void Serialize(object obj, XElement elem, XNamespace overridingNamespace,
+            ISerializationContext serializationContext)
         {
-            using (var xw = elem.CreateWriter())
-            {
-                ReflectionUtils.InvokeMethod(obj, "WriteXml", xw);
-            }
+            using var xw = elem.CreateWriter();
+            ReflectionUtils.InvokeMethod(obj, "WriteXml", xw);
         }
 
-        public override object Deserialize(XElement elem, XNamespace overridingNamespace)
+        /// <inheritdoc />
+        public override object Deserialize(XElement elem, XNamespace overridingNamespace,
+            ISerializationContext serializationContext)
         {
             var child = elem.Elements().FirstOrDefault();
             if (child == null)
                 return null;
-            using (var xr = child.CreateReader())
-            {
-                var dsType = ReflectionUtils.GetTypeByName("System.Data.DataSet");
-                var ds = Activator.CreateInstance(dsType);
-                ReflectionUtils.InvokeMethod(ds, "ReadXml", xr);
-                return ds;
-            }
+
+            using var xr = child.CreateReader();
+            var dsType = ReflectionUtils.GetTypeByName("System.Data.DataSet");
+            var ds = Activator.CreateInstance(dsType);
+            ReflectionUtils.InvokeMethod(ds, "ReadXml", xr);
+            return ds;
         }
     }
 }

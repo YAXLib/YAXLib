@@ -4,6 +4,8 @@
 #nullable enable
 
 using System;
+using YAXLib.Enums;
+using YAXLib.Options;
 
 namespace YAXLib.Caching;
 
@@ -43,19 +45,19 @@ internal class UdtWrapperCache : TypeCacheBase<UdtWrapper>
     ///     Gets the <see cref="UdtWrapper"/> for to the specified type.
     /// </summary>
     /// <param name="t">The type whose wrapper is needed.</param>
-    /// <param name="caller">reference to the serializer instance which called this method.</param>
+    /// <param name="serializerOptions">The <see cref="SerializerOptions"/> to use.</param>
     /// <returns>the type wrapper corresponding to the specified type</returns>
-    public UdtWrapper GetOrAddItem(Type t, YAXSerializer? caller)
+    public UdtWrapper GetOrAddItem(Type t, SerializerOptions? serializerOptions)
     {
         lock (Locker)
         {
             if (!CacheDictionary.TryGetValue(t, out var udtWrapper))
             {
-                udtWrapper = new UdtWrapper(t, caller);
+                udtWrapper = new UdtWrapper(t, serializerOptions);
                 Add(t, udtWrapper);
             }
             else
-                udtWrapper.SetSerializationOptions(caller);
+                udtWrapper.SetSerializationOptions(serializerOptions?.SerializationOptions);
 
             return udtWrapper;
         }

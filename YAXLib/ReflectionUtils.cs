@@ -440,7 +440,6 @@ namespace YAXLib
                     if (!isBaseGenDef)
                     {
                         baseType = baseType.GetGenericTypeDefinition();
-                        isBaseGenDef = true;
                     }
                 }
                 else
@@ -458,7 +457,7 @@ namespace YAXLib
                     return false;
 
                 for (var i = 0; i < typeGenArgs.Length; i++)
-                    // TODO: check if I should call this method for type args recersively
+                    // Should this method be called for type args recursively?
                     if (typeGenArgs[i] != baseGenArgs[i])
                         return false;
             }
@@ -551,6 +550,18 @@ namespace YAXLib
         ///     Determines whether the specified type is nullable.
         /// </summary>
         /// <param name="type">The type to check.</param>
+        /// <returns>
+        ///     <c>true</c> if the specified type is nullable; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool IsNullable(Type type)
+        {
+            return IsNullable(type, out _);
+        }
+
+        /// <summary>
+        ///     Determines whether the specified type is nullable.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
         /// <param name="valueType">The value type of the corresponding nullable type.</param>
         /// <returns>
         ///     <c>true</c> if the specified type is nullable; otherwise, <c>false</c>.
@@ -565,18 +576,6 @@ namespace YAXLib
 
             valueType = null;
             return false;
-        }
-
-        /// <summary>
-        ///     Determines whether the specified type is nullable.
-        /// </summary>
-        /// <param name="type">The type to check.</param>
-        /// <returns>
-        ///     <c>true</c> if the specified type is nullable; otherwise, <c>false</c>.
-        /// </returns>
-        public static bool IsNullable(Type type)
-        {
-            return IsNullable(type, out _);
         }
 
         /// <summary>
@@ -762,7 +761,6 @@ namespace YAXLib
         {
             return (T) srcObj.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance)
                 ?.GetValue(srcObj, null);
-            //return (T)srcObj.GetType().InvokeMember(propertyName, BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance, null, srcObj, null);
         }
 
         public static T InvokeIntIndexer<T>(object srcObj, string propertyName, int index)
@@ -785,6 +783,94 @@ namespace YAXLib
             var method = srcObj.GetType().GetMethod(methodName, argTypes);
             var result = method?.Invoke(srcObj, args);
             return result;
+        }
+
+#pragma warning disable S3011 // disable sonar accessibility bypass warning: private members are intended
+#nullable enable
+
+        /// <summary>
+        /// Gets the value for a public or non-public instance field.
+        /// Including private fields in base types is optional, and enabled by default.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="fieldName"></param>
+        /// <param name="includePrivateBaseTypeFields"></param>
+        public static object? GetFieldValue(object target, string fieldName, bool includePrivateBaseTypeFields = true)
+        {
+            var field = target.GetType().GetField(fieldName,  BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (field == null && includePrivateBaseTypeFields) field = GetPrivateBaseField(target.GetType(), fieldName);
+            return field!.GetValue(target);
+        }
+
+        /// <summary>
+        /// Sets the value for a public or non-public instance field..
+        /// Including private fields in base types is optional, and enabled by default.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="fieldName"></param>
+        /// <param name="value"></param>
+        /// <param name="includePrivateBaseTypeFields"></param>
+        public static void SetFieldValue(object target, string fieldName, object? value, bool includePrivateBaseTypeFields = true)
+        {
+            var field = target.GetType().GetField(fieldName,  BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (field == null && includePrivateBaseTypeFields) field = GetPrivateBaseField(target.GetType(), fieldName);
+            field!.SetValue(target, value);
+        }
+
+        /// <summary>
+        /// Gets the value for a public or non-public instance property.
+        /// Including private properties in base types is optional, and enabled by default.
+        /// </summary>
+        public static object? GetPropertyValue(object target, string propertyName, bool includePrivateBaseTypeProperties = true)
+        {
+            var property = target.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (property == null && includePrivateBaseTypeProperties) property = GetPrivateBaseProperty(target.GetType(), propertyName);
+            return property!.GetValue(target);
+        }
+
+        /// <summary>
+        /// Sets the value for a public or non-public instance property.
+        /// Including private properties in base types is optional, and enabled by default.
+        /// </summary>
+        public static void SetPropertyValue(object target, string propertyName, object? value, bool includePrivateBaseTypeProperties = true)
+        {
+            var property = target.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (property == null && includePrivateBaseTypeProperties) property = GetPrivateBaseProperty(target.GetType(), propertyName);
+            property!.SetValue(target, value);
+        }
+
+        private static FieldInfo? GetPrivateBaseField(Type type, string fieldName)
+        {
+            var currentType = type;
+            while ((currentType = currentType.BaseType) != null)
+            {
+                var field = currentType.GetField(fieldName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                if (field != null) return field;
+            }
+
+            return null;
+        }
+
+        private static PropertyInfo? GetPrivateBaseProperty(Type type, string propertyName)
+        {
+            var currentType = type;
+            while ((currentType = currentType.BaseType) != null)
+            {
+                var property = currentType.GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                if (property != null) return property;
+            }
+
+            return null;
+        }
+#nullable disable
+
+#pragma warning restore S3011 // restore sonar accessibility bypass warning
+
+        public static bool IsBaseClassOrSubclassOf(Type subType, string baseName)
+        {
+            if (baseName == null || subType == null) return false;
+            var baseType = Type.GetType(baseName);
+            return baseType != null && (subType.FullName == baseName || subType.IsSubclassOf(baseType));
         }
     }
 }

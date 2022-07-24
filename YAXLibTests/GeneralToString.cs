@@ -389,7 +389,7 @@ namespace YAXLibTests
                 if (interfaceType == typeof(IFormattable))
                     if (!HasSuitableProperties(type))
                         if (null != type.GetConstructor(new[] {typeof(string)}))
-                            if (null != type.GetMethod("ToString", new Type[0]) &&
+                            if (null != type.GetMethod("ToString", Type.EmptyTypes) &&
                                 null != type.GetMethod("ToString", new[] {typeof(string)}))
                                 return true;
 

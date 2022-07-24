@@ -8,6 +8,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using YAXLib.Caching;
+using YAXLib.Enums;
 using YAXLib.Exceptions;
 using YAXLib.Options;
 using YAXLib.Pooling.ObjectPools;
@@ -54,7 +55,7 @@ namespace YAXLib
             Deserialization.Initialize();
             Serialization.Initialize();
 
-            UdtWrapper = UdtWrapperCache.Instance.GetOrAddItem(Type, this);
+            UdtWrapper = UdtWrapperCache.Instance.GetOrAddItem(Type, Options);
             if (UdtWrapper.HasNamespace)
                 TypeNamespace = UdtWrapper.Namespace;
         }
@@ -85,7 +86,7 @@ namespace YAXLib
         /// </summary>
         /// <param name="type">The type of the object being serialized/deserialized.</param>
         public YAXSerializer(Type type)
-            : this(type, new SerializerOptions())
+            : this(type, new SerializerOptions { SerializationOptions = YAXSerializationOptions.SerializeNullObjects })
         {
         }
 
@@ -419,9 +420,7 @@ namespace YAXLib
         /// </summary>
         internal UdtWrapper UdtWrapper { get; set; }
 
-        /// <summary>
-        ///     Gets or sets the number of recursions (number of total created <see cref="YAXSerializer"/> instances).
-        /// </summary>
+        /// <inheritdoc />
         int IRecursionCounter.RecursionCount
         {
             get => _recursionCount;

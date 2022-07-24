@@ -1,19 +1,22 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+#nullable enable
 using System.Linq;
 using System.Xml.Linq;
 
-namespace YAXLib
+namespace YAXLib.KnownTypes
 {
-    internal class XElementKnownType : KnownType<XElement>
+    internal class XElementKnownType : KnownTypeAbstract<XElement>
     {
-        public override void Serialize(XElement obj, XElement elem, XNamespace overridingNamespace)
+        /// <inheritdoc />
+        public override void Serialize(XElement? obj, XElement elem, XNamespace overridingNamespace, ISerializationContext serializationContext)
         {
             if (obj != null) elem.Add(obj);
         }
 
-        public override XElement Deserialize(XElement elem, XNamespace overridingNamespace)
+        /// <inheritdoc />
+        public override XElement? Deserialize(XElement elem, XNamespace overridingNamespace, ISerializationContext serializationContext)
         {
             return elem.Elements().FirstOrDefault();
         }

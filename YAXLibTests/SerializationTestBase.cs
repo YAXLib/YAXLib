@@ -1971,7 +1971,7 @@ namespace YAXLibTests
         }
 
         [Test]
-        public void SerializaitonOfPropertylessClasses()
+        public void SerializationOfPropertylessClasses()
         {
             const string result =
                 @"<PropertylessClassesSample xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
@@ -2720,23 +2720,6 @@ namespace YAXLibTests
         }
 
         [Test]
-        public void SerializeExceptionShouldNotThrowExceptions()
-        {
-            try
-            {
-                throw new ArgumentOutOfRangeException("index",
-                    new InvalidOperationException("Inner exception 1",
-                        new Exception("Inner Exception 2")));
-            }
-            catch (Exception ex)
-            {
-                var ser = CreateSerializer<Exception>(new SerializerOptions { MaxRecursion = 10 });
-                var exceptionSerialized = ser.Serialize(ex);
-                Assert.That(exceptionSerialized, Is.Not.Empty);
-            }
-        }
-
-        [Test]
         public void PolymorphicDictionaryWithValueAsNull()
         {
             var dict = new Dictionary<string, object> { { "foo", null } };
@@ -2823,6 +2806,7 @@ namespace YAXLibTests
   <_privateFieldFromLevel0>2</_privateFieldFromLevel0>
   <PrivatePropertyFromBaseLevel1>13</PrivatePropertyFromBaseLevel1>
   <_privateFieldFromBaseLevel1>12</_privateFieldFromBaseLevel1>
+  <PrivatePropertyFromBaseLevel2>23</PrivatePropertyFromBaseLevel2>
   <_privateFieldFromBaseLevel2>22</_privateFieldFromBaseLevel2>
 </ClassFlaggedToIncludePrivateBaseTypeFields>";
             var ser = new YAXSerializer<ClassFlaggedToIncludePrivateBaseTypeFields>();

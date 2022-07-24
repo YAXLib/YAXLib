@@ -37,8 +37,11 @@ namespace YAXLib
         /// <returns>the XML element corresponding to the specified location, or <c>null</c> if it is not found</returns>
         public static XElement FindLocation(XElement baseElement, string location)
         {
-            if (baseElement == null || location == null)
-                throw new ArgumentNullException();
+            if (baseElement == null)
+                throw new ArgumentNullException(nameof(baseElement));
+
+            if (location == null)
+                throw new ArgumentNullException(nameof(location));
 
             var locSteps = location.SplitPathNamespaceSafe();
 
@@ -46,6 +49,7 @@ namespace YAXLib
             foreach (var loc in locSteps)
                 if (loc == ".")
                 {
+                    // nothing to do
                 }
                 else if (loc == "..")
                 {
@@ -84,6 +88,7 @@ namespace YAXLib
             foreach (var loc in locSteps)
                 if (loc == ".")
                 {
+                    // nothing to do
                 }
                 else if (loc == "..")
                 {
@@ -120,6 +125,7 @@ namespace YAXLib
             foreach (var loc in locSteps)
                 if (loc == ".")
                 {
+                    // nothing to do
                 }
                 else if (loc == "..")
                 {

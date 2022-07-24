@@ -11,6 +11,8 @@ using YAXLib.Attributes;
 using YAXLib.Caching;
 using YAXLib.Enums;
 using YAXLib.Exceptions;
+using YAXLib.KnownTypes;
+using YAXLib.Options;
 
 namespace YAXLib
 {
@@ -30,11 +32,6 @@ namespace YAXLib
         /// </summary>
         /// <value><see langword="true"/> if the member corresponding to this instance is public; otherwise, <see langword="false"/>.</value>
         private readonly bool _isPublic;
-
-        /// <summary>
-        ///     the member type of the underlying member
-        /// </summary>
-        private readonly Type _memberType;
 
         private readonly List<YAXCollectionItemTypeAttribute> _possibleCollectionItemRealTypes = new();
 
@@ -69,8 +66,8 @@ namespace YAXLib
         ///     Initializes a new instance of the <see cref="MemberWrapper" /> class.
         /// </summary>
         /// <param name="memberInfo">The member-info to build this instance from.</param>
-        /// <param name="callerSerializer">The caller serializer.</param>
-        public MemberWrapper(MemberInfo memberInfo, YAXSerializer? callerSerializer)
+        /// <param name="serializerOptions">The <see cref="SerializerOptions"/> to use.</param>
+        public MemberWrapper(MemberInfo memberInfo, SerializerOptions? serializerOptions)
         {
             Order = int.MaxValue;
 
@@ -87,17 +84,17 @@ namespace YAXLib
             if (_isProperty)
             {
                 PropertyInfo = (PropertyInfo) memberInfo;
-                _memberType = PropertyInfo.PropertyType;
+                MemberType = PropertyInfo.PropertyType;
                 _isPublic = ReflectionUtils.IsPublicProperty(PropertyInfo);
             }
             else
             {
                 FieldInfo = (FieldInfo) memberInfo;
-                _memberType = FieldInfo.FieldType;
+                MemberType = FieldInfo.FieldType;
                 _isPublic = FieldInfo.IsPublic;
             }
 
-            UdtWrapper = UdtWrapperCache.Instance.GetOrAddItem(MemberType, callerSerializer);
+            UdtWrapper = UdtWrapperCache.Instance.GetOrAddItem(MemberType, serializerOptions);
 
             if (UdtWrapper.HasNamespace)
             {
@@ -107,7 +104,7 @@ namespace YAXLib
 
             InitInstance();
 
-            TreatErrorsAs = callerSerializer?.Options.ExceptionBehavior ?? YAXExceptionTypes.Error;
+            TreatErrorsAs = serializerOptions?.ExceptionBehavior ?? YAXExceptionTypes.Error;
 
             // discover YAXCustomSerializerAttributes earlier, because some other attributes depend on it
             var attrsToProcessEarlier = new HashSet<Type>
@@ -331,7 +328,7 @@ namespace YAXLib
         ///     Gets the type of the member.
         /// </summary>
         /// <value>The type of the member.</value>
-        public Type MemberType => _memberType;
+        public Type MemberType { get; }
 
         /// <summary>
         ///     Gets the <see cref="FieldInfo"/> of a field, if the member is a field.
@@ -355,9 +352,15 @@ namespace YAXLib
         public UdtWrapper UdtWrapper { get; }
 
         /// <summary>
-        ///     Gets a value indicating whether the underlying type is a known-type
+        ///     Gets the <see cref="IKnownType"/> if the <see cref="MemberType"/>
+        ///     is a known type, else <see langword="null"/>
         /// </summary>
-        public bool IsKnownType => UdtWrapper.IsKnownType;
+        public IKnownType? KnownType => UdtWrapper.KnownType;
+
+        /// <summary>
+        ///     Returns <see langword="true"/> if the if the <see cref="MemberType"/> is an <see cref="IKnownType"/>.
+        /// </summary>
+        public bool IsKnownType => KnownType != null;
 
         /// <summary>
         ///     Gets the original of this member (as opposed to its alias).

@@ -139,7 +139,7 @@ namespace YAXLibTests.SampleClasses
             return RetrieveValue(value);
         }
 
-        private string RetrieveValue(string str)
+        private static string RetrieveValue(string str)
         {
             var sb = new StringBuilder();
 
@@ -165,7 +165,7 @@ namespace YAXLibTests.SampleClasses
             return CreateMixedValue(objectToSerialize);
         }
 
-        private string CreateMixedValue(string str)
+        private static string CreateMixedValue(string str)
         {
             var sb = new StringBuilder(2 * str.Length);
 

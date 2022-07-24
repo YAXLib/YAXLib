@@ -96,7 +96,9 @@ internal class Deserialization
         if (_serializer.Type.IsGenericType && _serializer.Type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
             return DeserializeKeyValuePair(baseElement);
 
-        if (KnownTypes.IsKnowType(_serializer.Type)) return KnownTypes.Deserialize(baseElement, _serializer.Type, _serializer.TypeNamespace);
+        if (_serializer.UdtWrapper.IsKnownType)
+            return _serializer.UdtWrapper.KnownType!.Deserialize(baseElement, _serializer.TypeNamespace,
+                new SerializationContext(null, _serializer.UdtWrapper, _serializer));
 
         if (TryDeserializeAsDictionary(baseElement, out var resultObject))
             return resultObject;
@@ -489,7 +491,7 @@ internal class Deserialization
         if (theRealType == null) return;
 
         _serializer.Type = theRealType;
-        _serializer.UdtWrapper = UdtWrapperCache.Instance.GetOrAddItem(_serializer.Type, _serializer);
+        _serializer.UdtWrapper = UdtWrapperCache.Instance.GetOrAddItem(_serializer.Type, _serializer.Options);
     }
 
     /// <summary>
@@ -546,7 +548,7 @@ internal class Deserialization
         if (elem == null)
             throw new ArgumentNullException(nameof(elem));
 
-        var udtWrapper = UdtWrapperCache.Instance.GetOrAddItem(type, _serializer);
+        var udtWrapper = UdtWrapperCache.Instance.GetOrAddItem(type, _serializer.Options);
 
         foreach (var member in udtWrapper.GetFieldsToBeSerialized(false))
         {
@@ -1553,18 +1555,18 @@ internal class Deserialization
     private static object InvokeCustomDeserializerFromElement(Type customDeserType, XElement elemToDeser, MemberWrapper memberWrapper, UdtWrapper udtWrapper, YAXSerializer currentSerializer)
     {
         var customDeserializer = Activator.CreateInstance(customDeserType, Array.Empty<object>());
-        return customDeserType.InvokeMethod("DeserializeFromElement", customDeserializer, new object[] {elemToDeser, new SerializationContext(memberWrapper, udtWrapper, currentSerializer.Options)});
+        return customDeserType.InvokeMethod("DeserializeFromElement", customDeserializer, new object[] {elemToDeser, new SerializationContext(memberWrapper, udtWrapper, currentSerializer)});
     }
 
     private static object InvokeCustomDeserializerFromAttribute(Type customDeserType, XAttribute attrToDeser, MemberWrapper memberWrapper, UdtWrapper udtWrapper, YAXSerializer currentSerializer)
     {
         var customDeserializer = Activator.CreateInstance(customDeserType, Array.Empty<object>());
-        return customDeserType.InvokeMethod("DeserializeFromAttribute", customDeserializer, new object[] {attrToDeser, new SerializationContext(memberWrapper, udtWrapper, currentSerializer.Options) });
+        return customDeserType.InvokeMethod("DeserializeFromAttribute", customDeserializer, new object[] {attrToDeser, new SerializationContext(memberWrapper, udtWrapper, currentSerializer) });
     }
 
     private static object InvokeCustomDeserializerFromValue(Type customDeserType, string valueToDeser, MemberWrapper memberWrapper, UdtWrapper udtWrapper, YAXSerializer currentSerializer)
     {
         var customDeserializer = Activator.CreateInstance(customDeserType, Array.Empty<object>());
-        return customDeserType.InvokeMethod("DeserializeFromValue", customDeserializer, new object[] {valueToDeser, new SerializationContext(memberWrapper, udtWrapper, currentSerializer.Options) });
+        return customDeserType.InvokeMethod("DeserializeFromValue", customDeserializer, new object[] {valueToDeser, new SerializationContext(memberWrapper, udtWrapper, currentSerializer) });
     }
 }

@@ -1,22 +1,25 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+#nullable enable
 using System;
 using System.Xml.Linq;
 using YAXLib.Exceptions;
 
-namespace YAXLib
+namespace YAXLib.KnownTypes
 {
-    internal class TimeSpanKnownType : KnownType<TimeSpan>
+    internal class TimeSpanKnownType : KnownTypeAbstract<TimeSpan>
     {
-        public override void Serialize(TimeSpan timeSpan, XElement elem, XNamespace overridingNamespace)
+        /// <inheritdoc />
+        public override void Serialize(TimeSpan timeSpan, XElement elem, XNamespace overridingNamespace, ISerializationContext serializationContext)
         {
             elem.Value = timeSpan.ToString();
         }
 
-        public override TimeSpan Deserialize(XElement elem, XNamespace overridingNamespace)
+        /// <inheritdoc />
+        public override TimeSpan Deserialize(XElement elem, XNamespace overridingNamespace, ISerializationContext serializationContext)
         {
-            var elemTicks = elem.Element(this.GetXName("Ticks", overridingNamespace));
+            var elemTicks = elem.Element(overridingNamespace.GetXName("Ticks"));
             if (elemTicks == null)
             {
                 var strTimeSpanString = elem.Value;

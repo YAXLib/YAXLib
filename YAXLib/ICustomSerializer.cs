@@ -10,8 +10,7 @@ namespace YAXLib
     ///     Note that normally you don't need to implement all the methods.
     /// </summary>
     /// <typeparam name="T">
-    ///     The type of field, property, class, or struct for which custom serializer
-    ///     is provided
+    ///     The type of field, property, class, or struct for which the custom serializer is provided.
     /// </typeparam>
     public interface ICustomSerializer<T>
     {
@@ -21,9 +20,8 @@ namespace YAXLib
         /// </summary>
         /// <param name="objectToSerialize">The object to serialize.</param>
         /// <param name="attrToFill">The XML attribute to fill.</param>
-        /// <param name="serializationContext">Contains information about member/type that specified the custom serializer</param>
+        /// <param name="serializationContext">Contains information about the type and members of the <paramref name="objectToSerialize"/>.</param>
         void SerializeToAttribute(T objectToSerialize, XAttribute attrToFill, ISerializationContext serializationContext);
-
 
         /// <summary>
         ///     Serializes the given object and fills the provided reference to the
@@ -31,7 +29,7 @@ namespace YAXLib
         /// </summary>
         /// <param name="objectToSerialize">The object to serialize.</param>
         /// <param name="elemToFill">The XML element to fill.</param>
-        /// <param name="serializationContext">Contains information about member/type that specified the custom serializer</param>
+        /// <param name="serializationContext">Contains information about the type and members of the <paramref name="objectToSerialize"/>.</param>
         void SerializeToElement(T objectToSerialize, XElement elemToFill, ISerializationContext serializationContext);
 
         /// <summary>
@@ -39,7 +37,7 @@ namespace YAXLib
         ///     XML element.
         /// </summary>
         /// <param name="objectToSerialize">The object to serialize.</param>
-        /// <param name="serializationContext">type that specified the custom serializer></param>
+        /// <param name="serializationContext">Contains information about the type and members of the <paramref name="objectToSerialize"/>.</param>
         /// <returns></returns>
         string SerializeToValue(T objectToSerialize, ISerializationContext serializationContext);
 
@@ -48,7 +46,7 @@ namespace YAXLib
         ///     You will normally need to use XAttribute.Value property only.
         /// </summary>
         /// <param name="attrib">The attribute to deserialize.</param>
-        /// <param name="serializationContext">Contains information about member/type that specified the custom serializer</param>
+        /// <param name="serializationContext">Contains information about the type and members of the object to deserialize.</param>
         /// <returns></returns>
         T DeserializeFromAttribute(XAttribute attrib, ISerializationContext serializationContext);
 
@@ -58,7 +56,7 @@ namespace YAXLib
         ///     XElement.Attributes(), and XElement.Elements() only.
         /// </summary>
         /// <param name="element">The element to deserialize.</param>
-        /// <param name="serializationContext"></param>
+        /// <param name="serializationContext">Contains information about the type and members of the object to deserialize.</param>
         /// <returns></returns>
         T DeserializeFromElement(XElement element, ISerializationContext serializationContext);
 
@@ -66,7 +64,7 @@ namespace YAXLib
         ///     Deserializes from a string value which has been serialized as the content of an element
         /// </summary>
         /// <param name="value">The string value to deserialize.</param>
-        /// <param name="serializationContext">Contains information about member/type that specified the custom serializer</param>
+        /// <param name="serializationContext">Contains information about the type and members of the object to deserialize.</param>
         /// <returns></returns>
         T DeserializeFromValue(string value, ISerializationContext serializationContext);
     }
