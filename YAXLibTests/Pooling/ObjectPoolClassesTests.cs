@@ -40,7 +40,6 @@ public class ObjectPoolClassesTests
         {
             var constructedType = type.MakeGenericType(typeof(SomePoolObject));
             var instance = (ObjectPool<SomePoolObject>)Activator.CreateInstance(constructedType, policy)!;
-
             instance.Clear();
             yield return instance;
         }
