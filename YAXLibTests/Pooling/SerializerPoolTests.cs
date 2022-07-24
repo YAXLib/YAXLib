@@ -13,7 +13,6 @@ public class SerializerPoolTests
     {
         SerializerPool.Instance.Clear();
         var sp = SerializerPool.Instance;
-        sp.Pool.IsPoolingEnabled = true;
         return sp;
     }
 

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using YAXLib;
 using YAXLib.Pooling;
 using YAXLib.Pooling.ObjectPools;
 using YAXLibTests.TestHelpers;
@@ -42,7 +41,6 @@ public class ObjectPoolClassesTests
             var constructedType = type.MakeGenericType(typeof(SomePoolObject));
             var instance = (ObjectPool<SomePoolObject>)Activator.CreateInstance(constructedType, policy)!;
                 
-            instance.IsPoolingEnabled = true;
             instance.Clear();
             yield return instance;
         }
@@ -234,29 +232,6 @@ public class ObjectPoolClassesTests
         pool.Dispose();
 
         Assert.That(actualCreated, Is.EqualTo(shouldBeCreated), poolAsObj.GetType().Name);
-        Assert.That(pool.CountAll, Is.EqualTo(0), poolAsObj.GetType().Name);
-        Assert.That(pool.CountActive, Is.EqualTo(0), poolAsObj.GetType().Name);
-        Assert.That(pool.CountInactive, Is.EqualTo(0), poolAsObj.GetType().Name);
-        Assert.That(pool.PoolItems.Any(), Is.EqualTo(false), poolAsObj.GetType().Name);
-    }
-
-    [TestCaseSource(nameof(GetObjectPoolBasedPools), new object?[] { true })]
-    public void Disabled_Pooling_Should_Only_Return_New_Instances(object poolAsObj)
-    {
-        var pool = (ObjectPool<SomePoolObject>) poolAsObj;
-        pool.IsPoolingEnabled = false;
-            
-        var active = new List<SomePoolObject>();
-        for (var i = 1; i <= 5; i++)
-        {
-            active.Add(pool.Get());
-        }
-
-        foreach (var a in active)
-        {
-            pool.Return(a);
-        }
-
         Assert.That(pool.CountAll, Is.EqualTo(0), poolAsObj.GetType().Name);
         Assert.That(pool.CountActive, Is.EqualTo(0), poolAsObj.GetType().Name);
         Assert.That(pool.CountInactive, Is.EqualTo(0), poolAsObj.GetType().Name);

@@ -8,6 +8,5 @@ namespace YAXLib.Pooling
     internal static class PoolSettings
     {
         public static bool CheckReturnedObjectsExistInPool { get; set; } = false;
-        public static bool IsPoolingEnabled { get; set; } = true;
     }
 }

@@ -50,21 +50,4 @@ public class PoolBalanceTests
             Assert.That(p.Counters.CountInactive, Is.GreaterThan(0), string.Join(" ", nameof(IPoolCounters.CountInactive), p.Type?.ToString()));
         }
     }
-
-    [Test]
-    public void Pooling_Disabled_Leaves_Pools_Empty()
-    {
-        var savedPoolingEnabled = PoolSettings.IsPoolingEnabled;
-        PoolSettings.IsPoolingEnabled = false;
-        var pools = PoolingHelpers.GetAllPoolsCleared();
-        
-        DoSomeSerializingWork();
-
-        PoolSettings.IsPoolingEnabled = savedPoolingEnabled;
-
-        foreach (var p in pools)
-        {
-            Assert.That(p.Counters!.CountAll, Is.EqualTo(0), "CountAll");
-        }
-    }
 }

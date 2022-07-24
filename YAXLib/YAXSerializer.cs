@@ -315,14 +315,14 @@ using YAXLib.Pooling.YAXLibPools;
         internal PooledObject<YAXSerializer> GetChildSerializer(Type type, XNamespace namespaceToOverride,
             XElement insertionLocation, out YAXSerializer serializer)
         {
-            _recursionCount = Options.MaxRecursion == 0 ? 0 : _recursionCount + 1;
+            _recursionCount++;
 
             // Get a standard serializer from the pool
             var serializerPoolObject = SerializerPool.Instance.Get(out serializer);
             serializer.Initialize(type, Options);
             // Make it a child serializer
             InitializeAsChildSerializer(serializer, namespaceToOverride, insertionLocation);
-
+            
             return serializerPoolObject;
         }
 

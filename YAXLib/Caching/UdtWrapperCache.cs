@@ -13,7 +13,7 @@ namespace YAXLib.Caching;
 /// </summary>
 internal class UdtWrapperCache : TypeCacheAbstract<UdtWrapper>
 {
-    public const int DefaultCacheSize = 200;
+    public const int DefaultCacheSize = 500;
 
     /// <summary>
     ///     The singleton cache instance.
