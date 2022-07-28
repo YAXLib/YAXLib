@@ -138,7 +138,7 @@ internal class Deserialization
     {
         var resultObject = _deserializationObject ?? Activator.CreateInstance(_serializer.Type, Array.Empty<object>());
 
-        foreach (var member in _serializer.GetFieldsToBeSerialized())
+        foreach (var member in _serializer.UdtWrapper.GetFieldsToBeSerialized())
         {
             if (!IsAnythingToDeserialize(member)) continue;
 
@@ -532,23 +532,23 @@ internal class Deserialization
     }
 
     /// <summary>
-    ///     Checks whether at least one of the members (property or field) of
-    ///     the specified object exists.
+    ///     Checks whether at least one member (property or field) of
+    ///     the specified element exists in the type.
     /// </summary>
     /// <param name="elem">The XML element to check its content.</param>
     /// <param name="type">
-    ///     The class-member corresponding to the object for
+    ///     The class type corresponding to the element for
     ///     which we intend to check existence of its members.
     /// </param>
-    /// <returns></returns>
+    /// <returns><see langword="true"/>, if at least one member of the specified element exists in the type.</returns>
     private bool AtLeastOneOfMembersExists(XElement elem, Type type)
     {
         if (elem == null)
             throw new ArgumentNullException(nameof(elem));
 
-        var typeWrapper = UdtWrapperCache.Instance.GetOrAddItem(type, _serializer);
+        var udtWrapper = UdtWrapperCache.Instance.GetOrAddItem(type, _serializer);
 
-        foreach (var member in _serializer.GetFieldsToBeSerialized(typeWrapper))
+        foreach (var member in udtWrapper.GetFieldsToBeSerialized(false))
         {
             if (!IsAnythingToDeserialize(member)) continue;
 

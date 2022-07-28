@@ -55,7 +55,7 @@ internal class UdtWrapperCache : TypeCacheBase<UdtWrapper>
                 Add(t, udtWrapper);
             }
             else
-                udtWrapper.SetYAXSerializationOptions(caller);
+                udtWrapper.SetSerializationOptions(caller);
                 
             return udtWrapper;
         }

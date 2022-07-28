@@ -146,7 +146,7 @@ namespace YAXLib
             if (!_serializer.Type.IsInstanceOfType(obj))
                 throw new YAXObjectTypeMismatch(_serializer.Type, obj.GetType());
 
-            _serializer.FindDocumentDefaultNamespace();
+            _serializer.DocumentDefaultNamespace = _serializer.UdtWrapper.FindDocumentDefaultNamespace();
 
             if (TrySerializeAsDictionary(obj, out var xElement)) return xElement;
 
@@ -249,7 +249,7 @@ namespace YAXLib
             var isAnythingFoundToSerialize = false;
 
             // iterate through public properties
-            foreach (var member in _serializer.GetFieldsToBeSerialized())
+            foreach (var member in _serializer.UdtWrapper.GetFieldsToBeSerialized())
             {
                 if (member.HasNamespace) _serializer.XmlNamespaceManager.RegisterNamespace(member.Namespace, member.NamespacePrefix);
 
