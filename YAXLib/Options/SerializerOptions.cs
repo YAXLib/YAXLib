@@ -13,7 +13,7 @@ namespace YAXLib.Options
     /// </summary>
     public class SerializerOptions
     {
-        private const int DefaultMaxRecursion = 300;
+        private const int DefaultMaxRecursion = 50;
 
         /// <summary>
         ///     Creates a new instances of settings to influence the process of
@@ -59,10 +59,10 @@ namespace YAXLib.Options
         public YAXNameSpace Namespace { get; set; }
         
         /// <summary>
-        ///     Specifies the maximum serialization depth (defaults to 300).
+        ///     Specifies the maximum serialization depth.
         ///     This roughly equals the maximum element depth of the resulting XML.
-        ///     0 means unlimited.
         ///     1 means an empty XML tag with no content.
+        ///     For unlimited depth set <see cref="int.MaxValue"/>.
         /// </summary>
         public int MaxRecursion { get; set; }
         

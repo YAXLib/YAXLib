@@ -4,9 +4,7 @@
 using System;
 using System.Globalization;
 using System.IO;
-using System.Text;
 using System.Xml;
-using System.Xml.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using YAXLib;
@@ -19,7 +17,7 @@ using YAXLibTests.TestHelpers;
 
 namespace YAXLibTests
 {
-    abstract public class DeserializationTestBase
+    public abstract class DeserializationTestBase
     {
         [OneTimeSetUp]
         public void TestFixtureSetUp()
@@ -705,13 +703,13 @@ namespace YAXLibTests
             obj.DecentralizationOrder.TryGetValue(4, out var fifth);
             obj.DecentralizationOrder.TryGetValue(5, out var sixth);
             obj.DecentralizationOrder.TryGetValue(6, out var seventh);
-            Assert.AreEqual(first, "Author");
-            Assert.AreEqual(second, "Title");
-            Assert.AreEqual(third, "PublishYear");
-            Assert.AreEqual(fourth, "Price");
-            Assert.AreEqual(fifth, "Review");
-            Assert.AreEqual(sixth, "Publisher");
-            Assert.AreEqual(seventh, "Editor");
+            Assert.That(first, Is.EqualTo("Author"));
+            Assert.That(second, Is.EqualTo("Title"));
+            Assert.That(third, Is.EqualTo("PublishYear"));
+            Assert.That(fourth, Is.EqualTo("Price"));
+            Assert.That(fifth, Is.EqualTo("Review"));
+            Assert.That(sixth, Is.EqualTo("Publisher"));
+            Assert.That(seventh, Is.EqualTo("Editor"));
         }
 
         [Test]

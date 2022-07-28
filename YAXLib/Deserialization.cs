@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Xml;
 using System.Xml.Linq;
 using YAXLib.Attributes;
+using YAXLib.Caching;
 using YAXLib.Enums;
 using YAXLib.Exceptions;
 
@@ -17,7 +18,7 @@ namespace YAXLib;
 internal class Deserialization
 {
     private readonly YAXSerializer _serializer;
-    
+
     /// <summary>
     ///     Reference to a pre assigned deserialization base object
     /// </summary>
@@ -27,6 +28,19 @@ internal class Deserialization
     ///     Specifies whether an exception is occurred during the de-serialization of the current member
     /// </summary>
     private bool _exceptionOccurredDuringMemberDeserialization;
+
+    /// <summary>
+    /// This instance will be (re-) initialized it a way
+    /// that it has the same virgin state like an instance that
+    /// was created with one of the CTORs.
+    /// </summary>
+    internal void Initialize()
+    {
+        _deserializationObject = null;
+        _exceptionOccurredDuringMemberDeserialization = false;
+        IsCreatedToDeserializeANonCollectionMember = false;
+        RemoveDeserializedXmlNodes = false;
+    }
 
     public Deserialization(YAXSerializer serializer)
     {
@@ -73,7 +87,7 @@ internal class Deserialization
 
         ProcessRealTypeAttribute(baseElement);
 
-        // HasCustomSerializer must be tested after analyzing any RealType attribute 
+        // HasCustomSerializer must be tested after analyzing any RealType attribute
         if (_serializer.UdtWrapper.HasCustomSerializer)
             return InvokeCustomDeserializerFromElement(_serializer.UdtWrapper.CustomSerializerType, baseElement, null, _serializer.UdtWrapper, _serializer);
 
@@ -84,10 +98,10 @@ internal class Deserialization
 
         if (KnownTypes.IsKnowType(_serializer.Type)) return KnownTypes.Deserialize(baseElement, _serializer.Type, _serializer.TypeNamespace);
 
-        if (TryDeserializeAsDictionary(baseElement, out var resultObject)) 
+        if (TryDeserializeAsDictionary(baseElement, out var resultObject))
             return resultObject;
 
-        if (TryDeserializeAsCollection(baseElement, out resultObject)) 
+        if (TryDeserializeAsCollection(baseElement, out resultObject))
             return resultObject;
 
         if (ReflectionUtils.IsBasicType(_serializer.Type)) return ReflectionUtils.ConvertBasicType(baseElement.Value, _serializer.Type, _serializer.Options.Culture);
@@ -150,7 +164,7 @@ internal class Deserialization
             else
             {
                 if (DeserializeFromXmlElement(baseElement, serializationLocation, member, resultObject,
-                        ref deserializedValue, ref isHelperElementCreated, ref xElementValue)) 
+                        ref deserializedValue, ref isHelperElementCreated, ref xElementValue))
                     continue;
             }
 
@@ -160,7 +174,7 @@ internal class Deserialization
             {
                 _ = TrySetDefaultValue(baseElement, resultObject, xAttributeValue, xElementValue, member);
             }
-            else if (member.HasCustomSerializer || member.MemberTypeWrapper.HasCustomSerializer)
+            else if (member.HasCustomSerializer || member.UdtWrapper.HasCustomSerializer)
             {
                 InvokeCustomDeserializer(baseElement, deserializedValue, xElementValue, xAttributeValue,
                     resultObject, member);
@@ -195,7 +209,7 @@ internal class Deserialization
     {
         var customSerializerType = member.HasCustomSerializer
             ? member.CustomSerializerType
-            : member.MemberTypeWrapper.CustomSerializerType;
+            : member.UdtWrapper.CustomSerializerType;
 
         object desObj;
         if (member.IsSerializedAsAttribute)
@@ -204,7 +218,7 @@ internal class Deserialization
         else if (member.IsSerializedAsElement)
             desObj = InvokeCustomDeserializerFromElement(customSerializerType, xElementValue,
                 member.HasCustomSerializer ? member : null,
-                member.MemberTypeWrapper.HasCustomSerializer ? member.MemberTypeWrapper : null,
+                member.UdtWrapper.HasCustomSerializer ? member.UdtWrapper : null,
                 _serializer);
         else if (member.IsSerializedAsValue)
             desObj = InvokeCustomDeserializerFromValue(customSerializerType, deserializedValue, member, _serializer.UdtWrapper, _serializer);
@@ -227,9 +241,9 @@ internal class Deserialization
         XElement xElementValue, MemberWrapper member)
     {
         // i.e. if it was NOT resuming deserialization,
-        if (_deserializationObject != null) 
+        if (_deserializationObject != null)
             return false;
-            
+
         // set default value, otherwise existing value for the member is kept
 
         if (!member.MemberType.IsValueType && _serializer.UdtWrapper.IsNotAllowedNullObjectSerialization)
@@ -237,7 +251,7 @@ internal class Deserialization
             return TrySetDefaultValue(resultObject, null, member,
                 GetXmlLineInfo(xAttributeValue, xElementValue, baseElement));
         }
-            
+
         if (member.DefaultValue != null)
         {
             return TrySetDefaultValue(resultObject, member.DefaultValue, member,
@@ -428,12 +442,12 @@ internal class Deserialization
 
     private YAXExceptionTypes GetExceptionType(MemberWrapper member)
     {
-        return !member.MemberType.IsValueType 
+        return !member.MemberType.IsValueType
                && _serializer.UdtWrapper.IsNotAllowedNullObjectSerialization
             ? YAXExceptionTypes.Ignore
             : member.TreatErrorsAs;
     }
-    
+
     private static bool IsAnythingToDeserialize(MemberWrapper member)
     {
         if (!member.CanWrite)
@@ -441,7 +455,7 @@ internal class Deserialization
 
         if (member.IsAttributedAsDontSerialize)
             return false;
-            
+
         return true;
     }
 
@@ -468,14 +482,14 @@ internal class Deserialization
     private void ProcessRealTypeAttribute(XElement baseElement)
     {
         var realTypeAttr = baseElement.Attribute_NamespaceSafe(_serializer.Options.Namespace.Uri + _serializer.Options.AttributeName.RealType, _serializer.DocumentDefaultNamespace);
-            
+
         if (realTypeAttr == null) return;
 
         var theRealType = ReflectionUtils.GetTypeByName(realTypeAttr.Value);
         if (theRealType == null) return;
 
         _serializer.Type = theRealType;
-        _serializer.UdtWrapper = TypeWrappersPool.Pool.GetTypeWrapper(_serializer.Type, _serializer);
+        _serializer.UdtWrapper = UdtWrapperCache.Instance.GetOrAddItem(_serializer.Type, _serializer);
     }
 
     /// <summary>
@@ -532,7 +546,7 @@ internal class Deserialization
         if (elem == null)
             throw new ArgumentNullException(nameof(elem));
 
-        var typeWrapper = TypeWrappersPool.Pool.GetTypeWrapper(type, _serializer);
+        var typeWrapper = UdtWrapperCache.Instance.GetOrAddItem(type, _serializer);
 
         foreach (var member in _serializer.GetFieldsToBeSerialized(typeWrapper))
         {
@@ -548,7 +562,7 @@ internal class Deserialization
             if (ReflectionUtils.IsBasicType(member.MemberType) || member.IsTreatedAsCollection ||
                 member.IsTreatedAsDictionary || member.MemberType == _serializer.Type) continue;
 
-            // try to create a helper element 
+            // try to create a helper element
             var helperElement = XMLUtils.CreateElement(elem, member.SerializationLocation, member.Alias);
             if (helperElement == null) continue;
 
@@ -589,7 +603,7 @@ internal class Deserialization
         var memberType = member.MemberType;
 
         // when serializing collection with no containing element, then the real type attribute applies to the class
-        // containing the collection, not the collection itself. That's because the containing element of collection is not 
+        // containing the collection, not the collection itself. That's because the containing element of collection is not
         // serialized. In this case the flag `isRealTypeAttributeNotRelevant` is set to true.
         var isRealTypeAttributeNotRelevant = member.CollectionAttributeInstance is
             { SerializationType: YAXCollectionSerializationTypes.RecursiveWithNoContainingElement };
@@ -597,17 +611,17 @@ internal class Deserialization
         GetRealTypeIfSpecified(xElementValue, isRealTypeAttributeNotRelevant, ref memberType);
 
         if (TrySetValueForEmptyElement(obj, member, memberType, xElementValue)) return;
-            
+
         if (TrySetValueForString(obj, elemValue, xElementValue, member, memberType)) return;
 
         if (TrySetValueForBasicType(obj, elemValue, xElementValue, member, memberType)) return;
-            
+
         if (member.IsTreatedAsDictionary && member.DictionaryAttributeInstance != null)
         {
             DeserializeTaggedDictionaryMember(obj, member, xElementValue);
             return;
         }
-            
+
         if (member.IsTreatedAsCollection)
         {
             DeserializeCollectionMember(obj, member, memberType, elemValue, xElementValue);
@@ -628,7 +642,7 @@ internal class Deserialization
     private bool TrySetValueDefault(object obj, MemberWrapper member, Type memberType, XElement xElementValue)
     {
         var namespaceToOverride = member.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThenNone();
-        var serializer = _serializer.NewInternalSerializer(memberType, namespaceToOverride, null);
+        using var serializerPoolObject = _serializer.GetChildSerializer(memberType, namespaceToOverride, null, out var serializer);
 
         serializer.Deserialization.IsCreatedToDeserializeANonCollectionMember =
             !(member.IsTreatedAsDictionary || member.IsTreatedAsCollection);
@@ -637,7 +651,7 @@ internal class Deserialization
             serializer.SetDeserializationBaseObject(member.GetValue(obj));
 
         var convertedObj = serializer.Deserialization.DeserializeBase(xElementValue);
-        _serializer.FinalizeNewSerializer(serializer, false);
+        _serializer.FinalizeChildSerializer(serializer, false);
 
         try
         {
@@ -778,11 +792,11 @@ internal class Deserialization
             // The collection was serialized serially
             GetSerialCollectionItems(xElement, memberAlias, collAttrInstance, collItemType, dataItems);
         }
-        else 
+        else
         {
             // The collection was serialized recursively or has no containing element
             GetRecursiveCollectionItems(xElement, memberAlias, collAttrInstance, collItemType, isPrimitive, dataItems);
-        } 
+        }
 
         // Now dataItems list is filled and will be processed
 
@@ -1061,9 +1075,9 @@ internal class Deserialization
             else
             {
                 var namespaceToOverride = memberAlias.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThenNone();
-                var ser = _serializer.NewInternalSerializer(curElementType, namespaceToOverride, null);
+                using var serializerPoolObject = _serializer.GetChildSerializer(curElementType, namespaceToOverride, null, out var ser);
                 dataItems.Add(ser.Deserialization.DeserializeBase(childElem));
-                _serializer.FinalizeNewSerializer(ser, false);
+                _serializer.FinalizeChildSerializer(ser, false);
             }
         }
     }
@@ -1109,13 +1123,14 @@ internal class Deserialization
         if (!ReflectionUtils.IsInstantiableCollection(colType)) return false;
 
         var namespaceToOverride = memberAlias.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThenNone();
-        var containerSer = _serializer.NewInternalSerializer(colType, namespaceToOverride, null);
+        using var serializerPoolObject = _serializer.GetChildSerializer(colType, namespaceToOverride, null, out var containerSer);
+
         containerSer.Deserialization.IsCreatedToDeserializeANonCollectionMember = true;
         containerSer.Deserialization.RemoveDeserializedXmlNodes = true;
 
         containerObj = containerSer.Deserialization.DeserializeBase(xElement);
-        _serializer.FinalizeNewSerializer(containerSer, false);
-            
+        _serializer.FinalizeChildSerializer(containerSer, false);
+
         return true;
     }
 
@@ -1190,11 +1205,11 @@ internal class Deserialization
 
         // deserialize non-collection fields
         var namespaceToOverride = alias.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThenNone();
-        var containerSer = _serializer.NewInternalSerializer(type, namespaceToOverride, null);
+        using var serializerPoolObject = _serializer.GetChildSerializer(type, namespaceToOverride, null, out var containerSer);
         containerSer.Deserialization.IsCreatedToDeserializeANonCollectionMember = true;
         containerSer.Deserialization.RemoveDeserializedXmlNodes = true;
         var dic = containerSer.Deserialization.DeserializeBase(xElementValue);
-        _serializer.FinalizeNewSerializer(containerSer, false);
+        _serializer.FinalizeChildSerializer(containerSer, false);
 
         // deserialize collection fields
         ReflectionUtils.IsIEnumerable(type, out var pairType);
@@ -1269,10 +1284,13 @@ internal class Deserialization
         }
         else
         {
-            valueSerializer ??= _serializer.NewInternalSerializer(valueType, valueAlias.Namespace, null);
+            using var serializerPoolObject =
+                _serializer.GetChildSerializer(valueType, valueAlias.Namespace, null, out var serializer);
+
+            valueSerializer ??= serializer;
 
             value = valueSerializer.Deserialization.DeserializeBase(childElem.Element(valueAlias));
-            _serializer.FinalizeNewSerializer(valueSerializer, false);
+            _serializer.FinalizeChildSerializer(valueSerializer, false);
         }
 
         return value;
@@ -1297,10 +1315,13 @@ internal class Deserialization
         }
         else
         {
-            keySerializer ??= _serializer.NewInternalSerializer(keyType, keyAlias.Namespace, null);
+            using var serializerPoolObject =
+                _serializer.GetChildSerializer(keyType, keyAlias.Namespace, null, out var serializer);
+
+            keySerializer ??= serializer;
 
             key = keySerializer.Deserialization.DeserializeBase(xElement.Element(keyAlias));
-            _serializer.FinalizeNewSerializer(keySerializer, false);
+            _serializer.FinalizeChildSerializer(keySerializer, false);
         }
 
         return key;
@@ -1425,7 +1446,7 @@ internal class Deserialization
 
         var realTypeAttr = elem.Attribute_NamespaceSafe(_serializer.Options.Namespace.Uri + _serializer.Options.AttributeName.RealType, _serializer.DocumentDefaultNamespace);
 
-        if (realTypeAttr == null) 
+        if (realTypeAttr == null)
             return true; // we found a child element (but without yaxlib:realtype attribute)
 
         var theRealType = ReflectionUtils.GetTypeByName(realTypeAttr.Value);
@@ -1478,9 +1499,11 @@ internal class Deserialization
         }
         else
         {
-            var ser = _serializer.NewInternalSerializer(keyType, xNameKey.Namespace.IfEmptyThenNone(), null);
+            using var serializerPoolObject =
+                _serializer.GetChildSerializer(keyType, xNameKey.Namespace.IfEmptyThenNone(), null, out var ser);
+
             keyValue = ser.Deserialization.DeserializeBase(baseElement.Element(xNameKey));
-            _serializer.FinalizeNewSerializer(ser, false);
+            _serializer.FinalizeChildSerializer(ser, false);
         }
 
         if (ReflectionUtils.IsBasicType(valueType))
@@ -1505,9 +1528,11 @@ internal class Deserialization
         }
         else
         {
-            var ser = _serializer.NewInternalSerializer(valueType, xNameValue.Namespace.IfEmptyThenNone(), null);
+            using var serializerPoolObject =
+                _serializer.GetChildSerializer(valueType, xNameValue.Namespace.IfEmptyThenNone(), null, out var ser);
+
             valueValue = ser.Deserialization.DeserializeBase(baseElement.Element(xNameValue));
-            _serializer.FinalizeNewSerializer(ser, false);
+            _serializer.FinalizeChildSerializer(ser, false);
         }
 
         var pair = Activator.CreateInstance(_serializer.Type, keyValue, valueValue);

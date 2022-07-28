@@ -4,13 +4,14 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading.Tasks;
 using System.IO;
 using System.Text;
-using System.Threading;
 using System.Xml;
 using FluentAssertions;
 using NUnit.Framework;
 using YAXLib;
+using YAXLib.Caching;
 using YAXLib.Enums;
 using YAXLib.Exceptions;
 using YAXLib.Options;
@@ -20,7 +21,7 @@ using YAXLibTests.TestHelpers;
 
 namespace YAXLibTests
 {
-    abstract public class SerializationTestBase
+    public abstract class SerializationTestBase
     {
         [OneTimeSetUp]
         public void TestFixtureSetUp()
@@ -76,38 +77,33 @@ namespace YAXLibTests
         [Test]
         public void ThreadingTest()
         {
-            try
-            {
-                for (var i = 0; i < 100; i++)
+            var options = new ParallelOptions { MaxDegreeOfParallelism = 10 };
+
+            Assert.That(() =>
+                Parallel.For(0L, 1000, options, (i, loopState) =>
                 {
-                    var th = new Thread(() =>
-                        {
-                            var serializer = CreateSerializer<Book>(new SerializerOptions
-                            {
-                                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
-                                ExceptionBehavior = YAXExceptionTypes.Warning,
-                                SerializationOptions = YAXSerializationOptions.SerializeNullObjects
-                            });
-                            var got = serializer.Serialize(Book.GetSampleInstance());
+                    MemberWrapperCache.Instance.Clear();
+                    UdtWrapperCache.Instance.Clear();
+                    var serializer = CreateSerializer<Book>(new SerializerOptions
+                    {
+                        ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
+                        ExceptionBehavior = YAXExceptionTypes.Warning,
+                        SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+                    });
+                    var got = serializer.Serialize(Book.GetSampleInstance());
 
-                            var deserializer = CreateSerializer<Book>(new SerializerOptions
-                            {
-                                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
-                                ExceptionBehavior = YAXExceptionTypes.Warning,
-                                SerializationOptions = YAXSerializationOptions.SerializeNullObjects
-                            });
-                            var book = deserializer.Deserialize(got) as Book;
-                            Assert.That(book, Is.Not.Null);
-                        }
-                    );
+                    var deserializer = CreateSerializer<Book>(new SerializerOptions
+                    {
+                        ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
+                        ExceptionBehavior = YAXExceptionTypes.Warning,
+                        SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+                    });
+                    var book = deserializer.Deserialize(got) as Book;
+                    Assert.That(book, Is.Not.Null);
+                }), Throws.Nothing);
 
-                    th.Start();
-                }
-            }
-            catch
-            {
-                Assert.Fail("Exception fired in threading method");
-            }
+            Assert.That(MemberWrapperCache.Instance.CacheDictionary, Contains.Key(typeof(Book)));
+            Assert.That(UdtWrapperCache.Instance.CacheDictionary, Contains.Key(typeof(Book)));
         }
 
         [Test]
@@ -2793,6 +2789,7 @@ namespace YAXLibTests
   <Object />
   <Object yaxlib:realtype=""System.Int32"">3</Object>
 </ListOfObject>";
+
             Assert.That(result, Is.EqualTo(expectedResult));
         }
 

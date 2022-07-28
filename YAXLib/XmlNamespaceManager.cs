@@ -21,6 +21,17 @@ namespace YAXLib
         internal Dictionary<XNamespace, string> NamespaceToPrefix => _namespaceToPrefix;
 
         /// <summary>
+        /// This instance will be (re-) initialized it a way
+        /// that it has the same virgin state like an instance that
+        /// was created with one of the CTORs.
+        /// </summary>
+        internal void Initialize()
+        {
+            _namespaceToPrefix.Clear();
+        }
+
+
+        /// <summary>
         ///     Registers the namespace to be added to the root element of the serialized document.
         /// </summary>
         /// <param name="ns">The namespace to be added</param>

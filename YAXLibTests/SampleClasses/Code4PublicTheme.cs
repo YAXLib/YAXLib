@@ -205,7 +205,7 @@ namespace YAXLibTests.SampleClasses
             var str = string.Format("{0:X}", color.ToArgb());
 
             var sb = new StringBuilder();
-            for (var i = 0; i < 8 - str.Length; ++i) sb.Append("0");
+            for (var i = 0; i < 8 - str.Length; ++i) sb.Append('0');
 
             return sb + str;
         }

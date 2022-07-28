@@ -8,6 +8,8 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using YAXLib.Caching;
+using YAXLib.Pooling.SpecializedPools;
 
 namespace YAXLib
 {
@@ -98,20 +100,24 @@ namespace YAXLib
         /// <returns>The friendly name for the type</returns>
         public static string GetTypeFriendlyName(Type type)
         {
-            if (type == null) throw new ArgumentNullException("type");
+            if (type == null) throw new ArgumentNullException(nameof(type));
 
             var name = type.Name;
             if (type.IsGenericType)
             {
-                var backqIndex = name.IndexOf('`');
-                if (backqIndex == 0)
-                    throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Bad type name: {0}",
-                        name));
-                if (backqIndex > 0) name = name.Substring(0, backqIndex);
+                var backTickIndex = name.IndexOf('`');
+                name = backTickIndex switch {
+                    0 => throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture,
+                        "Bad type name: {0}", name)),
+                    > 0 => name.Substring(0, backTickIndex),
+                    _ => name
+                };
 
-                name += "Of";
-
-                foreach (var genType in type.GetGenericArguments()) name += GetTypeFriendlyName(genType);
+                using var poolObject = StringBuilderPool.Instance.Get(out var sb);
+                sb.Append(name);
+                sb.Append("Of");
+                foreach (var genType in type.GetGenericArguments()) sb.Append(GetTypeFriendlyName(genType));
+                name = sb.ToString();
             }
             else if (type.IsArray)
             {
@@ -158,18 +164,6 @@ namespace YAXLib
             return IsIEnumerable(type);
         }
 
-        /// <summary>
-        ///     Determines whether the specified type has implemented or is an <c>IEnumerable</c> or <c>IEnumerable&lt;&gt;</c>
-        /// </summary>
-        /// <param name="type">The type to check.</param>
-        /// <returns>
-        ///     <value><c>true</c> if the specified type is enumerable; otherwise, <c>false</c>.</value>
-        /// </returns>
-        public static bool IsIEnumerable(Type type)
-        {
-            return IsIEnumerable(type, out _);
-        }
-
         public static bool IsDerivedFromGenericInterfaceType(Type givenType, Type genericInterfaceType,
             out Type genericType)
         {
@@ -190,6 +184,17 @@ namespace YAXLib
             return false;
         }
 
+        /// <summary>
+        ///     Determines whether the specified type has implemented or is an <c>IEnumerable</c> or <c>IEnumerable&lt;&gt;</c>
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>
+        ///     <value><c>true</c> if the specified type is enumerable; otherwise, <c>false</c>.</value>
+        /// </returns>
+        public static bool IsIEnumerable(Type type)
+        {
+            return IsIEnumerable(type, out _);
+        }
 
         /// <summary>
         ///     Determines whether the specified type has implemented or is an <c>IEnumerable</c> or <c>IEnumerable&lt;&gt;</c> .
@@ -249,7 +254,7 @@ namespace YAXLib
         {
             if (IsIEnumerable(type, out var itemType))
                 return itemType;
-            throw new Exception("The specified type must be a collection");
+            throw new ArgumentException("The specified type must be a collection", nameof(type));
         }
 
         /// <summary>
@@ -491,7 +496,7 @@ namespace YAXLib
             object convertedObj;
             if (dstType.IsEnum)
             {
-                var typeWrapper = TypeWrappersPool.Pool.GetTypeWrapper(dstType, null);
+                var typeWrapper = UdtWrapperCache.Instance.GetOrAddItem(dstType, null);
                 convertedObj = typeWrapper.EnumWrapper.ParseAlias(value.ToString());
             }
             else if (dstType == typeof(DateTime))
@@ -519,7 +524,7 @@ namespace YAXLib
                     if (int.TryParse(strValue, out var boolIntValue))
                         convertedObj = boolIntValue != 0;
                     else
-                        throw new Exception("The specified value is not recognized as boolean: " + strValue);
+                        throw new ArgumentException($"The specified value {strValue} is not recognized as boolean", nameof(value));
                 }
             }
             else if (dstType == typeof(Guid))
@@ -684,12 +689,12 @@ namespace YAXLib
                     // Backward compatibility:
                     // if we get a yaxlib:realtype which is .Net Framework 2.x/3.x/4.x mscorlib, replace it with its equivalent
                     : @"\,\s+(mscorlib)\,\s+Version\=\d+(\.\d+)*\,\s+Culture=\b\w+\b\,\s+PublicKeyToken\=\b\w+\b";
-            
+
             var execAppFxName  = System.Text.RegularExpressions.Regex.Replace(name, pattern, name.GetType().Assembly.FullName);
-            
+
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-            // first search the 1st assembly (i.e. the mscorlib), then start from the last assembly backward, 
+            // first search the 1st assembly (i.e. the mscorlib), then start from the last assembly backward,
             // the last assemblies are user defined ones
             for (var i = assemblies.Length; i > 0; i--)
             {
