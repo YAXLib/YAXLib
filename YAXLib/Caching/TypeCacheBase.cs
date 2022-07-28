@@ -8,17 +8,22 @@ using System.Collections.Generic;
 
 namespace YAXLib.Caching;
 
-internal abstract class TypeCacheAbstract<TV> : TypeCacheStaticAbstract
+internal abstract class TypeCacheBase<T> : TypeCacheStaticBase
 {
+    /// <summary>
+    /// The <see cref="TypeCacheBase{T}"/> instance.
+    /// </summary>
+    private protected static TypeCacheBase<T>? _instance;
+
     /// <summary>
     /// A dictionary from <see cref="Type"/>s to the associated cache value.
     /// </summary>
-    internal readonly Dictionary<Type, TV> CacheDictionary = new();
+    internal readonly Dictionary<Type, T> CacheDictionary = new();
 
     /// <summary>
     /// Stores the dictionary keys in the sequence as added
     /// </summary>
-    protected readonly List<Type> TypeList = new();
+    protected List<Type> TypeList { get; } = new();
 
     /// <summary>
     /// Gets or sets the maximum number of items in the cache.
@@ -38,17 +43,16 @@ internal abstract class TypeCacheAbstract<TV> : TypeCacheStaticAbstract
     /// <param name="key">The key.</param>
     /// <param name="value">The value.</param>
     /// <returns><see langword="true"/> if the item could be added, else <see langword="false"/>.</returns>
-    public bool TryAdd(Type key, TV value)
+    public bool TryAdd(Type key, T value)
     {
+        if (_instance is null) return false;
+
         lock (Locker)
         {
-            if (!CacheDictionary.ContainsKey(key))
-            {
-                Add(key, value);
-                return true;
-            }
+            if (CacheDictionary.ContainsKey(key)) return false;
 
-            return false;
+            Add(key, value);
+            return true;
         }
     }
 
@@ -58,11 +62,13 @@ internal abstract class TypeCacheAbstract<TV> : TypeCacheStaticAbstract
     /// <param name="key">The key.</param>
     /// <param name="value">The value.</param>
     /// <exception cref="ArgumentException">Throws if the <paramref name="key"/> already exists.</exception>
-    public void Add(Type key, TV value)
+    public void Add(Type key, T value)
     {
+        if (_instance is null) return;
+
         lock (Locker)
         {
-            if(CacheDictionary.Count == MaxCacheSize)
+            if (CacheDictionary.Count == MaxCacheSize)
                 EvictItems();
 
             CacheDictionary.Add(key, value);
@@ -75,6 +81,8 @@ internal abstract class TypeCacheAbstract<TV> : TypeCacheStaticAbstract
     /// </summary>
     protected void EvictItems()
     {
+        if (_instance is null) return;
+
         lock (Locker)
         {
             while (CacheDictionary.Count > 0 && CacheDictionary.Count > MaxCacheSize - 1)
@@ -90,6 +98,8 @@ internal abstract class TypeCacheAbstract<TV> : TypeCacheStaticAbstract
     /// </summary>
     public void Clear()
     {
+        if (_instance is null) return;
+
         lock (Locker)
         {
             CacheDictionary.Clear();

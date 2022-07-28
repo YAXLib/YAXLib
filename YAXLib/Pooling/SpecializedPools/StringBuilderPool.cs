@@ -11,7 +11,7 @@ namespace YAXLib.Pooling.SpecializedPools;
 /// <summary>
 /// The object pool for <see cref="StringBuilder"/>.
 /// </summary>
-internal sealed class StringBuilderPool : SpecializedPoolAbstract<StringBuilder>
+internal sealed class StringBuilderPool : SpecializedPoolBase<StringBuilder>
 {
     private static readonly Lazy<StringBuilderPool> Lazy = new(() => new StringBuilderPool(),
         LazyThreadSafetyMode.PublicationOnly);
@@ -20,7 +20,7 @@ internal sealed class StringBuilderPool : SpecializedPoolAbstract<StringBuilder>
     /// CTOR.
     /// </summary>
     /// <remarks>
-    /// <see cref="SpecializedPoolAbstract{T}.Policy"/> must be set before initializing the pool
+    /// <see cref="SpecializedPoolBase{T}.Policy"/> must be set before initializing the pool
     /// </remarks>
     private StringBuilderPool()
     {

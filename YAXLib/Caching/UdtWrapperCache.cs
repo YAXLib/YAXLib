@@ -11,24 +11,33 @@ namespace YAXLib.Caching;
 ///     Implements a singleton cache for <see cref="UdtWrapper"/>s
 ///     to prevent creation of <see cref="UdtWrapper"/>s for the same type repetitively.
 /// </summary>
-internal class UdtWrapperCache : TypeCacheAbstract<UdtWrapper>
+internal class UdtWrapperCache : TypeCacheBase<UdtWrapper>
 {
     public const int DefaultCacheSize = 500;
-
-    /// <summary>
-    ///     The singleton cache instance.
-    /// </summary>
-    private static UdtWrapperCache? _instance;
 
     private UdtWrapperCache()
     {
         MaxCacheSize = DefaultCacheSize;
     }
-
+    
     /// <summary>
     ///     Gets the singleton instance of the <see cref="UdtWrapperCache"/>.
     /// </summary>
-    public static UdtWrapperCache Instance => _instance ??= new UdtWrapperCache();
+    public static UdtWrapperCache Instance
+    {
+        get
+        {
+            // Implementing double-checked locking pattern
+            if (_instance is not null) return (UdtWrapperCache) _instance; // First check
+
+            lock (Locker)
+            {
+                _instance ??= new UdtWrapperCache(); // The second (double) check
+            }
+
+            return (UdtWrapperCache) _instance;
+        }
+    }
 
     /// <summary>
     ///     Gets the <see cref="UdtWrapper"/> for to the specified type.

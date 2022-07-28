@@ -11,7 +11,7 @@ namespace YAXLib.Pooling.YAXLibPools;
 /// <summary>
 /// The object pool for <see cref="YAXSerializer"/>.
 /// </summary>
-internal sealed class SerializerPool : PoolAbstract<YAXSerializer>
+internal sealed class SerializerPool : PoolBase<YAXSerializer>
 {
     private static readonly Lazy<SerializerPool> Lazy = new(() => new SerializerPool(),
             LazyThreadSafetyMode.PublicationOnly);
@@ -20,7 +20,7 @@ internal sealed class SerializerPool : PoolAbstract<YAXSerializer>
     /// CTOR.
     /// </summary>
     /// <remarks>
-    /// <see cref="SpecializedPoolAbstract{T}.Policy"/> must be set before initializing the pool
+    /// <see cref="SpecializedPoolBase{T}.Policy"/> must be set before initializing the pool
     /// </remarks>
     private SerializerPool()
     {

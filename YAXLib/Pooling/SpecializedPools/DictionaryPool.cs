@@ -21,7 +21,7 @@ internal sealed class DictionaryPool<TKey, TValue> : CollectionPool<Dictionary<T
     /// CTOR.
     /// </summary>
     /// <remarks>
-    /// <see cref="SpecializedPoolAbstract{T}.Policy"/> must be set before initializing the pool
+    /// <see cref="SpecializedPoolBase{T}.Policy"/> must be set before initializing the pool
     /// </remarks>
     private DictionaryPool()
     {

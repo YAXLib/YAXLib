@@ -34,7 +34,7 @@ public class PoolingHelpers
         var l = new List<(Type? Type, IPoolCounters? Counters)>();
 
         // get pools
-        var poolTypes = GetSubclassesOf(typeof(PoolAbstract<>).Assembly, typeof(PoolAbstract<>));
+        var poolTypes = GetSubclassesOf(typeof(PoolBase<>).Assembly, typeof(PoolBase<>));
 
         foreach (var poolType in poolTypes)
         {

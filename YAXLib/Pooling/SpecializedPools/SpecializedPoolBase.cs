@@ -11,7 +11,7 @@ namespace YAXLib.Pooling.SpecializedPools;
 /// The abstract base class for specialized pools.
 /// </summary>
 /// <typeparam name="T">The <see langword="type"/> of the smart pool.</typeparam>
-internal abstract class SpecializedPoolAbstract<T> : IDisposable where T : class
+internal abstract class SpecializedPoolBase<T> : IDisposable where T : class
 {
     /// <summary>
     /// The static <see cref="ObjectPool{T}"/> instance.
@@ -26,7 +26,7 @@ internal abstract class SpecializedPoolAbstract<T> : IDisposable where T : class
     /// <summary>
     /// CTOR.
     /// </summary>
-    protected SpecializedPoolAbstract()
+    protected SpecializedPoolBase()
     {
         Pool = LazyCreateObjectPool();
     }

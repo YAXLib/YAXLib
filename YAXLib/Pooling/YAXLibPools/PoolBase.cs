@@ -10,7 +10,7 @@ namespace YAXLib.Pooling.YAXLibPools;
 /// Used to identify pools belonging to YAXLib.
 /// </summary>
 /// <typeparam name="T">The <see langword="type"/> of the YAXLib pool.</typeparam>
-internal abstract class PoolAbstract<T> : SpecializedPoolAbstract<T> where T : class
+internal abstract class PoolBase<T> : SpecializedPoolBase<T> where T : class
 {
     // No custom properties or methods for YAXLib pools yet.
 }

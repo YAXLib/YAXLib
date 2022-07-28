@@ -13,7 +13,7 @@ namespace YAXLib.Pooling.SpecializedPools;
 /// </summary>
 /// <typeparam name="TCollection"></typeparam> name=""/>
 /// <typeparam name="TItem"></typeparam> name=""/>
-internal class CollectionPool<TCollection, TItem> : SpecializedPoolAbstract<TCollection>
+internal class CollectionPool<TCollection, TItem> : SpecializedPoolBase<TCollection>
     where TCollection : class, ICollection<TItem>, new()
 {
     private static readonly Lazy<CollectionPool<TCollection, TItem>> Lazy =
@@ -23,7 +23,7 @@ internal class CollectionPool<TCollection, TItem> : SpecializedPoolAbstract<TCol
     /// CTOR.
     /// </summary>
     /// <remarks>
-    /// <see cref="SpecializedPoolAbstract{T}.Policy"/> must be set before initializing the pool
+    /// <see cref="SpecializedPoolBase{T}.Policy"/> must be set before initializing the pool
     /// </remarks>
     protected CollectionPool()
     {

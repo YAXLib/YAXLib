@@ -20,7 +20,7 @@ internal sealed class HashSetPool<T> : CollectionPool<HashSet<T>, T>
     /// CTOR.
     /// </summary>
     /// <remarks>
-    /// <see cref="SpecializedPoolAbstract{T}.Policy"/> must be set before initializing the pool
+    /// <see cref="SpecializedPoolBase{T}.Policy"/> must be set before initializing the pool
     /// </remarks>
     private HashSetPool()
     {

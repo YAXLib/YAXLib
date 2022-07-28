@@ -5,7 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using YAXLib.Pooling.SpecializedPools;
 
 namespace YAXLib.Caching;
 
@@ -17,14 +16,9 @@ namespace YAXLib.Caching;
 ///     Filtering of undesired members takes place later in the de/serialization process.
 ///     </para>
 /// </summary>
-internal class MemberWrapperCache : TypeCacheAbstract<IList<MemberWrapper>>
+internal class MemberWrapperCache : TypeCacheBase<IList<MemberWrapper>>
 {
     public const int DefaultCacheSize = 1000;
-
-    /// <summary>
-    ///     The singleton cache instance.
-    /// </summary>
-    private static MemberWrapperCache? _instance;
 
     private MemberWrapperCache()
     {
@@ -34,7 +28,21 @@ internal class MemberWrapperCache : TypeCacheAbstract<IList<MemberWrapper>>
     /// <summary>
     ///     Gets the singleton instance of the <see cref="MemberWrapperCache"/>.
     /// </summary>
-    public static MemberWrapperCache Instance => _instance ??= new MemberWrapperCache();
+    public static MemberWrapperCache Instance
+    {
+        get
+        {
+            if (_instance is not null) return (MemberWrapperCache) _instance;
+
+            // Implementing double-checked locking pattern
+            lock (Locker)
+            {
+                _instance ??= new MemberWrapperCache(); // The second (double) check
+            }
+
+            return (MemberWrapperCache) _instance;
+        }
+    }
 
     /// <summary>
     ///     Gets the <see cref="MemberWrapper"/>s for to the specified type.
@@ -47,14 +55,17 @@ internal class MemberWrapperCache : TypeCacheAbstract<IList<MemberWrapper>>
     /// <returns><see langword="true"/>, if <paramref name="t"/> was found in the cache.</returns>
     public bool TryGetItem(Type t, out IList<MemberWrapper> memberWrappers)
     {
-        lock (Locker)
+        if (_instance is not null)
         {
-            if (CacheDictionary.TryGetValue(t, out memberWrappers))
+            lock (Locker)
             {
-                return true;
+                if (CacheDictionary.TryGetValue(t, out memberWrappers))
+                {
+                    return true;
+                }
             }
         }
-        
+
         memberWrappers = new List<MemberWrapper>();
         return false;
     }
