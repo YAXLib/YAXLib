@@ -21,7 +21,7 @@ internal class UdtWrapperCache : TypeCacheBase<UdtWrapper>
     {
         MaxCacheSize = DefaultCacheSize;
     }
-
+    
     /// <summary>
     ///     Gets the singleton instance of the <see cref="UdtWrapperCache"/>.
     /// </summary>
