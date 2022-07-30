@@ -12,7 +12,7 @@ namespace YAXLib.KnownTypes
     /// Classes derived from the base class of type <typeparamref name="T"/> will be serialized and deserialized.
     /// </summary>
     /// <typeparam name="T">The underlying known type</typeparam>
-    public abstract class KnownBaseTypeAbstract<T> : IKnownType
+    public abstract class KnownBaseTypeBase<T> : IKnownType
     {
         /// <inheritdoc />
         public Type Type { get; } = typeof(T);

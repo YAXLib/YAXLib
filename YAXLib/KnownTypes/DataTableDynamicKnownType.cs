@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace YAXLib.KnownTypes
 {
-    internal class DataTableDynamicKnownType : DynamicKnownTypeAbstract
+    internal class DataTableDynamicKnownType : DynamicKnownTypeBase
     {
         /// <inheritdoc />
         public override string TypeName => "System.Data.DataTable";

@@ -4,7 +4,6 @@
 #nullable enable
 
 using System;
-using YAXLib.Enums;
 using YAXLib.Options;
 
 namespace YAXLib.Caching;
@@ -34,10 +33,10 @@ internal class UdtWrapperCache : TypeCacheBase<UdtWrapper>
 
             lock (Locker)
             {
-                _instance ??= new UdtWrapperCache(); // The second (double) check
+                if (_instance is null) SetInstanceVariable(new UdtWrapperCache()); // The second (double) check
             }
 
-            return (UdtWrapperCache) _instance;
+            return (UdtWrapperCache) _instance!;
         }
     }
 

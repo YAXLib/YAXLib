@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace YAXLib.KnownTypes
 {
-    internal class DbNullKnownType : KnownTypeAbstract<DBNull>
+    internal class DbNullKnownType : KnownTypeBase<DBNull>
     {
         /// <inheritdoc />
         public override void Serialize(DBNull? obj, XElement elem, XNamespace overridingNamespace, ISerializationContext serializationContext)

@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace YAXLib.KnownTypes
 {
-    internal class DataSetDynamicKnownType : DynamicKnownTypeAbstract
+    internal class DataSetDynamicKnownType : DynamicKnownTypeBase
     {
         /// <inheritdoc />
         public override string TypeName => "System.Data.DataSet";

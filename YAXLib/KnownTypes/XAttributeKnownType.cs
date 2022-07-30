@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace YAXLib.KnownTypes
 {
-    internal class XAttributeKnownType : KnownTypeAbstract<XAttribute>
+    internal class XAttributeKnownType : KnownTypeBase<XAttribute>
     {
         /// <inheritdoc />
         public override void Serialize(XAttribute? obj, XElement elem, XNamespace overridingNamespace, ISerializationContext serializationContext)

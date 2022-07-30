@@ -8,7 +8,7 @@ using YAXLib.Exceptions;
 
 namespace YAXLib.KnownTypes
 {
-    internal class RectangleDynamicKnownType : DynamicKnownTypeAbstract
+    internal class RectangleDynamicKnownType : DynamicKnownTypeBase
     {
         /// <inheritdoc />
         public override string TypeName => "System.Drawing.Rectangle";

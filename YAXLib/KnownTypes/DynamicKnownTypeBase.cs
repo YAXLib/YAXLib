@@ -8,11 +8,11 @@ using System.Xml.Linq;
 namespace YAXLib.KnownTypes
 {
     /// <summary>
-    /// A <see cref="DynamicKnownTypeAbstract"/> is the base class for <see cref="Type"/>s,
+    /// A <see cref="DynamicKnownTypeBase"/> is the base class for <see cref="Type"/>s,
     /// for which the full type name is defined at compile time.
     /// The actual type is determined at runtime.
     /// </summary>
-    public abstract class DynamicKnownTypeAbstract : IKnownType
+    public abstract class DynamicKnownTypeBase : IKnownType
     {
         private Type? _type;
 

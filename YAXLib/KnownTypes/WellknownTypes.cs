@@ -10,12 +10,12 @@ namespace YAXLib.KnownTypes
 {
     /// <summary>
     /// Provides serialization and deserialization methods for known types.
-    /// The target of a <see cref="KnownTypeAbstract{T}"/> may be defined at compile time or runtime.
+    /// The target of a <see cref="KnownTypeBase{T}"/> may be defined at compile time or runtime.
     /// </summary>
     public static class WellKnownTypes
     {
         /// <summary>
-        /// This dictionary stores the known types derived from <see cref="KnownTypeAbstract{T}"/>.
+        /// This dictionary stores the known types derived from <see cref="KnownTypeBase{T}"/>.
         /// <para>
         /// The underlying type of this known type is determined at compile time.
         /// </para>
@@ -25,7 +25,7 @@ namespace YAXLib.KnownTypes
 
         /// <summary>
         /// This dictionary stores the known <b>base</b> classes for other classes.
-        /// That allows to have one <see cref="KnownTypeAbstract{T}"/> implementation for all the derived classes.
+        /// That allows to have one <see cref="KnownTypeBase{T}"/> implementation for all the derived classes.
         /// </summary>
         /// <para>
         /// The underlying type of this known type is determined at compile time.
@@ -37,9 +37,9 @@ namespace YAXLib.KnownTypes
         private static readonly Dictionary<Type, IKnownType> _dictKnownBaseTypes = new ();
 
         /// <summary>
-        /// This dictionary stores the known types derived from <see cref="DynamicKnownTypeAbstract"/>. 
+        /// This dictionary stores the known types derived from <see cref="DynamicKnownTypeBase"/>. 
         /// <para>
-        /// For classes derived from the <see cref="DynamicKnownTypeAbstract"/> base class,
+        /// For classes derived from the <see cref="DynamicKnownTypeBase"/> base class,
         /// the <b>full type name</b> is defined at compile time.
         /// The underlying type of this known type is determined at runtime.
         /// </para>
@@ -75,7 +75,7 @@ namespace YAXLib.KnownTypes
         /// Adds a known type to the dictionary of known types.
         /// </summary>
         /// <param name="knownType">The known type to add.</param>
-        public static void Add<T>(KnownTypeAbstract<T> knownType)
+        public static void Add<T>(KnownTypeBase<T> knownType)
         {
             _dictKnownTypes[knownType.Type] = knownType;
         }
@@ -84,7 +84,7 @@ namespace YAXLib.KnownTypes
         /// Adds a dynamic known type to the dictionary of known types.
         /// </summary>
         /// <param name="dynamicKnownType">The dynamic known type to add.</param>
-        public static void Add(DynamicKnownTypeAbstract dynamicKnownType)
+        public static void Add(DynamicKnownTypeBase dynamicKnownType)
         {
             _dictDynamicKnownTypes[dynamicKnownType.TypeName] = dynamicKnownType;
         }
@@ -93,7 +93,7 @@ namespace YAXLib.KnownTypes
         /// Adds a known base type to the dictionary of known types.
         /// </summary>
         /// <param name="knownBaseType">The known base type to add.</param>
-        public static void Add<T>(KnownBaseTypeAbstract<T> knownBaseType)
+        public static void Add<T>(KnownBaseTypeBase<T> knownBaseType)
         {
             _dictKnownBaseTypes[knownBaseType.Type] = knownBaseType;
         }

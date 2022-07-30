@@ -8,7 +8,7 @@ using YAXLib.Exceptions;
 
 namespace YAXLib.KnownTypes
 {
-    internal class TimeSpanKnownType : KnownTypeAbstract<TimeSpan>
+    internal class TimeSpanKnownType : KnownTypeBase<TimeSpan>
     {
         /// <inheritdoc />
         public override void Serialize(TimeSpan timeSpan, XElement elem, XNamespace overridingNamespace, ISerializationContext serializationContext)

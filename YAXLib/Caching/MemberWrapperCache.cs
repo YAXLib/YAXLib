@@ -37,10 +37,10 @@ internal class MemberWrapperCache : TypeCacheBase<IList<MemberWrapper>>
             // Implementing double-checked locking pattern
             lock (Locker)
             {
-                _instance ??= new MemberWrapperCache(); // The second (double) check
+                if (_instance is null) SetInstanceVariable(new MemberWrapperCache()); // The second (double) check
             }
 
-            return (MemberWrapperCache) _instance;
+            return (MemberWrapperCache) _instance!;
         }
     }
 

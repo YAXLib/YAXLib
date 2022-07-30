@@ -11,7 +11,7 @@ namespace YAXLib.KnownTypes
     ///     Abstract base class for predefined serializers and deserializers for known types.
     /// </summary>
     /// <typeparam name="T">The underlying known type</typeparam>
-    public abstract class KnownTypeAbstract<T> : IKnownType
+    public abstract class KnownTypeBase<T> : IKnownType
     {
         /// <inheritdoc />
         public Type Type => typeof(T);

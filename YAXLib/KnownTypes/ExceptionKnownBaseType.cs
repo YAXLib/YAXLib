@@ -21,7 +21,7 @@ namespace YAXLib.KnownTypes;
 /// serialization, when deserialization of exceptions is intended.
 /// </para>
 /// </summary>
-internal class ExceptionKnownBaseType : KnownBaseTypeAbstract<Exception>
+internal class ExceptionKnownBaseType : KnownBaseTypeBase<Exception>
 {
     private int _recursionCount;
     private int _maxRecursion;

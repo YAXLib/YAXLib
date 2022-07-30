@@ -6,7 +6,7 @@ using System.Xml.Linq;
 
 namespace YAXLib.KnownTypes
 {
-    internal class ColorDynamicKnownType : DynamicKnownTypeAbstract
+    internal class ColorDynamicKnownType : DynamicKnownTypeBase
     {
         /// <inheritdoc />
         public override string TypeName => "System.Drawing.Color";

@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace YAXLib.KnownTypes
 {
-    internal class TypeKnownType : KnownTypeAbstract<Type>
+    internal class TypeKnownType : KnownTypeBase<Type>
     {
         /// <inheritdoc />
         public override void Serialize(Type? obj, XElement elem, XNamespace overridingNamespace, ISerializationContext serializationContext)

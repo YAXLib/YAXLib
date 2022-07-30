@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace YAXLib.KnownTypes
 {
-    internal class RuntimeTypeDynamicKnownType : DynamicKnownTypeAbstract
+    internal class RuntimeTypeDynamicKnownType : DynamicKnownTypeBase
     {
         /// <inheritdoc />
         public override string TypeName => "System.RuntimeType";
