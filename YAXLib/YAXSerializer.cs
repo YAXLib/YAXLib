@@ -177,7 +177,7 @@ using YAXLib.Pooling.YAXLibPools;
                 using TextReader tr = new StringReader(input);
                 var xDocument = XDocument.Load(tr, Deserialization.GetXmlLoadOptions());
                 var baseElement = xDocument.Root;
-                FindDocumentDefaultNamespace();
+                DocumentDefaultNamespace = UdtWrapper.FindDocumentDefaultNamespace();
                 return Deserialization.DeserializeBase(baseElement);
             }
             catch (XmlException ex)
@@ -198,7 +198,7 @@ using YAXLib.Pooling.YAXLibPools;
             {
                 var xDocument = XDocument.Load(xmlReader, Deserialization.GetXmlLoadOptions());
                 var baseElement = xDocument.Root;
-                FindDocumentDefaultNamespace();
+                DocumentDefaultNamespace = UdtWrapper.FindDocumentDefaultNamespace();
                 return Deserialization.DeserializeBase(baseElement);
             }
             catch (XmlException ex)
@@ -219,7 +219,7 @@ using YAXLib.Pooling.YAXLibPools;
             {
                 var xDocument = XDocument.Load(textReader, Deserialization.GetXmlLoadOptions());
                 var baseElement = xDocument.Root;
-                FindDocumentDefaultNamespace();
+                DocumentDefaultNamespace = UdtWrapper.FindDocumentDefaultNamespace();
                 return Deserialization.DeserializeBase(baseElement);
             }
             catch (XmlException ex)
@@ -239,7 +239,7 @@ using YAXLib.Pooling.YAXLibPools;
             // impossible to throw YAXBadlyFormedXML
             var xDocument = new XDocument();
             xDocument.Add(element);
-            FindDocumentDefaultNamespace();
+            DocumentDefaultNamespace = UdtWrapper.FindDocumentDefaultNamespace();
             return Deserialization.DeserializeBase(element);
         }
 
@@ -380,69 +380,6 @@ using YAXLib.Pooling.YAXLibPools;
 
         #endregion
 
-        #region Internal methods
-
-        /// <summary>
-        ///     Gets the sequence of fields to be serialized or to be deserialized for the serializer's underlying type.
-        ///     This sequence is retrieved according to the field-types specified by the user.
-        /// </summary>
-        /// <returns>The sequence of fields to be de/serialized for the serializer's underlying type.</returns>
-        internal IEnumerable<MemberWrapper> GetFieldsToBeSerialized()
-        {
-            return GetFieldsToBeSerialized(UdtWrapper).OrderBy(t => t.Order);
-        }
-
-        /// <summary>
-        ///     Gets the sequence of fields to be serialized or to be deserialized for the specified type.
-        ///     This sequence is retrieved according to the field-types specified by the user.
-        /// </summary>
-        /// <param name="typeWrapper">
-        ///     The type wrapper for the type whose serializable
-        ///     fields is going to be retrieved.
-        /// </param>
-        /// <returns>The sequence of fields to be de/serialized for the specified type</returns>
-        internal IEnumerable<MemberWrapper> GetFieldsToBeSerialized(UdtWrapper typeWrapper)
-        {
-            if (!MemberWrapperCache.Instance.TryGetItem(typeWrapper.UnderlyingType, out var memberWrappers))
-            {
-
-#pragma warning disable S3011 // disable sonar accessibility bypass warning
-            foreach (var member in typeWrapper.UnderlyingType.GetMembers(
-                         BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
-                         typeWrapper.IncludePrivateMembersFromBaseTypes))
-#pragma warning restore S3011 // enable sonar accessibility bypass warning
-                {
-                    if (!IsValidPropertyOrField(member)) continue;
-                    if (member is PropertyInfo prop && !CanSerializeProperty(prop)) continue;
-
-                    if ((typeWrapper.IsCollectionType || typeWrapper.IsDictionaryType)
-                        && ReflectionUtils.IsPartOfNetFx(member))
-                        continue;
-
-                    var memInfo = new MemberWrapper(member, this);
-                    // Note: The cache contains all generally allowed members
-                    memberWrappers.Add(memInfo);
-                }
-
-                _ = MemberWrapperCache.Instance.TryAdd(typeWrapper.UnderlyingType, memberWrappers);
-            }
-
-            // Filter the members that are actually subject to be serialized
-            // according to settings and attributes.
-            // IsAllowedToBeSerialized evaluates only booleans, no reflection.
-            return memberWrappers.Where(mr => mr.IsAllowedToBeSerialized(typeWrapper.FieldsToSerialize,
-                UdtWrapper.DoNotSerializePropertiesWithNoSetter));
-        }
-
-        internal void FindDocumentDefaultNamespace()
-        {
-            if (UdtWrapper.HasNamespace && string.IsNullOrEmpty(UdtWrapper.NamespacePrefix))
-                // it has a default namespace defined (one without a prefix)
-                DocumentDefaultNamespace = UdtWrapper.Namespace; // set the default namespace
-        }
-
-        #endregion
-
         #region Internal properties
 
         /// <summary>
@@ -451,9 +388,6 @@ using YAXLib.Pooling.YAXLibPools;
         ///     and attributes without any namespace must adapt this namespace. It is just for comparison and control
         ///     purposes.
         /// </summary>
-        /// <remarks>
-        ///     Is set by method <see cref="YAXSerializer.FindDocumentDefaultNamespace"/>
-        /// </remarks>
         internal XNamespace DocumentDefaultNamespace { get; set; }
 
         /// <summary>
@@ -483,7 +417,7 @@ using YAXLib.Pooling.YAXLibPools;
         internal Type Type { get; set; }
 
         /// <summary>
-        ///     The type wrapper for the underlying type used in the serializer
+        ///     The type wrapper for the underlying type used in the serializer.
         /// </summary>
         internal UdtWrapper UdtWrapper { get; set; }
 
@@ -514,27 +448,6 @@ using YAXLib.Pooling.YAXLibPools;
             // If namespace info is not already set during construction,
             // then set it from the other YAXSerializer instance
             if (otherNamespace.IsEmpty() && !TypeNamespace.IsEmpty()) TypeNamespace = otherNamespace;
-        }
-
-        private static bool IsValidPropertyOrField(MemberInfo member)
-        {
-            // Exclude names of compiler-generated backing fields like "<my_member>k__BackingField"
-            var name0 = member.Name[0];
-            return (char.IsLetter(name0) || name0 == '_') &&
-                   (member.MemberType == MemberTypes.Property || member.MemberType == MemberTypes.Field);
-        }
-
-        private static bool CanSerializeProperty(PropertyInfo prop)
-        {
-            // ignore indexers; if member is an indexer property, do not serialize it
-            if (prop.GetIndexParameters().Length > 0)
-                return false;
-
-            // don't serialize delegates as well
-            if (ReflectionUtils.IsTypeEqualOrInheritedFromType(prop.PropertyType, typeof(Delegate)))
-                return false;
-
-            return true;
         }
 
         #endregion

@@ -2,8 +2,12 @@
 // Licensed under the MIT license.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Xml.Linq;
 using YAXLib.Attributes;
+using YAXLib.Caching;
 using YAXLib.Enums;
 
 namespace YAXLib
@@ -13,6 +17,11 @@ namespace YAXLib
     /// </summary>
     internal class UdtWrapper
     {
+        /// <summary>
+        ///     The <see cref="YAXSerializer"/> that created this instance of <see cref="UdtWrapper"/>.
+        /// </summary>
+        private readonly YAXSerializer _serializer;
+
         /// <summary>
         ///     the underlying type for this instance of <c>TypeWrapper</c>
         /// </summary>
@@ -52,6 +61,7 @@ namespace YAXLib
         /// </param>
         public UdtWrapper(Type udtType, YAXSerializer callerSerializer)
         {
+            _serializer = callerSerializer;
             IsDictionaryType = false;
             _udtType = ReflectionUtils.IsNullable(udtType, out var nullableUnderlyingType)
                 ? nullableUnderlyingType
@@ -64,7 +74,7 @@ namespace YAXLib
             FieldsToSerialize = YAXSerializationFields.PublicPropertiesOnly;
             IsAttributedAsNotCollection = false;
 
-            SetYAXSerializationOptions(callerSerializer);
+            SetSerializationOptions(callerSerializer);
 
             foreach (var attr in _udtType.GetCustomAttributes(true))
                 if (attr is IYaxTypeLevelAttribute typeLevelAttribute) typeLevelAttribute.Setup(this);
@@ -258,6 +268,9 @@ namespace YAXLib
         /// </value>
         public bool HasCustomSerializer => CustomSerializerType != null;
 
+        /// <summary>
+        /// If <see langword="true"/>, the 'xml:space="preserve"' attribute will be added to the specified element.
+        /// </summary>
         public bool PreservesWhitespace { get; internal set; }
 
         /// <summary>
@@ -302,10 +315,10 @@ namespace YAXLib
         public string NamespacePrefix { get; internal set; }
 
         /// <summary>
-        ///     Sets the serializer options.
+        ///     Sets the <see cref="SerializationOptions"/>.
         /// </summary>
         /// <param name="caller">The caller serializer.</param>
-        public void SetYAXSerializationOptions(YAXSerializer caller)
+        public void SetSerializationOptions(YAXSerializer caller)
         {
             if (!_isSerializationOptionSetByAttribute)
                 SerializationOptions = caller != null
@@ -313,29 +326,13 @@ namespace YAXLib
                     : YAXSerializationOptions.SerializeNullObjects;
         }
 
-        /// <summary>
-        ///     Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
-        /// </summary>
-        /// <returns>
-        ///     A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
-        /// </returns>
+        /// <inheritdoc />
         public override string ToString()
         {
             return _udtType.ToString();
         }
 
-        /// <summary>
-        ///     Determines whether the specified <see cref="T:System.Object" /> is equal to the current
-        ///     <see cref="T:System.Object" />.
-        /// </summary>
-        /// <param name="obj">The <see cref="T:System.Object" /> to compare with the current <see cref="T:System.Object" />.</param>
-        /// <returns>
-        ///     true if the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />;
-        ///     otherwise, false.
-        /// </returns>
-        /// <exception cref="T:System.NullReferenceException">
-        ///     The <paramref name="obj" /> parameter is null.
-        /// </exception>
+        /// <inheritdoc />
         public override bool Equals(object obj)
         {
             if (obj is UdtWrapper udtWrapper)
@@ -346,12 +343,7 @@ namespace YAXLib
             return false;
         }
 
-        /// <summary>
-        ///     Serves as a hash function for a particular type.
-        /// </summary>
-        /// <returns>
-        ///     A hash code for the current <see cref="T:System.Object" />.
-        /// </returns>
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             return _udtType.GetHashCode();
@@ -365,6 +357,85 @@ namespace YAXLib
         {
             SerializationOptions = options;
             _isSerializationOptionSetByAttribute = true;
+        }
+
+        /// <summary>
+        ///     Gets the sequence of fields to be serialized or to be deserialized for the specified type.
+        ///     This sequence is retrieved according to the field-types specified by the user.
+        /// </summary>
+        /// <param name="sorted">If <see langword="true"/> (default), the returned fields will be sorted by <see cref="MemberWrapper.Order"/>.</param>
+        /// <returns>The sequence of fields to be de/serialized for the specified type</returns>
+        internal IEnumerable<MemberWrapper> GetFieldsToBeSerialized(bool sorted = true)
+        {
+            if (!MemberWrapperCache.Instance.TryGetItem(UnderlyingType, out var memberWrappers))
+            {
+
+#pragma warning disable S3011 // disable sonar accessibility bypass warning
+            foreach (var member in UnderlyingType.GetMembers(
+                         BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
+                         IncludePrivateMembersFromBaseTypes))
+#pragma warning restore S3011 // enable sonar accessibility bypass warning
+                {
+                    if (!IsValidPropertyOrField(member)) continue;
+                    if (member is PropertyInfo prop && !CanSerializeProperty(prop)) continue;
+
+                    if ((IsCollectionType || IsDictionaryType)
+                        && ReflectionUtils.IsPartOfNetFx(member))
+                        continue;
+
+                    var memInfo = new MemberWrapper(member, _serializer);
+                    // Note: The cache contains all generally allowed members
+                    memberWrappers.Add(memInfo);
+                }
+
+                _ = MemberWrapperCache.Instance.TryAdd(UnderlyingType, memberWrappers);
+            }
+
+            // Filter the members that are actually subject to be serialized
+            // according to settings and attributes.
+            // IsAllowedToBeSerialized evaluates only booleans, no reflection.
+            var filteredWrappers = memberWrappers.Where(mr => mr.IsAllowedToBeSerialized(FieldsToSerialize,
+                DoNotSerializePropertiesWithNoSetter));
+
+            return sorted ? filteredWrappers.OrderBy(mr => mr.Order) : filteredWrappers;
+        }
+
+        /// <summary>
+        /// Gets the default <see cref="XNamespace"/> for the document, it is defined,
+        /// or an empty <see cref="XNamespace"/>.
+        /// </summary>
+        /// <returns>
+        /// The default <see cref="XNamespace"/> for the document, it is defined,
+        /// or an empty <see cref="XNamespace"/>.
+        /// </returns>
+        internal XNamespace FindDocumentDefaultNamespace()
+        {
+            if (HasNamespace && string.IsNullOrEmpty(NamespacePrefix))
+                // it has a default namespace defined (one without a prefix)
+                return Namespace;
+
+            return XNamespace.Get(string.Empty);
+        }
+
+        private static bool IsValidPropertyOrField(MemberInfo member)
+        {
+            // Exclude names of compiler-generated backing fields like "<my_member>k__BackingField"
+            var name0 = member.Name[0];
+            return (char.IsLetter(name0) || name0 == '_') &&
+                   (member.MemberType == MemberTypes.Property || member.MemberType == MemberTypes.Field);
+        }
+
+        private static bool CanSerializeProperty(PropertyInfo prop)
+        {
+            // ignore indexers; if member is an indexer property, do not serialize it
+            if (prop.GetIndexParameters().Length > 0)
+                return false;
+
+            // don't serialize delegates as well
+            if (ReflectionUtils.IsTypeEqualOrInheritedFromType(prop.PropertyType, typeof(Delegate)))
+                return false;
+
+            return true;
         }
     }
 }
