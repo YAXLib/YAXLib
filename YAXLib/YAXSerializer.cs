@@ -4,18 +4,17 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using YAXLib.Caching;
+using YAXLib.Enums;
 using YAXLib.Exceptions;
 using YAXLib.Options;
 using YAXLib.Pooling.ObjectPools;
 using YAXLib.Pooling.YAXLibPools;
 
- namespace YAXLib
+namespace YAXLib
 {
     /// <summary>
     ///     An XML serialization class which lets developers design the XML file structure and select the exception handling
@@ -56,7 +55,7 @@ using YAXLib.Pooling.YAXLibPools;
             Deserialization.Initialize();
             Serialization.Initialize();
 
-            UdtWrapper = UdtWrapperCache.Instance.GetOrAddItem(Type, this);
+            UdtWrapper = UdtWrapperCache.Instance.GetOrAddItem(Type, Options);
             if (UdtWrapper.HasNamespace)
                 TypeNamespace = UdtWrapper.Namespace;
         }
@@ -87,7 +86,7 @@ using YAXLib.Pooling.YAXLibPools;
         /// </summary>
         /// <param name="type">The type of the object being serialized/deserialized.</param>
         public YAXSerializer(Type type)
-            : this(type, new SerializerOptions())
+            : this(type, new SerializerOptions { SerializationOptions = YAXSerializationOptions.SerializeNullObjects })
         {
         }
 
@@ -421,9 +420,7 @@ using YAXLib.Pooling.YAXLibPools;
         /// </summary>
         internal UdtWrapper UdtWrapper { get; set; }
 
-        /// <summary>
-        ///     Gets or sets the number of recursions (number of total created <see cref="YAXSerializer"/> instances).
-        /// </summary>
+        /// <inheritdoc />
         int IRecursionCounter.RecursionCount
         {
             get => _recursionCount;

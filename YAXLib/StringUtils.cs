@@ -52,12 +52,11 @@ namespace YAXLib
             name = name.Trim();
 
             // Needs at least 3 chars ('{}a' is, in theory, valid), must start with '{', must have a following closing '}' which must not be last char.
-            if (name.Length >= 3)
-                if (name[0] == '{')
-                {
-                    var closingBrace = name.IndexOf('}', 1);
-                    return closingBrace != -1 && closingBrace < name.Length - 1;
-                }
+            if (name.Length >= 3 && (name[0] == '{'))
+            {
+                var closingBrace = name.IndexOf('}', 1);
+                return closingBrace != -1 && closingBrace < name.Length - 1;
+            }
 
             return false;
         }
@@ -316,12 +315,11 @@ namespace YAXLib
                     bracketCount++;
                 else if (temp[i] == '}')
                     bracketCount--;
-                else if (temp[i] == '/')
-                    if (bracketCount == 0)
-                    {
-                        yield return temp.Substring(lastStart, i - lastStart);
-                        lastStart = i + 1;
-                    }
+                else if (temp[i] == '/' && bracketCount == 0)
+                {
+                    yield return temp.Substring(lastStart, i - lastStart);
+                    lastStart = i + 1;
+                }
 
             if (lastStart <= temp.Length - 1)
                 yield return temp.Substring(lastStart);

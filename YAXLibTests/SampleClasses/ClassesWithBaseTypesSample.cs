@@ -38,5 +38,7 @@ public class BaseLevel2
     internal int InternalPropertyFromBaseLevel2 { get; set; } = 21;
 
     private int _privateFieldFromBaseLevel2 = 22;
+
+    private int PrivatePropertyFromBaseLevel2 { get; set; } = 23;
 }
 #pragma warning restore CS0414

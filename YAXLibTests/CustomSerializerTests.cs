@@ -2,11 +2,9 @@
 // Licensed under the MIT license.
 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using YAXLib;
 using YAXLib.Exceptions;
-using YAXLib.Options;
 using YAXLibTests.SampleClasses.CustomSerialization;
 
 namespace YAXLibTests

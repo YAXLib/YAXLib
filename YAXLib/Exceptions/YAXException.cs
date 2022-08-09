@@ -13,7 +13,7 @@ namespace YAXLib.Exceptions
         /// <summary>
         ///     Initializes a new instance of the <see cref="YAXException" /> class.
         /// </summary>
-        public YAXException()
+        protected YAXException()
         {
         }
 
@@ -21,7 +21,7 @@ namespace YAXLib.Exceptions
         ///     Initializes a new instance of the <see cref="YAXException" /> class.
         /// </summary>
         /// <param name="message">The message.</param>
-        public YAXException(string message)
+        protected YAXException(string message)
             : base(message)
         {
         }

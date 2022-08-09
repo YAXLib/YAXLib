@@ -1,25 +1,31 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+#nullable enable
 using System;
 using System.Xml.Linq;
 
-namespace YAXLib
+namespace YAXLib.KnownTypes
 {
-    internal class RuntimeTypeDynamicKnownType : DynamicKnownType
+    internal class RuntimeTypeDynamicKnownType : DynamicKnownTypeBase
     {
+        /// <inheritdoc />
         public override string TypeName => "System.RuntimeType";
 
-        public override void Serialize(object obj, XElement elem, XNamespace overridingNamespace)
+        /// <inheritdoc />
+        public override void Serialize(object? obj, XElement elem, XNamespace overridingNamespace,
+            ISerializationContext serializationContext)
         {
-            var objectType = obj.GetType();
-            if (objectType.FullName != TypeName)
-                throw new ArgumentException("Object type does not match the provided typename", "obj");
+            var objectType = obj?.GetType();
+            if (objectType?.FullName != TypeName)
+                throw new ArgumentException("Object type does not match the provided typename", nameof(obj));
 
             elem.Value = ReflectionUtils.InvokeGetProperty<string>(obj, "FullName");
         }
 
-        public override object Deserialize(XElement elem, XNamespace overridingNamespace)
+        /// <inheritdoc />
+        public override object Deserialize(XElement elem, XNamespace overridingNamespace,
+            ISerializationContext serializationContext)
         {
             return ReflectionUtils.GetTypeByName(elem.Value);
         }

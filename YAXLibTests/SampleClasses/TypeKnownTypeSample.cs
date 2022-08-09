@@ -11,7 +11,7 @@ namespace YAXLibTests.SampleClasses
 
         public static TypeKnownTypeSample GetSampleInstance()
         {
-            return new TypeKnownTypeSample { TheType = typeof(KnownTypeTests)};
+            return new TypeKnownTypeSample { TheType = typeof(KnownTypeTests) };
         }
     }
 }

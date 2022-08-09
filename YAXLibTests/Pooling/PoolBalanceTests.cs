@@ -44,7 +44,7 @@ public class PoolBalanceTests
             Console.WriteLine(@"{0}: {1}", nameof(IPoolCounters.CountInactive), p.Counters?.CountInactive);
 
             if (p.Counters!.CountAll <= 0) continue;
-                
+
             Console.WriteLine();
             Assert.That(p.Counters.CountActive, Is.EqualTo(0), string.Join(" ", nameof(IPoolCounters.CountActive), p.Type?.ToString()));
             Assert.That(p.Counters.CountInactive, Is.GreaterThan(0), string.Join(" ", nameof(IPoolCounters.CountInactive), p.Type?.ToString()));

@@ -13,6 +13,7 @@ public class StringBuilderPoolTests
     {
         StringBuilderPool.Instance.Clear();
         var sbp = StringBuilderPool.Instance;
+
         return sbp;
     }
 
@@ -20,7 +21,7 @@ public class StringBuilderPoolTests
     public void Create_New_Instance()
     {
         var sbp = GetStringBuilderPool();
-            
+
         Assert.That(() => sbp.Get(), Throws.Nothing);
         Assert.That(sbp.Pool.CountActive, Is.EqualTo(1));
         Assert.That(sbp.Pool.CountInactive, Is.EqualTo(0));
@@ -38,11 +39,11 @@ public class StringBuilderPoolTests
 
         Assert.That(sbp.Pool.CountActive, Is.EqualTo(1));
         Assert.That(sb.Capacity, Is.EqualTo(sbp.DefaultStringBuilderCapacity));
-            
+
         // Returning an item should clear the StringBuilder
         Assert.That(() => sbp.Return(sb), Throws.Nothing);
         Assert.That(sb.Length, Is.EqualTo(0));
-            
+
         Assert.That(sbp.Pool.CountActive, Is.EqualTo(0));
         Assert.That(sbp.Pool.CountInactive, Is.EqualTo(1));
         Assert.That(sbp.Pool.CountAll, Is.EqualTo(1));

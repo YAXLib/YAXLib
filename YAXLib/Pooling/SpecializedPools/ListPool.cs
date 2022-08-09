@@ -15,7 +15,7 @@ internal sealed class ListPool<T> : CollectionPool<List<T>, T>
 {
     private static readonly Lazy<ListPool<T>> Lazy = new(() => new ListPool<T>(),
  LazyThreadSafetyMode.PublicationOnly);
-        
+
     /// <summary>
     /// CTOR.
     /// </summary>

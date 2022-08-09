@@ -13,7 +13,19 @@ internal abstract class TypeCacheBase<T> : TypeCacheStaticBase
     /// <summary>
     /// The <see cref="TypeCacheBase{T}"/> instance.
     /// </summary>
-    private protected static TypeCacheBase<T>? _instance;
+    private protected static TypeCacheBase<T>? _instance { get; private set; }
+
+    /// <summary>
+    /// Sets the instance variable, if its current value is null.
+    /// </summary>
+    /// <param name="instance"></param>
+    protected static void SetInstanceVariable(TypeCacheBase<T> instance)
+    {
+        lock (Locker)
+        {
+            _instance ??= instance;
+        }
+    }
 
     /// <summary>
     /// A dictionary from <see cref="Type"/>s to the associated cache value.

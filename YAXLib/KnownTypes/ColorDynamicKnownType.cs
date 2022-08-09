@@ -4,17 +4,20 @@
 using System;
 using System.Xml.Linq;
 
-namespace YAXLib
+namespace YAXLib.KnownTypes
 {
-    internal class ColorDynamicKnownType : DynamicKnownType
+    internal class ColorDynamicKnownType : DynamicKnownTypeBase
     {
+        /// <inheritdoc />
         public override string TypeName => "System.Drawing.Color";
 
-        public override void Serialize(object obj, XElement elem, XNamespace overridingNamespace)
+        /// <inheritdoc />
+        public override void Serialize(object obj, XElement elem, XNamespace overridingNamespace,
+            ISerializationContext serializationContext)
         {
             var objectType = obj.GetType();
             if (objectType.FullName != TypeName)
-                throw new ArgumentException("Object type does not match the provided typename", "obj");
+                throw new ArgumentException("Object type does not match the provided typename", nameof(obj));
 
             var isKnownColor = ReflectionUtils.InvokeGetProperty<bool>(obj, "IsKnownColor");
             if (isKnownColor)
@@ -29,16 +32,18 @@ namespace YAXLib
                 var g = ReflectionUtils.InvokeGetProperty<byte>(obj, "G");
                 var b = ReflectionUtils.InvokeGetProperty<byte>(obj, "B");
                 elem.Add(
-                    new XElement(this.GetXName("A", overridingNamespace), a),
-                    new XElement(this.GetXName("R", overridingNamespace), r),
-                    new XElement(this.GetXName("G", overridingNamespace), g),
-                    new XElement(this.GetXName("B", overridingNamespace), b));
+                    new XElement(overridingNamespace.GetXName("A"), a),
+                    new XElement(overridingNamespace.GetXName("R"), r),
+                    new XElement(overridingNamespace.GetXName("G"), g),
+                    new XElement(overridingNamespace.GetXName("B"), b));
             }
         }
 
-        public override object Deserialize(XElement elem, XNamespace overridingNamespace)
+        /// <inheritdoc />
+        public override object Deserialize(XElement elem, XNamespace overridingNamespace,
+            ISerializationContext serializationContext)
         {
-            var elemR = elem.Element(this.GetXName("R", overridingNamespace));
+            var elemR = elem.Element(overridingNamespace.GetXName("R"));
             if (elemR == null)
             {
                 var colorName = elem.Value;
@@ -48,18 +53,18 @@ namespace YAXLib
 
             int a = 255, r, g = 0, b = 0;
 
-            var elemA = elem.Element(this.GetXName("A", overridingNamespace));
+            var elemA = elem.Element(overridingNamespace.GetXName("A"));
             if (elemA != null && !int.TryParse(elemA.Value, out a))
                 a = 0;
 
             if (!int.TryParse(elemR.Value, out r))
                 r = 0;
 
-            var elemG = elem.Element(this.GetXName("G", overridingNamespace));
+            var elemG = elem.Element(overridingNamespace.GetXName("G"));
             if (elemG != null && !int.TryParse(elemG.Value, out g))
                 g = 0;
 
-            var elemB = elem.Element(this.GetXName("B", overridingNamespace));
+            var elemB = elem.Element(overridingNamespace.GetXName("B"));
             if (elemB != null && !int.TryParse(elemB.Value, out b))
                 b = 0;
 

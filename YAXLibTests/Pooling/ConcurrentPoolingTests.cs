@@ -67,10 +67,10 @@ public class ConcurrentPoolingTests
                 list.Add(serializer.Serialize(i.ToString("0000")));
             }), Throws.Nothing);
 
-        
+
         var result = list.OrderBy(e => e.ToString());
         long compareCounter = 1;
-            
+
         Assert.That(list.Count, Is.EqualTo(maxLoops - 1));
         Assert.That(result.All(r => r == $"<String>{compareCounter++:0000}</String>"));
 

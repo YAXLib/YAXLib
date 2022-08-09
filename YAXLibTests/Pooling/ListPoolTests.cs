@@ -12,14 +12,15 @@ public class ListPoolTests
     {
         ListPool<string>.Instance.Clear();
         var lp = ListPool<string>.Instance;
+
         return lp;
     }
-        
+
     [Test]
     public void Create_New_Instance()
     {
         var lp = GetListPool();
-            
+
         Assert.That(() => lp.Get(), Throws.Nothing);
         Assert.That(lp.Pool.CountActive, Is.EqualTo(1));
         Assert.That(lp.Pool.CountInactive, Is.EqualTo(0));

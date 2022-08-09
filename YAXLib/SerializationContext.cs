@@ -16,10 +16,11 @@ internal class SerializationContext : ISerializationContext
     /// </summary>
     /// <param name="memberWrapper"></param>
     /// <param name="udtWrapper"></param>
-    /// <param name="serializerOptions"></param>
-    public SerializationContext(MemberWrapper? memberWrapper, UdtWrapper? udtWrapper, SerializerOptions serializerOptions)
+    /// <param name="serializer"></param>
+    public SerializationContext(MemberWrapper? memberWrapper, UdtWrapper? udtWrapper, YAXSerializer serializer)
     {
-        SerializerOptions = serializerOptions;
+        SerializerOptions = serializer.Options;
+        RecursionCount = ((IRecursionCounter) serializer).RecursionCount;
 
         // Class level serialization
         ClassType = udtWrapper?.UnderlyingType;
@@ -50,4 +51,7 @@ internal class SerializationContext : ISerializationContext
 
     /// <inheritdoc/>
     public SerializerOptions SerializerOptions { get; }
+
+    /// <inheritdoc cref="IRecursionCounter.RecursionCount"/>
+    public int RecursionCount { get; }
 }

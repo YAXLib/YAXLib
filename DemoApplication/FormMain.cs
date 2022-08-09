@@ -84,7 +84,7 @@ namespace DemoApplication
                 try
                 {
                     var type = tuple.Type;
-                    var method = type.GetMethod(tuple.SampleInstanceMethod, new Type[0]);
+                    var method = type.GetMethod(tuple.SampleInstanceMethod, Type.EmptyTypes);
                     var instance = method?.Invoke(null, null);
                     lstSampleClasses.Items.Add(new ClassInfoListItem(type, instance));
                 }

@@ -9,6 +9,8 @@ using System.Xml.Linq;
 using YAXLib.Attributes;
 using YAXLib.Caching;
 using YAXLib.Enums;
+using YAXLib.KnownTypes;
+using YAXLib.Options;
 
 namespace YAXLib
 {
@@ -18,9 +20,10 @@ namespace YAXLib
     internal class UdtWrapper
     {
         /// <summary>
-        ///     The <see cref="YAXSerializer"/> that created this instance of <see cref="UdtWrapper"/>.
+        ///     The <see cref="SerializerOptions"/> to use for this instance
+        ///     and <see cref="MemberWrapper"/>s created by this instance.
         /// </summary>
-        private readonly YAXSerializer _serializer;
+        private readonly SerializerOptions _serializerOptions;
 
         /// <summary>
         ///     the underlying type for this instance of <c>TypeWrapper</c>
@@ -55,13 +58,10 @@ namespace YAXLib
         /// The underlying type to create the wrapper around.
         /// If the the type is <see cref="Nullable"/>, the underlying type of the <see cref="Nullable"/> is used.
         /// </param>
-        /// <param name="callerSerializer">
-        ///     reference to the serializer
-        ///     instance which is building this instance.
-        /// </param>
-        public UdtWrapper(Type udtType, YAXSerializer callerSerializer)
+        /// <param name="serializerOptions">The <see cref="SerializerOptions"/> to use.</param>
+        public UdtWrapper(Type udtType, SerializerOptions serializerOptions)
         {
-            _serializer = callerSerializer;
+            _serializerOptions = serializerOptions;
             IsDictionaryType = false;
             _udtType = ReflectionUtils.IsNullable(udtType, out var nullableUnderlyingType)
                 ? nullableUnderlyingType
@@ -69,12 +69,15 @@ namespace YAXLib
             IsCollectionType = ReflectionUtils.IsCollectionType(_udtType);
             IsDictionaryType = ReflectionUtils.IsIDictionary(_udtType);
 
+            _ = KnownTypes.WellKnownTypes.TryGetKnownType(_udtType, out var knownType);
+            KnownType = knownType;
+            
             Alias = StringUtils.RefineSingleElement(ReflectionUtils.GetTypeFriendlyName(_udtType));
             Comment = null;
             FieldsToSerialize = YAXSerializationFields.PublicPropertiesOnly;
             IsAttributedAsNotCollection = false;
 
-            SetSerializationOptions(callerSerializer);
+            SetSerializationOptions(serializerOptions.SerializationOptions);
 
             foreach (var attr in _udtType.GetCustomAttributes(true))
                 if (attr is IYaxTypeLevelAttribute typeLevelAttribute) typeLevelAttribute.Setup(this);
@@ -152,8 +155,10 @@ namespace YAXLib
         /// <summary>
         ///     Gets a value indicating whether the underlying type is a known-type
         /// </summary>
-        public bool IsKnownType => KnownTypes.IsKnowType(_udtType);
-
+        public bool IsKnownType => KnownType != null;
+#nullable enable
+        public IKnownType? KnownType { get; private set; }
+#nullable disable
         /// <summary>
         ///     Gets a value indicating whether this instance wraps around an enum.
         /// </summary>
@@ -315,15 +320,13 @@ namespace YAXLib
         public string NamespacePrefix { get; internal set; }
 
         /// <summary>
-        ///     Sets the <see cref="SerializationOptions"/>.
+        ///     Sets the <see cref="YAXSerializationOptions"/>.
         /// </summary>
-        /// <param name="caller">The caller serializer.</param>
-        public void SetSerializationOptions(YAXSerializer caller)
+        /// <param name="serializationOptions"></param>
+        public void SetSerializationOptions(YAXSerializationOptions? serializationOptions)
         {
             if (!_isSerializationOptionSetByAttribute)
-                SerializationOptions = caller != null
-                    ? caller.Options.SerializationOptions
-                    : YAXSerializationOptions.SerializeNullObjects;
+                SerializationOptions = serializationOptions ?? YAXSerializationOptions.SerializeNullObjects;
         }
 
         /// <inheritdoc />
@@ -352,10 +355,10 @@ namespace YAXLib
         /// <summary>
         /// Used by attributes when setting <see cref="YAXSerializationOptions"/>.
         /// </summary>
-        /// <param name="options"></param>
-        internal void SetSerializationOptionsFromAttribute(YAXSerializationOptions options)
+        /// <param name="serializationOptions"></param>
+        internal void SetSerializationOptionsFromAttribute(YAXSerializationOptions serializationOptions)
         {
-            SerializationOptions = options;
+            SerializationOptions = serializationOptions;
             _isSerializationOptionSetByAttribute = true;
         }
 
@@ -383,7 +386,7 @@ namespace YAXLib
                         && ReflectionUtils.IsPartOfNetFx(member))
                         continue;
 
-                    var memInfo = new MemberWrapper(member, _serializer);
+                    var memInfo = new MemberWrapper(member, _serializerOptions);
                     // Note: The cache contains all generally allowed members
                     memberWrappers.Add(memInfo);
                 }

@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using YAXLib;
+using YAXLibTests.SampleClasses;
 
 namespace YAXLibTests
 {
@@ -121,6 +122,80 @@ namespace YAXLibTests
             Assert.That(type1, Is.Not.Null);
             Assert.That(type2, Is.Not.Null);
             Assert.That(type2, Is.EqualTo(type1));
+        }
+
+        [Test]
+        public void GetSetFieldValues()
+        {
+            // The test includes private fields from base types
+
+            var subClass = new ClassFlaggedToIncludePrivateBaseTypeFields();
+
+            // Initial values
+            var subClassField = ReflectionUtils.GetFieldValue(subClass, "_privateFieldFromLevel0");
+            var baseClassField1 = ReflectionUtils.GetFieldValue(subClass, "_privateFieldFromBaseLevel1");
+            var baseClassField2 = ReflectionUtils.GetFieldValue(subClass, "_privateFieldFromBaseLevel2");
+
+            // Change initial values
+            ReflectionUtils.SetFieldValue(subClass, "_privateFieldFromLevel0", 3);
+            ReflectionUtils.SetFieldValue(subClass, "_privateFieldFromBaseLevel1", 13);
+            ReflectionUtils.SetFieldValue(subClass, "_privateFieldFromBaseLevel2", 23);
+
+            // Get changed values
+            var subClassFieldAfterSet = ReflectionUtils.GetFieldValue(subClass, "_privateFieldFromLevel0");
+            var baseClassField1AfterSet = ReflectionUtils.GetFieldValue(subClass, "_privateFieldFromBaseLevel1");
+            var baseClassField2AfterSet = ReflectionUtils.GetFieldValue(subClass, "_privateFieldFromBaseLevel2");
+
+            // Initial values
+            Assert.That(subClassField, Is.EqualTo(2));
+            Assert.That(baseClassField1, Is.EqualTo(12));
+            Assert.That(baseClassField2, Is.EqualTo(22));
+            Assert.That(
+                // private base field not found
+                code: () => { ReflectionUtils.GetFieldValue(subClass, "_privateFieldFromBaseLevel1", false); },
+                Throws.Exception);
+
+            // Changed values
+            Assert.That(subClassFieldAfterSet, Is.EqualTo(3));
+            Assert.That(baseClassField1AfterSet, Is.EqualTo(13));
+            Assert.That(baseClassField2AfterSet, Is.EqualTo(23));
+        }
+
+        [Test]
+        public void GetSetPropertyValues()
+        {
+            // The test includes private properties from base types
+
+            var subClass = new ClassFlaggedToIncludePrivateBaseTypeFields();
+
+            // Initial values
+            var subClassProperty = ReflectionUtils.GetPropertyValue(subClass, "PublicPropertyFromLevel0");
+            var baseClassProperty1 = ReflectionUtils.GetPropertyValue(subClass, "PrivatePropertyFromBaseLevel1");
+            var baseClassProperty2 = ReflectionUtils.GetPropertyValue(subClass, "PrivatePropertyFromBaseLevel2");
+
+            // Change initial values
+            ReflectionUtils.SetPropertyValue(subClass, "PublicPropertyFromLevel0", 111);
+            ReflectionUtils.SetPropertyValue(subClass, "PrivatePropertyFromBaseLevel1", 113);
+            ReflectionUtils.SetPropertyValue(subClass, "PrivatePropertyFromBaseLevel2", 123);
+
+            // Get changed values
+            var subClassPropertyAfterSet = ReflectionUtils.GetPropertyValue(subClass, "PublicPropertyFromLevel0");
+            var baseClassProperty1AfterSet = ReflectionUtils.GetPropertyValue(subClass, "PrivatePropertyFromBaseLevel1");
+            var baseClassProperty2AfterSet = ReflectionUtils.GetPropertyValue(subClass, "PrivatePropertyFromBaseLevel2");
+
+            // Initial values
+            Assert.That(subClassProperty, Is.EqualTo(1));
+            Assert.That(baseClassProperty1, Is.EqualTo(13));
+            Assert.That(baseClassProperty2, Is.EqualTo(23));
+            Assert.That(
+                // private base property not found
+                code: () => { ReflectionUtils.GetPropertyValue(subClass, "PrivatePropertyFromBaseLevel1", false); },
+                Throws.Exception);
+
+            // Changed values
+            Assert.That(subClassPropertyAfterSet, Is.EqualTo(111));
+            Assert.That(baseClassProperty1AfterSet, Is.EqualTo(113));
+            Assert.That(baseClassProperty2AfterSet, Is.EqualTo(123));
         }
     }
 }

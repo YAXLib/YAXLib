@@ -4,6 +4,7 @@
 using NUnit.Framework;
 using YAXLib;
 using YAXLib.Caching;
+using YAXLib.Options;
 using YAXLibTests.SampleClasses;
 
 namespace YAXLibTests.Caching
@@ -52,16 +53,16 @@ namespace YAXLibTests.Caching
         public void CacheCannotExceedMaximumSize()
         {
             // Creating the serializer adds the first type to the cache
-            var dummySerializer = new YAXSerializer(typeof(int));
+            var serializerOptions = new SerializerOptions();
             UdtWrapperCache.Instance.Clear();
             UdtWrapperCache.Instance.MaxCacheSize = 5;
 
-            UdtWrapperCache.Instance.GetOrAddItem(typeof(string), dummySerializer);
-            UdtWrapperCache.Instance.GetOrAddItem(typeof(int), dummySerializer);
-            UdtWrapperCache.Instance.GetOrAddItem(typeof(uint), dummySerializer);
-            UdtWrapperCache.Instance.GetOrAddItem(typeof(long), dummySerializer);
-            UdtWrapperCache.Instance.GetOrAddItem(typeof(ulong), dummySerializer);
-            UdtWrapperCache.Instance.GetOrAddItem(typeof(char), dummySerializer);
+            UdtWrapperCache.Instance.GetOrAddItem(typeof(string), serializerOptions);
+            UdtWrapperCache.Instance.GetOrAddItem(typeof(int), serializerOptions);
+            UdtWrapperCache.Instance.GetOrAddItem(typeof(uint), serializerOptions);
+            UdtWrapperCache.Instance.GetOrAddItem(typeof(long), serializerOptions);
+            UdtWrapperCache.Instance.GetOrAddItem(typeof(ulong), serializerOptions);
+            UdtWrapperCache.Instance.GetOrAddItem(typeof(char), serializerOptions);
 
             Assert.That(UdtWrapperCache.Instance.CacheDictionary.Count, Is.EqualTo(5));
             Assert.That(UdtWrapperCache.Instance.CacheDictionary.ContainsKey(typeof(string)), Is.False);

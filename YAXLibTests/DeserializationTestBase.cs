@@ -688,8 +688,6 @@ namespace YAXLibTests
             Assert.That(ser.GetRecursionCount(), Is.EqualTo(0));
         }
 
- 
-
         [Test]
         public void OrderedDeserialization()
         {
@@ -865,5 +863,7 @@ namespace YAXLibTests
             var deserializedBook = serializer.Deserialize(xmlReader);
             deserializedBook.Should().BeEquivalentTo(book);
         }
+
+
     }
 }

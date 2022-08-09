@@ -12,14 +12,15 @@ public class HashSetPoolTests
     {
         ListPool<int>.Instance.Clear();
         var hsp = HashSetPool<int>.Instance;
+
         return hsp;
     }
-        
+
     [Test]
     public void Create_New_Instance()
     {
         var hsp = GetHashSetPool();
-            
+
         Assert.That(() => hsp.Get(), Throws.Nothing);
         Assert.That(hsp.Pool.CountActive, Is.EqualTo(1));
         Assert.That(hsp.Pool.CountInactive, Is.EqualTo(0));

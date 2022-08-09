@@ -28,19 +28,18 @@ public class ObjectPoolClassesTests
             {
                 FunctionOnCreate = () => new SomePoolObject { Value = "created" },
                 ActionOnGet = o => o.Value = "get",
-                ActionOnReturn = o => o.Value = "returned", 
+                ActionOnReturn = o => o.Value = "returned",
                 ActionOnDestroy = o => o.Value = "destroyed",
                 MaximumPoolSize = MaximumPoolSize,
                 InitialPoolSize = 1
             }
             : new PoolPolicy<SomePoolObject>(); // leaves 'FunctionOnCreate' unset
-        
+
         var types = PoolingHelpers.GetSubclassesOf(typeof(ObjectPool<>).Assembly, typeof(ObjectPool<>));
         foreach (var type in types)
         {
             var constructedType = type.MakeGenericType(typeof(SomePoolObject));
             var instance = (ObjectPool<SomePoolObject>)Activator.CreateInstance(constructedType, policy)!;
-                
             instance.Clear();
             yield return instance;
         }
@@ -68,7 +67,7 @@ public class ObjectPoolClassesTests
         pool.Return(obj);
         pool.Clear(); // 'Clear' calls ActionOnDestroy
         var destroyed = obj.Value.ToLower();
-            
+
         Assert.That(created, Is.EqualTo(nameof(created)), poolAsObj.GetType().Name);
         Assert.That(returned,Is.EqualTo(nameof(returned)), poolAsObj.GetType().Name);
         Assert.That(get, Is.EqualTo(nameof(get)), poolAsObj.GetType().Name);
@@ -85,7 +84,7 @@ public class ObjectPoolClassesTests
         {
             created = obj.Value.ToLower(); // first 'Get' ever creates a new instance
         }
-            
+
         var returned = pool.PoolItems[0].Value;
 
         string? get;
@@ -93,11 +92,11 @@ public class ObjectPoolClassesTests
         {
             get = obj.Value.ToLower();
         }
-            
+
         var itemInPool = pool.PoolItems[0]; // reference the first and only item
         pool.Clear(); // 'Clear' calls ActionOnDestroy
         var destroyed = itemInPool.Value;
-            
+
         Assert.That(created, Is.EqualTo(nameof(created)), poolAsObj.GetType().Name);
         Assert.That(returned, Is.EqualTo(nameof(returned)), poolAsObj.GetType().Name);
         Assert.That(get, Is.EqualTo(nameof(get)), poolAsObj.GetType().Name);
@@ -177,7 +176,7 @@ public class ObjectPoolClassesTests
         const int numOfCreated = MaximumPoolSize + 5;
 
         var pool = (ObjectPool<SomePoolObject>) poolAsObj;
-            
+
         var active = new List<SomePoolObject>();
         for (var i = 1; i <= numOfCreated; i++)
         {
@@ -221,7 +220,7 @@ public class ObjectPoolClassesTests
         const int shouldBeCreated = 5;
 
         var pool = (ObjectPool<SomePoolObject>) poolAsObj;
-            
+
         for (var i = 1; i <= shouldBeCreated; i++)
         {
             _ = pool.Get();

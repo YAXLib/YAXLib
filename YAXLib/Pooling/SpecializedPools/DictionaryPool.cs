@@ -16,7 +16,7 @@ internal sealed class DictionaryPool<TKey, TValue> : CollectionPool<Dictionary<T
     private static readonly Lazy<DictionaryPool<TKey, TValue>> Lazy = new(() => new DictionaryPool<TKey, TValue>(),
         LazyThreadSafetyMode.PublicationOnly
     );
-        
+
     /// <summary>
     /// CTOR.
     /// </summary>

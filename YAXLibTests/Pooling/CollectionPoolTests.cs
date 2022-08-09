@@ -13,6 +13,7 @@ public class CollectionPoolTests
     {
         CollectionPool<List<int>, int>.Instance.Clear();
         var cp = CollectionPool<List<int>, int>.Instance;
+
         return cp;
     }
 
@@ -20,7 +21,7 @@ public class CollectionPoolTests
     public void Create_New_Instance()
     {
         var cp = GetCollectionPool();
-            
+
         Assert.That(() => cp.Get(), Throws.Nothing);
         Assert.That(cp.Pool.CountActive, Is.EqualTo(1));
         Assert.That(cp.Pool.CountInactive, Is.EqualTo(0));
@@ -50,7 +51,7 @@ public class CollectionPoolTests
         cp.Get(out var list2);
         Assert.AreSame(list, list2);
     }
-        
+
     [Test]
     public void Dispose_Pool()
     {

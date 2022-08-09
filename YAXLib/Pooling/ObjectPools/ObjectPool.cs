@@ -75,7 +75,7 @@ internal abstract class ObjectPool<T> : IObjectPool<T> where T : class
     /// </summary>
     /// <param name="element">Object to return to the pool.</param>
     public abstract void Return(T element);
-        
+
     /// <summary>
     /// Releases all pooled objects so they can be garbage collected.
     /// Pooled items will be destroyed before they will be released to garbage collection.
