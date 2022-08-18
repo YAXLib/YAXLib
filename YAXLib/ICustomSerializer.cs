@@ -6,7 +6,7 @@ using System.Xml.Linq;
 namespace YAXLib
 {
     /// <summary>
-    ///     Defines the interface to all custom serializers and deserializers used with YAXLib.
+    ///     Defines the interface to all custom serializers and deserializers.
     ///     Note that normally you don't need to implement all the methods.
     /// </summary>
     /// <typeparam name="T">
@@ -15,20 +15,26 @@ namespace YAXLib
     public interface ICustomSerializer<T>
     {
         /// <summary>
-        ///     Serializes the given object and fills the provided reference to the
-        ///     XML attribute appropriately. Do NOT change the name of the provided attribute.
+        /// Serializes the given object and fills the provided reference to the
+        /// XML attribute appropriately.
+        /// <para>
+        /// If the name of the provided attribute is changed, the custom serializer cannot be invoked when deserializing.
+        /// </para>
         /// </summary>
         /// <param name="objectToSerialize">The object to serialize.</param>
-        /// <param name="attrToFill">The XML attribute to fill.</param>
+        /// <param name="attrToFill">The XML attribute to fill. If the name of the provided attribute is changed, the custom serializer cannot be invoked when deserializing.</param>
         /// <param name="serializationContext">Contains information about the type and members of the <paramref name="objectToSerialize"/>.</param>
         void SerializeToAttribute(T objectToSerialize, XAttribute attrToFill, ISerializationContext serializationContext);
 
         /// <summary>
-        ///     Serializes the given object and fills the provided reference to the
-        ///     XML element appropriately. Do NOT change the name of the provided element.
+        /// Serializes the given object and fills the provided reference to the
+        /// XML element appropriately.
+        /// <para>
+        /// If the name of the provided element is changed, the custom serializer cannot be invoked when deserializing.
+        /// </para>
         /// </summary>
         /// <param name="objectToSerialize">The object to serialize.</param>
-        /// <param name="elemToFill">The XML element to fill.</param>
+        /// <param name="elemToFill">The XML element to fill. If the name of the provided element is changed, the custom serializer cannot be invoked when deserializing.</param>
         /// <param name="serializationContext">Contains information about the type and members of the <paramref name="objectToSerialize"/>.</param>
         void SerializeToElement(T objectToSerialize, XElement elemToFill, ISerializationContext serializationContext);
 
@@ -45,10 +51,10 @@ namespace YAXLib
         ///     Deserializes from an xml attribute, and returns the retrieved value.
         ///     You will normally need to use XAttribute.Value property only.
         /// </summary>
-        /// <param name="attrib">The attribute to deserialize.</param>
+        /// <param name="attribute">The attribute to deserialize.</param>
         /// <param name="serializationContext">Contains information about the type and members of the object to deserialize.</param>
         /// <returns></returns>
-        T DeserializeFromAttribute(XAttribute attrib, ISerializationContext serializationContext);
+        T DeserializeFromAttribute(XAttribute attribute, ISerializationContext serializationContext);
 
         /// <summary>
         ///     Deserializes from an xml element, and returns the retrieved value.

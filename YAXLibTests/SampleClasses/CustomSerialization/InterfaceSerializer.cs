@@ -23,7 +23,7 @@ namespace YAXLibTests.SampleClasses.CustomSerialization
 
             // Serialize another class member as comment
             // only when serializing GenericClassWithInterface
-            var classType = serializationContext.ClassType!;
+            var classType = serializationContext.TypeContext.Type!;
             if (classType.IsGenericType && classType.GetGenericTypeDefinition() == typeof(GenericClassWithInterface<>))
             {
                 var valueOfT = objectToSerialize.GetType().GetProperty("Something")?.GetValue(objectToSerialize);
@@ -36,14 +36,14 @@ namespace YAXLibTests.SampleClasses.CustomSerialization
             throw new NotImplementedException();
         }
 
-        public ISampleInterface DeserializeFromAttribute(XAttribute attrib, ISerializationContext serializationContext)
+        public ISampleInterface DeserializeFromAttribute(XAttribute attribute, ISerializationContext serializationContext)
         {
             throw new NotImplementedException();
         }
 
         public ISampleInterface DeserializeFromElement(XElement element, ISerializationContext serializationContext)
         {
-            var o = (ISampleInterface) Activator.CreateInstance(serializationContext.ClassType!);
+            var o = (ISampleInterface) Activator.CreateInstance(serializationContext.TypeContext.Type!);
             if (element.HasElements)
             {
                 o.Id = int.Parse(element.Element("C_" + nameof(ISampleInterface.Id))!.Value);

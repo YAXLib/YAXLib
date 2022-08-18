@@ -3,7 +3,6 @@
 
 #nullable enable
 using System;
-using System.Reflection;
 using YAXLib.Options;
 
 namespace YAXLib;
@@ -17,37 +16,25 @@ internal class SerializationContext : ISerializationContext
     /// <param name="memberWrapper"></param>
     /// <param name="udtWrapper"></param>
     /// <param name="serializer"></param>
-    public SerializationContext(MemberWrapper? memberWrapper, UdtWrapper? udtWrapper, YAXSerializer serializer)
+    public SerializationContext(MemberWrapper? memberWrapper, UdtWrapper udtWrapper, YAXSerializer serializer)
     {
         SerializerOptions = serializer.Options;
         RecursionCount = ((IRecursionCounter) serializer).RecursionCount;
 
         // Class level serialization
-        ClassType = udtWrapper?.UnderlyingType;
-        
+        TypeContext = new TypeContext(udtWrapper, serializer);
+
         if (memberWrapper == null) return;
-        
+
         // Member level serialization
-        FieldInfo = memberWrapper.FieldInfo;
-        MemberInfo = memberWrapper.MemberInfo;
-        PropertyInfo = memberWrapper.PropertyInfo;
-        MemberType = memberWrapper.MemberType;
+        MemberContext = new MemberContext(memberWrapper, serializer);
     }
 
     /// <inheritdoc/>
-    public FieldInfo? FieldInfo { get; }
+    public IMemberContext? MemberContext { get; }
 
     /// <inheritdoc/>
-    public MemberInfo? MemberInfo { get; }
-
-    /// <inheritdoc/>
-    public PropertyInfo? PropertyInfo { get; }
-
-    /// <inheritdoc/>
-    public Type? MemberType { get; }
-
-    /// <inheritdoc/>
-    public Type? ClassType { get; }
+    public ITypeContext TypeContext { get; }
 
     /// <inheritdoc/>
     public SerializerOptions SerializerOptions { get; }

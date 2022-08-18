@@ -3,11 +3,10 @@
 
 #nullable enable
 using System;
+using System.Reflection;
 using System.Xml.Linq;
-using YAXLib.Caching;
 using YAXLib.Enums;
 using YAXLib.Options;
-using YAXLib.Pooling.YAXLibPools;
 
 namespace YAXLib.KnownTypes;
 
@@ -46,11 +45,9 @@ internal class ExceptionKnownBaseType : KnownBaseTypeBase<Exception>
 
         if (isRecursive && _maxRecursion < _recursionCount) return;
 
-        var udtWrapper = UdtWrapperCache.Instance.GetOrAddItem(obj.GetType(), serializationContext.SerializerOptions);
-
-        foreach (var member in udtWrapper.GetFieldsToBeSerialized())
+        foreach (var member in serializationContext.TypeContext.GetFieldsForSerialization())
         {
-            if (!ReflectionUtils.IsBaseClassOrSubclassOf(member.MemberType, "System.Exception"))
+            if (!ReflectionUtils.IsBaseClassOrSubclassOf(member.TypeContext.Type, "System.Exception"))
             {
                 SerializeNonExceptionField(obj, member, elem, overridingNamespace);
             } 
@@ -61,49 +58,45 @@ internal class ExceptionKnownBaseType : KnownBaseTypeBase<Exception>
         }
     }
 
-    private void SerializeExceptionField(Exception obj, MemberWrapper member, XElement elem,
+    private void SerializeExceptionField(Exception obj, MemberContext member, XElement elem,
         XNamespace overridingNamespace, ISerializationContext serializationContext)
     {
         var value = member.GetValue(obj); // value may be null
 
-        using var pooledObject = SerializerPool.Instance.Get(out var exceptionSerializer);
-        exceptionSerializer.Initialize(typeof(Exception), new SerializerOptions { MaxRecursion = 1 });
-        var exceptionElement = exceptionSerializer.SerializeToXDocument(value);
+        var exceptionElement = member.TypeContext.Serialize(value, new SerializerOptions { MaxRecursion = 1 });
 
-        exceptionElement.Root!.Name = member.OriginalName == nameof(Exception.InnerException)
-            ? XName.Get(member.OriginalName)
+        exceptionElement.Name = member.MemberInfo.Name == nameof(Exception.InnerException)
+            ? XName.Get(member.MemberInfo.Name)
             : XName.Get(nameof(Exception));
 
         if (value is Exception exceptionValue)
         {
             _recursionCount++;
-            Serialize(exceptionValue, exceptionElement.Root!, overridingNamespace, serializationContext, true);
+            Serialize(exceptionValue, exceptionElement, overridingNamespace, serializationContext, true);
             _recursionCount--;
         }
 
-        elem.Add(exceptionElement.Root);
+        elem.Add(exceptionElement);
     }
 
-    private static void SerializeNonExceptionField(Exception obj, MemberWrapper member, XElement elem,
+    private static void SerializeNonExceptionField(Exception obj, MemberContext member, XElement elem,
         XNamespace overridingNamespace)
     {
         var value = member.GetValue(obj);
 
         if (value == null || ReflectionUtils.IsBasicType(value.GetType()))
         {
-            elem.Add(new XElement(member.Alias ?? XName.Get(member.OriginalName), overridingNamespace, value));
+            elem.Add(new XElement(XName.Get(member.MemberInfo.Name), overridingNamespace, value));
         }
-        else if (member.OriginalName == nameof(Exception.TargetSite))
+        else if (member.MemberInfo.Name == nameof(Exception.TargetSite))
         {
-            elem.Add(new XElement(member.Alias ?? XName.Get(member.OriginalName), overridingNamespace, value));
+            elem.Add(new XElement(XName.Get(member.MemberInfo.Name), overridingNamespace, value));
         }
         else
         {
-            // The serializer call not this method recursively
-            using var pooledObject = SerializerPool.Instance.Get(out var memberSerializer);
-            memberSerializer.Initialize(member.MemberType, new SerializerOptions { MaxRecursion = 4 });
-            var parent = new XElement(member.Alias ?? XName.Get(member.OriginalName), overridingNamespace);
-            var element = memberSerializer.SerializeToXDocument(value).Root;
+            // The serializer does not call this method recursively
+            var parent = new XElement(XName.Get(member.MemberInfo.Name), overridingNamespace);
+            var element = member.TypeContext.Serialize(value, new SerializerOptions { MaxRecursion = 4 }).Document.Root;
             if (!XMLUtils.IsElementCompletelyEmpty(element)) parent.Add(element);
             elem.Add(parent);
         }

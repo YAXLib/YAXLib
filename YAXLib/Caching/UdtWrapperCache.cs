@@ -46,7 +46,7 @@ internal class UdtWrapperCache : TypeCacheBase<UdtWrapper>
     /// <param name="t">The type whose wrapper is needed.</param>
     /// <param name="serializerOptions">The <see cref="SerializerOptions"/> to use.</param>
     /// <returns>the type wrapper corresponding to the specified type</returns>
-    public UdtWrapper GetOrAddItem(Type t, SerializerOptions? serializerOptions)
+    public UdtWrapper GetOrAddItem(Type t, SerializerOptions serializerOptions)
     {
         lock (Locker)
         {
@@ -56,7 +56,7 @@ internal class UdtWrapperCache : TypeCacheBase<UdtWrapper>
                 Add(t, udtWrapper);
             }
             else
-                udtWrapper.SetSerializationOptions(serializerOptions?.SerializationOptions);
+                udtWrapper.SetSerializationOptions(serializerOptions.SerializationOptions);
 
             return udtWrapper;
         }

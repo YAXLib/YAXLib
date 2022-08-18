@@ -864,6 +864,15 @@ namespace YAXLibTests
             deserializedBook.Should().BeEquivalentTo(book);
         }
 
+        [TestCase(true)]
+        [TestCase(false)]
+        public void SetDeserializationBaseObject(bool isGeneric)
+        {
+            var serializer = isGeneric ? CreateSerializer<Book>() : CreateSerializer(typeof(Book));
 
+            Assert.That(code:() => serializer.SetDeserializationBaseObject(Book.GetSampleInstance()), Throws.Nothing);
+            Assert.That(code:() => serializer.SetDeserializationBaseObject(null), Throws.Nothing);
+            Assert.That(code:() => serializer.SetDeserializationBaseObject(""), Throws.InstanceOf<YAXLib.Exceptions.YAXObjectTypeMismatch>().Or.InstanceOf<InvalidCastException>());
+        }
     }
 }

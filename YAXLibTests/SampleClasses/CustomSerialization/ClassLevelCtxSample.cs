@@ -5,37 +5,37 @@ using YAXLib.Attributes;
 
 namespace YAXLibTests.SampleClasses.CustomSerialization
 {
-    [YAXCustomSerializer(typeof(ClassLevelSerializer))]
-    public class ClassLevelSample
+    [YAXCustomSerializer(typeof(ClassLevelCtxSerializer))]
+    public class ClassLevelCtxSample
     {
         public string MessageBody { get; set; }
         
         public string Title { get; set; }
     }
 
-    public class ClassLevelSampleAsElement
+    public class ClassLevelCtxSampleAsElement
     {
-        public ClassLevelSample ClassLevelSample { get; set; }
+        public ClassLevelCtxSample ClassLevelCtxSample { get; set; }
         public override string ToString()
         {
             return GeneralToStringProvider.GeneralToString(this);
         }
     }
     
-    public class ClassLevelSampleAsAttribute
+    public class ClassLevelCtxSampleAsAttribute
     {
         [YAXAttributeForClass]
-        public ClassLevelSample ClassLevelSample { get; set; }
+        public ClassLevelCtxSample ClassLevelCtxSample { get; set; }
         public override string ToString()
         {
             return GeneralToStringProvider.GeneralToString(this);
         }
     }
     
-    public class ClassLevelSampleAsValue
+    public class ClassLevelCtxSampleAsValue
     {
         [YAXValueForClass]
-        public ClassLevelSample ClassLevelSample { get; set; }
+        public ClassLevelCtxSample ClassLevelCtxSample { get; set; }
         public override string ToString()
         {
             return GeneralToStringProvider.GeneralToString(this);

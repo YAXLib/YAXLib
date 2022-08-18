@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using YAXLib.Caching;
+using YAXLib.Options;
 using YAXLib.Pooling.SpecializedPools;
 
 namespace YAXLib
@@ -18,6 +19,8 @@ namespace YAXLib
     /// </summary>
     internal static class ReflectionUtils
     {
+        private static readonly SerializerOptions DefaultSerializerOptions = new();
+
         /// <summary>
         ///     Determines whether the specified type is basic type. A basic type is one that can be wholly expressed
         ///     as an XML attribute. All primitive data types and type <c>string</c> and <c>DataTime</c> are basic.
@@ -495,8 +498,8 @@ namespace YAXLib
             object convertedObj;
             if (dstType.IsEnum)
             {
-                var typeWrapper = UdtWrapperCache.Instance.GetOrAddItem(dstType, null);
-                convertedObj = typeWrapper.EnumWrapper.ParseAlias(value.ToString());
+                var typeWrapper = UdtWrapperCache.Instance.GetOrAddItem(dstType, DefaultSerializerOptions);
+                convertedObj = typeWrapper.EnumWrapper!.ParseAlias(value.ToString());
             }
             else if (dstType == typeof(DateTime))
             {
@@ -658,7 +661,8 @@ namespace YAXLib
 
             try
             {
-                formattedObject = src.GetType().InvokeMethod("ToString", src, new object[] {format});
+                formattedObject = src.GetType().InvokeMember("ToString", BindingFlags.InvokeMethod,
+                    null, src, new object[] { format });
             }
             catch
             {

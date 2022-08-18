@@ -24,9 +24,9 @@ namespace YAXLibTests.SampleClasses.CustomSerialization
             return "VAL__" + objectToSerialize;
         }
 
-        public string DeserializeFromAttribute(XAttribute attrib, ISerializationContext serializationContext)
+        public string DeserializeFromAttribute(XAttribute attribute, ISerializationContext serializationContext)
         {
-            return attrib.Value.Substring(5);
+            return attribute.Value.Substring(5);
         }
 
         public string DeserializeFromElement(XElement element, ISerializationContext serializationContext)

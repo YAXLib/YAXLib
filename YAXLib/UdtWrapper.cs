@@ -1,6 +1,7 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +39,7 @@ namespace YAXLib
         /// <summary>
         ///     reference to an instance of <c>EnumWrapper</c> in case that the current instance is an enum.
         /// </summary>
-        private EnumWrapper _enumWrapper;
+        private EnumWrapper? _enumWrapper;
 
         /// <summary>
         ///     value indicating whether the serialization options has been explicitly adjusted
@@ -69,10 +70,11 @@ namespace YAXLib
             IsCollectionType = ReflectionUtils.IsCollectionType(_udtType);
             IsDictionaryType = ReflectionUtils.IsIDictionary(_udtType);
 
-            _ = KnownTypes.WellKnownTypes.TryGetKnownType(_udtType, out var knownType);
+            _ = WellKnownTypes.TryGetKnownType(_udtType, out var knownType);
             KnownType = knownType;
             
-            Alias = StringUtils.RefineSingleElement(ReflectionUtils.GetTypeFriendlyName(_udtType));
+            _alias = Alias = StringUtils.RefineSingleElement(ReflectionUtils.GetTypeFriendlyName(_udtType));
+            
             Comment = null;
             FieldsToSerialize = YAXSerializationFields.PublicPropertiesOnly;
             IsAttributedAsNotCollection = false;
@@ -113,7 +115,7 @@ namespace YAXLib
         ///     Gets an array of comments for the underlying type.
         /// </summary>
         /// <value>The array of comments for the underlying type.</value>
-        public string[] Comment { get; internal set; }
+        public string[]? Comment { get; internal set; }
 
         /// <summary>
         ///     Gets the fields to be serialized.
@@ -156,9 +158,12 @@ namespace YAXLib
         ///     Gets a value indicating whether the underlying type is a known-type
         /// </summary>
         public bool IsKnownType => KnownType != null;
-#nullable enable
+
+        /// <summary>
+        /// Gets the <see cref="IKnownType"/>.
+        /// </summary>
         public IKnownType? KnownType { get; private set; }
-#nullable disable
+
         /// <summary>
         ///     Gets a value indicating whether this instance wraps around an enum.
         /// </summary>
@@ -169,7 +174,7 @@ namespace YAXLib
         ///     Gets the enum wrapper, provided that this instance wraps around an enum.
         /// </summary>
         /// <value>The enum wrapper, provided that this instance wraps around an enum.</value>
-        public EnumWrapper EnumWrapper
+        public EnumWrapper? EnumWrapper
         {
             get
             {
@@ -251,19 +256,19 @@ namespace YAXLib
         ///     Gets the collection attribute instance.
         /// </summary>
         /// <value>The collection attribute instance.</value>
-        public YAXCollectionAttribute CollectionAttributeInstance { get; internal set; }
+        public YAXCollectionAttribute? CollectionAttributeInstance { get; internal set; }
 
         /// <summary>
         ///     Gets the dictionary attribute instance.
         /// </summary>
         /// <value>The dictionary attribute instance.</value>
-        public YAXDictionaryAttribute DictionaryAttributeInstance { get; internal set; }
+        public YAXDictionaryAttribute? DictionaryAttributeInstance { get; internal set; }
 
         /// <summary>
-        ///     Gets or sets the type of the custom serializer.
+        ///     Gets or sets the wrapper for an <see cref="ICustomSerializer{T}"/> instance.
         /// </summary>
-        /// <value>The type of the custom serializer.</value>
-        public Type CustomSerializerType { get; internal set; }
+        /// <value>The wrapper for an <see cref="ICustomSerializer{T}"/> instance.</value>
+        public CustomSerializerWrapper? CustomSerializer { get; internal set; }
 
         /// <summary>
         ///     Gets a value indicating whether this instance has custom serializer.
@@ -271,7 +276,7 @@ namespace YAXLib
         /// <value>
         ///     <c>true</c> if this instance has custom serializer; otherwise, <c>false</c>.
         /// </value>
-        public bool HasCustomSerializer => CustomSerializerType != null;
+        public bool HasCustomSerializer => CustomSerializer != null;
 
         /// <summary>
         /// If <see langword="true"/>, the 'xml:space="preserve"' attribute will be added to the specified element.
@@ -317,7 +322,7 @@ namespace YAXLib
         ///     setting a default namespace for that element would make it apply to
         ///     the whole document).
         /// </remarks>
-        public string NamespacePrefix { get; internal set; }
+        public string? NamespacePrefix { get; internal set; }
 
         /// <summary>
         ///     Sets the <see cref="YAXSerializationOptions"/>.
@@ -363,12 +368,35 @@ namespace YAXLib
         }
 
         /// <summary>
+        ///     Gets the sequence of fields to be serialized to XML for the specified type.
+        ///     This sequence is retrieved according to the specified field types.
+        ///     <para>See also: <seealso cref="GetFieldsForDeserialization"/></para>
+        /// </summary>
+        /// <returns>The sequence of fields to be serialized for the specified type</returns>
+        internal IEnumerable<MemberWrapper> GetFieldsForSerialization()
+        {
+            return GetFieldsToBeSerialized().Where(m => m.CanRead);
+        }
+
+        /// <summary>
+        ///     Gets the sequence of fields to be deserialized from XML for the specified type.
+        ///     This sequence is retrieved according to the specified field types.
+        ///     <para>See also: <seealso cref="GetFieldsForSerialization"/></para>
+        /// </summary>
+        /// <param name="sorted">If <see langword="true"/> (default), the returned fields will be sorted by <see cref="MemberWrapper.Order"/>.</param>
+        /// <returns>The sequence of fields to be deserialized for the specified type</returns>
+        internal IEnumerable<MemberWrapper> GetFieldsForDeserialization(bool sorted = true)
+        {
+            return GetFieldsToBeSerialized(sorted).Where(m => m.CanWrite);
+        }
+
+        /// <summary>
         ///     Gets the sequence of fields to be serialized or to be deserialized for the specified type.
-        ///     This sequence is retrieved according to the field-types specified by the user.
+        ///     This sequence is retrieved according to the field types specified by the user.
         /// </summary>
         /// <param name="sorted">If <see langword="true"/> (default), the returned fields will be sorted by <see cref="MemberWrapper.Order"/>.</param>
         /// <returns>The sequence of fields to be de/serialized for the specified type</returns>
-        internal IEnumerable<MemberWrapper> GetFieldsToBeSerialized(bool sorted = true)
+        private IEnumerable<MemberWrapper> GetFieldsToBeSerialized(bool sorted = true)
         {
             if (!MemberWrapperCache.Instance.TryGetItem(UnderlyingType, out var memberWrappers))
             {
@@ -398,7 +426,7 @@ namespace YAXLib
             // according to settings and attributes.
             // IsAllowedToBeSerialized evaluates only booleans, no reflection.
             var filteredWrappers = memberWrappers.Where(mr => mr.IsAllowedToBeSerialized(FieldsToSerialize,
-                DoNotSerializePropertiesWithNoSetter));
+                DoNotSerializePropertiesWithNoSetter) && !mr.IsAttributedAsDontSerialize);
 
             return sorted ? filteredWrappers.OrderBy(mr => mr.Order) : filteredWrappers;
         }

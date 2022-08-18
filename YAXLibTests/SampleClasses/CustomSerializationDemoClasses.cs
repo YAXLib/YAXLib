@@ -78,7 +78,7 @@ namespace YAXLibTests.SampleClasses
             throw new NotImplementedException();
         }
 
-        public Message DeserializeFromAttribute(XAttribute attrib, ISerializationContext serializationContext)
+        public Message DeserializeFromAttribute(XAttribute attribute, ISerializationContext serializationContext)
         {
             throw new NotImplementedException();
         }
@@ -124,9 +124,9 @@ namespace YAXLibTests.SampleClasses
 
     public class CustomTitleSerializer : ICustomSerializer<string>
     {
-        public string DeserializeFromAttribute(XAttribute attrib, ISerializationContext serializationContext)
+        public string DeserializeFromAttribute(XAttribute attribute, ISerializationContext serializationContext)
         {
-            return RetrieveValue(attrib.Value);
+            return RetrieveValue(attribute.Value);
         }
 
         public string DeserializeFromElement(XElement element, ISerializationContext serializationContext)

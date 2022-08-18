@@ -34,14 +34,14 @@ namespace YAXLib.Attributes
         void IYaxMemberLevelAttribute.Setup(MemberWrapper memberWrapper)
         {
             EnsureDesiredInterface(memberWrapper.MemberType);
-            memberWrapper.CustomSerializerType = CustomSerializerType;
+            memberWrapper.CustomSerializer = new CustomSerializerWrapper(CustomSerializerType);
         }
 
         /// <inheritdoc/>
         void IYaxTypeLevelAttribute.Setup(UdtWrapper udtWrapper)
         {
             EnsureDesiredInterface(udtWrapper.UnderlyingType);
-            udtWrapper.CustomSerializerType = CustomSerializerType;
+            udtWrapper.CustomSerializer = new CustomSerializerWrapper(CustomSerializerType);
         }
 
         private void EnsureDesiredInterface(Type type)
