@@ -5,6 +5,7 @@
 using System;
 using System.Reflection;
 using System.Xml.Linq;
+using YAXLib.Customization;
 using YAXLib.Enums;
 using YAXLib.Options;
 

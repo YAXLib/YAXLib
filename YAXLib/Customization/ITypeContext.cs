@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 using YAXLib.Options;
 
-namespace YAXLib;
+namespace YAXLib.Customization;
 
 /// <summary>
 /// The type context interface provides information about the attributes of a type and type metadata.

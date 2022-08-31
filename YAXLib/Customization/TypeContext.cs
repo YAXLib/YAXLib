@@ -9,7 +9,7 @@ using System.Xml.Linq;
 using YAXLib.Options;
 using YAXLib.Pooling.YAXLibPools;
 
-namespace YAXLib;
+namespace YAXLib.Customization;
 
 /// <summary>
 /// The type context provides information about the attributes of a type and type metadata.

@@ -5,7 +5,7 @@
 using System.Reflection;
 using YAXLib.Caching;
 
-namespace YAXLib;
+namespace YAXLib.Customization;
 
 /// <summary>
 /// The member context provides information about the attributes of a member and member metadata.

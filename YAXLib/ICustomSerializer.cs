@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using System.Xml.Linq;
+using YAXLib.Customization;
 
 namespace YAXLib
 {

@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Xml.Linq;
 using YAXLib.Attributes;
 using YAXLib.Caching;
+using YAXLib.Customization;
 using YAXLib.Enums;
 using YAXLib.Exceptions;
 using YAXLib.Pooling.SpecializedPools;

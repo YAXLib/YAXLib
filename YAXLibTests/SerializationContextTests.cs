@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using YAXLib;
+using YAXLib.Customization;
 using YAXLib.Enums;
 using YAXLib.Options;
 using YAXLibTests.SampleClasses.CustomSerialization;

@@ -4,6 +4,7 @@
 #nullable enable
 using System;
 using System.Xml.Linq;
+using YAXLib.Customization;
 using YAXLib.Exceptions;
 
 namespace YAXLib.KnownTypes

@@ -4,7 +4,7 @@
 #nullable enable
 using System.Reflection;
 
-namespace YAXLib;
+namespace YAXLib.Customization;
 
 /// <summary>
 /// The member context interface provides information about the attributes of a member and member metadata.
@@ -27,7 +27,7 @@ public interface IMemberContext
     PropertyInfo? PropertyInfo { get; }
 
     /// <summary>
-    /// The member's <see cref="YAXLib.TypeContext"/> for member serialization./>.
+    /// The member's <see cref="Customization.TypeContext"/> for member serialization./>.
     /// </summary>
     TypeContext TypeContext { get; }
 

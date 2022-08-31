@@ -5,7 +5,7 @@
 using System;
 using YAXLib.Options;
 
-namespace YAXLib;
+namespace YAXLib.Customization;
 
 /// <inheritdoc/>
 internal class SerializationContext : ISerializationContext

@@ -3,6 +3,7 @@
 
 using System;
 using System.Xml.Linq;
+using YAXLib.Customization;
 
 namespace YAXLib.KnownTypes
 {

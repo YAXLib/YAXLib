@@ -3,6 +3,7 @@
 
 using System.Xml.Linq;
 using YAXLib;
+using YAXLib.Customization;
 
 namespace YAXLibTests.SampleClasses.CustomSerialization
 {

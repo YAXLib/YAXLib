@@ -4,6 +4,7 @@
 using System;
 using System.Xml.Linq;
 using YAXLib;
+using YAXLib.Customization;
 using YAXLib.KnownTypes;
 
 namespace YAXLibTests.SampleClasses.KnownTypes;

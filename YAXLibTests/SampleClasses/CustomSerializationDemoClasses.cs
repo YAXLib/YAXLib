@@ -6,6 +6,7 @@ using System.Text;
 using System.Xml.Linq;
 using YAXLib;
 using YAXLib.Attributes;
+using YAXLib.Customization;
 
 namespace YAXLibTests.SampleClasses
 {

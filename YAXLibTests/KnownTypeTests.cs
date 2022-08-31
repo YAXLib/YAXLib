@@ -8,6 +8,7 @@ using System.Xml.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using YAXLib;
+using YAXLib.Customization;
 using YAXLib.Enums;
 using YAXLib.KnownTypes;
 using YAXLib.Options;

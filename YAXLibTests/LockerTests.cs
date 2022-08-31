@@ -3,6 +3,7 @@
 
 using NUnit.Framework;
 using YAXLib;
+using YAXLib.Customization;
 
 namespace YAXLibTests;
 

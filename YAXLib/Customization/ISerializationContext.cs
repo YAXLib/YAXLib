@@ -5,7 +5,7 @@
 using System;
 using YAXLib.Options;
 
-namespace YAXLib
+namespace YAXLib.Customization
 {
     /// <summary>
     /// Provides information about <see cref="Type"/>s and/or its members being serialized or deserialized.

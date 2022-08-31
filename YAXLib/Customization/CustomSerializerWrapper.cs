@@ -5,7 +5,7 @@ using System;
 using System.Reflection;
 using System.Xml.Linq;
 
-namespace YAXLib;
+namespace YAXLib.Customization;
 
 /// <summary>
 /// A wrapper around an <see cref="ICustomSerializer{T}"/>.
