@@ -65,7 +65,7 @@ namespace YAXLibTests.Caching
             UdtWrapperCache.Instance.GetOrAddItem(typeof(char), serializerOptions);
 
             Assert.That(UdtWrapperCache.Instance.CacheDictionary.Count, Is.EqualTo(5));
-            Assert.That(UdtWrapperCache.Instance.CacheDictionary.ContainsKey(typeof(string)), Is.False);
+            Assert.That(UdtWrapperCache.Instance.CacheDictionary.ContainsKey(typeof(string)), Is.False); // FIFO
 
             UdtWrapperCache.Instance.MaxCacheSize = UdtWrapperCache.DefaultCacheSize;
         }

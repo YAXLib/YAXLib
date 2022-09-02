@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Xml.Linq;
 using YAXLib.Attributes;
 using YAXLib.Caching;
+using YAXLib.Customization;
 using YAXLib.Enums;
 using YAXLib.Exceptions;
 using YAXLib.KnownTypes;
@@ -40,7 +41,7 @@ namespace YAXLib
         /// <summary>
         ///     The alias specified by the user
         /// </summary>
-        private XName? _alias;
+        private XName _alias;
 
         /// <summary>
         ///     specifies whether this member is going to be serialized as an attribute
@@ -67,7 +68,7 @@ namespace YAXLib
         /// </summary>
         /// <param name="memberInfo">The member-info to build this instance from.</param>
         /// <param name="serializerOptions">The <see cref="SerializerOptions"/> to use.</param>
-        public MemberWrapper(MemberInfo memberInfo, SerializerOptions? serializerOptions)
+        public MemberWrapper(MemberInfo memberInfo, SerializerOptions serializerOptions)
         {
             Order = int.MaxValue;
 
@@ -80,7 +81,7 @@ namespace YAXLib
                 _isProperty = true;
             }
 
-            Alias = StringUtils.RefineSingleElement(MemberInfo.Name);
+            _alias = Alias = StringUtils.RefineSingleElement(MemberInfo.Name);
             if (_isProperty)
             {
                 PropertyInfo = (PropertyInfo) memberInfo;
@@ -104,7 +105,7 @@ namespace YAXLib
 
             InitInstance();
 
-            TreatErrorsAs = serializerOptions?.ExceptionBehavior ?? YAXExceptionTypes.Error;
+            TreatErrorsAs = serializerOptions.ExceptionBehavior;
 
             // discover YAXCustomSerializerAttributes earlier, because some other attributes depend on it
             var attrsToProcessEarlier = new HashSet<Type>
@@ -150,7 +151,7 @@ namespace YAXLib
         ///     Gets the alias specified for this member.
         /// </summary>
         /// <value>The alias specified for this member.</value>
-        public XName? Alias
+        public XName Alias
         {
             get { return _alias; }
 
@@ -163,7 +164,7 @@ namespace YAXLib
                 else
                 {
                     _alias = value;
-                    if (_alias != null && _alias.Namespace.IsEmpty())
+                    if (_alias.Namespace.IsEmpty())
                         _namespace = _alias.Namespace;
                 }
             }
@@ -178,7 +179,8 @@ namespace YAXLib
             get
             {
                 if (_isProperty)
-                    return PropertyInfo != null && PropertyInfo.CanRead;
+                    return PropertyInfo!.CanRead;
+
                 return true;
             }
         }
@@ -192,7 +194,8 @@ namespace YAXLib
             get
             {
                 if (_isProperty)
-                    return PropertyInfo != null && PropertyInfo.CanWrite;
+                    return PropertyInfo!.CanWrite;
+
                 return true;
             }
         }
@@ -414,10 +417,10 @@ namespace YAXLib
         public bool IsTreatedAsDictionary => !IsAttributedAsNotCollection && UdtWrapper.IsTreatedAsDictionary;
 
         /// <summary>
-        ///     Gets or sets the type of the custom serializer.
+        ///     Gets or sets the wrapper for an <see cref="ICustomSerializer{T}"/> instance.
         /// </summary>
-        /// <value>The type of the custom serializer.</value>
-        public Type? CustomSerializerType { get; internal set; }
+        /// <value>The wrapper for an <see cref="ICustomSerializer{T}"/> instance.</value>
+        public CustomSerializerWrapper? CustomSerializer { get; internal set; }
 
         /// <summary>
         ///     Gets a value indicating whether this instance has custom serializer.
@@ -425,7 +428,7 @@ namespace YAXLib
         /// <value>
         ///     <c>true</c> if this instance has custom serializer; otherwise, <c>false</c>.
         /// </value>
-        public bool HasCustomSerializer => CustomSerializerType != null;
+        public bool HasCustomSerializer => CustomSerializer != null;
 
         public bool PreservesWhitespace { get; internal set; }
 
@@ -487,20 +490,22 @@ namespace YAXLib
         /// <summary>
         ///     Gets the original value of this member in the specified object
         /// </summary>
-        /// <param name="obj">The object whose value corresponding to this instance, must be retreived.</param>
-        /// <param name="index">The array of indices (usually <c>null</c>).</param>
+        /// <param name="obj">The object whose value corresponding to this instance, must be retrieved.</param>
+        /// <param name="index">Optional index values for indexed properties.
+        /// The indexes of indexed properties are zero-based. This value should be <see langword="null" /> for non-indexed properties.
+        /// </param>
         /// <returns>the original value of this member in the specified object</returns>
         public object? GetOriginalValue(object? obj, object[]? index)
         {
-            if (_isProperty)
-                return PropertyInfo?.GetValue(obj, index);
-            return FieldInfo?.GetValue(obj);
+            if (obj == null) return null;
+
+            return _isProperty ? PropertyInfo?.GetValue(obj, index) : FieldInfo?.GetValue(obj);
         }
 
         /// <summary>
         ///     Gets the processed value of this member in the specified object
         /// </summary>
-        /// <param name="obj">The object whose value corresponding to this instance, must be retreived.</param>
+        /// <param name="obj">The object whose value corresponding to this instance, must be retrieved.</param>
         /// <returns>the processed value of this member in the specified object</returns>
         public object? GetValue(object obj)
         {
@@ -509,7 +514,7 @@ namespace YAXLib
             if (elementValue == null)
                 return null;
 
-            if (UdtWrapper.IsEnum) return UdtWrapper.EnumWrapper.GetAlias(elementValue);
+            if (UdtWrapper.IsEnum) return UdtWrapper.EnumWrapper!.GetAlias(elementValue);
 
             // trying to build the element value
             if (HasFormat && !IsTreatedAsCollection)

@@ -3,7 +3,7 @@
 
 using System;
 
-namespace YAXLibTests.SampleClasses
+namespace YAXLibTests.SampleClasses.KnownTypes
 {
     public class TypeKnownTypeSample
     {

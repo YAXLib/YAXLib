@@ -6,9 +6,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Xml.Linq;
 using YAXLib.Attributes;
 using YAXLib.Caching;
+using YAXLib.Customization;
 using YAXLib.Enums;
 using YAXLib.Exceptions;
 using YAXLib.Pooling.SpecializedPools;
@@ -54,7 +56,7 @@ namespace YAXLib
         {
             // This method must be called by any public Serialize method
             _serializer.IsSerializing = true;
-            if (_serializer.SerializedStack == null) _serializer.SerializedStack = new Stack<object>();
+            _serializer.SerializedStack ??= new Stack<object>();
             _mainDocument = new XDocument();
             _mainDocument.Add(SerializeBase(obj));
             return _mainDocument;
@@ -104,28 +106,34 @@ namespace YAXLib
             }
 
             if (_serializer.UdtWrapper.HasComment && _baseElement.Parent == null && _mainDocument != null)
-                foreach (var comment in _serializer.UdtWrapper.Comment)
+                foreach (var comment in _serializer.UdtWrapper.Comment!)
                     _mainDocument.Add(new XComment(comment));
 
             // if the containing element is set to preserve spaces, then emit the
             // required attribute
-            if (_serializer.UdtWrapper.PreservesWhitespace) XMLUtils.AddPreserveSpaceAttribute(_baseElement, _serializer.Options.Culture);
+            if (_serializer.UdtWrapper.PreservesWhitespace)
+                XMLUtils.AddPreserveSpaceAttribute(_baseElement, _serializer.Options.Culture);
 
             // check if the main class/type has defined custom serializers
-            if (_serializer.UdtWrapper.HasCustomSerializer)
+            if (_serializer.UdtWrapper.HasCustomSerializer && !Locker.IsLocked(_serializer.UdtWrapper.CustomSerializer!.Type))
             {
-                InvokeCustomSerializerToElement(_serializer.UdtWrapper.CustomSerializerType, obj, _baseElement, null, _serializer.UdtWrapper, _serializer);
+                _serializer.UdtWrapper.CustomSerializer!.SerializeToElement(obj, _baseElement,
+                    new SerializationContext(null, _serializer.UdtWrapper, _serializer));
             }
-            else if (_serializer.UdtWrapper.IsKnownType)
+            else if (_serializer.UdtWrapper.IsKnownType && !Locker.IsLocked(_serializer.UdtWrapper.KnownType!.Type))
             {
-                _serializer.UdtWrapper.KnownType!.Serialize(obj, _baseElement, _serializer.TypeNamespace, new SerializationContext(null, _serializer.UdtWrapper, _serializer));
+                using var _ = new Locker(_serializer.UdtWrapper.KnownType!.Type);
+                _serializer.UdtWrapper.KnownType!.Serialize(obj, _baseElement, _serializer.TypeNamespace,
+                    new SerializationContext(null, _serializer.UdtWrapper, _serializer));
             }
             else // no custom serializers or known type
             {
                 SerializeFields(obj);
             }
 
-            if (_baseElement.Parent == null) _serializer.XmlNamespaceManager.AddNamespacesToElement(_baseElement, _serializer.DocumentDefaultNamespace, _serializer.Options, _serializer.UdtWrapper);
+            if (_baseElement.Parent == null)
+                _serializer.XmlNamespaceManager.AddNamespacesToElement(_baseElement,
+                    _serializer.DocumentDefaultNamespace, _serializer.Options, _serializer.UdtWrapper);
 
             return _baseElement;
         }
@@ -248,15 +256,15 @@ namespace YAXLib
         {
             var isAnythingFoundToSerialize = false;
 
-            // iterate through public properties
-            foreach (var member in _serializer.UdtWrapper.GetFieldsToBeSerialized())
+            foreach (var member in _serializer.UdtWrapper.GetFieldsForSerialization())
             {
-                if (member.HasNamespace) _serializer.XmlNamespaceManager.RegisterNamespace(member.Namespace, member.NamespacePrefix);
+                var elementValue = member.GetValue(obj);
+                if (IsNullButDoNotSerializeNull(member, elementValue)) continue;
 
-                if (IsNothingToSerialize(obj, member, out var elementValue)) continue;
-
-                // make this flag true, so that we know that this object was not empty of fields
                 isAnythingFoundToSerialize = true;
+
+                if (member.HasNamespace)
+                    _serializer.XmlNamespaceManager.RegisterNamespace(member.Namespace, member.NamespacePrefix);
 
                 var areOfSameType = AreOfSameType(obj, member, elementValue);
 
@@ -273,7 +281,7 @@ namespace YAXLib
                 // it gets true only for basic data types
                 if (member.IsSerializedAsAttribute && canSerializeAsAttributeOrValue)
                 {
-                    SerializeAsAttribute(member, elementValue, (hasCustomSerializer, isCollectionSerially));
+                    SerializeAsAttribute(member, elementValue, isCollectionSerially);
                 }
                 else if (member.IsSerializedAsValue && canSerializeAsAttributeOrValue)
                 {
@@ -281,8 +289,7 @@ namespace YAXLib
                 }
                 else
                 {
-                    SerializeAsElement(member, elementValue, serializationLocation,
-                        (hasCustomSerializer, areOfSameType));
+                    SerializeAsElement(member, elementValue, serializationLocation, areOfSameType);
                 }
             }
 
@@ -314,25 +321,14 @@ namespace YAXLib
 
 #nullable enable
         /// <summary>
-        /// Tests for conditions, where there is nothing to be serialized.
+        /// Checks whether the <paramref name="elementValue"/> is <see langword="null"/>,
+        /// and <see langword="null"/> shall not be serialized.
         /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="member"></param>
         /// <param name="elementValue"></param>
+        /// <param name="member"></param>
         /// <returns></returns>
-        private bool IsNothingToSerialize(object obj, MemberWrapper member, out object? elementValue)
+        private bool IsNullButDoNotSerializeNull(MemberWrapper member, object? elementValue)
         {
-            elementValue = null;
-
-            if (!member.CanRead)
-                return true;
-
-            // ignore this member if it is attributed as don't serialize
-            if (member.IsAttributedAsDontSerialize)
-                return true;
-
-            elementValue = member.GetValue(obj);
-
             // ignore this member if it is null and we are not about to serialize null objects
             if (elementValue == null && _serializer.UdtWrapper.IsNotAllowedNullObjectSerialization)
                 return true;
@@ -377,27 +373,29 @@ namespace YAXLib
         }
 
         private void SerializeAsElement(MemberWrapper member,
-            object elementValue, string serializationLocation, (bool hasCustomSerializer,
-                bool areOfSameType) flags)
+            object elementValue, string serializationLocation, bool areOfSameType)
         {
-            var (hasCustomSerializer, areOfSameType) = flags;
-
             // Throw, if no parent element can be found
-            var parElem = GetParentElement(serializationLocation);
+            var parentElem = GetParentElement(serializationLocation);
 
-            AddComments(parElem, member);
+            AddComments(parentElem, member);
 
-            if (hasCustomSerializer)
+            if (member.HasCustomSerializer && !Locker.IsLocked(member.CustomSerializer!.Type))
             {
-                InvokeCustomSerializer(parElem, elementValue, member);
+                InvokeCustomSerializer(member.CustomSerializer, parentElem, elementValue, member);
             }
-            else if (member.IsKnownType)
+            else if (member.UdtWrapper.HasCustomSerializer && !Locker.IsLocked(member.UdtWrapper.CustomSerializer!.Type))
             {
-                AddKnownTypeElement(parElem, elementValue, member);
+                InvokeCustomSerializer(member.UdtWrapper.CustomSerializer, parentElem, elementValue, member);
+            }
+            else if (member.IsKnownType && !Locker.IsLocked(member.KnownType!.Type))
+            {
+                using var _ = new Locker(member.KnownType!.Type);
+                AddKnownTypeElement(parentElem, elementValue, member);
             }
             else
             {
-                AddElement(parElem, elementValue, member, areOfSameType);
+                AddElement(parentElem, elementValue, member, areOfSameType);
             }
         }
 
@@ -466,23 +464,32 @@ namespace YAXLib
             var elemToFill = new XElement(member.Alias.OverrideNsIfEmpty(_serializer.TypeNamespace));
             parElem.Add(elemToFill);
             member.KnownType!.Serialize(elementValue, elemToFill,
-                member.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThen(XNamespace.None), new SerializationContext(null, _serializer.UdtWrapper, _serializer));
+                member.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThen(XNamespace.None),
+                new SerializationContext(member, member.UdtWrapper, _serializer));
             if (member.PreservesWhitespace)
                 XMLUtils.AddPreserveSpaceAttribute(elemToFill, _serializer.Options.Culture);
         }
 
-        private void InvokeCustomSerializer(XElement parElem, object elementValue, MemberWrapper member)
+        private XElement GetElementToFill(XElement parElem, MemberWrapper member)
         {
             var elemToFill = new XElement(member.Alias.OverrideNsIfEmpty(_serializer.TypeNamespace));
             parElem.Add(elemToFill);
-            if (member.HasCustomSerializer)
-                InvokeCustomSerializerToElement(member.CustomSerializerType, elementValue, elemToFill, member, null, _serializer);
-            else if (member.UdtWrapper.HasCustomSerializer)
-                InvokeCustomSerializerToElement(member.UdtWrapper.CustomSerializerType, elementValue, elemToFill,
-                    null, member.UdtWrapper, _serializer);
 
+            return elemToFill;
+        }
+
+        private void PreserveWhiteSpace(XElement elemToFill, MemberWrapper member)
+        {
             if (member.PreservesWhitespace)
                 XMLUtils.AddPreserveSpaceAttribute(elemToFill, _serializer.Options.Culture);
+        }
+
+        private void InvokeCustomSerializer(CustomSerializerWrapper customSerializerToUse, XElement parElem, object elementValue, MemberWrapper member)
+        {
+            var elemToFill = GetElementToFill(parElem, member);
+            customSerializerToUse.SerializeToElement(elementValue, elemToFill,
+                    new SerializationContext(member, member.UdtWrapper, _serializer));
+            PreserveWhiteSpace(elemToFill, member);
         }
 
         private static void AddComments(XElement parElem, MemberWrapper member)
@@ -538,17 +545,19 @@ namespace YAXLib
             // element has been found/created successfully
 
             string valueToSet;
-            if (member.HasCustomSerializer)
+            if (member.HasCustomSerializer && !Locker.IsLocked(member.CustomSerializer!.Type))
             {
-                valueToSet =
-                    InvokeCustomSerializerToValue(member.CustomSerializerType, elementValue, member, _serializer.UdtWrapper, _serializer);
+                valueToSet = member.CustomSerializer!.SerializeToValue(elementValue,
+                    new SerializationContext(member, member.UdtWrapper, _serializer));
             }
-            else if (member.UdtWrapper.HasCustomSerializer)
+            else if (member.UdtWrapper.HasCustomSerializer && !Locker.IsLocked(member.UdtWrapper.CustomSerializer!.Type))
             {
-                valueToSet = InvokeCustomSerializerToValue(member.UdtWrapper.CustomSerializerType, elementValue, member, _serializer.UdtWrapper, _serializer);
+                valueToSet = member.UdtWrapper.CustomSerializer!.SerializeToValue(elementValue,
+                    new SerializationContext(member, member.UdtWrapper, _serializer));
             }
-            else if (member.IsKnownType)
+            else if (member.IsKnownType && !Locker.IsLocked(member.KnownType!.Type))
             {
+                using var _ = new Locker(member.KnownType!.Type);
                 var tempLoc = new XElement("temp");
                 member.KnownType!.Serialize(elementValue, tempLoc, string.Empty, new SerializationContext(member, member.UdtWrapper, _serializer));
                 valueToSet = tempLoc.Value;
@@ -571,24 +580,26 @@ namespace YAXLib
         }
 
         private void SerializeAsAttribute(MemberWrapper member, object elementValue,
-            (bool hasCustomSerializer, bool isCollectionSerially) flags)
+            bool isCollectionSerially)
         {
-            var (hasCustomSerializer, isCollectionSerially) = flags;
+            var hasCustomSerializer =
+                member.HasCustomSerializer || member.UdtWrapper.HasCustomSerializer;
             var useElementValue = !(hasCustomSerializer || isCollectionSerially || member.IsKnownType);
             // Fill the base element with an attribute
             var attributeToUse = CreateAttribute(member, elementValue, useElementValue);
-            if (member.HasCustomSerializer)
+            if (member.HasCustomSerializer && !Locker.IsLocked(member.CustomSerializer!.Type))
             {
-                InvokeCustomSerializerToAttribute(member.CustomSerializerType, elementValue, attributeToUse, member, _serializer.UdtWrapper, _serializer);
+                member.CustomSerializer!.SerializeToAttribute(elementValue, attributeToUse,
+                    new SerializationContext(member, member.UdtWrapper, _serializer));
             }
-            else if (member.UdtWrapper.HasCustomSerializer)
+            else if (member.UdtWrapper.HasCustomSerializer && !Locker.IsLocked(member.UdtWrapper.CustomSerializer!.Type))
             {
-                InvokeCustomSerializerToAttribute(member.UdtWrapper.CustomSerializerType, elementValue,
-                    attributeToUse, member, _serializer.UdtWrapper, _serializer);
+                member.UdtWrapper.CustomSerializer!.SerializeToAttribute(elementValue, attributeToUse,
+                    new SerializationContext(member, member.UdtWrapper, _serializer));
             }
             else if (member.IsKnownType)
             {
-                // Serializing KnownTypes is not implemented
+                // Serializing KnownTypes as attribute is not implemented
             }
             else if (isCollectionSerially)
             {
@@ -964,7 +975,7 @@ namespace YAXLib
                 }
                 case { IsEnum: true }:
                 {
-                    elemToAdd = MakeBaseElement(elem, alias, udt.EnumWrapper.GetAlias(obj), out var alreadyAdded);
+                    elemToAdd = MakeBaseElement(elem, alias, udt.EnumWrapper!.GetAlias(obj), out var alreadyAdded);
                     if (!alreadyAdded)
                         elem.Add(elemToAdd);
                     break;
@@ -1104,7 +1115,7 @@ namespace YAXLib
             {
                 object? objToAdd;
                 if (colItemsUdt.IsEnum)
-                    objToAdd = colItemsUdt.EnumWrapper.GetAlias(obj);
+                    objToAdd = colItemsUdt.EnumWrapper!.GetAlias(obj);
                 else if (format != null)
                     objToAdd = ReflectionUtils.TryFormatObject(obj, format);
                 else
@@ -1152,32 +1163,13 @@ namespace YAXLib
 
             if (ReflectionUtils.IsStringConvertibleIFormattable(value.GetType()))
             {
-                var elementValue = value.GetType().InvokeMethod("ToString", value, Array.Empty<object>());
+                var elementValue = value.GetType().InvokeMember("ToString", BindingFlags.InvokeMethod, null, value, Array.Empty<object>());
                 return new XElement(name, elementValue);
             }
 
             var elem = SerializeUsingInternalSerializer(insertionLocation, name, value);
             alreadyAdded = true;
             return elem;
-        }
-
-        private static void InvokeCustomSerializerToElement(Type customSerType, object objToSerialize, XElement elemToFill, MemberWrapper memberWrapper, UdtWrapper udtWrapper, YAXSerializer currentSerializer)
-        {
-            var customSerializer = Activator.CreateInstance(customSerType, Array.Empty<object>());
-            customSerType.InvokeMethod("SerializeToElement", customSerializer, new[] {objToSerialize, elemToFill, new SerializationContext(memberWrapper, udtWrapper, currentSerializer) });
-        }
-
-        private static void InvokeCustomSerializerToAttribute(Type customSerType, object objToSerialize, XAttribute attrToFill, MemberWrapper memberWrapper, UdtWrapper udtWrapper, YAXSerializer currentSerializer)
-        {
-            var customSerializer = Activator.CreateInstance(customSerType, Array.Empty<object>());
-            customSerType.InvokeMethod("SerializeToAttribute", customSerializer, new[] {objToSerialize, attrToFill, new SerializationContext(memberWrapper, udtWrapper, currentSerializer) });
-        }
-
-        private static string InvokeCustomSerializerToValue(Type customSerType, object objToSerialize, MemberWrapper memberWrapper, UdtWrapper udtWrapper, YAXSerializer currentSerializer)
-        {
-            Debug.Assert(memberWrapper != null && udtWrapper != null);
-            var customSerializer = Activator.CreateInstance(customSerType, Array.Empty<object>());
-            return (string) customSerType.InvokeMethod("SerializeToValue", customSerializer, new[] {objToSerialize, new SerializationContext(memberWrapper, udtWrapper, currentSerializer) });
         }
 
         private void AddMetadataAttribute(XElement parent, XName attrName, object attrValue,

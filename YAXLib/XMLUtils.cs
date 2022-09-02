@@ -430,31 +430,26 @@ namespace YAXLib
 
             throw new InvalidOperationException("Cannot create a unique random prefix");
         }
-
+#nullable enable
         /// <summary>
         /// Gets the string representation of the object, or <see cref="string.Empty"/> if the object is <see langword="null"/>.
         /// </summary>
         /// <param name="self">The object to get as a string.</param>
         /// <param name="culture">The <see cref="CultureInfo"/> to use for culture-specific output.</param>
         /// <returns>The <see cref="CultureInfo"/>-aware string representation of the object, or <see cref="string.Empty"/> if the object is <see langword="null"/>.</returns>
-        public static string ToXmlValue(this object self, CultureInfo culture)
+        public static string ToXmlValue(this object? self, CultureInfo culture)
         {
             if (self == null) return string.Empty;
-            
-            switch (self.GetType().Name)
-            {
-                case "Boolean":
-                    return ((bool) self).ToString().ToLowerInvariant();
-                case "Double":
-                    return ((double) self).ToString("R", culture);
-                case "Single":
-                    return ((float) self).ToString("R", culture);
-                case "BigInteger":
-                    return ReflectionUtils.InvokeMethod(self, "ToString", "R", culture) as string;
-            }
 
-            return Convert.ToString(self, culture);
+            return self.GetType().Name switch {
+                "Boolean" => ((bool) self).ToString().ToLowerInvariant(),
+                "Double" => ((double) self).ToString("R", culture),
+                "Single" => ((float) self).ToString("R", culture),
+                "BigInteger" => ReflectionUtils.InvokeMethod(self, "ToString", "R", culture) as string ?? string.Empty,
+                _ => Convert.ToString(self, culture) ?? string.Empty
+            };
         }
+#nullable disable
 
         public static XAttribute AddAttributeNamespaceSafe(this XElement parent, XName attrName, object attrValue,
             XNamespace documentDefaultNamespace, CultureInfo culture)

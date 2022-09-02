@@ -43,13 +43,15 @@ namespace YAXLibTests
             var s = new YAXSerializer(typeof(ClassLevelSampleAsElement));
             var xml = s.Serialize(original);
             var deserialized = (ClassLevelSampleAsElement) s.Deserialize(xml);
-            
+
+            // " CUSTOM" is added by the ClassLevelSerializer
             Assert.That(xml, Is.EqualTo(@"<ClassLevelSampleAsElement>
   <ClassLevelSample>
-    <Title>The Title</Title>
-    <MessageBody>The Message</MessageBody>
+    <Title>The Title CUSTOM</Title>
+    <MessageBody>The Message CUSTOM</MessageBody>
   </ClassLevelSample>
 </ClassLevelSampleAsElement>"));
+            // " CUSTOM" is removed by the ClassLevelSerializer
             Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()));
         }
         
@@ -81,9 +83,56 @@ namespace YAXLibTests
             Assert.That(xml, Is.EqualTo("<ClassLevelSampleAsValue>VAL|The Title|The Message</ClassLevelSampleAsValue>"));
             Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()));
         }
+
+        [Test]
+        public void Custom_Class_Level_Ctx_Serializer_Element()
+        {
+            // The custom serializer for ClassLevelSample handles serialization options
+
+            var original = new ClassLevelCtxSampleAsElement
+                {ClassLevelCtxSample = new ClassLevelCtxSample {Title = "The Title", MessageBody = "The Message"}};
+            var s = new YAXSerializer(typeof(ClassLevelCtxSampleAsElement));
+            var xml = s.Serialize(original);
+            var deserialized = (ClassLevelCtxSampleAsElement) s.Deserialize(xml);
+
+            // " CUSTOM" is added by the ClassLevelSerializer
+            Assert.That(xml, Is.EqualTo(@"<ClassLevelCtxSampleAsElement>
+  <ClassLevelCtxSample>
+    <Title>The Title CUSTOM</Title>
+    <MessageBody>The Message CUSTOM</MessageBody>
+  </ClassLevelCtxSample>
+</ClassLevelCtxSampleAsElement>"));
+            // " CUSTOM" is removed by the ClassLevelSerializer
+            Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()));
+        }
         
         [Test]
-        public void Custom_Field_Serializer()
+        public void Custom_Class_Level_Ctx_Serializer_Attribute()
+        {
+            var original = new ClassLevelCtxSampleAsAttribute
+                {ClassLevelCtxSample = new ClassLevelCtxSample {Title = "The Title", MessageBody = "The Message"}};
+            var s = new YAXSerializer(typeof(ClassLevelCtxSampleAsAttribute));
+            var xml = s.Serialize(original);
+            var deserialized = (ClassLevelCtxSampleAsAttribute) s.Deserialize(xml);
+            
+            Assert.That(xml, Is.EqualTo("<ClassLevelCtxSampleAsAttribute ClassLevelCtxSample=\"ATTR|The Title|The Message\" />"));
+            Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()));
+        }
+        
+        [Test]
+        public void Custom_Class_Level_Ctx_Serializer_Value()
+        {
+            var original = new ClassLevelCtxSampleAsValue { ClassLevelCtxSample = new ClassLevelCtxSample { Title = "The Title", MessageBody = "The Message"}};
+            var s = new YAXSerializer(typeof(ClassLevelCtxSampleAsValue));
+            var xml = s.Serialize(original);
+            var deserialized = (ClassLevelCtxSampleAsValue) s.Deserialize(xml);
+            
+            Assert.That(xml, Is.EqualTo("<ClassLevelCtxSampleAsValue>VAL|The Title|The Message</ClassLevelCtxSampleAsValue>"));
+            Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()));
+        }
+
+        [Test]
+        public void Custom_Property_Serializer()
         {
             // The custom serializer handles Body property
             
@@ -102,6 +151,32 @@ namespace YAXLibTests
   <Title>This is the title</Title>
   <Body>ELE__Just a short message body</Body>
 </PropertyLevelSample>";
+            
+            Assert.That(xml, Is.EqualTo(expectedXml));
+            Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()));
+        }
+
+        [Test]
+        public void Custom_Field_Serializer()
+        {
+            // The custom serializer handles Body property
+            
+            var original = new FieldLevelSample()
+            {
+                Id = "1234", // default serializer
+                Title = "This is the title", // default serializer
+                Body = "Just a short message body" // use custom serializer
+            };
+            var s = new YAXSerializer(typeof(FieldLevelSample));
+            var xml = s.Serialize(original);
+            var deserialized = (FieldLevelSample) s.Deserialize(xml);
+            var expectedXml = 
+                @"<FieldLevelSample Id=""ATTR_1234"">
+  <Title>VAL__This is the title</Title>
+  <Body>
+    <ChildOfBody>ELE__Just a short message body</ChildOfBody>
+  </Body>
+</FieldLevelSample>";
             
             Assert.That(xml, Is.EqualTo(expectedXml));
             Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()));

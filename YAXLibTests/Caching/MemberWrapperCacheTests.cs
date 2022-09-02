@@ -67,7 +67,7 @@ public class MemberWrapperCacheTests
 
         Assert.That(dupeAdded, Is.False);
         Assert.That(MemberWrapperCache.Instance.CacheDictionary.Count, Is.EqualTo(5));
-        Assert.That(MemberWrapperCache.Instance.CacheDictionary.ContainsKey(typeof(string)), Is.False);
+        Assert.That(MemberWrapperCache.Instance.CacheDictionary.ContainsKey(typeof(string)), Is.False); // FIFO
 
         MemberWrapperCache.Instance.MaxCacheSize = MemberWrapperCache.DefaultCacheSize;
     }

@@ -8,6 +8,7 @@ using System.Text;
 using System.Xml.Linq;
 using YAXLib;
 using YAXLib.Attributes;
+using YAXLib.Customization;
 using YAXLib.Exceptions;
 
 namespace YAXLibTests.SampleClasses
@@ -176,12 +177,12 @@ namespace YAXLibTests.SampleClasses
             return ColorTo6CharHtmlString(objectToSerialize);
         }
 
-        public Color DeserializeFromAttribute(XAttribute attrib, ISerializationContext serializationContext)
+        public Color DeserializeFromAttribute(XAttribute attribute, ISerializationContext serializationContext)
         {
-            if (TryParseColor(attrib.Value, out var color))
+            if (TryParseColor(attribute.Value, out var color))
                 return color;
 
-            throw new YAXBadlyFormedInput(attrib.Name.ToString(), attrib.Value, attrib);
+            throw new YAXBadlyFormedInput(attribute.Name.ToString(), attribute.Value, attribute);
         }
 
         public Color DeserializeFromElement(XElement element, ISerializationContext serializationContext)

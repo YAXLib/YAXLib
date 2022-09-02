@@ -5,12 +5,15 @@ using System;
 using System.Drawing;
 using System.Threading;
 using System.Xml.Linq;
+using FluentAssertions;
 using NUnit.Framework;
 using YAXLib;
+using YAXLib.Customization;
 using YAXLib.Enums;
 using YAXLib.KnownTypes;
 using YAXLib.Options;
 using YAXLibTests.SampleClasses;
+using YAXLibTests.SampleClasses.KnownTypes;
 using YAXLibTests.SampleClasses.YAXLibTests.SampleClasses;
 
 namespace YAXLibTests;
@@ -73,7 +76,8 @@ public class KnownTypeTests
         var s = new TypeKnownType();
         var serialized = new XElement(XName.Get(nameof(TypeKnownTypeSample.TheType)));
         // Context is a required argument, but it's not used here
-        var discardCtx = new SerializationContext(null, null, new YAXSerializer(typeof(int)));
+        var discardCtx = new SerializationContext(null, new UdtWrapper(typeof(TypeKnownTypeSample), new SerializerOptions()),
+            new YAXSerializer(typeof(int)));
 
         s.Serialize(typeExample.TheType, serialized, XNamespace.None, discardCtx);
         var deserialized = s.Deserialize(serialized, XNamespace.None, discardCtx);
@@ -99,6 +103,27 @@ public class KnownTypeTests
     }
 
     [Test]
+    public void KnownType_UsingSerializationContext()
+    {
+        const string expectedXml = @"<UsingSerializationContextSample>
+  <Text>Sample Text KnownType</Text>
+</UsingSerializationContextSample>";
+        WellKnownTypes.Add(new UsingSerializationContextKnownType());
+        var data = new UsingSerializationContextSample { Text = "Sample Text" };
+        var serializer = new YAXSerializer(typeof(UsingSerializationContextSample));
+
+        // Known type adds/removes " KnownType" to/from Text property
+        // to make sure it is actually invoked
+        var serialized = serializer.Serialize(data);
+        var deserialized = (UsingSerializationContextSample) serializer.Deserialize(serialized);
+
+        Assert.That(serialized, Is.EqualTo(expectedXml));
+        deserialized.Should().BeEquivalentTo(data);
+
+        WellKnownTypes.Remove(typeof(UsingSerializationContextKnownType));
+    }
+
+    [Test]
     public void RuntimeTypeDynamicKnownTypeSerialization()
     {
         const string expectedXml = "<TheType>YAXLibTests.KnownTypeTests</TheType>";
@@ -107,7 +132,8 @@ public class KnownTypeTests
         var s = new RuntimeTypeDynamicKnownType();
         var serialized = new XElement(XName.Get(nameof(TypeKnownTypeSample.TheType)));
         // Context is a required argument, but it's not used here
-        var discardCtx = new SerializationContext(null, null, new YAXSerializer(typeof(int)));
+        var discardCtx = new SerializationContext(null, new UdtWrapper(typeof(XElement), new SerializerOptions()),
+            new YAXSerializer(typeof(int)));
 
         s.Serialize(typeExample.TheType, serialized, XNamespace.None, discardCtx);
         var deserialized = (Type) s.Deserialize(serialized, XNamespace.None, discardCtx);
@@ -139,8 +165,9 @@ public class KnownTypeTests
         var s = new DbNullKnownType();
         var serialized = new XElement(XName.Get(nameof(dbNullExample)));
         // Context is a required argument, but it's not used here
-        var discardCtx = new SerializationContext(null, null, new YAXSerializer(typeof(int)));
-
+        var discardCtx = new SerializationContext(null, new UdtWrapper(typeof(DBNull), new SerializerOptions()),
+            new YAXSerializer(typeof(int)));
+        
         s.Serialize(dbNullExample, serialized, XNamespace.None, discardCtx);
         var deserialized = s.Deserialize(serialized, XNamespace.None, discardCtx);
         var deserializedAsNull =
@@ -284,7 +311,8 @@ public class KnownTypeTests
         var colorKnownType = new ColorDynamicKnownType();
         // Context is not required for this test
         var dummySerializationContext =
-            new SerializationContext(null, null, new YAXSerializer(typeof(ColorDynamicKnownType)));
+            new SerializationContext(null, new UdtWrapper(typeof(Color), new SerializerOptions()),
+                new YAXSerializer(typeof(ColorDynamicKnownType)));
 
         var elem = new XElement("TheColor", "Red");
         var desCl = (Color) colorKnownType.Deserialize(elem, string.Empty, dummySerializationContext);
@@ -488,7 +516,9 @@ public class KnownTypeTests
     public void ExceptionKnownType_Serialize_Null_ExceptionInstance()
     {
         var xElem = new XElement(XName.Get("Exception"));
-        new ExceptionKnownBaseType().Serialize(null, xElem, XNamespace.None, new SerializationContext(null, null, new YAXSerializer(typeof(Exception))));
+        new ExceptionKnownBaseType().Serialize(null, xElem, XNamespace.None,
+            new SerializationContext(null, new UdtWrapper(typeof(Exception), new SerializerOptions()),
+                new YAXSerializer(typeof(Exception))));
 
         Assert.That(xElem.HasElements, Is.False);
     }
@@ -497,7 +527,9 @@ public class KnownTypeTests
     public void ExceptionKnownType_Deserialize_Not_An_ExceptionElement()
     {
         var xElem = new XElement(XName.Get("NotAnExceptionElement"));
-        var result = new ExceptionKnownBaseType().Deserialize(xElem, XNamespace.None, new SerializationContext(null, null, new YAXSerializer(typeof(Exception))));
+        var result = new ExceptionKnownBaseType().Deserialize(xElem, XNamespace.None,
+            new SerializationContext(null, new UdtWrapper(typeof(Exception), new SerializerOptions()),
+                new YAXSerializer(typeof(Exception))));
 
         Assert.That(result, Is.Null);
     }
@@ -508,7 +540,9 @@ public class KnownTypeTests
         var xElem = XElement.Parse(
             @"<Exception yaxlib:realtype=""System.DateTime"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/""></Exception>");
 
-        var result = new ExceptionKnownBaseType().Deserialize(xElem, XNamespace.None, new SerializationContext(null, null, new YAXSerializer(typeof(Exception))));
+        var result = new ExceptionKnownBaseType().Deserialize(xElem, XNamespace.None,
+            new SerializationContext(null, new UdtWrapper(typeof(Exception), new SerializerOptions()),
+                new YAXSerializer(typeof(Exception))));
         
         Assert.That(result, Is.Null);
     }
