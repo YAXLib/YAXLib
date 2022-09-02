@@ -75,7 +75,7 @@ namespace YAXLib
 
             elemName = elemName.Trim(' ', '\t', '\r', '\n', '\v', '/', '\\');
             if (IsSingleLocationGeneric(elemName)) return elemName;
-
+            
             if (LooksLikeExpandedXName(elemName))
             {
                 // thanks go to CodePlex user: tg73 (http://www.codeplex.com/site/users/view/tg73)
@@ -255,10 +255,10 @@ namespace YAXLib
         }
 
         /// <summary>
-        ///     Gets the string corresponidng to the given array dimensions.
+        ///     Gets the string corresponiding to the given array dimensions.
         /// </summary>
         /// <param name="dims">The array dimensions.</param>
-        /// <returns>the string corresponidng to the given array dimensions</returns>
+        /// <returns>the string corresponiding to the given array dimensions</returns>
         public static string GetArrayDimsString(int[] dims)
         {
             var sb = new StringBuilder();
@@ -284,8 +284,7 @@ namespace YAXLib
             var lst = new List<int>();
             foreach (var strDim in strDims)
             {
-                int dim;
-                if (int.TryParse(strDim, out dim))
+                if (int.TryParse(strDim, out var dim))
                     lst.Add(dim);
             }
 
@@ -327,8 +326,9 @@ namespace YAXLib
 
         public static DateTime ParseDateTimeTimeZoneSafe(string str, IFormatProvider formatProvider)
         {
-            DateTimeOffset dto;
-            if (!DateTimeOffset.TryParse(str, formatProvider, DateTimeStyles.None, out dto)) return DateTime.MinValue;
+            if (!DateTimeOffset.TryParse(str, formatProvider, DateTimeStyles.None, out var dto))
+                return DateTime.MinValue;
+
             return dto.Offset == TimeSpan.Zero ? dto.UtcDateTime : dto.DateTime;
         }
     }

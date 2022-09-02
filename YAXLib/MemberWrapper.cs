@@ -327,6 +327,9 @@ namespace YAXLib
             }
         }
 
+        /// <inheritdoc cref="Enums.TextEmbedding"/>
+        public TextEmbedding TextEmbedding { get; internal set; } = TextEmbedding.None;
+
         /// <summary>
         ///     Gets the type of the member.
         /// </summary>

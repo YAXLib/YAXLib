@@ -48,5 +48,14 @@ namespace YAXLib.Enums
         ///     Enabling this has a performance impact
         /// </summary>
         DisplayLineInfoInExceptions = 32,
+
+        /// <summary>
+        /// Silently removes illegal XML characters when serializing, instead of throwing an exception.
+        /// Note: XML containing illegal characters cannot be loaded and deserialized.
+        /// <para>
+        /// Default: disabled.
+        /// </para>
+        /// </summary>
+        StripInvalidXmlChars = 64
     }
 }
