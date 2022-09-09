@@ -1,6 +1,8 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -68,7 +70,7 @@ namespace YAXLib
         /// </summary>
         /// <param name="elemName">Name of the element.</param>
         /// <returns>the refined element name</returns>
-        public static string RefineSingleElement(string elemName)
+        public static string? RefineSingleElement(string? elemName)
         {
             if (elemName == null)
                 return null;
@@ -201,7 +203,7 @@ namespace YAXLib
         public static bool DivideLocationOneStep(string location, out string newLocation, out string newElem)
         {
             newLocation = location;
-            newElem = null;
+            newElem = string.Empty;
 
             var slashIdx = location.LastIndexOf('/');
             if (slashIdx < 0) // no slashes found

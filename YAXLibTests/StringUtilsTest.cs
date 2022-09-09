@@ -94,19 +94,19 @@ namespace YAXLibTests
             var location = "..";
             var returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
             Assert.That(newLocation, Is.EqualTo(".."));
-            Assert.That(newElement, Is.Null);
+            Assert.That(newElement, Is.Empty);
             Assert.That(returnValue, Is.False);
 
             location = ".";
             returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
             Assert.That(newLocation, Is.EqualTo("."));
-            Assert.That(newElement, Is.Null);
+            Assert.That(newElement, Is.Empty);
             Assert.That(returnValue, Is.False);
 
             location = "../..";
             returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
             Assert.That(newLocation, Is.EqualTo("../.."));
-            Assert.That(newElement, Is.Null);
+            Assert.That(newElement, Is.Empty);
             Assert.That(returnValue, Is.False);
 
             location = "../../folder";
@@ -118,7 +118,7 @@ namespace YAXLibTests
             location = "../../folder/..";
             returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
             Assert.That(newLocation, Is.EqualTo("../../folder/.."));
-            Assert.That(newElement, Is.Null);
+            Assert.That(newElement, Is.Empty);
             Assert.That(returnValue, Is.False);
 
             location = "one/two/three/four";

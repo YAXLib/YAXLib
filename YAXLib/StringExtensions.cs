@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 #nullable enable
+
 using System;
 using System.Buffers;
 using System.Text;

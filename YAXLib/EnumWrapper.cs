@@ -1,6 +1,8 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using YAXLib.Attributes;
@@ -17,7 +19,7 @@ namespace YAXLib
         /// <summary>
         ///     Maps real enum names to their corresponding user defined aliases
         /// </summary>
-        private readonly Dictionary<string, string> _enumMembers = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _enumMembers = new();
 
         /// <summary>
         ///     The enum underlying type
