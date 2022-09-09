@@ -1,6 +1,8 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+#nullable enable
+
 using System.Globalization;
 using System.Xml;
 
@@ -21,7 +23,7 @@ namespace YAXLib.Exceptions
         /// <param name="propName">Name of the property.</param>
         /// <param name="defaultValue">The default value which caused the problem.</param>
         /// <param name="culture">The <see cref="CultureInfo"/> used for string formatting values.</param>
-        public YAXDefaultValueCannotBeAssigned(string propName, object defaultValue, CultureInfo culture) :
+        public YAXDefaultValueCannotBeAssigned(string propName, object? defaultValue, CultureInfo culture) :
             this(propName, defaultValue, null, culture)
         {
         }
@@ -33,7 +35,7 @@ namespace YAXLib.Exceptions
         /// <param name="defaultValue">The default value which caused the problem.</param>
         /// <param name="lineInfo">IXmlLineInfo derived object, e.g. XElement, XAttribute containing line info</param>
         /// <param name="culture">The <see cref="CultureInfo"/> used for string formatting values in the <see cref="Message"/>.</param>
-        public YAXDefaultValueCannotBeAssigned(string propName, object defaultValue, IXmlLineInfo lineInfo, CultureInfo culture) :
+        public YAXDefaultValueCannotBeAssigned(string propName, object? defaultValue, IXmlLineInfo? lineInfo, CultureInfo culture) :
             base(lineInfo)
         {
             PropertyName = propName;
@@ -55,7 +57,7 @@ namespace YAXLib.Exceptions
         ///     Gets the default value which caused the problem.
         /// </summary>
         /// <value>The default value which caused the problem.</value>
-        public object TheDefaultValue { get; }
+        public object? TheDefaultValue { get; }
         
         /// <summary>
         ///     Gets the <see cref="CultureInfo"/> used for string formatting values in the <see cref="Message"/>,

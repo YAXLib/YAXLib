@@ -1,6 +1,8 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+#nullable enable
+
 using System.Globalization;
 using System.Xml;
 
@@ -16,7 +18,7 @@ namespace YAXLib.Exceptions
         /// </summary>
         /// <param name="lineInfo">IXmlLineInfo derived object, e.g. XElement, XAttribute containing line info</param>
         /// <param name="message">The message with exception details.</param>
-        public YAXDeserializationException(IXmlLineInfo lineInfo, string message = "") : base(message)
+        public YAXDeserializationException(IXmlLineInfo? lineInfo, string message = "") : base(message)
         {
             if (lineInfo != null &&
                 lineInfo.HasLineInfo())

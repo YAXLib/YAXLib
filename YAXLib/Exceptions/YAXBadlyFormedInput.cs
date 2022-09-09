@@ -1,6 +1,8 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+#nullable enable
+
 using System.Globalization;
 using System.Xml;
 
@@ -31,7 +33,7 @@ namespace YAXLib.Exceptions
         /// <param name="elemName">Name of the element.</param>
         /// <param name="badInput">The value of the input which could not be converted to the type of the property.</param>
         /// <param name="lineInfo">IXmlLineInfo derived object, e.g. XElement, XAttribute containing line info</param>
-        public YAXBadlyFormedInput(string elemName, string badInput, IXmlLineInfo lineInfo)
+        public YAXBadlyFormedInput(string elemName, string badInput, IXmlLineInfo? lineInfo)
             : base(lineInfo)
         {
             ElementName = elemName;

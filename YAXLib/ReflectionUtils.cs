@@ -1,6 +1,8 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+#nullable enable
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -35,8 +37,9 @@ namespace YAXLib
                 t == typeof(Guid))
                 return true;
 
-            if (IsNullable(t, out var nullableValueType))
+            if (IsNullable(t, out var nullableValueType) && nullableValueType != null)
                 return IsBasicType(nullableValueType);
+
             return false;
         }
 
@@ -168,7 +171,7 @@ namespace YAXLib
         }
 
         public static bool IsDerivedFromGenericInterfaceType(Type givenType, Type genericInterfaceType,
-            out Type genericType)
+            out Type? genericType)
         {
             genericType = null;
             if ((givenType.IsClass || givenType.IsValueType) && !givenType.IsAbstract)
@@ -417,8 +420,8 @@ namespace YAXLib
 
             var isTypeGenDef = type.IsGenericTypeDefinition;
             var isBaseGenDef = baseType.IsGenericTypeDefinition;
-            Type[] typeGenArgs = null;
-            Type[] baseGenArgs = null;
+            Type[]? typeGenArgs = null;
+            Type[]? baseGenArgs = null;
 
             if (type.IsGenericType)
             {
@@ -493,7 +496,7 @@ namespace YAXLib
         /// <param name="dstType">the destination type of conversion.</param>
         /// <param name="culture">The <see cref="CultureInfo"/> to use for culture-specific value formats.</param>
         /// <returns>the converted object</returns>
-        public static object ConvertBasicType(object value, Type dstType, CultureInfo culture)
+        public static object? ConvertBasicType(object value, Type dstType, CultureInfo culture)
         {
             object convertedObj;
             if (dstType.IsEnum)
@@ -537,9 +540,10 @@ namespace YAXLib
             {
                 if (IsNullable(dstType, out var nullableType))
                 {
-                    if (value == null || value.ToString() == string.Empty)
+                    if (value.ToString() == string.Empty)
                         return null;
-                    return ConvertBasicType(value, nullableType, culture);
+
+                    return ConvertBasicType(value, nullableType!, culture);
                 }
 
                 convertedObj = Convert.ChangeType(value, dstType, culture);
@@ -569,7 +573,7 @@ namespace YAXLib
         /// <returns>
         ///     <c>true</c> if the specified type is nullable; otherwise, <c>false</c>.
         /// </returns>
-        public static bool IsNullable(Type type, out Type valueType)
+        public static bool IsNullable(Type type, out Type? valueType)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
@@ -644,7 +648,6 @@ namespace YAXLib
             return false;
         }
 
-#nullable enable
         /// <summary>
         ///     Tries to format the specified object using the format string provided.
         ///     If the formatting operation is not applicable, the source object is returned intact.
@@ -671,7 +674,6 @@ namespace YAXLib
 
             return formattedObject ?? src;
         }
-#nullable disable
 
         /// <summary>
         ///     Searches all loaded assemblies to find a type with a special name.
@@ -682,7 +684,7 @@ namespace YAXLib
         /// </remarks>
         /// <param name="name">The <see cref="Type.AssemblyQualifiedName"/> of the type to find.</param>
         /// <returns><see cref="Type"/> found using the specified name</returns>
-        public static Type GetTypeByName(string name)
+        public static Type? GetTypeByName(string name)
         {
             var pattern =
                 RuntimeInformation.FrameworkDescription.StartsWith(".NET Framework")
@@ -761,19 +763,19 @@ namespace YAXLib
             return colType.GetConstructor(Type.EmptyTypes) != null;
         }
 
-        public static T InvokeGetProperty<T>(object srcObj, string propertyName)
+        public static T? InvokeGetProperty<T>(object srcObj, string propertyName)
         {
-            return (T) srcObj.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance)
+            return (T?) srcObj.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance)
                 ?.GetValue(srcObj, null);
         }
 
-        public static T InvokeIntIndexer<T>(object srcObj, string propertyName, int index)
+        public static T? InvokeIntIndexer<T>(object srcObj, int index)
         {
             var pi = srcObj.GetType().GetProperty("Item", new[] {typeof(int)});
-            return (T) pi.GetValue(srcObj, new object[] {index});
+            return (T?) pi?.GetValue(srcObj, new object[] {index});
         }
 
-        public static object InvokeStaticMethod(Type type, string methodName, params object[] args)
+        public static object? InvokeStaticMethod(Type type, string methodName, params object[] args)
         {
             var argTypes = args.Select(x => x.GetType()).ToArray();
             var method = type.GetMethod(methodName, argTypes);
@@ -781,7 +783,7 @@ namespace YAXLib
             return result;
         }
 
-        public static object InvokeMethod(object srcObj, string methodName, params object[] args)
+        public static object? InvokeMethod(object srcObj, string methodName, params object[] args)
         {
             var argTypes = args.Select(x => x.GetType()).ToArray();
             var method = srcObj.GetType().GetMethod(methodName, argTypes);
@@ -790,7 +792,6 @@ namespace YAXLib
         }
 
 #pragma warning disable S3011 // disable sonar accessibility bypass warning: private members are intended
-#nullable enable
 
         /// <summary>
         /// Gets the value for a public or non-public instance field.
@@ -866,7 +867,6 @@ namespace YAXLib
 
             return null;
         }
-#nullable disable
 
 #pragma warning restore S3011 // restore sonar accessibility bypass warning
 

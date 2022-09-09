@@ -1,6 +1,8 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+#nullable enable
+
 using System.Globalization;
 using System.Xml;
 
@@ -29,7 +31,7 @@ namespace YAXLib.Exceptions
         /// </summary>
         /// <param name="elementName">Name of the element.</param>
         /// <param name="lineInfo">IXmlLineInfo derived object, e.g. XElement, XAttribute containing line info</param>
-        public YAXElementValueMissingException(string elementName, IXmlLineInfo lineInfo)
+        public YAXElementValueMissingException(string elementName, IXmlLineInfo? lineInfo)
             : base(lineInfo)
         {
             ElementName = elementName;
