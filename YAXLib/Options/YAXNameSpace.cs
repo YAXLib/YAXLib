@@ -1,6 +1,8 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+#nullable enable
+
 using System.Xml.Linq;
 
 namespace YAXLib.Options
@@ -13,11 +15,11 @@ namespace YAXLib.Options
         /// <summary>
         ///     The URI address which holds the xmlns:yaxlib definition.
         /// </summary>
-        public XNamespace Uri { get; set; }
+        public XNamespace Uri { get; set; } = XNamespace.None;
             
         /// <summary>
         ///     The prefix used for the xml namespace.
         /// </summary>
-        public string Prefix { get; set; }
+        public string Prefix { get; set; } = string.Empty;
     }
 }
