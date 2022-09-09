@@ -1,6 +1,8 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+#nullable enable
+
 using System;
 using YAXLib.Enums;
 
@@ -26,27 +28,27 @@ namespace YAXLib.Attributes
             KeyName = null;
             ValueName = null;
             EachPairName = null;
-            KeyFormatString = null;
-            ValueFormatString = null;
+            KeyFormatString = string.Empty;
+            ValueFormatString = string.Empty;
         }
 
         /// <summary>
         ///     Gets or sets the alias for the key part of the dicitonary.
         /// </summary>
         /// <value></value>
-        public string KeyName { get; set; }
+        public string? KeyName { get; set; }
 
         /// <summary>
         ///     Gets or sets alias for the value part of the dicitonary.
         /// </summary>
         /// <value></value>
-        public string ValueName { get; set; }
+        public string? ValueName { get; set; }
 
         /// <summary>
         ///     Gets or sets alias for the element containing the Key-Value pair.
         /// </summary>
         /// <value></value>
-        public string EachPairName { get; set; }
+        public string? EachPairName { get; set; }
 
         /// <summary>
         ///     Gets or sets the node type according to which the key part of the dictionary is serialized.

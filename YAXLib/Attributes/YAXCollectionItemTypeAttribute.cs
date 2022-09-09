@@ -1,6 +1,8 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+#nullable enable
+
 using System;
 
 namespace YAXLib.Attributes
@@ -15,7 +17,7 @@ namespace YAXLib.Attributes
 
         public Type Type { get; }
 
-        public string Alias { get; set; }
+        public string Alias { get; set; } = string.Empty;
 
         /// <inheritdoc/>
         void IYaxMemberLevelAttribute.Setup(MemberWrapper memberWrapper)

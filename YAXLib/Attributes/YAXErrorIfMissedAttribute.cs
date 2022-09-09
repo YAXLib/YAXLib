@@ -1,6 +1,8 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+#nullable enable
+
 using System;
 using YAXLib.Enums;
 
@@ -36,7 +38,7 @@ namespace YAXLib.Attributes
         ///     Setting <c>null</c> means do nothing.
         /// </summary>
         /// <value>The default value.</value>
-        public object DefaultValue { get; set; }
+        public object? DefaultValue { get; set; }
 
         /// <inheritdoc/>
         void IYaxMemberLevelAttribute.Setup(MemberWrapper memberWrapper)

@@ -1,6 +1,8 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+#nullable enable
+
 using System;
 
 namespace YAXLib.Attributes
@@ -24,7 +26,7 @@ namespace YAXLib.Attributes
         public YAXNamespaceAttribute(string defaultNamespace)
         {
             Namespace = defaultNamespace;
-            Prefix = null;
+            Prefix = string.Empty;
         }
 
         /// <summary>

@@ -1,6 +1,8 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+#nullable enable
+
 using System;
 using YAXLib.Customization;
 using YAXLib.Exceptions;
@@ -54,7 +56,7 @@ namespace YAXLib.Attributes
             if (!isDesiredInterface)
                 throw new YAXObjectTypeMismatch(typeof(ICustomSerializer<>), CustomSerializerType);
 
-            if (!genTypeArg.IsAssignableFrom(type))
+            if (genTypeArg == null || !genTypeArg.IsAssignableFrom(type))
                 throw new YAXObjectTypeMismatch(type, genTypeArg);
         }
     }
