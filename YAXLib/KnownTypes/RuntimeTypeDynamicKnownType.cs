@@ -18,14 +18,14 @@ namespace YAXLib.KnownTypes
             ISerializationContext serializationContext)
         {
             var objectType = obj?.GetType();
-            if (objectType?.FullName != TypeName)
+            if (obj == null || objectType == null || objectType.FullName != TypeName)
                 throw new ArgumentException("Object type does not match the provided typename", nameof(obj));
 
             elem.Value = ReflectionUtils.InvokeGetProperty<string>(obj, "FullName");
         }
 
         /// <inheritdoc />
-        public override object Deserialize(XElement elem, XNamespace overridingNamespace,
+        public override object? Deserialize(XElement elem, XNamespace overridingNamespace,
             ISerializationContext serializationContext)
         {
             return ReflectionUtils.GetTypeByName(elem.Value);

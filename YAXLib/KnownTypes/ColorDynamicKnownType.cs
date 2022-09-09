@@ -1,6 +1,8 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+#nullable enable
+
 using System;
 using System.Xml.Linq;
 using YAXLib.Customization;
@@ -13,11 +15,13 @@ namespace YAXLib.KnownTypes
         public override string TypeName => "System.Drawing.Color";
 
         /// <inheritdoc />
-        public override void Serialize(object obj, XElement elem, XNamespace overridingNamespace,
+        public override void Serialize(object? obj, XElement elem, XNamespace overridingNamespace,
             ISerializationContext serializationContext)
         {
+            if (obj == null) throw new ArgumentException("Object must not be null", nameof(obj));
+
             var objectType = obj.GetType();
-            if (objectType.FullName != TypeName)
+            if (objectType == null || objectType.FullName != TypeName)
                 throw new ArgumentException("Object type does not match the provided typename", nameof(obj));
 
             var isKnownColor = ReflectionUtils.InvokeGetProperty<bool>(obj, "IsKnownColor");
@@ -41,7 +45,7 @@ namespace YAXLib.KnownTypes
         }
 
         /// <inheritdoc />
-        public override object Deserialize(XElement elem, XNamespace overridingNamespace,
+        public override object? Deserialize(XElement elem, XNamespace overridingNamespace,
             ISerializationContext serializationContext)
         {
             var elemR = elem.Element(overridingNamespace.GetXName("R"));
@@ -52,13 +56,13 @@ namespace YAXLib.KnownTypes
                 return colorByName;
             }
 
-            int a = 255, r, g = 0, b = 0;
+            int a = 255, g = 0, b = 0;
 
             var elemA = elem.Element(overridingNamespace.GetXName("A"));
             if (elemA != null && !int.TryParse(elemA.Value, out a))
                 a = 0;
 
-            if (!int.TryParse(elemR.Value, out r))
+            if (!int.TryParse(elemR.Value, out var r))
                 r = 0;
 
             var elemG = elem.Element(overridingNamespace.GetXName("G"));

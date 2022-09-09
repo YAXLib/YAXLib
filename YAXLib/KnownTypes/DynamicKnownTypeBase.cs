@@ -23,7 +23,7 @@ namespace YAXLib.KnownTypes
         public abstract string TypeName { get; }
 
         /// <inheritdoc />
-        public Type Type => _type ??= ReflectionUtils.GetTypeByName(TypeName);
+        public Type Type => _type ??= ReflectionUtils.GetTypeByName(TypeName) ?? throw new InvalidOperationException($"Type for name '{TypeName}' not found.");
 
         /// <inheritdoc />
         public abstract void Serialize(object? obj, XElement elem, XNamespace overridingNamespace,

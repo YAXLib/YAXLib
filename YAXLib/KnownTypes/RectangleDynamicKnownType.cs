@@ -19,7 +19,7 @@ namespace YAXLib.KnownTypes
             ISerializationContext serializationContext)
         {
             var objectType = obj?.GetType();
-            if (objectType?.FullName != TypeName)
+            if (obj == null || objectType?.FullName != TypeName)
                 throw new ArgumentException("Object type does not match the provided typename", nameof(obj));
 
             var left = ReflectionUtils.InvokeGetProperty<int>(obj, "Left");
