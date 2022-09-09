@@ -11,6 +11,7 @@
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisLevel>latest</AnalysisLevel>
     <Features>strict</Features>
+    <nullable>enable</nullable>
   </PropertyGroup>
   
 </Project>
