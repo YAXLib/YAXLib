@@ -1,6 +1,8 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -36,7 +38,7 @@ namespace YAXLib
         /// <param name="baseElement">The XML element.</param>
         /// <param name="location">The location string.</param>
         /// <returns>the XML element corresponding to the specified location, or <c>null</c> if it is not found</returns>
-        public static XElement FindLocation(XElement baseElement, string location)
+        public static XElement? FindLocation(XElement baseElement, string location)
         {
             if (baseElement == null)
                 throw new ArgumentNullException(nameof(baseElement));
@@ -73,7 +75,6 @@ namespace YAXLib
             return currentLocation;
         }
 
-#nullable enable
         /// <summary>
         /// Strips all invalid characters from the input value, if <paramref name="enabled"/> is <see langword="true"/>.
         /// </summary>
@@ -86,7 +87,6 @@ namespace YAXLib
                 ? new string(input.Where(XmlConvert.IsXmlChar).ToArray())
                 : input ?? string.Empty;
         }
-#nullable disable
 
         /// <summary>
         ///     Determines whether the specified location can be created in the specified XML element.
@@ -128,11 +128,11 @@ namespace YAXLib
         }
 
         /// <summary>
-        ///     Creates and returns XML element corresponding to the sepcified location in the given XML element.
+        ///     Creates and returns XML element corresponding to the specified location in the given XML element.
         /// </summary>
         /// <param name="baseElement">The XML element.</param>
         /// <param name="location">The location string.</param>
-        /// <returns>XML element corresponding to the sepcified location created in the given XML element</returns>
+        /// <returns>XML element corresponding to the specified location created in the given XML element</returns>
         public static XElement CreateLocation(XElement baseElement, string location)
         {
             var locSteps = location.SplitPathNamespaceSafe();
@@ -152,7 +152,7 @@ namespace YAXLib
                 else
                 {
                     XName curLocName = loc;
-                    XElement newLoc;
+                    XElement? newLoc;
                     if (curLocName.Namespace.IsEmpty())
                         newLoc = currentLocation.Element(curLocName);
                     else
@@ -170,7 +170,7 @@ namespace YAXLib
                     }
                 }
 
-            return currentLocation;
+            return currentLocation ?? baseElement;
         }
 
         /// <summary>
@@ -199,7 +199,7 @@ namespace YAXLib
         ///     a value indicating whether the attribute with the given name located in
         ///     the given location string in the given XML element has been found.
         /// </returns>
-        public static XAttribute FindAttribute(XElement baseElement, string location, XName attrName)
+        public static XAttribute? FindAttribute(XElement baseElement, string location, XName attrName)
         {
             var newLoc = FindLocation(baseElement, location);
             if (newLoc == null)
@@ -262,8 +262,8 @@ namespace YAXLib
         ///     returns the attribute with the given name in the location
         ///     specified by the given location string in the given XML element.
         /// </returns>
-        public static XAttribute CreateAttribute(XElement baseElement, string location, XName attrName,
-            object attrValue, XNamespace documentDefaultNamespace, CultureInfo culture)
+        public static XAttribute? CreateAttribute(XElement baseElement, string location, XName attrName,
+            object? attrValue, XNamespace documentDefaultNamespace, CultureInfo culture)
         {
             var newLoc = FindLocation(baseElement, location);
             if (newLoc == null)
@@ -300,7 +300,7 @@ namespace YAXLib
         ///     a value indicating whether the element with the given name located in
         ///     the given location string in the given XML element has been found
         /// </returns>
-        public static XElement FindElement(XElement baseElement, string location, XName elemName)
+        public static XElement? FindElement(XElement baseElement, string location, XName elemName)
         {
             return FindLocation(baseElement, StringUtils.CombineLocationAndElementName(location, elemName));
         }
@@ -368,8 +368,7 @@ namespace YAXLib
         public static XElement CreateElement(XElement baseElement, string location, XName elemName, object elemValue)
         {
             var elem = CreateElement(baseElement, location, elemName);
-            if (elem != null)
-                elem.SetValue(elemValue);
+            elem.SetValue(elemValue);
             return elem;
         }
 
@@ -428,7 +427,7 @@ namespace YAXLib
         /// <returns></returns>
         public static XElement AddPreserveSpaceAttribute(XElement element, CultureInfo culture)
         {
-            element.AddAttributeNamespaceSafe(XNamespace.Xml + "space", "preserve", null, culture);
+            element.AddAttributeNamespaceSafe(XNamespace.Xml + "space", "preserve", XNamespace.None, culture);
             return element;
         }
 
@@ -446,7 +445,7 @@ namespace YAXLib
 
             throw new InvalidOperationException("Cannot create a unique random prefix");
         }
-#nullable enable
+
         /// <summary>
         /// Gets the string representation of the object, or <see cref="string.Empty"/> if the object is <see langword="null"/>.
         /// </summary>
@@ -465,9 +464,8 @@ namespace YAXLib
                 _ => Convert.ToString(self, culture) ?? string.Empty
             };
         }
-#nullable disable
 
-        public static XAttribute AddAttributeNamespaceSafe(this XElement parent, XName attrName, object attrValue,
+        public static XAttribute AddAttributeNamespaceSafe(this XElement parent, XName attrName, object? attrValue,
             XNamespace documentDefaultNamespace, CultureInfo culture)
         {
             var newAttrName = attrName;
@@ -480,7 +478,7 @@ namespace YAXLib
             return newAttr;
         }
 
-        public static XAttribute Attribute_NamespaceSafe(this XElement parent, XName attrName,
+        public static XAttribute? Attribute_NamespaceSafe(this XElement parent, XName attrName,
             XNamespace documentDefaultNamespace)
         {
             if (attrName.Namespace == documentDefaultNamespace)
@@ -503,7 +501,7 @@ namespace YAXLib
         /// <param name="contentValue">An <see cref="object"/> for the content value.</param>
         /// <param name="culture">The <see cref="CultureInfo"/> to use for string-formatting the content value.</param>
         /// <returns>The XML content of an <see cref="XElement"/> with the value parameter formatted <see cref="CultureInfo"/>-specific.</returns>
-        public static XElement AddXmlContent(this XElement self, object contentValue, CultureInfo culture)
+        public static XElement AddXmlContent(this XElement self, object? contentValue, CultureInfo culture)
         {
             self.Add(new XText(contentValue.ToXmlValue(culture)));
             return self;
@@ -514,10 +512,11 @@ namespace YAXLib
             var values = self.Nodes().OfType<XText>().ToArray();
             if (values.Length > 0)
                 return values[0].Value;
-            return null;
+
+            return string.Empty;
         }
 
-        public static XAttribute Attribute_NamespaceNeutral(this XElement parent, XName name)
+        public static XAttribute? Attribute_NamespaceNeutral(this XElement parent, XName name)
         {
             return parent.Attributes().FirstOrDefault(e => e.Name.LocalName == name.LocalName);
         }
@@ -527,7 +526,7 @@ namespace YAXLib
             return parent.Attributes().Where(e => e.Name.LocalName == name.LocalName);
         }
 
-        public static XElement Element_NamespaceNeutral(this XContainer parent, XName name)
+        public static XElement? Element_NamespaceNeutral(this XContainer parent, XName name)
         {
             return parent.Elements().FirstOrDefault(e => e.Name.LocalName == name.LocalName);
         }
@@ -539,7 +538,7 @@ namespace YAXLib
 
         public static bool IsEmpty(this XNamespace self)
         {
-            return self != null && !string.IsNullOrEmpty(self.NamespaceName.Trim());
+            return !string.IsNullOrEmpty(self.NamespaceName.Trim());
         }
 
         public static XNamespace IfEmptyThen(this XNamespace self, XNamespace next)

@@ -1,6 +1,8 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
@@ -36,10 +38,12 @@ namespace YAXLib
         /// </summary>
         /// <param name="ns">The namespace to be added</param>
         /// <param name="prefix">The prefix for the namespace.</param>
-        internal void RegisterNamespace(XNamespace ns, string prefix)
+        internal void RegisterNamespace(XNamespace ns, string? prefix)
         {
             if (!ns.IsEmpty())
                 return;
+
+            prefix ??= string.Empty;
 
             if (_namespaceToPrefix.ContainsKey(ns))
             {

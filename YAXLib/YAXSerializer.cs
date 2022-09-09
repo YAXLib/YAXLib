@@ -1,6 +1,8 @@
 ﻿﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -33,8 +35,12 @@ namespace YAXLib
         /// </summary>
         internal YAXSerializer()
         {
+            Options = new SerializerOptions();
             ParsingErrors = new YAXParsingErrors();
             XmlNamespaceManager = new XmlNamespaceManager();
+            DocumentDefaultNamespace = XNamespace.None;
+            TypeNamespace = XNamespace.None;
+            UdtWrapper = UdtWrapperCache.Instance.GetOrAddItem(Type, Options);
 
             Serialization = new Serialization(this);
             Deserialization = new Deserialization(this);
@@ -51,6 +57,7 @@ namespace YAXLib
         {
             Type = t;
             Options = options;
+            DocumentDefaultNamespace = XNamespace.None;
 
             Deserialization.Initialize();
             Serialization.Initialize();
@@ -69,7 +76,7 @@ namespace YAXLib
         internal void ReturnToPool()
         {
             _recursionCount = 0;
-            SerializedStack = null;
+            SerializedStack = new Stack<object>();
             ParsingErrors.ClearErrors();
             TypeNamespace = XNamespace.Get(string.Empty);
             DocumentDefaultNamespace = XNamespace.Get(string.Empty);
@@ -109,7 +116,7 @@ namespace YAXLib
         /// </summary>
         /// <param name="obj">The object to serialize.</param>
         /// <returns>A <code>System.String</code> containing the XML</returns>
-        public string Serialize(object obj)
+        public string Serialize(object? obj)
         {
             return Serialization.SerializeXDocument(obj).ToString();
         }
@@ -119,7 +126,7 @@ namespace YAXLib
         /// </summary>
         /// <param name="obj">The object to serialize.</param>
         /// <param name="textWriter">The <c>TextWriter</c> instance.</param>
-        public void Serialize(object obj, TextWriter textWriter)
+        public void Serialize(object? obj, TextWriter textWriter)
         {
             textWriter.Write(Serialize(obj));
         }
@@ -129,7 +136,7 @@ namespace YAXLib
         /// </summary>
         /// <param name="obj">The object to serialize.</param>
         /// <param name="xmlWriter">The <c>XmlWriter</c> instance.</param>
-        public void Serialize(object obj, XmlWriter xmlWriter)
+        public void Serialize(object? obj, XmlWriter xmlWriter)
         {
             Serialization.SerializeXDocument(obj).WriteTo(xmlWriter);
         }
@@ -139,7 +146,7 @@ namespace YAXLib
         /// </summary>
         /// <param name="obj">The object to serialize.</param>
         /// <returns>An instance of <c>XDocument</c> containing the resulting XML</returns>
-        public XDocument SerializeToXDocument(object obj)
+        public XDocument SerializeToXDocument(object? obj)
         {
             return Serialization.SerializeXDocument(obj);
         }
@@ -149,7 +156,7 @@ namespace YAXLib
         /// </summary>
         /// <param name="obj">The object to serialize.</param>
         /// <param name="fileName">Path to the file.</param>
-        public void SerializeToFile(object obj, string fileName)
+        public void SerializeToFile(object? obj, string fileName)
         {
             var ser = string.Format(
                 Options.Culture,
@@ -169,7 +176,7 @@ namespace YAXLib
         /// </summary>
         /// <param name="input">The input string containing the XML serialization.</param>
         /// <returns>The deserialized object.</returns>
-        public object Deserialize(string input)
+        public object? Deserialize(string input)
         {
             try
             {
@@ -191,7 +198,7 @@ namespace YAXLib
         /// </summary>
         /// <param name="xmlReader">The <c>XmlReader</c> instance to read input from.</param>
         /// <returns>The deserialized object.</returns>
-        public object Deserialize(XmlReader xmlReader)
+        public object? Deserialize(XmlReader xmlReader)
         {
             try
             {
@@ -212,7 +219,7 @@ namespace YAXLib
         /// </summary>
         /// <param name="textReader">The <c>TextReader</c> instance to read input from.</param>
         /// <returns>The deserialized object.</returns>
-        public object Deserialize(TextReader textReader)
+        public object? Deserialize(TextReader textReader)
         {
             try
             {
@@ -233,7 +240,7 @@ namespace YAXLib
         /// </summary>
         /// <param name="element">The <c>XElement</c> instance to read from.</param>
         /// <returns>The deserialized object</returns>
-        public object Deserialize(XElement element)
+        public object? Deserialize(XElement element)
         {
             // impossible to throw YAXBadlyFormedXML
             var xDocument = new XDocument();
@@ -247,17 +254,17 @@ namespace YAXLib
         /// </summary>
         /// <param name="fileName">Path to the file.</param>
         /// <returns>The deserialized object.</returns>
-        public object DeserializeFromFile(string fileName)
+        public object? DeserializeFromFile(string fileName)
         {
             return Deserialize(File.ReadAllText(fileName));
         }
 
         /// <summary>
-        ///     Sets the object used as the base object in the next stage of de-serialization.
+        ///     Sets the object used as the base object in the next stage of deserialization.
         ///     This method enables multi-stage deserialization for YAXLib.
         /// </summary>
         /// <param name="obj">The object used as the base object in the next stage of deserialization.</param>
-        public void SetDeserializationBaseObject(object obj)
+        public void SetDeserializationBaseObject(object? obj)
         {
             Deserialization.SetDeserializationBaseObject(obj);
         }
@@ -311,8 +318,8 @@ namespace YAXLib
         /// using var serializerPooledObject
         ///      = GetChildSerializer(type, namespaceToOverride, insertionLocation, out var serializer);
         /// </example>
-        internal PooledObject<YAXSerializer> GetChildSerializer(Type type, XNamespace namespaceToOverride,
-            XElement insertionLocation, out YAXSerializer serializer)
+        internal PooledObject<YAXSerializer> GetChildSerializer(Type type, XNamespace? namespaceToOverride,
+            XElement? insertionLocation, out YAXSerializer serializer)
         {
             _recursionCount++;
 
@@ -331,8 +338,8 @@ namespace YAXLib
         /// <param name="serializer"></param>
         /// <param name="namespaceToOverride"></param>
         /// <param name="insertionLocation"></param>
-        private void InitializeAsChildSerializer(YAXSerializer serializer, XNamespace namespaceToOverride,
-            XElement insertionLocation)
+        private void InitializeAsChildSerializer(YAXSerializer serializer, XNamespace? namespaceToOverride,
+            XElement? insertionLocation)
         {
             serializer.SerializedStack = SerializedStack;
             serializer.DocumentDefaultNamespace = DocumentDefaultNamespace;
@@ -408,12 +415,12 @@ namespace YAXLib
         ///     A collection of already serialized objects, kept for the sake of loop detection and preventing stack overflow
         ///     exception
         /// </summary>
-        internal Stack<object> SerializedStack { get; set; }
+        internal Stack<object> SerializedStack { get; set; } = new();
 
         /// <summary>
         ///     The class or structure that is to be serialized/deserialized.
         /// </summary>
-        internal Type Type { get; set; }
+        internal Type Type { get; set; } = typeof(object);
 
         /// <summary>
         ///     The type wrapper for the underlying type used in the serializer.

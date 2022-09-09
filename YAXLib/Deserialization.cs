@@ -1,6 +1,8 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+#nullable enable
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,12 +23,11 @@ internal class Deserialization
 {
     private readonly YAXSerializer _serializer;
 
-#nullable enable
     /// <summary>
-    ///     Reference to a pre assigned deserialization base object
+    /// Reference to a pre assigned deserialization base object
+    /// Will always be set by the serializer using <see cref="SetDeserializationBaseObject(object?)"/> when deserialization starts.
     /// </summary>
     private object? _deserializationObject;
-#nullable disable
 
     /// <summary>
     ///     Specifies whether an exception is occurred during the de-serialization of the current member
@@ -51,12 +52,11 @@ internal class Deserialization
         _serializer = serializer;
     }
 
-#nullable enable
     /// <summary>
-    ///     Sets the object used as the base object in the next stage of de-serialization.
-    ///     This method enables multi-stage de-serialization for YAXLib.
+    ///     Sets the object used as the base object in the next stage of deserialization.
+    ///     This method enables multi-stage deserialization for YAXLib.
     /// </summary>
-    /// <param name="obj">The object used as the base object in the next stage of de-serialization.</param>
+    /// <param name="obj">The object used as the base object in the next stage of deserialization.</param>
     public void SetDeserializationBaseObject(object? obj)
     {
         if (obj != null && !_serializer.Type.IsInstanceOfType(obj))
@@ -64,7 +64,6 @@ internal class Deserialization
 
         _deserializationObject = obj;
     }
-#nullable disable
 
     /// <summary>
     ///     Gets or sets a value indicating whether this instance is created to deserialize a non collection member of another
@@ -82,11 +81,11 @@ internal class Deserialization
     private bool RemoveDeserializedXmlNodes { get; set; }
 
     /// <summary>
-    ///     The basic method which performs the whole job of de-serialization.
+    /// The basic method which performs the whole job of deserialization.
     /// </summary>
     /// <param name="baseElement">The element to be deserialized.</param>
     /// <returns>object containing the deserialized data</returns>
-    internal object DeserializeBase(XElement baseElement)
+    internal object? DeserializeBase(XElement? baseElement)
     {
         _serializer.IsSerializing = false;
 
@@ -156,9 +155,17 @@ internal class Deserialization
             // reset handled exceptions status
             _exceptionOccurredDuringMemberDeserialization = false;
 
-            var deserializedRawValue = string.Empty; // the element value gathered at the first phase
-            XElement xElementValue = null; // the XElement instance gathered at the first phase
-            XAttribute xAttributeValue = null; // the XAttribute instance gathered at the first phase
+            /*
+             * The following values will be set NOT NULL unless an exception occurred.
+             * With exceptions, _exceptionOccurredDuringMemberDeserialization will be true
+             */
+
+            // The element value gathered at the first phase - must not be NULL at this time
+            string? deserializedRawValue = string.Empty;
+            // The XElement instance gathered at the first phase
+            XElement? xElementValue = null;
+            // The XAttribute instance gathered at the first phase
+            XAttribute? xAttributeValue = null;
 
             var isHelperElementCreated = false;
 
@@ -166,11 +173,11 @@ internal class Deserialization
 
             if (member.IsSerializedAsAttribute)
             {
-                deserializedRawValue = DeserializeFromAttribute(baseElement, ref xElementValue, ref xAttributeValue, serializationLocation, member);
+                deserializedRawValue = DeserializeFromAttribute(baseElement, ref xElementValue!, ref xAttributeValue!, serializationLocation, member);
             }
             else if (member.IsSerializedAsValue)
             {
-                deserializedRawValue = DeserializeFromValue(baseElement, ref xElementValue, serializationLocation, member);
+                deserializedRawValue = DeserializeFromValue(baseElement, ref xElementValue!, serializationLocation, member);
             }
             else
             {
@@ -181,6 +188,7 @@ internal class Deserialization
 
             // Phase 2: Now try to retrieve deserializedValue,
             // based on values gathered in xElementValue, xAttributeValue, and deserializedValue
+            // Each will be set according to their purpose (attribute, element, value)
             if (_exceptionOccurredDuringMemberDeserialization)
             {
                 _ = TrySetDefaultValue(baseElement, resultObject, xAttributeValue, xElementValue, member);
@@ -195,9 +203,9 @@ internal class Deserialization
                 InvokeCustomDeserializer(member.UdtWrapper.CustomSerializer, baseElement, deserializedRawValue, xElementValue, xAttributeValue,
                     resultObject, member);
             }
-            else if (deserializedRawValue != null)
+            else
             {
-                RetrieveElementValue(resultObject, member, deserializedRawValue, xElementValue);
+                RetrieveElementValue(resultObject, member, deserializedRawValue, xElementValue!);
             }
 
             RemoveRedundantElements(isHelperElementCreated, xElementValue, xAttributeValue);
@@ -206,8 +214,8 @@ internal class Deserialization
         return resultObject;
     }
 
-    private void RemoveRedundantElements(bool isHelperElementCreated, XElement xElementValue,
-        XAttribute xAttributeValue)
+    private void RemoveRedundantElements(bool isHelperElementCreated, XElement? xElementValue,
+        XAttribute? xAttributeValue)
     {
         // remove the helper element
         if (isHelperElementCreated)
@@ -220,15 +228,15 @@ internal class Deserialization
         }
     }
 
-    private void InvokeCustomDeserializer(CustomSerializerWrapper customSerializerToUse, XElement baseElement, string deserializedValue, XElement xElementValue,
-        XAttribute xAttributeValue, object resultObject, MemberWrapper member)
+    private void InvokeCustomDeserializer(CustomSerializerWrapper customSerializerToUse, XElement baseElement, string deserializedValue, XElement? xElementValue,
+        XAttribute? xAttributeValue, object resultObject, MemberWrapper member)
     {
         object desObj;
         if (member.IsSerializedAsAttribute)
-            desObj = customSerializerToUse.DeserializeFromAttribute(xAttributeValue,
+            desObj = customSerializerToUse.DeserializeFromAttribute(xAttributeValue!,
                 new SerializationContext(member, member.UdtWrapper, _serializer));
         else if (member.IsSerializedAsElement)
-            desObj = customSerializerToUse.DeserializeFromElement(xElementValue,
+            desObj = customSerializerToUse.DeserializeFromElement(xElementValue!,
                 new SerializationContext(member, member.UdtWrapper, _serializer));
         else if (member.IsSerializedAsValue)
             desObj = customSerializerToUse.DeserializeFromValue(deserializedValue,
@@ -243,13 +251,13 @@ internal class Deserialization
         catch
         {
             OnExceptionOccurred(
-                new YAXPropertyCannotBeAssignedTo(member.Alias?.LocalName,
+                new YAXPropertyCannotBeAssignedTo(member.Alias.LocalName,
                     GetXmlLineInfo(xAttributeValue, xElementValue, baseElement)), _serializer.Options.ExceptionBehavior);
         }
     }
 
-    private bool TrySetDefaultValue(XElement baseElement, object resultObject, XAttribute xAttributeValue,
-        XElement xElementValue, MemberWrapper member)
+    private bool TrySetDefaultValue(XElement baseElement, object resultObject, XAttribute? xAttributeValue,
+        XElement? xElementValue, MemberWrapper member)
     {
         // i.e. if it was NOT resuming deserialization,
         if (_deserializationObject != null)
@@ -278,7 +286,7 @@ internal class Deserialization
         return false;
     }
 
-    private bool TrySetDefaultValue(object resultObject, object resultValue, MemberWrapper member, IXmlLineInfo lineInfo)
+    private bool TrySetDefaultValue(object resultObject, object? resultValue, MemberWrapper member, IXmlLineInfo? lineInfo)
     {
         try
         {
@@ -287,7 +295,7 @@ internal class Deserialization
         catch
         {
             OnExceptionOccurred(
-                new YAXDefaultValueCannotBeAssigned(member.Alias.LocalName, member.DefaultValue,
+                new YAXDefaultValueCannotBeAssigned(member.Alias.LocalName, member.DefaultValue ?? "null",
                     lineInfo, _serializer.Options.Culture), _serializer.Options.ExceptionBehavior);
             return false;
         }
@@ -295,16 +303,14 @@ internal class Deserialization
         return true;
     }
 
-#nullable enable
     private static IXmlLineInfo? GetXmlLineInfo(IXmlLineInfo? attribute, IXmlLineInfo? element,
         IXmlLineInfo? baseElement)
     {
         return attribute ?? element ?? baseElement;
     }
-#nullable disable
 
     private bool DeserializeFromXmlElement(XElement baseElement, string serializationLocation, MemberWrapper member, object resultObject,
-        ref string deserializedValue, ref bool isHelperElementCreated, ref XElement xElementValue)
+        ref string deserializedValue, ref bool isHelperElementCreated, ref XElement? xElementValue)
     {
         // member is serialized as an xml element
 
@@ -421,15 +427,16 @@ internal class Deserialization
     {
         var deserializedValue = string.Empty;
 
-        // find the parent element from its location
         var attr = XMLUtils.FindAttribute(baseElement, serializationLocation,
             member.Alias.OverrideNsIfEmpty(_serializer.TypeNamespace));
-        if (attr == null) // if the parent element does not exist
+        if (attr == null) // if the attribute does not exist in the element
         {
             // look for an element with the same name AND a yaxlib:realtype attribute
             var elem = XMLUtils.FindElement(baseElement, serializationLocation,
                 member.Alias.OverrideNsIfEmpty(_serializer.TypeNamespace));
-            if (elem != null && elem.Attribute_NamespaceSafe(_serializer.Options.Namespace.Uri + _serializer.Options.AttributeName.RealType, _serializer.DocumentDefaultNamespace) != null)
+            if (elem?.Attribute_NamespaceSafe(
+                    _serializer.Options.Namespace.Uri + _serializer.Options.AttributeName.RealType,
+                    _serializer.DocumentDefaultNamespace) != null)
             {
                 deserializedValue = elem.Value;
                 xElementValue = elem;
@@ -447,7 +454,7 @@ internal class Deserialization
             deserializedValue = attr.Value;
             xAttributeValue = attr;
         }
-
+        
         return deserializedValue;
     }
 
@@ -459,23 +466,23 @@ internal class Deserialization
             : member.TreatErrorsAs;
     }
 
-    private bool TryDeserializeAsCollection(XElement baseElement, out object resultObject)
+    private bool TryDeserializeAsCollection(XElement baseElement, out object? resultObject)
     {
         resultObject = null;
         if (!_serializer.UdtWrapper.IsTreatedAsCollection || IsCreatedToDeserializeANonCollectionMember) return false;
 
-        resultObject = DeserializeCollectionValue(_serializer.Type, baseElement, _serializer.UdtWrapper.Alias, _serializer.UdtWrapper.CollectionAttributeInstance);
+        resultObject = DeserializeCollectionValue(_serializer.Type, baseElement, _serializer.UdtWrapper.Alias, _serializer.UdtWrapper.CollectionAttributeInstance!);
 
         return true;
     }
 
-    private bool TryDeserializeAsDictionary(XElement baseElement, out object resultObject)
+    private bool TryDeserializeAsDictionary(XElement baseElement, out object? resultObject)
     {
         resultObject = null;
         if (!_serializer.UdtWrapper.IsTreatedAsDictionary || IsCreatedToDeserializeANonCollectionMember) return false;
         if (_serializer.UdtWrapper.DictionaryAttributeInstance == null) return false;
 
-        resultObject = DeserializeTaggedDictionaryValue(baseElement, _serializer.UdtWrapper.Alias, _serializer.Type, _serializer.UdtWrapper.CollectionAttributeInstance, _serializer.UdtWrapper.DictionaryAttributeInstance);
+        resultObject = DeserializeTaggedDictionaryValue(baseElement, _serializer.UdtWrapper.Alias, _serializer.Type, _serializer.UdtWrapper.CollectionAttributeInstance!, _serializer.UdtWrapper.DictionaryAttributeInstance);
         return true;
     }
 
@@ -510,7 +517,7 @@ internal class Deserialization
               YAXCollectionSerializationTypes.RecursiveWithNoContainingElement))
             throw new ArgumentException("member should be a collection serialized without containing element");
 
-        XName eachElementName = null;
+        XName? eachElementName = null;
 
         if (member.CollectionAttributeInstance != null)
             eachElementName = StringUtils.RefineSingleElement(member.CollectionAttributeInstance.EachElementName);
@@ -560,12 +567,11 @@ internal class Deserialization
             if (ReflectionUtils.IsBasicType(member.MemberType) || member.IsTreatedAsCollection ||
                 member.IsTreatedAsDictionary || member.MemberType == _serializer.Type) continue;
 
-            // try to create a helper element
+            // Use an intermediate element
             var helperElement = XMLUtils.CreateElement(elem, member.SerializationLocation, member.Alias);
-            if (helperElement == null) continue;
-
             var memberExists = AtLeastOneOfMembersExists(helperElement, member.MemberType);
             helperElement.Remove();
+
             return memberExists;
         }
 
@@ -675,7 +681,7 @@ internal class Deserialization
 
         try
         {
-            object convertedObj;
+            object? convertedObj;
             if (ReflectionUtils.IsNullable(memberType) && string.IsNullOrEmpty(elemValue))
                 convertedObj = member.DefaultValue;
             else
@@ -714,7 +720,6 @@ internal class Deserialization
         return false;
     }
 
-#nullable enable
     private bool TrySetValueForString(object obj, string? elemValue, XElement? xElementValue, MemberWrapper member,
         Type memberType)
     {
@@ -737,14 +742,13 @@ internal class Deserialization
         }
         catch
         {
-            OnExceptionOccurred(new YAXBadlyFormedInput(member.Alias.LocalName, elemValue), _serializer.Options.ExceptionBehavior);
+            OnExceptionOccurred(new YAXBadlyFormedInput(member.Alias.LocalName, elemValue ?? string.Empty), _serializer.Options.ExceptionBehavior);
         }
 
         return false;
     }
-#nullable disable
 
-    private bool TrySetValueForEmptyElement(object obj, MemberWrapper member, Type memberType, XElement xElementValue)
+    private bool TrySetValueForEmptyElement(object obj, MemberWrapper member, Type memberType, XElement? xElementValue)
     {
         if (xElementValue == null || !XMLUtils.IsElementCompletelyEmpty(xElementValue) ||
             ReflectionUtils.IsBasicType(memberType) || member.IsTreatedAsCollection ||
@@ -765,7 +769,7 @@ internal class Deserialization
         return false;
     }
 
-    private void GetRealTypeIfSpecified(XElement xElementValue, bool isRealTypeAttributeNotRelevant, ref Type memberType)
+    private void GetRealTypeIfSpecified(XElement? xElementValue, bool isRealTypeAttributeNotRelevant, ref Type memberType)
     {
         // try to retrieve the real-type if specified
         if (xElementValue == null || isRealTypeAttributeNotRelevant) return;
@@ -786,13 +790,15 @@ internal class Deserialization
     /// <param name="memberAlias">The member's alias, used only in exception titles.</param>
     /// <param name="collAttrInstance">The collection attribute instance.</param>
     /// <returns></returns>
-    private object DeserializeCollectionValue(Type collType, XElement xElement, XName memberAlias,
-        YAXCollectionAttribute collAttrInstance)
+    private object? DeserializeCollectionValue(Type collType, XElement? xElement, XName memberAlias,
+        YAXCollectionAttribute? collAttrInstance)
     {
+        if (xElement is null) return null;
+
         // Get the container object from the element (may be null)
         _ = TryGetContainerObject(xElement, collType, memberAlias, out var containerObj);
 
-        var dataItems = new List<object>(); // this will hold the actual data items
+        var dataItems = new List<object?>(); // this will hold the actual data items
         var collItemType = ReflectionUtils.GetCollectionItemType(collType);
         var isPrimitive = ReflectionUtils.IsBasicType(collItemType);
 
@@ -825,8 +831,8 @@ internal class Deserialization
         return null;
     }
 
-    private bool TryGetCollectionAsEnumerable(XElement xElement, Type collType, XName memberAlias, object containerObj,
-        List<object> dataItems, out object enumerable)
+    private bool TryGetCollectionAsEnumerable(XElement xElement, Type collType, XName memberAlias, object? containerObj,
+        List<object?> dataItems, out object? enumerable)
     {
         enumerable = null;
 
@@ -863,8 +869,8 @@ internal class Deserialization
         return true;
     }
 
-    private bool TryGetCollectionAsStack(XElement xElement, Type collType, XName memberAlias, object containerObj, List<object> dataItems,
-        out object stack)
+    private bool TryGetCollectionAsStack(XElement xElement, Type collType, XName memberAlias, object? containerObj, List<object?> dataItems,
+        out object? stack)
     {
         stack = null;
 
@@ -890,7 +896,7 @@ internal class Deserialization
         return true;
     }
 
-    private static bool TryGetCollectionAsBitArray(Type collType, List<object> dataItems, out object bitArray)
+    private static bool TryGetCollectionAsBitArray(Type collType, List<object?> dataItems, out object? bitArray)
     {
         bitArray = null;
 
@@ -900,7 +906,7 @@ internal class Deserialization
         for (var i = 0; i < ba.Length; i++)
             try
             {
-                ba[i] = (bool)dataItems[i];
+                ba[i] = (bool)(dataItems[i] ?? false);
             }
             catch
             {
@@ -912,8 +918,8 @@ internal class Deserialization
         return true;
     }
 
-    private bool TryGetCollectionAsNonGenericDictionary(XElement xElement, Type collType, XName memberAlias, object containerObj,
-        List<object> dataItems, out object nonGenericDictionary)
+    private bool TryGetCollectionAsNonGenericDictionary(XElement xElement, Type collType, XName memberAlias, object? containerObj,
+        List<object?> dataItems, out object? nonGenericDictionary)
     {
         nonGenericDictionary = containerObj;
 
@@ -921,10 +927,10 @@ internal class Deserialization
 
         foreach (var lstItem in dataItems)
         {
-            var key = lstItem.GetType().GetProperty("Key", BindingFlags.Instance | BindingFlags.Public)
-                .GetValue(lstItem, null);
-            var value = lstItem.GetType().GetProperty("Value", BindingFlags.Instance | BindingFlags.Public)
-                .GetValue(lstItem, null);
+            var key = lstItem?.GetType().GetProperty("Key", BindingFlags.Instance | BindingFlags.Public)
+                ?.GetValue(lstItem, null);
+            var value = lstItem?.GetType().GetProperty("Value", BindingFlags.Instance | BindingFlags.Public)
+                ?.GetValue(lstItem, null);
 
             try
             {
@@ -942,7 +948,7 @@ internal class Deserialization
     }
 
     private bool TryGetCollectionAsDictionary(XElement xElement, Type collType, Type collItemType, XName memberAlias,
-        object containerObj, List<object> dataItems, out object dictionary)
+        object? containerObj, List<object?> dataItems, out object? dictionary)
     {
         dictionary = null;
 
@@ -953,8 +959,8 @@ internal class Deserialization
 
         foreach (var dataItem in dataItems)
         {
-            var key = collItemType.GetProperty("Key").GetValue(dataItem, null);
-            var value = collItemType.GetProperty("Value").GetValue(dataItem, null);
+            var key = collItemType.GetProperty("Key")?.GetValue(dataItem, null);
+            var value = collItemType.GetProperty("Value")?.GetValue(dataItem, null);
             try
             {
                 collType.InvokeMember("Add", BindingFlags.InvokeMethod, null, dict, new[] { key, value });
@@ -971,7 +977,7 @@ internal class Deserialization
     }
 
     private bool TryGetCollectionAsArray(XElement xElement, Type collType, Type collItemType, XName memberAlias,
-        List<object> dataItems, out object array)
+        List<object?> dataItems, out object? array)
     {
         array = null;
 
@@ -1035,10 +1041,10 @@ internal class Deserialization
     /// <param name="collItemType"></param>
     /// <param name="isPrimitive"></param>
     /// <param name="dataItems">The list that will be filled.</param>
-    private void GetRecursiveCollectionItems(XElement xElement, XName memberAlias, YAXCollectionAttribute collAttrInstance,
-        Type collItemType, bool isPrimitive, List<object> dataItems)
+    private void GetRecursiveCollectionItems(XElement xElement, XName memberAlias, YAXCollectionAttribute? collAttrInstance,
+        Type collItemType, bool isPrimitive, List<object?> dataItems)
     {
-        XName eachElemName = null;
+        XName? eachElemName = null;
         if (collAttrInstance is { EachElementName: { } })
         {
             eachElemName = StringUtils.RefineSingleElement(collAttrInstance.EachElementName);
@@ -1076,7 +1082,7 @@ internal class Deserialization
             {
                 try
                 {
-                    dataItems.Add(ReflectionUtils.ConvertBasicType(childElem.Value, curElementType, _serializer.Options.Culture));
+                    dataItems.Add(ReflectionUtils.ConvertBasicType(childElem.Value, curElementType, _serializer.Options.Culture)!);
                 }
                 catch
                 {
@@ -1105,7 +1111,7 @@ internal class Deserialization
     private void GetSerialCollectionItems(XElement xElement, XName memberAlias,
         YAXCollectionAttribute collAttrInstance,
         Type collItemType,
-        List<object> dataItems)
+        List<object?> dataItems)
     {
         var separators = collAttrInstance.SeparateBy.ToCharArray();
 
@@ -1127,7 +1133,7 @@ internal class Deserialization
             }
     }
 
-    private bool TryGetContainerObject(XElement xElement, Type colType, XName memberAlias, out object containerObj)
+    private bool TryGetContainerObject(XElement xElement, Type colType, XName memberAlias, out object? containerObj)
     {
         containerObj = null;
 
@@ -1160,7 +1166,7 @@ internal class Deserialization
     private void DeserializeCollectionMember(object o, MemberWrapper member, Type colType, string elemValue,
         XElement xelemValue)
     {
-        object colObject;
+        object? colObject;
 
         if (member.CollectionAttributeInstance is { SerializationType: YAXCollectionSerializationTypes.Serially }
             && (member.IsSerializedAsAttribute || member.IsSerializedAsValue))
@@ -1172,7 +1178,7 @@ internal class Deserialization
         {
             var memberAlias = member.Alias.OverrideNsIfEmpty(_serializer.TypeNamespace);
             colObject = DeserializeCollectionValue(colType, xelemValue, memberAlias,
-                member.CollectionAttributeInstance);
+                member.CollectionAttributeInstance!);
         }
 
         try
@@ -1208,7 +1214,7 @@ internal class Deserialization
         return result;
     }
 
-    private object DeserializeTaggedDictionaryValue(XElement xElementValue, XName alias, Type type,
+    private object? DeserializeTaggedDictionaryValue(XElement xElementValue, XName alias, Type type,
         YAXCollectionAttribute collAttributeInstance, YAXDictionaryAttribute dictAttrInstance)
     {
         if (!ReflectionUtils.IsIDictionary(type, out var keyType, out var valueType))
@@ -1240,8 +1246,8 @@ internal class Deserialization
 
         foreach (var childElem in xElementValue.Elements(eachElementName))
         {
-            object key = null, value = null;
-            YAXSerializer keySerializer = null, valueSerializer = null;
+            object? key = null, value = null;
+            YAXSerializer? keySerializer = null, valueSerializer = null;
 
             if (childElem == null) continue;
 
@@ -1269,21 +1275,21 @@ internal class Deserialization
             {
                 OnExceptionOccurred(
                     new YAXCannotAddObjectToCollection(alias.LocalName,
-                        new KeyValuePair<object, object>(key, value), childElem), _serializer.Options.ExceptionBehavior);
+                        new KeyValuePair<object?, object?>(key, value), childElem), _serializer.Options.ExceptionBehavior);
             }
         }
 
         return dic;
     }
 
-    private object GetTaggedDictionaryValue(XElement childElem, XName valueAlias, Type valueType, bool isValueAttribute,
-        bool isValueContent, YAXSerializer valueSerializer)
+    private object? GetTaggedDictionaryValue(XElement childElem, XName valueAlias, Type valueType, bool isValueAttribute,
+        bool isValueContent, YAXSerializer? valueSerializer)
     {
-        object value;
+        object? value;
         if (isValueAttribute)
         {
             value = ReflectionUtils.ConvertBasicType(
-                childElem.Attribute_NamespaceSafe(valueAlias, _serializer.DocumentDefaultNamespace).Value, valueType, _serializer.Options.Culture);
+                childElem.Attribute_NamespaceSafe(valueAlias, _serializer.DocumentDefaultNamespace)!.Value, valueType, _serializer.Options.Culture);
         }
         else if (isValueContent)
         {
@@ -1307,14 +1313,14 @@ internal class Deserialization
         return value;
     }
 
-    private object GetTaggedDictionaryKey(XElement xElement, Type keyType, XName keyAlias, bool isKeyAttribute,
-        bool isKeyContent, YAXSerializer keySerializer)
+    private object? GetTaggedDictionaryKey(XElement xElement, Type keyType, XName keyAlias, bool isKeyAttribute,
+        bool isKeyContent, YAXSerializer? keySerializer)
     {
-        object key;
+        object? key;
         if (isKeyAttribute)
         {
             key = ReflectionUtils.ConvertBasicType(
-                xElement.Attribute_NamespaceSafe(keyAlias, _serializer.DocumentDefaultNamespace).Value, keyType, _serializer.Options.Culture);
+                xElement.Attribute_NamespaceSafe(keyAlias, _serializer.DocumentDefaultNamespace)?.Value!, keyType, _serializer.Options.Culture);
         }
         else if (isKeyContent)
         {
@@ -1338,7 +1344,7 @@ internal class Deserialization
         return key;
     }
 
-    private static void GetDictionaryAttributeFlags(YAXDictionaryAttribute dictAttrInstance, Type keyType, Type valueType,
+    private static void GetDictionaryAttributeFlags(YAXDictionaryAttribute? dictAttrInstance, Type keyType, Type valueType,
         out bool isKeyAttribute, out bool isKeyContent, out bool isValueAttribute,
         out bool isValueContent)
     {
@@ -1361,7 +1367,7 @@ internal class Deserialization
             isValueContent = ReflectionUtils.IsBasicType(valueType);
     }
 
-    private void GetDictionaryAttributeDetails(YAXDictionaryAttribute dictAttrInstance, XName alias,
+    private void GetDictionaryAttributeDetails(YAXDictionaryAttribute? dictAttrInstance, XName alias,
         ref XName eachElementName, ref XName keyAlias, ref XName valueAlias)
     {
         if (dictAttrInstance == null) return;
@@ -1396,7 +1402,7 @@ internal class Deserialization
     private void DeserializeTaggedDictionaryMember(object o, MemberWrapper member, XElement xelemValue)
     {
         var dic = DeserializeTaggedDictionaryValue(xelemValue, member.Alias, member.MemberType,
-            member.CollectionAttributeInstance, member.DictionaryAttributeInstance);
+            member.CollectionAttributeInstance!, member.DictionaryAttributeInstance!);
 
         try
         {
@@ -1426,7 +1432,7 @@ internal class Deserialization
         {
             isFound = true;
         }
-        else if (isContent && childElem.GetXmlContent() != null)
+        else if (isContent && childElem.GetXmlContent() != string.Empty)
         {
             isFound = true;
         }
@@ -1477,7 +1483,7 @@ internal class Deserialization
     /// </summary>
     /// <param name="baseElement">The element containing the XML representation of a key-value pair.</param>
     /// <returns>a <c>KeyValuePair</c> instance containing the deserialized data</returns>
-    private object DeserializeKeyValuePair(XElement baseElement)
+    private object? DeserializeKeyValuePair(XElement baseElement)
     {
         var genArgs = _serializer.Type.GetGenericArguments();
         var keyType = genArgs[0];
@@ -1486,13 +1492,13 @@ internal class Deserialization
         var xNameKey = _serializer.TypeNamespace.IfEmptyThenNone() + "Key";
         var xNameValue = _serializer.TypeNamespace.IfEmptyThenNone() + "Value";
 
-        object keyValue, valueValue;
+        object? keyValue, valueValue;
         if (ReflectionUtils.IsBasicType(keyType))
         {
             try
             {
                 keyValue = ReflectionUtils.ConvertBasicType(
-                    baseElement.Element(xNameKey)?.Value, keyType, _serializer.Options.Culture);
+                    baseElement.Element(xNameKey)?.Value!, keyType, _serializer.Options.Culture);
             }
             catch (NullReferenceException)
             {
@@ -1521,7 +1527,7 @@ internal class Deserialization
         {
             try
             {
-                valueValue = ReflectionUtils.ConvertBasicType(baseElement.Element(xNameValue)?.Value, valueType, _serializer.Options.Culture);
+                valueValue = ReflectionUtils.ConvertBasicType(baseElement.Element(xNameValue)?.Value!, valueType, _serializer.Options.Culture);
             }
             catch (NullReferenceException)
             {

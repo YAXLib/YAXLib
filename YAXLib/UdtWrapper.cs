@@ -66,7 +66,7 @@ namespace YAXLib
             _serializerOptions = serializerOptions;
             IsDictionaryType = false;
             _udtType = ReflectionUtils.IsNullable(udtType, out var nullableUnderlyingType)
-                ? nullableUnderlyingType
+                ? nullableUnderlyingType!
                 : udtType;
             IsCollectionType = ReflectionUtils.IsCollectionType(_udtType);
             IsDictionaryType = ReflectionUtils.IsIDictionary(_udtType);
@@ -323,7 +323,7 @@ namespace YAXLib
         ///     setting a default namespace for that element would make it apply to
         ///     the whole document).
         /// </remarks>
-        public string? NamespacePrefix { get; internal set; }
+        public string NamespacePrefix { get; internal set; } = string.Empty;
 
         /// <summary>
         ///     Sets the <see cref="YAXSerializationOptions"/>.

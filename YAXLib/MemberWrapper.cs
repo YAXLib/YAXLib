@@ -485,7 +485,7 @@ namespace YAXLib
 
         // Public Methods
 
-        public YAXTypeAttribute? GetRealTypeDefinition(Type type)
+        public YAXTypeAttribute? GetRealTypeDefinition(Type? type)
         {
             return _possibleRealTypes.FirstOrDefault(x => ReferenceEquals(x.Type, type));
         }
