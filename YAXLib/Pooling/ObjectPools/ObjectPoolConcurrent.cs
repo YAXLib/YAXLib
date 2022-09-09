@@ -1,12 +1,13 @@
 // Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+#nullable enable
+
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-#nullable enable
 namespace YAXLib.Pooling.ObjectPools;
 
 /// <summary>
