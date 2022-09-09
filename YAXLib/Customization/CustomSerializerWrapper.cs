@@ -1,6 +1,8 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+#nullable enable
+
 using System;
 using System.Reflection;
 using System.Xml.Linq;
@@ -28,7 +30,7 @@ internal class CustomSerializerWrapper : ICustomSerializer<object>
     }
 
     /// <inheritdoc/>
-    public void SerializeToAttribute(object objectToSerialize, XAttribute attrToFill,
+    public void SerializeToAttribute(object? objectToSerialize, XAttribute attrToFill,
         ISerializationContext serializationContext)
     {
         using var _ = new Locker(Type);
@@ -41,7 +43,7 @@ internal class CustomSerializerWrapper : ICustomSerializer<object>
     }
 
     /// <inheritdoc/>
-    public void SerializeToElement(object objectToSerialize, XElement elemToFill,
+    public void SerializeToElement(object? objectToSerialize, XElement elemToFill,
         ISerializationContext serializationContext)
     {
         using var _ = new Locker(Type);
@@ -54,7 +56,7 @@ internal class CustomSerializerWrapper : ICustomSerializer<object>
     }
 
     /// <inheritdoc/>
-    public string SerializeToValue(object objectToSerialize, ISerializationContext serializationContext)
+    public string SerializeToValue(object? objectToSerialize, ISerializationContext serializationContext)
     {
         using var _ = new Locker(Type);
 

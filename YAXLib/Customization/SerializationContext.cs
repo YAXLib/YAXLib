@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 #nullable enable
-using System;
+
 using YAXLib.Options;
 
 namespace YAXLib.Customization;

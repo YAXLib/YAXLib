@@ -47,7 +47,7 @@ public class TypeContext : ITypeContext
     }
 
     /// <inheritdoc/>
-    public XElement Serialize(object? obj, SerializerOptions? options = null)
+    public XElement Serialize(object? obj, SerializerOptions options)
     {
         using var serializerPoolObject = SerializerPool.Instance.Get(out var serializer);
         InitializeAsChildSerializer(serializer, options);
@@ -64,7 +64,7 @@ public class TypeContext : ITypeContext
     }
 
     /// <inheritdoc/>
-    public object Deserialize(XElement element, SerializerOptions? options = null)
+    public object? Deserialize(XElement element, SerializerOptions options)
     {
         using var serializerPoolObject = SerializerPool.Instance.Get(out var serializer);
         InitializeAsChildSerializer(serializer, options);
