@@ -17,7 +17,7 @@ namespace YAXLib
         /// <summary>
         ///     Maps real enum names to their corresponding user defined aliases
         /// </summary>
-        private readonly Dictionary<string, string> _enumMembers = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _enumMembers = new();
 
         /// <summary>
         ///     The enum underlying type

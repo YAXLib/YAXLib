@@ -29,7 +29,7 @@ namespace YAXLib.Exceptions
         /// </summary>
         /// <param name="propName">Name of the property.</param>
         /// <param name="lineInfo">IXmlLineInfo derived object, e.g. XElement, XAttribute containing line info</param>
-        public YAXPropertyCannotBeAssignedTo(string propName, IXmlLineInfo lineInfo) :
+        public YAXPropertyCannotBeAssignedTo(string propName, IXmlLineInfo? lineInfo) :
             base(lineInfo)
         {
             PropertyName = propName;

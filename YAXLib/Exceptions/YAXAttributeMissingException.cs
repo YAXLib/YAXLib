@@ -28,7 +28,7 @@ namespace YAXLib.Exceptions
         /// </summary>
         /// <param name="attrName">Name of the attribute.</param>
         /// <param name="lineInfo">IXmlLineInfo derived object, e.g. XElement, XAttribute containing line info</param>
-        public YAXAttributeMissingException(string attrName, IXmlLineInfo lineInfo) :
+        public YAXAttributeMissingException(string attrName, IXmlLineInfo? lineInfo) :
             base(lineInfo)
         {
             AttributeName = attrName;

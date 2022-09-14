@@ -14,15 +14,17 @@ namespace YAXLib.KnownTypes
         public override string TypeName => "System.Data.DataSet";
 
         /// <inheritdoc />
-        public override void Serialize(object obj, XElement elem, XNamespace overridingNamespace,
+        public override void Serialize(object? obj, XElement elem, XNamespace overridingNamespace,
             ISerializationContext serializationContext)
         {
+            if (obj == null) throw new ArgumentException("Object must not be null", nameof(obj));
+
             using var xw = elem.CreateWriter();
             ReflectionUtils.InvokeMethod(obj, "WriteXml", xw);
         }
 
         /// <inheritdoc />
-        public override object Deserialize(XElement elem, XNamespace overridingNamespace,
+        public override object? Deserialize(XElement elem, XNamespace overridingNamespace,
             ISerializationContext serializationContext)
         {
             var child = elem.Elements().FirstOrDefault();

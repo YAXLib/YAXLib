@@ -36,7 +36,7 @@ namespace YAXLib.Attributes
         ///     Setting <c>null</c> means do nothing.
         /// </summary>
         /// <value>The default value.</value>
-        public object DefaultValue { get; set; }
+        public object? DefaultValue { get; set; }
 
         /// <inheritdoc/>
         void IYaxMemberLevelAttribute.Setup(MemberWrapper memberWrapper)

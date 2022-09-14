@@ -1,7 +1,6 @@
 // Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
-#nullable enable
 using System;
 using System.Threading;
 using YAXLib.Pooling.SpecializedPools;

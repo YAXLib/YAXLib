@@ -1,7 +1,6 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
-#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -485,7 +484,7 @@ namespace YAXLib
 
         // Public Methods
 
-        public YAXTypeAttribute? GetRealTypeDefinition(Type type)
+        public YAXTypeAttribute? GetRealTypeDefinition(Type? type)
         {
             return _possibleRealTypes.FirstOrDefault(x => ReferenceEquals(x.Type, type));
         }

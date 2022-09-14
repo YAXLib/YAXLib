@@ -1,7 +1,6 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
-#nullable enable
 using System;
 using System.Buffers;
 using System.Text;
@@ -17,12 +16,14 @@ namespace YAXLib
         /// <param name="encoding">Default is <see cref="Encoding.UTF8"/>.</param>
         /// <param name="insertLineBreaks">Inserts line breaks after every 76 characters in the string representation.</param>
         /// <returns>The encoded string.</returns>
-        public static string? ToBase64(this string? textToEncode, Encoding? encoding = null, bool insertLineBreaks = true)
+#if NETSTANDARD2_1_OR_GREATER
+        public static string? ToBase64([System.Diagnostics.CodeAnalysis.NotNullIfNotNull("textToEncode")] this string? textToEncode, Encoding? encoding
+ = null, bool insertLineBreaks = true)
         {
             if (textToEncode == null) return null;
 
             encoding ??= Encoding.UTF8;
-#if NETSTANDARD2_1_OR_GREATER
+
             var length = (textToEncode.Length + 2) / 3 * 4;
             var buffer = ArrayPool<char>.Shared.Rent(length);
             try
@@ -39,25 +40,34 @@ namespace YAXLib
             {
                 ArrayPool<char>.Shared.Return(buffer);
             }
-#else
-           var bytes = encoding.GetBytes(textToEncode);
-           return Convert.ToBase64String(bytes,
-               insertLineBreaks ? Base64FormattingOptions.InsertLineBreaks : Base64FormattingOptions.None);
-#endif
         }
+#else
+        public static string? ToBase64(this string? textToEncode, Encoding? encoding = null,
+            bool insertLineBreaks = true)
+        {
+            if (textToEncode == null) return null;
 
+            encoding ??= Encoding.UTF8;
+
+            var bytes = encoding.GetBytes(textToEncode);
+            return Convert.ToBase64String(bytes,
+                insertLineBreaks ? Base64FormattingOptions.InsertLineBreaks : Base64FormattingOptions.None);
+        }
+#endif
         /// <summary>
         /// Decodes the given text from Base64, using the given <see cref="Encoding"/> (default: <see cref="Encoding.UTF8"/>
         /// </summary>
         /// <param name="encodedText"></param>
         /// <param name="encoding">Default is <see cref="Encoding.UTF8"/>.</param>
         /// <returns>The decoded string.</returns>
-        public static string? FromBase64(this string? encodedText, Encoding? encoding = null)
+#if NETSTANDARD2_1_OR_GREATER
+        public static string? FromBase64([System.Diagnostics.CodeAnalysis.NotNullIfNotNull("encodedText")] this string? encodedText, Encoding? encoding
+ = null)
         {
             if (encodedText == null) return null;
 
             encoding ??= Encoding.UTF8;
-#if NETSTANDARD2_1_OR_GREATER
+
             var length = ((encodedText.Length * 3) + 3) / 4;
             var buffer = ArrayPool<byte>.Shared.Rent(length);
             try
@@ -73,10 +83,17 @@ namespace YAXLib
             {
                 ArrayPool<byte>.Shared.Return(buffer);
             }
-#else
-            var bytes = Convert.FromBase64String(encodedText);
-            return encoding.GetString(bytes);           
-#endif
         }
+#else
+        public static string? FromBase64(this string? encodedText, Encoding? encoding = null)
+        {
+            if (encodedText == null) return null;
+
+            encoding ??= Encoding.UTF8;
+
+            var bytes = Convert.FromBase64String(encodedText);
+            return encoding.GetString(bytes);
+        }
+#endif
     }
 }

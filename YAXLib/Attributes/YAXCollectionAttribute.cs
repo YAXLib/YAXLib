@@ -46,7 +46,7 @@ namespace YAXLib.Attributes
         ///     The name of each child element corresponding to the collection members, if the Serialization type is set to
         ///     <c>Recursive</c>.
         /// </value>
-        public string EachElementName { get; set; }
+        public string? EachElementName { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether white space characters are to be

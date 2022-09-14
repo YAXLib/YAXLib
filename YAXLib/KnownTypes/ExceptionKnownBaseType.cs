@@ -1,9 +1,7 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
-#nullable enable
 using System;
-using System.Reflection;
 using System.Xml.Linq;
 using YAXLib.Customization;
 using YAXLib.Enums;

@@ -18,7 +18,7 @@ namespace YAXLib.Exceptions
         /// </summary>
         /// <param name="expectedType">The expected type.</param>
         /// <param name="receivedType">The type of the object which did not match the expected type.</param>
-        public YAXObjectTypeMismatch(Type expectedType, Type receivedType)
+        public YAXObjectTypeMismatch(Type expectedType, Type? receivedType)
         {
             ExpectedType = expectedType;
             ReceivedType = receivedType;
@@ -34,7 +34,7 @@ namespace YAXLib.Exceptions
         ///     Gets the type of the object which did not match the expected type.
         /// </summary>
         /// <value>The type of the object which did not match the expected type.</value>
-        public Type ReceivedType { get; }
+        public Type? ReceivedType { get; }
 
         /// <summary>
         ///     Gets a message that describes the current exception.
@@ -47,6 +47,6 @@ namespace YAXLib.Exceptions
                 CultureInfo.CurrentCulture,
                 "Expected an object of type '{0}' but received an object of type '{1}'.",
                 ExpectedType.Name,
-                ReceivedType.Name);
+                ReceivedType?.Name ?? "null");
     }
 }

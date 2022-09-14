@@ -54,7 +54,7 @@ namespace YAXLib.Attributes
             if (!isDesiredInterface)
                 throw new YAXObjectTypeMismatch(typeof(ICustomSerializer<>), CustomSerializerType);
 
-            if (!genTypeArg.IsAssignableFrom(type))
+            if (genTypeArg == null || !genTypeArg.IsAssignableFrom(type))
                 throw new YAXObjectTypeMismatch(type, genTypeArg);
         }
     }

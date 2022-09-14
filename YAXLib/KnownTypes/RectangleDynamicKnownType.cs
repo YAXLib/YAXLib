@@ -1,7 +1,6 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
-#nullable enable
 using System;
 using System.Xml.Linq;
 using YAXLib.Customization;
@@ -19,7 +18,7 @@ namespace YAXLib.KnownTypes
             ISerializationContext serializationContext)
         {
             var objectType = obj?.GetType();
-            if (objectType?.FullName != TypeName)
+            if (obj == null || objectType?.FullName != TypeName)
                 throw new ArgumentException("Object type does not match the provided typename", nameof(obj));
 
             var left = ReflectionUtils.InvokeGetProperty<int>(obj, "Left");

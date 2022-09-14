@@ -66,19 +66,9 @@ namespace YAXLib
         /// </summary>
         /// <param name="obj">The object to serialize.</param>
         /// <returns>A <code>System.String</code> containing the XML</returns>
-        public string Serialize(T obj)
+        public string Serialize(T? obj)
         {
             return _serializer.Serialize(obj);
-        }
-
-        /// <summary>
-        ///     Serializes the specified object and returns an instance of <c>XDocument</c> containing the result.
-        /// </summary>
-        /// <param name="obj">The object to serialize.</param>
-        /// <returns>An instance of <c>XDocument</c> containing the resulting XML</returns>
-        public XDocument SerializeToXDocument(T obj)
-        {
-            return _serializer.SerializeToXDocument(obj);
         }
 
         /// <summary>
@@ -86,7 +76,7 @@ namespace YAXLib
         /// </summary>
         /// <param name="obj">The object to serialize.</param>
         /// <param name="textWriter">The <c>TextWriter</c> instance.</param>
-        public void Serialize(T obj, TextWriter textWriter)
+        public void Serialize(T? obj, TextWriter textWriter)
         {
             _serializer.Serialize(obj, textWriter);
         }
@@ -96,9 +86,19 @@ namespace YAXLib
         /// </summary>
         /// <param name="obj">The object to serialize.</param>
         /// <param name="xmlWriter">The <c>XmlWriter</c> instance.</param>
-        public void Serialize(T obj, XmlWriter xmlWriter)
+        public void Serialize(T? obj, XmlWriter xmlWriter)
         {
             _serializer.Serialize(obj, xmlWriter);
+        }
+
+        /// <summary>
+        ///     Serializes the specified object and returns an instance of <c>XDocument</c> containing the result.
+        /// </summary>
+        /// <param name="obj">The object to serialize.</param>
+        /// <returns>An instance of <c>XDocument</c> containing the resulting XML</returns>
+        public XDocument SerializeToXDocument(T? obj)
+        {
+            return _serializer.SerializeToXDocument(obj);
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace YAXLib
         /// </summary>
         /// <param name="obj">The object to serialize.</param>
         /// <param name="fileName">Path to the file.</param>
-        public void SerializeToFile(T obj, string fileName)
+        public void SerializeToFile(T? obj, string fileName)
         {
             _serializer.SerializeToFile(obj, fileName);
         }
@@ -116,9 +116,9 @@ namespace YAXLib
         /// </summary>
         /// <param name="input">The input string containing the XML serialization.</param>
         /// <returns>The deserialized object.</returns>
-        public T Deserialize(string input)
+        public T? Deserialize(string input)
         {
-            return (T)_serializer.Deserialize(input);
+            return (T?)_serializer.Deserialize(input);
         }
 
         /// <summary>
@@ -126,9 +126,9 @@ namespace YAXLib
         /// </summary>
         /// <param name="xmlReader">The <c>XmlReader</c> instance to read input from.</param>
         /// <returns>The deserialized object.</returns>
-        public T Deserialize(XmlReader xmlReader)
+        public T? Deserialize(XmlReader xmlReader)
         {
-            return (T) _serializer.Deserialize(xmlReader);
+            return (T?) _serializer.Deserialize(xmlReader);
         }
 
         /// <summary>
@@ -136,9 +136,9 @@ namespace YAXLib
         /// </summary>
         /// <param name="textReader">The <c>TextReader</c> instance to read input from.</param>
         /// <returns>The deserialized object.</returns>
-        public T Deserialize(TextReader textReader)
+        public T? Deserialize(TextReader textReader)
         {
-            return (T) _serializer.Deserialize(textReader);
+            return (T?) _serializer.Deserialize(textReader);
         }
 
         /// <summary>
@@ -146,9 +146,9 @@ namespace YAXLib
         /// </summary>
         /// <param name="element">The <c>XElement</c> instance to read from.</param>
         /// <returns>The deserialized object</returns>
-        public T Deserialize(XElement element)
+        public T? Deserialize(XElement element)
         {
-            return (T) _serializer.Deserialize(element);
+            return (T?) _serializer.Deserialize(element);
         }
 
         /// <summary>
@@ -156,9 +156,9 @@ namespace YAXLib
         /// </summary>
         /// <param name="fileName">Path to the file.</param>
         /// <returns>The deserialized object.</returns>
-        public T DeserializeFromFile(string fileName)
+        public T? DeserializeFromFile(string fileName)
         {
-            return (T) _serializer.DeserializeFromFile(fileName);
+            return (T?) _serializer.DeserializeFromFile(fileName);
         }
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace YAXLib
         ///     This method enables multi-stage de-serialization for YAXLib.
         /// </summary>
         /// <param name="obj">The object used as the base object in the next stage of de-serialization.</param>
-        public void SetDeserializationBaseObject(T obj)
+        public void SetDeserializationBaseObject(T? obj)
         {
             _serializer.SetDeserializationBaseObject(obj);
         }

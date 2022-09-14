@@ -24,7 +24,7 @@ namespace YAXLib.Attributes
         public YAXNamespaceAttribute(string defaultNamespace)
         {
             Namespace = defaultNamespace;
-            Prefix = null;
+            Prefix = string.Empty;
         }
 
         /// <summary>

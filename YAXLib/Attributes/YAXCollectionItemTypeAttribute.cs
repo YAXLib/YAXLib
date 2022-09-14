@@ -15,7 +15,7 @@ namespace YAXLib.Attributes
 
         public Type Type { get; }
 
-        public string Alias { get; set; }
+        public string Alias { get; set; } = string.Empty;
 
         /// <inheritdoc/>
         void IYaxMemberLevelAttribute.Setup(MemberWrapper memberWrapper)

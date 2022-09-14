@@ -68,7 +68,7 @@ namespace YAXLib
         /// </summary>
         /// <param name="elemName">Name of the element.</param>
         /// <returns>the refined element name</returns>
-        public static string RefineSingleElement(string elemName)
+        public static string? RefineSingleElement(string? elemName)
         {
             if (elemName == null)
                 return null;
@@ -201,7 +201,7 @@ namespace YAXLib
         public static bool DivideLocationOneStep(string location, out string newLocation, out string newElem)
         {
             newLocation = location;
-            newElem = null;
+            newElem = string.Empty;
 
             var slashIdx = location.LastIndexOf('/');
             if (slashIdx < 0) // no slashes found
@@ -255,10 +255,10 @@ namespace YAXLib
         }
 
         /// <summary>
-        ///     Gets the string corresponiding to the given array dimensions.
+        ///     Gets the string corresponding to the given array dimensions.
         /// </summary>
         /// <param name="dims">The array dimensions.</param>
-        /// <returns>the string corresponiding to the given array dimensions</returns>
+        /// <returns>the string corresponding to the given array dimensions</returns>
         public static string GetArrayDimsString(int[] dims)
         {
             var sb = new StringBuilder();

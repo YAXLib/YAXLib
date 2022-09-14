@@ -3,11 +3,9 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Xml;
 using System.Xml.Linq;
 using YAXLib.Attributes;
 using YAXLib.Caching;
@@ -23,14 +21,15 @@ namespace YAXLib
         private readonly YAXSerializer _serializer;
 
         /// <summary>
-        ///     a reference to the base xml element used during serialization.
+        /// A reference to the base xml element used during serialization.
+        /// Will always be set by <see cref="SetBaseElement(XName)"/> when serialization starts.
         /// </summary>
-        private XElement _baseElement;
+        private XElement? _baseElement;
 
         /// <summary>
         ///     XML document object which will hold the resulting serialization
         /// </summary>
-        private XDocument _mainDocument;
+        private XDocument? _mainDocument;
 
         private bool _stripInvalidXmlChars;
 
@@ -43,8 +42,8 @@ namespace YAXLib
         {
             _baseElement = null;
             _mainDocument = null;
-            _stripInvalidXmlChars = (_serializer.Options.SerializationOptions &
-                                     YAXSerializationOptions.StripInvalidXmlChars) == YAXSerializationOptions.StripInvalidXmlChars;
+            _stripInvalidXmlChars =
+                _serializer.Options.SerializationOptions.HasFlag(YAXSerializationOptions.StripInvalidXmlChars);
         }
 
         public Serialization(YAXSerializer serializer)
@@ -57,11 +56,10 @@ namespace YAXLib
         /// </summary>
         /// <param name="obj">The object to serialize.</param>
         /// <returns></returns>
-        public XDocument SerializeXDocument(object obj)
+        public XDocument SerializeXDocument(object? obj)
         {
             // This method must be called by any public Serialize method
             _serializer.IsSerializing = true;
-            _serializer.SerializedStack ??= new Stack<object>();
             _mainDocument = new XDocument();
             _mainDocument.Add(SerializeBase(obj));
             return _mainDocument;
@@ -88,7 +86,7 @@ namespace YAXLib
             if (((IRecursionCounter) _serializer).RecursionCount >= _serializer.Options.MaxRecursion - 1)
             {
                 PushObjectToSerializationStack(obj);
-                return _baseElement;
+                return _baseElement!;
             }
 
             if (!_serializer.Type.IsValueType)
@@ -101,7 +99,7 @@ namespace YAXLib
                         // although we are not going to serialize anything, push the object to be picked up
                         // by the pop statement right after serialization
                         PushObjectToSerializationStack(obj);
-                        return _baseElement;
+                        return _baseElement!;
                     }
 
                     throw new YAXCannotSerializeSelfReferentialTypes(_serializer.Type);
@@ -110,25 +108,25 @@ namespace YAXLib
                 PushObjectToSerializationStack(obj);
             }
 
-            if (_serializer.UdtWrapper.HasComment && _baseElement.Parent == null && _mainDocument != null)
+            if (_serializer.UdtWrapper.HasComment && _baseElement!.Parent == null && _mainDocument != null)
                 foreach (var comment in _serializer.UdtWrapper.Comment!)
                     _mainDocument.Add(new XComment(comment));
 
             // if the containing element is set to preserve spaces, then emit the
             // required attribute
             if (_serializer.UdtWrapper.PreservesWhitespace)
-                XMLUtils.AddPreserveSpaceAttribute(_baseElement, _serializer.Options.Culture);
+                XMLUtils.AddPreserveSpaceAttribute(_baseElement!, _serializer.Options.Culture);
 
             // check if the main class/type has defined custom serializers
             if (_serializer.UdtWrapper.HasCustomSerializer && !Locker.IsLocked(_serializer.UdtWrapper.CustomSerializer!.Type))
             {
-                _serializer.UdtWrapper.CustomSerializer!.SerializeToElement(obj, _baseElement,
+                _serializer.UdtWrapper.CustomSerializer!.SerializeToElement(obj, _baseElement!,
                     new SerializationContext(null, _serializer.UdtWrapper, _serializer));
             }
             else if (_serializer.UdtWrapper.IsKnownType && !Locker.IsLocked(_serializer.UdtWrapper.KnownType!.Type))
             {
                 using var _ = new Locker(_serializer.UdtWrapper.KnownType!.Type);
-                _serializer.UdtWrapper.KnownType!.Serialize(obj, _baseElement, _serializer.TypeNamespace,
+                _serializer.UdtWrapper.KnownType!.Serialize(obj, _baseElement!, _serializer.TypeNamespace,
                     new SerializationContext(null, _serializer.UdtWrapper, _serializer));
             }
             else // no custom serializers or known type
@@ -136,7 +134,7 @@ namespace YAXLib
                 SerializeFields(obj);
             }
 
-            if (_baseElement.Parent == null)
+            if (_baseElement!.Parent == null)
                 _serializer.XmlNamespaceManager.AddNamespacesToElement(_baseElement,
                     _serializer.DocumentDefaultNamespace, _serializer.Options, _serializer.UdtWrapper);
 
@@ -151,7 +149,7 @@ namespace YAXLib
         ///     an instance of <c>XElement</c> which contains the result of
         ///     serialization of the specified object
         /// </returns>
-        private XElement SerializeBase(object obj)
+        private XElement SerializeBase(object? obj)
         {
             if (obj == null)
                 return new XElement(_serializer.UdtWrapper.Alias);
@@ -161,13 +159,13 @@ namespace YAXLib
 
             _serializer.DocumentDefaultNamespace = _serializer.UdtWrapper.FindDocumentDefaultNamespace();
 
-            if (TrySerializeAsDictionary(obj, out var xElement)) return xElement;
+            if (TrySerializeAsDictionary(obj, out var xElement)) return xElement!;
 
-            if (TrySerializeAsCollection(obj, out xElement)) return xElement;
+            if (TrySerializeAsCollection(obj, out xElement)) return xElement!;
 
-            if (TrySerializeUnderlyingTypeAsBasicType(obj, out xElement)) return xElement;
+            if (TrySerializeUnderlyingTypeAsBasicType(obj, out xElement)) return xElement!;
 
-            if (TrySerializeUnderlyingTypeIfNotEqualOrNullableOfObjectType(obj, out xElement)) return xElement;
+            if (TrySerializeUnderlyingTypeIfNotEqualOrNullableOfObjectType(obj, out xElement)) return xElement!;
 
             // SerializeBase will add the object to the stack
             var elem = SerializeBase(obj, _serializer.UdtWrapper.Alias);
@@ -178,7 +176,6 @@ namespace YAXLib
             return elem;
         }
 
-#nullable enable
         private bool TrySerializeUnderlyingTypeAsBasicType(object obj, out XElement? xElement)
         {
             xElement = null;
@@ -251,7 +248,6 @@ namespace YAXLib
             return true;
         }
 
-#nullable disable
         private void PushObjectToSerializationStack(object obj)
         {
             if (!obj.GetType().IsValueType) _serializer.SerializedStack.Push(obj);
@@ -318,13 +314,12 @@ namespace YAXLib
         /// </param>
         private void RemoveElementIfNecessary(bool isAnythingFoundToSerialize)
         {
-            if (_baseElement.Parent != null &&
+            if (_baseElement!.Parent != null &&
                 XMLUtils.IsElementCompletelyEmpty(_baseElement) &&
                 isAnythingFoundToSerialize)
                 _baseElement.Remove();
         }
 
-#nullable enable
         /// <summary>
         /// Checks whether the <paramref name="elementValue"/> is <see langword="null"/>,
         /// and <see langword="null"/> shall not be serialized.
@@ -363,8 +358,6 @@ namespace YAXLib
             }
         }
 
-#nullable disable
-
         /// <summary>
         ///     Sets the base XML element. This method is used when an <see cref="YAXSerializer"/>
         ///     instantiates another <see cref="YAXSerializer"/> to serialize nested objects.
@@ -378,7 +371,7 @@ namespace YAXLib
         }
 
         private void SerializeAsElement(MemberWrapper member,
-            object elementValue, string serializationLocation, bool areOfSameType)
+            object? elementValue, string serializationLocation, bool areOfSameType)
         {
             // Throw, if no parent element can be found
             var parentElem = GetParentElement(serializationLocation);
@@ -411,14 +404,14 @@ namespace YAXLib
         /// <param name="elementValue"></param>
         /// <param name="member"></param>
         /// <param name="areOfSameType"></param>
-        private void AddElement(XElement parElem, object elementValue, MemberWrapper member, bool areOfSameType)
+        private void AddElement(XElement parElem, object? elementValue, MemberWrapper member, bool areOfSameType)
         {
             // make an element with the provided data
             var elemToAdd = MakeElement(parElem, member, elementValue, out var moveDescOnly,
                 out var alreadyAdded);
             if (!areOfSameType)
             {
-                var realType = elementValue.GetType();
+                var realType = elementValue?.GetType();
 
                 var realTypeDefinition = member.GetRealTypeDefinition(realType);
                 if (realTypeDefinition != null)
@@ -426,16 +419,17 @@ namespace YAXLib
                     var alias = realTypeDefinition.Alias;
                     if (string.IsNullOrEmpty(alias))
                     {
-                        var udtWrapper = UdtWrapperCache.Instance.GetOrAddItem(realType, _serializer.Options);
+                        var udtWrapper = UdtWrapperCache.Instance.GetOrAddItem(realType!, _serializer.Options);
                         alias = udtWrapper.Alias.LocalName;
                     }
 
                     elemToAdd.Name = XName.Get(alias, elemToAdd.Name.Namespace.NamespaceName);
                 }
-                else
+                else if (realType != null)
                 {
-                    AddMetadataAttribute(elemToAdd, _serializer.Options.Namespace.Uri + _serializer.Options.AttributeName.RealType,
-                        realType.FullName, _serializer.DocumentDefaultNamespace);
+                    AddMetadataAttribute(elemToAdd,
+                        _serializer.Options.Namespace.Uri + _serializer.Options.AttributeName.RealType,
+                        realType.FullName!, _serializer.DocumentDefaultNamespace);
                 }
             }
             
@@ -464,7 +458,7 @@ namespace YAXLib
             }
         }
 
-        private void AddKnownTypeElement(XElement parElem, object elementValue, MemberWrapper member)
+        private void AddKnownTypeElement(XElement parElem, object? elementValue, MemberWrapper member)
         {
             var elemToFill = new XElement(member.Alias.OverrideNsIfEmpty(_serializer.TypeNamespace));
             parElem.Add(elemToFill);
@@ -489,7 +483,7 @@ namespace YAXLib
                 XMLUtils.AddPreserveSpaceAttribute(elemToFill, _serializer.Options.Culture);
         }
 
-        private void InvokeCustomSerializer(CustomSerializerWrapper customSerializerToUse, XElement parElem, object elementValue, MemberWrapper member)
+        private void InvokeCustomSerializer(CustomSerializerWrapper customSerializerToUse, XElement parElem, object? elementValue, MemberWrapper member)
         {
             var elemToFill = GetElementToFill(parElem, member);
             customSerializerToUse.SerializeToElement(elementValue, elemToFill,
@@ -514,22 +508,22 @@ namespace YAXLib
         private XElement GetParentElement(string serializationLocation)
         {
             // find the parent element from its location
-            var parElem = XMLUtils.FindLocation(_baseElement, serializationLocation);
+            var parElem = XMLUtils.FindLocation(_baseElement!, serializationLocation);
             if (parElem != null) return parElem;
 
             // see if the location can be created
-            if (!XMLUtils.CanCreateLocation(_baseElement, serializationLocation))
+            if (!XMLUtils.CanCreateLocation(_baseElement!, serializationLocation))
                 throw new YAXBadLocationException(serializationLocation);
 
             // try to create the location
-            parElem = XMLUtils.CreateLocation(_baseElement, serializationLocation);
+            parElem = XMLUtils.CreateLocation(_baseElement!, serializationLocation);
             if (parElem == null)
                 throw new YAXBadLocationException(serializationLocation);
 
             return parElem;
         }
 
-        private void SerializeAsValue(MemberWrapper member, object elementValue,
+        private void SerializeAsValue(MemberWrapper member, object? elementValue,
             string serializationLocation,
             bool isCollectionSerially)
         {
@@ -574,7 +568,7 @@ namespace YAXLib
                 XMLUtils.AddPreserveSpaceAttribute(parElem, _serializer.Options.Culture);
         }
 
-        private void SerializeAsAttribute(MemberWrapper member, object elementValue,
+        private void SerializeAsAttribute(MemberWrapper member, object? elementValue,
             bool isCollectionSerially)
         {
             var hasCustomSerializer =
@@ -610,17 +604,17 @@ namespace YAXLib
             // then it has been already populated with the CreateAttribute method
         }
 
-        private XAttribute CreateAttribute(MemberWrapper member, object elementValue, bool useElementValue)
+        private XAttribute CreateAttribute(MemberWrapper member, object? elementValue, bool useElementValue)
         {
             var serializationLocation = member.SerializationLocation;
 
-            if (XMLUtils.AttributeExists(_baseElement, serializationLocation,
+            if (XMLUtils.AttributeExists(_baseElement!, serializationLocation,
                     member.Alias.OverrideNsIfEmpty(_serializer.TypeNamespace)))
             {
                 throw new YAXAttributeAlreadyExistsException(member.Alias.LocalName);
             }
 
-            var attribute = XMLUtils.CreateAttribute(_baseElement,
+            var attribute = XMLUtils.CreateAttribute(_baseElement!,
                 serializationLocation, member.Alias.OverrideNsIfEmpty(_serializer.TypeNamespace),
                 useElementValue ? elementValue : string.Empty, _serializer.DocumentDefaultNamespace, _serializer.Options.Culture);
 
@@ -631,7 +625,6 @@ namespace YAXLib
             return attribute;
         }
 
-#nullable enable
         /// <summary>
         ///     Adds the namespace applying to the object type specified in <paramref name="wrapper" />
         ///     to the <paramref name="className" />
@@ -644,11 +637,10 @@ namespace YAXLib
             if (elemName.Namespace == wrapper.Namespace)
                 _serializer.XmlNamespaceManager.RegisterNamespace(elemName.Namespace, wrapper.NamespacePrefix);
             else
-                _serializer.XmlNamespaceManager.RegisterNamespace(elemName.Namespace, null);
+                _serializer.XmlNamespaceManager.RegisterNamespace(elemName.Namespace, string.Empty);
 
             return new XElement(elemName, default(object?));
         }
-#nullable disable
 
         /// <summary>
         ///     Makes the element corresponding to the member specified.
@@ -665,10 +657,11 @@ namespace YAXLib
         ///     already added to the parent element and should not be added once more.
         /// </param>
         /// <returns></returns>
-        private XElement MakeElement(XElement insertionLocation, MemberWrapper member, object elementValue,
+        private XElement MakeElement(XElement insertionLocation, MemberWrapper member, object? elementValue,
             out bool moveDescOnly, out bool alreadyAdded)
         {
             moveDescOnly = false;
+            alreadyAdded = false;
 
             _serializer.XmlNamespaceManager.RegisterNamespace(member.Namespace, member.NamespacePrefix);
 
@@ -693,7 +686,7 @@ namespace YAXLib
             else if (member.TextEmbedding != TextEmbedding.None && elementValue is string elementStringValue)
             {
                 elemToAdd = MakeBaseElement(member.Alias.OverrideNsIfEmpty(_serializer.TypeNamespace),
-                    member.TextEmbedding, elementStringValue, out alreadyAdded);
+                    member.TextEmbedding, elementStringValue);
             }
             else
             {
@@ -732,8 +725,8 @@ namespace YAXLib
         ///     an instance of <see cref="XElement"/> which contains the dictionary object
         ///     serialized properly
         /// </returns>
-        private XElement MakeDictionaryElement(XElement insertionLocation, XName elementName, object elementValue,
-            YAXDictionaryAttribute dicAttrInst, YAXCollectionAttribute collectionAttrInst, bool dontSerializeNull)
+        private XElement MakeDictionaryElement(XElement? insertionLocation, XName elementName, object? elementValue,
+            YAXDictionaryAttribute? dicAttrInst, YAXCollectionAttribute? collectionAttrInst, bool dontSerializeNull)
         {
             if (elementValue == null) return new XElement(elementName);
 
@@ -749,9 +742,8 @@ namespace YAXLib
             var dicInst = (IEnumerable) elementValue;
 
             (Type keyType, Type valueType, bool isKeyAttrib, bool isValueAttrib, bool isKeyContent, bool isValueContent,
-                string keyFormat, string
-                valueFormat, XName keyAlias, XName valueAlias) details = (keyType, valueType, false, false, false,
-                    false, null, null,
+                string? keyFormat, string? valueFormat, XName keyAlias, XName valueAlias) details =
+                    (keyType, valueType, false, false, false, false, null, null,
                     elementName.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThenNone() + "Key",
                     elementName.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThenNone() + "Value");
 
@@ -774,7 +766,7 @@ namespace YAXLib
             return elemToAdd;
         }
 
-        private XElement SerializeUsingInternalSerializer(XElement insertionLocation, XName elementName, object elementValue)
+        private XElement SerializeUsingInternalSerializer(XElement? insertionLocation, XName elementName, object elementValue)
         {
             using var serializerPoolObject =
                 _serializer.GetChildSerializer(elementValue.GetType(), elementName.Namespace, insertionLocation, out var ser);
@@ -785,10 +777,10 @@ namespace YAXLib
             return elem;
         }
 
-        private XElement CreateDictionaryElement(XName elementName, XName eachElementName, object obj,
+        private XElement CreateDictionaryElement(XName elementName, XName? eachElementName, object obj,
             bool dontSerializeNull,
             (Type keyType, Type valueType, bool isKeyAttrib, bool isValueAttrib, bool isKeyContent, bool isValueContent,
-                string keyFormat, string valueFormat, XName keyAlias, XName valueAlias) details)
+                string? keyFormat, string? valueFormat, XName keyAlias, XName valueAlias) details)
         {
             var keyObj = obj.GetType().GetProperty("Key")!.GetValue(obj, null);
             var valueObj = obj.GetType().GetProperty("Value")!.GetValue(obj, null);
@@ -807,9 +799,9 @@ namespace YAXLib
                     eachElementName.OverrideNsIfEmpty(elementName.Namespace.IfEmptyThen(_serializer.TypeNamespace)
                         .IfEmptyThenNone());
             }
-#nullable enable
+
             var elemChild = new XElement(eachElementName, default(object?));
-#nullable disable
+
             AddDictionaryKey(keyObj, elemChild, areKeyOfSameType, details);
 
             AddDictionaryValue(valueObj, elemChild, areValueOfSameType, dontSerializeNull, details);
@@ -817,9 +809,9 @@ namespace YAXLib
             return elemChild;
         }
 
-        private void AddDictionaryValue(object valueObj, XElement elemChild, bool areValueOfSameType, bool dontSerializeNull,
-            (Type keyType, Type valueType, bool isKeyAttrib, bool isValueAttrib, bool isKeyContent, bool isValueContent, string
-                keyFormat, string valueFormat, XName keyAlias, XName valueAlias) details)
+        private void AddDictionaryValue(object? valueObj, XElement elemChild, bool areValueOfSameType, bool dontSerializeNull,
+            (Type keyType, Type valueType, bool isKeyAttrib, bool isValueAttrib, bool isKeyContent, bool isValueContent,
+                string? keyFormat, string? valueFormat, XName keyAlias, XName valueAlias) details)
         {
             if (details.isValueAttrib && areValueOfSameType)
             {
@@ -845,9 +837,9 @@ namespace YAXLib
             }
         }
 
-        private void AddDictionaryKey(object keyObj, XElement elemChild, bool areKeyOfSameType,
-            (Type keyType, Type valueType, bool isKeyAttrib, bool isValueAttrib, bool isKeyContent, bool isValueContent, string
-                keyFormat, string valueFormat, XName keyAlias, XName valueAlias) details)
+        private void AddDictionaryKey(object? keyObj, XElement elemChild, bool areKeyOfSameType,
+            (Type keyType, Type valueType, bool isKeyAttrib, bool isValueAttrib, bool isKeyContent, bool isValueContent,
+                string? keyFormat, string? valueFormat, XName keyAlias, XName valueAlias) details)
         {
             if (details.isKeyAttrib && areKeyOfSameType)
             {
@@ -876,12 +868,11 @@ namespace YAXLib
 
         private (Type keyType, Type valueType, bool isKeyAttrib, bool isValueAttrib, bool isKeyContent, bool
             isValueContent,
-            string keyFormat, string valueFormat, XName keyAlias, XName valueAlias)
+            string? keyFormat, string? valueFormat, XName keyAlias, XName valueAlias)
             GetDictionaryAttributeDetails(XName elementName,
                 YAXDictionaryAttribute dicAttrInst,
                 (Type keyType, Type valueType, bool isKeyAttrib, bool isValueAttrib, bool isKeyContent, bool
-                    isValueContent, string
-                    keyFormat, string valueFormat, XName keyAlias, XName valueAlias) details)
+                    isValueContent, string? keyFormat, string? valueFormat, XName keyAlias, XName valueAlias) details)
         {
             // Process key
             if (dicAttrInst.SerializeKeyAs == YAXNodeTypes.Attribute)
@@ -912,7 +903,6 @@ namespace YAXLib
             return details;
         }
 
-#nullable enable
         private bool GetElementName(YAXCollectionAttribute? collectionAttrInst, XName elementName,
             out XName? eachElementName)
         {
@@ -921,7 +911,7 @@ namespace YAXLib
             if (collectionAttrInst == null || string.IsNullOrEmpty(collectionAttrInst.EachElementName)) return false;
 
             eachElementName = StringUtils.RefineSingleElement(collectionAttrInst.EachElementName);
-            if (eachElementName.Namespace.IsEmpty()) _serializer.XmlNamespaceManager.RegisterNamespace(eachElementName.Namespace, null);
+            if (eachElementName.Namespace.IsEmpty()) _serializer.XmlNamespaceManager.RegisterNamespace(eachElementName.Namespace, string.Empty);
             eachElementName =
                 eachElementName.OverrideNsIfEmpty(
                     elementName.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThenNone());
@@ -935,7 +925,7 @@ namespace YAXLib
             if (dicAttrInst == null || dicAttrInst.EachPairName == null) return false;
 
             eachElementName = StringUtils.RefineSingleElement(dicAttrInst.EachPairName);
-            if (eachElementName.Namespace.IsEmpty()) _serializer.XmlNamespaceManager.RegisterNamespace(eachElementName.Namespace, null);
+            if (eachElementName.Namespace.IsEmpty()) _serializer.XmlNamespaceManager.RegisterNamespace(eachElementName.Namespace, string.Empty);
             eachElementName =
                 eachElementName.OverrideNsIfEmpty(elementName.Namespace.IfEmptyThen(_serializer.TypeNamespace)
                     .IfEmptyThenNone());
@@ -952,13 +942,13 @@ namespace YAXLib
         ///     an existing parent element.
         /// </param>
         /// <returns>the enclosing XML element.</returns>
-        private XElement AddObjectToElement(XElement elem, XName? alias, object? obj)
+        private XElement AddObjectToElement(XElement elem, XName alias, object? obj)
         {
             UdtWrapper? udt = null;
             if (obj != null)
                 udt = UdtWrapperCache.Instance.GetOrAddItem(obj.GetType(), _serializer.Options);
 
-            if (alias == null && udt != null)
+            if (alias.LocalName == "" && udt != null)
                 alias = udt.Alias.OverrideNsIfEmpty(_serializer.TypeNamespace);
 
             XElement elemToAdd;
@@ -981,12 +971,12 @@ namespace YAXLib
                 }
                 case { IsEnum: true }:
                 {
-                    elemToAdd = MakeBaseElement(elem, alias, udt.EnumWrapper!.GetAlias(obj), out var alreadyAdded);
+                    elemToAdd = MakeBaseElement(elem, alias, udt.EnumWrapper!.GetAlias(obj!), out var alreadyAdded);
                     if (!alreadyAdded)
                         elem.Add(elemToAdd);
                     break;
                 }
-                default:
+                default: // udt is null or none of the cases
                 {
                     elemToAdd = MakeBaseElement(elem, alias, obj, out var alreadyAdded);
                     if (!alreadyAdded)
@@ -997,7 +987,6 @@ namespace YAXLib
 
             return elemToAdd;
         }
-#nullable disable
 
         /// <summary>
         ///     Serializes a collection object.
@@ -1012,8 +1001,8 @@ namespace YAXLib
         ///     serialized properly
         /// </returns>
         private XElement MakeCollectionElement(
-            XElement insertionLocation, XName elementName, object elementValue,
-            YAXCollectionAttribute collectionAttrInst, string format)
+            XElement? insertionLocation, XName elementName, object? elementValue,
+            YAXCollectionAttribute? collectionAttrInst, string? format)
         {
             if (elementValue == null)
                 return new XElement(elementName);
@@ -1028,7 +1017,7 @@ namespace YAXLib
 
             var serType = YAXCollectionSerializationTypes.Recursive;
             var separator = string.Empty;
-            XName eachElementName = null;
+            XName? eachElementName = null;
 
             if (collectionAttrInst != null)
             {
@@ -1045,11 +1034,11 @@ namespace YAXLib
 
             if (serType == YAXCollectionSerializationTypes.Serially && elemToAdd.IsEmpty)
             {
-                elemToAdd = MakeSerialTypeCollectionElement(insertionLocation, elementName, format, collectionInst, colItemsUdt, separator);
+                elemToAdd = MakeSerialTypeCollectionElement(insertionLocation, elementName, format, collectionInst, colItemsUdt, separator)!;
             }
             else
             {
-                AddCollectionItems(elemToAdd, elementName, eachElementName, collectionInst, colItemsUdt, format,
+                AddCollectionItems(elemToAdd, elementName, eachElementName!, collectionInst, colItemsUdt, format,
                     colItemType);
             }
 
@@ -1061,8 +1050,8 @@ namespace YAXLib
             return elemToAdd;
         }
 
-        private void AddCollectionItems(XElement elemToAdd, XName elementName, XName eachElementName,
-            IEnumerable collectionInst, UdtWrapper colItemsUdt, string format, Type colItemType)
+        private void AddCollectionItems(XElement elemToAdd, XName elementName, XName? eachElementName,
+            IEnumerable collectionInst, UdtWrapper colItemsUdt, string? format, Type colItemType)
         {
             foreach (var obj in collectionInst)
             {
@@ -1085,7 +1074,6 @@ namespace YAXLib
             }
         }
 
-#nullable enable
         /// <summary>
         ///     Are element value and the member declared type the same?
         /// </summary>
@@ -1111,7 +1099,7 @@ namespace YAXLib
             return obj == null || obj.GetType().EqualsOrIsNullableOf(toCompare);
         }
 
-        private XElement? MakeSerialTypeCollectionElement(XElement insertionLocation, XName elementName, string format,
+        private XElement? MakeSerialTypeCollectionElement(XElement? insertionLocation, XName elementName, string? format,
             IEnumerable collectionInst, UdtWrapper colItemsUdt, string separator)
         {
             using var pooledObject = StringBuilderPool.Instance.Get(out var sb);
@@ -1141,7 +1129,6 @@ namespace YAXLib
             var elemToAdd = MakeBaseElement(insertionLocation, elementName, sb.ToString(), out var alreadyAdded);
             return !alreadyAdded ? elemToAdd : null;
         }
-#nullable disable
 
         /// <summary>
         ///     Makes an XML element with the specified name, corresponding to the object specified.
@@ -1156,7 +1143,7 @@ namespace YAXLib
         /// <returns>
         ///     An instance of <see cref="XElement"/> which will contain the serialized object.
         /// </returns>
-        private XElement MakeBaseElement(XElement insertionLocation, XName name, object value, out bool alreadyAdded)
+        private XElement MakeBaseElement(XElement? insertionLocation, XName name, object? value, out bool alreadyAdded)
         {
             alreadyAdded = false;
             if (value == null || ReflectionUtils.IsBasicType(value.GetType()))
@@ -1184,16 +1171,11 @@ namespace YAXLib
         /// <param name="name"></param>
         /// <param name="embedding"></param>
         /// <param name="value"></param>
-        /// <param name="alreadyAdded">
-        /// If set to <see langword="true" /> specifies the element returned is
-        /// already added to the parent element and should not be added once more.
-        /// </param>
         /// <returns>
         /// An instance of <see cref="XElement"/> which will contain the serialized object.
         /// </returns>
-        private XElement MakeBaseElement(XName name, TextEmbedding embedding, string value, out bool alreadyAdded)
+        private XElement MakeBaseElement(XName name, TextEmbedding embedding, string value)
         {
-            alreadyAdded = false;
             var elem = new XElement(name);
             switch (embedding)
             {

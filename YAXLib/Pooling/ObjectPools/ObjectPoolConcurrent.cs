@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-#nullable enable
 namespace YAXLib.Pooling.ObjectPools;
 
 /// <summary>

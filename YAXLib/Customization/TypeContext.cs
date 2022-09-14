@@ -1,7 +1,6 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
-#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +46,7 @@ public class TypeContext : ITypeContext
     }
 
     /// <inheritdoc/>
-    public XElement Serialize(object? obj, SerializerOptions? options = null)
+    public XElement Serialize(object? obj, SerializerOptions options)
     {
         using var serializerPoolObject = SerializerPool.Instance.Get(out var serializer);
         InitializeAsChildSerializer(serializer, options);
@@ -64,7 +63,7 @@ public class TypeContext : ITypeContext
     }
 
     /// <inheritdoc/>
-    public object Deserialize(XElement element, SerializerOptions? options = null)
+    public object? Deserialize(XElement element, SerializerOptions options)
     {
         using var serializerPoolObject = SerializerPool.Instance.Get(out var serializer);
         InitializeAsChildSerializer(serializer, options);

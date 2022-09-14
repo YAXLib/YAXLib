@@ -1,7 +1,6 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
-#nullable enable
 using System;
 using System.Xml.Linq;
 using YAXLib.Customization;
@@ -23,7 +22,7 @@ namespace YAXLib.KnownTypes
         public abstract string TypeName { get; }
 
         /// <inheritdoc />
-        public Type Type => _type ??= ReflectionUtils.GetTypeByName(TypeName);
+        public Type Type => _type ??= ReflectionUtils.GetTypeByName(TypeName) ?? throw new InvalidOperationException($"Type for name '{TypeName}' not found.");
 
         /// <inheritdoc />
         public abstract void Serialize(object? obj, XElement elem, XNamespace overridingNamespace,
