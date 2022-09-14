@@ -255,10 +255,10 @@ namespace YAXLib
         }
 
         /// <summary>
-        ///     Gets the string corresponiding to the given array dimensions.
+        ///     Gets the string corresponding to the given array dimensions.
         /// </summary>
         /// <param name="dims">The array dimensions.</param>
-        /// <returns>the string corresponiding to the given array dimensions</returns>
+        /// <returns>the string corresponding to the given array dimensions</returns>
         public static string GetArrayDimsString(int[] dims)
         {
             var sb = new StringBuilder();

@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -81,9 +82,27 @@ namespace YAXLib
         /// <returns></returns>
         public static string StripInvalidXmlChars(this string? input, bool enabled)
         {
-            return enabled && input != null
-                ? new string(input.Where(XmlConvert.IsXmlChar).ToArray())
-                : input ?? string.Empty;
+            if (!enabled || input == null) return input ?? string.Empty;
+
+            var buffer = ArrayPool<char>.Shared.Rent(input.Length);
+
+            try
+            {
+                var written = 0;
+
+                foreach (var c in input.Where(XmlConvert.IsXmlChar))
+                {
+                    buffer[written++] = c;
+                }
+
+                return written == input.Length
+                    ? input
+                    : buffer.AsSpan(0, written).ToString();
+            }
+            finally
+            {
+                ArrayPool<char>.Shared.Return(buffer);   
+            }
         }
 
         /// <summary>

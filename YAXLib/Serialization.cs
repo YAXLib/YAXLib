@@ -42,8 +42,8 @@ namespace YAXLib
         {
             _baseElement = null;
             _mainDocument = null;
-            _stripInvalidXmlChars = (_serializer.Options.SerializationOptions &
-                                     YAXSerializationOptions.StripInvalidXmlChars) == YAXSerializationOptions.StripInvalidXmlChars;
+            _stripInvalidXmlChars =
+                _serializer.Options.SerializationOptions.HasFlag(YAXSerializationOptions.StripInvalidXmlChars);
         }
 
         public Serialization(YAXSerializer serializer)
@@ -661,6 +661,7 @@ namespace YAXLib
             out bool moveDescOnly, out bool alreadyAdded)
         {
             moveDescOnly = false;
+            alreadyAdded = false;
 
             _serializer.XmlNamespaceManager.RegisterNamespace(member.Namespace, member.NamespacePrefix);
 
@@ -685,7 +686,7 @@ namespace YAXLib
             else if (member.TextEmbedding != TextEmbedding.None && elementValue is string elementStringValue)
             {
                 elemToAdd = MakeBaseElement(member.Alias.OverrideNsIfEmpty(_serializer.TypeNamespace),
-                    member.TextEmbedding, elementStringValue, out alreadyAdded);
+                    member.TextEmbedding, elementStringValue);
             }
             else
             {
@@ -1170,16 +1171,11 @@ namespace YAXLib
         /// <param name="name"></param>
         /// <param name="embedding"></param>
         /// <param name="value"></param>
-        /// <param name="alreadyAdded">
-        /// If set to <see langword="true" /> specifies the element returned is
-        /// already added to the parent element and should not be added once more.
-        /// </param>
         /// <returns>
         /// An instance of <see cref="XElement"/> which will contain the serialized object.
         /// </returns>
-        private XElement MakeBaseElement(XName name, TextEmbedding embedding, string value, out bool alreadyAdded)
+        private XElement MakeBaseElement(XName name, TextEmbedding embedding, string value)
         {
-            alreadyAdded = false;
             var elem = new XElement(name);
             switch (embedding)
             {
