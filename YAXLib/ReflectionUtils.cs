@@ -687,7 +687,7 @@ namespace YAXLib
             var pattern =
                 RuntimeInformation.FrameworkDescription.StartsWith(".NET Framework")
                     // Forward compatibility:
-                    // if we get a yaxlib:realtype which is NETSTANDARD or NET5.0 System.Private.CoreLib, replace it with its equivalent
+                    // if we get a yaxlib:realtype which is NETSTANDARD (and later) System.Private.CoreLib, replace it with its equivalent
                     ? @"\,\s+(System\.Private\.CoreLib)\,\s+Version\=\d+(\.\d+)*\,\s+Culture=\b\w+\b\,\s+PublicKeyToken\=\b\w+\b"
                     // Backward compatibility:
                     // if we get a yaxlib:realtype which is .Net Framework 2.x/3.x/4.x mscorlib, replace it with its equivalent

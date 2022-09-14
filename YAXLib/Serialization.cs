@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Xml;
 using System.Xml.Linq;
 using YAXLib.Attributes;
 using YAXLib.Caching;
@@ -31,6 +32,8 @@ namespace YAXLib
         /// </summary>
         private XDocument _mainDocument;
 
+        private bool _stripInvalidXmlChars;
+
         /// <summary>
         /// This instance will be (re-) initialized it a way
         /// that it has the same virgin state like an instance that
@@ -40,6 +43,8 @@ namespace YAXLib
         {
             _baseElement = null;
             _mainDocument = null;
+            _stripInvalidXmlChars = (_serializer.Options.SerializationOptions &
+                                     YAXSerializationOptions.StripInvalidXmlChars) == YAXSerializationOptions.StripInvalidXmlChars;
         }
 
         public Serialization(YAXSerializer serializer)
@@ -433,7 +438,7 @@ namespace YAXLib
                         realType.FullName, _serializer.DocumentDefaultNamespace);
                 }
             }
-
+            
             if (moveDescOnly) // if only the descendants of the resulting element are going to be added ...
             {
                 XMLUtils.MoveDescendants(elemToAdd, parElem);
@@ -529,17 +534,7 @@ namespace YAXLib
             bool isCollectionSerially)
         {
             // find the parent element from its location
-            var parElem = XMLUtils.FindLocation(_baseElement, serializationLocation);
-            if (parElem == null) // if the parent element does not exist
-            {
-                // see if the location can be created
-                if (!XMLUtils.CanCreateLocation(_baseElement, serializationLocation))
-                    throw new YAXBadLocationException(serializationLocation);
-                // try to create the location
-                parElem = XMLUtils.CreateLocation(_baseElement, serializationLocation);
-                if (parElem == null)
-                    throw new YAXBadLocationException(serializationLocation);
-            }
+            var parElem = GetParentElement(serializationLocation);
 
             // if control is moved here, it means that the parent
             // element has been found/created successfully
@@ -574,7 +569,7 @@ namespace YAXLib
                 valueToSet = elementValue.ToXmlValue(_serializer.Options.Culture);
             }
 
-            parElem.Add(new XText(valueToSet));
+            parElem.Add(new XText(valueToSet.StripInvalidXmlChars(_stripInvalidXmlChars)));
             if (member.PreservesWhitespace)
                 XMLUtils.AddPreserveSpaceAttribute(parElem, _serializer.Options.Culture);
         }
@@ -609,6 +604,8 @@ namespace YAXLib
                 attributeToUse.Value = added.Value;
             }
 
+            attributeToUse.Value = attributeToUse.Value.StripInvalidXmlChars(_stripInvalidXmlChars);
+
             // if member does not have any type wrappers
             // then it has been already populated with the CreateAttribute method
         }
@@ -620,7 +617,7 @@ namespace YAXLib
             if (XMLUtils.AttributeExists(_baseElement, serializationLocation,
                     member.Alias.OverrideNsIfEmpty(_serializer.TypeNamespace)))
             {
-                throw new YAXAttributeAlreadyExistsException(member.Alias?.LocalName);
+                throw new YAXAttributeAlreadyExistsException(member.Alias.LocalName);
             }
 
             var attribute = XMLUtils.CreateAttribute(_baseElement,
@@ -664,7 +661,7 @@ namespace YAXLib
         ///     added to the parent.
         /// </param>
         /// <param name="alreadyAdded">
-        ///     if set to <see langword="true" /> specifies the element returned is
+        ///     If set to <see langword="true" /> specifies the element returned is
         ///     already added to the parent element and should not be added once more.
         /// </param>
         /// <returns></returns>
@@ -678,27 +675,25 @@ namespace YAXLib
             XElement elemToAdd;
             if (member.IsTreatedAsDictionary)
             {
-                elemToAdd = MakeDictionaryElement(insertionLocation, member.Alias.OverrideNsIfEmpty(_serializer.TypeNamespace),
+                elemToAdd = MakeDictionaryElement(insertionLocation,
+                    member.Alias.OverrideNsIfEmpty(_serializer.TypeNamespace),
                     elementValue, member.DictionaryAttributeInstance, member.CollectionAttributeInstance,
                     member.IsAttributedAsDontSerializeIfNull);
-                if (member.CollectionAttributeInstance != null &&
-                    member.CollectionAttributeInstance.SerializationType ==
-                    YAXCollectionSerializationTypes.RecursiveWithNoContainingElement &&
-                    !elemToAdd.HasAttributes)
-                    moveDescOnly = true;
-                alreadyAdded = elemToAdd.Parent == insertionLocation;
+
+                (alreadyAdded, moveDescOnly) = HandleRecursiveCollection(insertionLocation, member, elemToAdd);
             }
             else if (member.IsTreatedAsCollection)
             {
-                elemToAdd = MakeCollectionElement(insertionLocation, member.Alias.OverrideNsIfEmpty(_serializer.TypeNamespace),
+                elemToAdd = MakeCollectionElement(insertionLocation,
+                    member.Alias.OverrideNsIfEmpty(_serializer.TypeNamespace),
                     elementValue, member.CollectionAttributeInstance, member.Format);
 
-                if (member.CollectionAttributeInstance != null &&
-                    member.CollectionAttributeInstance.SerializationType ==
-                    YAXCollectionSerializationTypes.RecursiveWithNoContainingElement &&
-                    !elemToAdd.HasAttributes)
-                    moveDescOnly = true;
-                alreadyAdded = elemToAdd.Parent == insertionLocation;
+                (alreadyAdded, moveDescOnly) = HandleRecursiveCollection(insertionLocation, member, elemToAdd);
+            }
+            else if (member.TextEmbedding != TextEmbedding.None && elementValue is string elementStringValue)
+            {
+                elemToAdd = MakeBaseElement(member.Alias.OverrideNsIfEmpty(_serializer.TypeNamespace),
+                    member.TextEmbedding, elementStringValue, out alreadyAdded);
             }
             else
             {
@@ -710,6 +705,17 @@ namespace YAXLib
                 XMLUtils.AddPreserveSpaceAttribute(elemToAdd, _serializer.Options.Culture);
 
             return elemToAdd;
+        }
+
+        private static (bool alreadyAdded, bool moveDescOnly) HandleRecursiveCollection(XElement insertionLocation, MemberWrapper member, XElement elemToAdd)
+        {
+            var moveDescOnly = member.CollectionAttributeInstance is {
+                SerializationType: YAXCollectionSerializationTypes.RecursiveWithNoContainingElement
+            } && !elemToAdd.HasAttributes;
+
+            var alreadyAdded = elemToAdd.Parent == insertionLocation;
+
+            return (alreadyAdded, moveDescOnly);
         }
 
         /// <summary>
@@ -831,7 +837,7 @@ namespace YAXLib
                     if (addedElem.Parent == null)
                         // sometimes empty elements are removed because its members are serialized in
                         // other elements, therefore we need to make sure to re-add the element.
-                        elemChild.Add((object)addedElem);
+                        elemChild.Add(addedElem);
 
                     AddMetadataAttribute(addedElem, _serializer.Options.Namespace.Uri + _serializer.Options.AttributeName.RealType,
                         valueObj!.GetType().FullName, _serializer.DocumentDefaultNamespace);
@@ -1144,31 +1150,65 @@ namespace YAXLib
         /// <param name="name">The name of the element.</param>
         /// <param name="value">The object to be serialized in an XML element.</param>
         /// <param name="alreadyAdded">
-        ///     if set to <see langword="true" /> specifies the element returned is
+        ///     If set to <see langword="true" /> specifies the element returned is
         ///     already added to the parent element and should not be added once more.
         /// </param>
         /// <returns>
-        ///     an instance of <c>XElement</c> which will contain the serialized object,
-        ///     or <c>null</c> if the serialized object is already added to the base element
+        ///     An instance of <see cref="XElement"/> which will contain the serialized object.
         /// </returns>
         private XElement MakeBaseElement(XElement insertionLocation, XName name, object value, out bool alreadyAdded)
         {
             alreadyAdded = false;
             if (value == null || ReflectionUtils.IsBasicType(value.GetType()))
             {
-                value = value?.ToXmlValue(_serializer.Options.Culture);
+                value = value?.ToXmlValue(_serializer.Options.Culture).StripInvalidXmlChars(_stripInvalidXmlChars);
 
                 return new XElement(name, value);
             }
 
             if (ReflectionUtils.IsStringConvertibleIFormattable(value.GetType()))
             {
-                var elementValue = value.GetType().InvokeMember("ToString", BindingFlags.InvokeMethod, null, value, Array.Empty<object>());
-                return new XElement(name, elementValue);
+                var elementValue = (string) value.GetType().InvokeMember("ToString", BindingFlags.InvokeMethod, null, value, Array.Empty<object>());
+                return new XElement(name, elementValue.StripInvalidXmlChars(_stripInvalidXmlChars));
             }
 
             var elem = SerializeUsingInternalSerializer(insertionLocation, name, value);
             alreadyAdded = true;
+            return elem;
+        }
+
+        /// <summary>
+        /// The equivalent to the IsBasicType block of <see cref="MakeBaseElement(XElement,XName,object,out bool)"/>,
+        /// but specialized for a string field/property flagged with the <see cref="YAXTextEmbeddingAttribute"/>.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="embedding"></param>
+        /// <param name="value"></param>
+        /// <param name="alreadyAdded">
+        /// If set to <see langword="true" /> specifies the element returned is
+        /// already added to the parent element and should not be added once more.
+        /// </param>
+        /// <returns>
+        /// An instance of <see cref="XElement"/> which will contain the serialized object.
+        /// </returns>
+        private XElement MakeBaseElement(XName name, TextEmbedding embedding, string value, out bool alreadyAdded)
+        {
+            alreadyAdded = false;
+            var elem = new XElement(name);
+            switch (embedding)
+            {
+                case TextEmbedding.CData:
+                    elem.Add(new XCData(value.StripInvalidXmlChars(_stripInvalidXmlChars)));
+                    break;
+                case TextEmbedding.Base64:
+                    elem.Add(new XText(value.ToBase64(System.Text.Encoding.UTF8)!));
+                    break;
+                /*
+                    TextEmbedding.None and null values uses standard element serialization,
+                    which is not handled in this method.
+                */
+            }
+
             return elem;
         }
 

@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using YAXLib.Attributes;
@@ -140,9 +141,9 @@ internal class Deserialization
     }
 
     /// <summary>
-    /// The default serialization algorithm, which deserializes
-    /// from value from attribute, from value and from XML element,
-    /// and from custom serializers.
+    /// The default serialization algorithm, which deserializes per field and
+    /// from value, from attribute, from XML element,
+    /// from custom serializers and known types.
     /// </summary>
     /// <param name="baseElement"></param>
     /// <returns>The deserialized object</returns>
@@ -155,7 +156,7 @@ internal class Deserialization
             // reset handled exceptions status
             _exceptionOccurredDuringMemberDeserialization = false;
 
-            var deserializedValue = string.Empty; // the element value gathered at the first phase
+            var deserializedRawValue = string.Empty; // the element value gathered at the first phase
             XElement xElementValue = null; // the XElement instance gathered at the first phase
             XAttribute xAttributeValue = null; // the XAttribute instance gathered at the first phase
 
@@ -165,16 +166,16 @@ internal class Deserialization
 
             if (member.IsSerializedAsAttribute)
             {
-                deserializedValue = DeserializeFromAttribute(baseElement, ref xElementValue, ref xAttributeValue, serializationLocation, member);
+                deserializedRawValue = DeserializeFromAttribute(baseElement, ref xElementValue, ref xAttributeValue, serializationLocation, member);
             }
             else if (member.IsSerializedAsValue)
             {
-                deserializedValue = DeserializeFromValue(baseElement, ref xElementValue, serializationLocation, member);
+                deserializedRawValue = DeserializeFromValue(baseElement, ref xElementValue, serializationLocation, member);
             }
             else
             {
                 if (DeserializeFromXmlElement(baseElement, serializationLocation, member, resultObject,
-                        ref deserializedValue, ref isHelperElementCreated, ref xElementValue))
+                        ref deserializedRawValue, ref isHelperElementCreated, ref xElementValue))
                     continue;
             }
 
@@ -186,17 +187,17 @@ internal class Deserialization
             }
             else if (member.HasCustomSerializer && !Locker.IsLocked(member.CustomSerializer!.Type))
             {
-                InvokeCustomDeserializer(member.CustomSerializer, baseElement, deserializedValue, xElementValue, xAttributeValue,
+                InvokeCustomDeserializer(member.CustomSerializer, baseElement, deserializedRawValue, xElementValue, xAttributeValue,
                     resultObject, member);
             }
             else if (member.UdtWrapper.HasCustomSerializer && !Locker.IsLocked(member.UdtWrapper.CustomSerializer!.Type))
             {
-                InvokeCustomDeserializer(member.UdtWrapper.CustomSerializer, baseElement, deserializedValue, xElementValue, xAttributeValue,
+                InvokeCustomDeserializer(member.UdtWrapper.CustomSerializer, baseElement, deserializedRawValue, xElementValue, xAttributeValue,
                     resultObject, member);
             }
-            else if (deserializedValue != null)
+            else if (deserializedRawValue != null)
             {
-                RetrieveElementValue(resultObject, member, deserializedValue, xElementValue);
+                RetrieveElementValue(resultObject, member, deserializedRawValue, xElementValue);
             }
 
             RemoveRedundantElements(isHelperElementCreated, xElementValue, xAttributeValue);
@@ -525,9 +526,9 @@ internal class Deserialization
 
         // return if such an element exists
         return elem.Element(
-                   eachElementName.OverrideNsIfEmpty(member.Namespace.IfEmptyThen(_serializer.TypeNamespace)
-                       .IfEmptyThenNone())) !=
-               null;
+                   eachElementName
+                       .OverrideNsIfEmpty(member.Namespace.IfEmptyThen(_serializer.TypeNamespace)
+                       .IfEmptyThenNone())) != null;
     }
 
     /// <summary>
@@ -713,26 +714,35 @@ internal class Deserialization
         return false;
     }
 
-    private bool TrySetValueForString(object obj, string elemValue, XElement xElementValue, MemberWrapper member,
+#nullable enable
+    private bool TrySetValueForString(object obj, string? elemValue, XElement? xElementValue, MemberWrapper member,
         Type memberType)
     {
         if (memberType != typeof(string)) return false;
-
-        if (string.IsNullOrEmpty(elemValue) && xElementValue != null)
-            elemValue = xElementValue.IsEmpty ? null : string.Empty;
-
         try
         {
+            // There's nothing to do for 'TextEmbedding.CData', it's deserialized transparently
+            if (member.TextEmbedding == TextEmbedding.Base64 && !string.IsNullOrEmpty(elemValue))
+            {
+                member.SetValue(obj, elemValue?.Trim().FromBase64(Encoding.UTF8));
+                return true;
+            }
+
+            // Take care of empty elements like '<Text />'
+            if (string.IsNullOrEmpty(elemValue) && xElementValue != null)
+                elemValue = xElementValue.IsEmpty ? null : string.Empty;
+
             member.SetValue(obj, elemValue);
             return true;
         }
         catch
         {
-            OnExceptionOccurred(new YAXPropertyCannotBeAssignedTo(member.Alias.LocalName, xElementValue), _serializer.Options.ExceptionBehavior);
+            OnExceptionOccurred(new YAXBadlyFormedInput(member.Alias.LocalName, elemValue), _serializer.Options.ExceptionBehavior);
         }
 
         return false;
     }
+#nullable disable
 
     private bool TrySetValueForEmptyElement(object obj, MemberWrapper member, Type memberType, XElement xElementValue)
     {

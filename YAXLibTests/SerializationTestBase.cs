@@ -11,12 +11,14 @@ using System.Xml;
 using FluentAssertions;
 using NUnit.Framework;
 using YAXLib;
+using YAXLib.Attributes;
 using YAXLib.Caching;
 using YAXLib.Enums;
 using YAXLib.Exceptions;
 using YAXLib.Options;
 using YAXLibTests.SampleClasses;
 using YAXLibTests.SampleClasses.SelfReferencingObjects;
+using YAXLibTests.SampleClasses.TextEmbedding;
 using YAXLibTests.TestHelpers;
 
 namespace YAXLibTests
@@ -2913,6 +2915,215 @@ namespace YAXLibTests
             xmlWriter.Flush();
 
             Assert.That(sb.ToString(), Is.EqualTo(xml));
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public void Serialize_With_TextEmbedding_Should_Succeed(bool stripInvalidXmlChars)
+        {
+            const string xml = @"<SuccessfulEmbeddingSample>
+  <Text-No-Embedding>&lt; Text &amp; NoEmbedding &gt;</Text-No-Embedding>
+  <TextCDataEmbedding><![CDATA[<script>
+    let X = 4; let Y = 5; let Z = 8;
+    if (Y < Z && Y > X) {
+        console.log(`'X < Y < Z' or 'Z > Y > X'`);
+    }
+</script>]]></TextCDataEmbedding>
+  <TextBase64Embedding>cGFydDEAcGFydDI=</TextBase64Embedding>
+  <TextIsNull />
+</SuccessfulEmbeddingSample>";
+            var serializer = CreateSerializer<SuccessfulEmbeddingSample>(new SerializerOptions {
+                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
+                ExceptionBehavior = YAXExceptionTypes.Error,
+                SerializationOptions = YAXSerializationOptions.SerializeNullObjects | (stripInvalidXmlChars
+                    ? YAXSerializationOptions.StripInvalidXmlChars
+                    : YAXSerializationOptions.None)
+            });
+
+            var sample = SuccessfulEmbeddingSample.GetSampleInstance();
+            if (stripInvalidXmlChars) sample.TextCDataEmbedding += "\u0003"; // 0x3 is illegal and should be stripped off
+            var serialized = serializer.SerializeToXDocument(sample);
+
+            // Serialization
+            Assert.That(serialized.ToString(), Is.EqualTo(xml), "TextNoEmbedding: Uses SerializeAsAttribute, contains encoded entities");
+            Assert.That(serialized.Root!.Element("TextIsNull")!.IsEmpty, Is.True,
+                $"null values are not handled by {nameof(YAXTextEmbeddingAttribute)}");
+            Assert.That(serialized.Root!.Element("TextBase64Embedding")!.Value.FromBase64(Encoding.UTF8),
+                Is.EqualTo(sample.TextBase64Embedding), "Properly and fully Base64-encoded");
+        }
+
+        [Test]
+        public void Deserialize_With_TextEmbedding_Should_Succeed()
+        {
+            const string xml = @"<SuccessfulEmbeddingSample>
+  <Text-No-Embedding>&lt; Text &amp; NoEmbedding &gt;</Text-No-Embedding>
+  <TextCDataEmbedding><![CDATA[<script>
+    let X = 4; let Y = 5; let Z = 8;
+    if (Y < Z && Y > X) {
+        console.log(`'X < Y < Z' or 'Z > Y > X'`);
+    }
+</script>]]></TextCDataEmbedding>
+  <TextBase64Embedding>cGFydDEAcGFydDI=</TextBase64Embedding>
+  <TextIsNull />
+</SuccessfulEmbeddingSample>";
+            var serializer = CreateSerializer<SuccessfulEmbeddingSample>(new SerializerOptions
+            {
+                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
+                ExceptionBehavior = YAXExceptionTypes.Error,
+                SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+            });
+
+            var deserialized = (SuccessfulEmbeddingSample) serializer.Deserialize(xml);
+
+            // Assert
+            deserialized.Should().BeEquivalentTo(SuccessfulEmbeddingSample.GetSampleInstance());
+        }
+
+        [Test]
+        public void TextEmbedding_With_Disallowed_AttributeCombination_Fails()
+        {
+            var serializer = CreateSerializer<DisallowedAttributeCombinationSample>(new SerializerOptions
+            {
+                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
+                ExceptionBehavior = YAXExceptionTypes.Error,
+                SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+            });
+
+            var sample = DisallowedAttributeCombinationSample.GetSampleInstance();
+            Assert.That(code: () => serializer.SerializeToXDocument(sample),
+                Throws.InvalidOperationException.And.Message.StartWith($"{nameof(YAXTextEmbeddingAttribute)} can only be combined"),
+                $"Can't combine {nameof(YAXTextEmbeddingAttribute)} with {nameof(YAXAttributeForAttribute)}");
+        }
+
+        [Test]
+        public void Deserialize_Bad_Base64_Encoding_Should_Throw()
+        {
+            const string xml = @"<SuccessfulEmbeddingSample>
+  <Text-No-Embedding></Text-No-Embedding>
+  <TextCDataEmbedding><![CDATA[]]></TextCDataEmbedding>
+  <TextBase64Embedding>ILLEGAL_BASE64</TextBase64Embedding>
+  <TextIsNull />
+</SuccessfulEmbeddingSample>";
+            var serializer = CreateSerializer<SuccessfulEmbeddingSample>(new SerializerOptions
+            {
+                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
+                ExceptionBehavior = YAXExceptionTypes.Error,
+                SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+            });
+
+            Assert.That(code: () => serializer.Deserialize(xml),
+                Throws.InstanceOf<YAXBadlyFormedInput>().And.Message.Contains("ILLEGAL_BASE64"),
+                $"Illegal Base64 encoded string should throw");
+        }
+
+        [Test]
+        public void StripInvalidChars_Value_Serialization()
+        {
+            var sample = new StripInvalidCharsSample();
+            sample.ValueForClass += "\u0003";
+
+            var serializer = CreateSerializer<StripInvalidCharsSample>(new SerializerOptions
+            {
+                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
+                ExceptionBehavior = YAXExceptionTypes.Error,
+                SerializationOptions = YAXSerializationOptions.StripInvalidXmlChars
+            });
+
+            var result = serializer.SerializeToXDocument(sample);
+
+            Assert.That(result.Root!.FirstNode.ToString(), Is.EqualTo(nameof(StripInvalidCharsSample.ValueForClass)));
+        }
+
+        [Test]
+        public void StripInvalidChars_Element_Serialization()
+        {
+            var sample = new StripInvalidCharsSample();
+            sample.ValueOfElement += "\u0003";
+
+            var serializer = CreateSerializer<StripInvalidCharsSample>(new SerializerOptions
+            {
+                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
+                ExceptionBehavior = YAXExceptionTypes.Error,
+                SerializationOptions = YAXSerializationOptions.StripInvalidXmlChars
+            });
+
+            var result = serializer.SerializeToXDocument(sample);
+
+            Assert.That(result.Root!
+                    .Element(nameof(StripInvalidCharsSample.ValueOfElement))!
+                    .Value,
+                Is.EqualTo(nameof(StripInvalidCharsSample.ValueOfElement)));
+        }
+
+        [Test]
+        public void StripInvalidChars_Attribute_Serialization()
+        {
+            var sample = new StripInvalidCharsSample();
+            sample.ValueForAttribute += "\u0003";
+
+            var serializer = CreateSerializer<StripInvalidCharsSample>(new SerializerOptions
+            {
+                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
+                ExceptionBehavior = YAXExceptionTypes.Error,
+                SerializationOptions = YAXSerializationOptions.StripInvalidXmlChars
+            });
+
+            var result = serializer.SerializeToXDocument(sample);
+
+            Assert.That(
+                result.Root!
+                    .Element(nameof(StripInvalidCharsSample.ValueOfElement))!
+                    .Attribute(nameof(StripInvalidCharsSample.ValueForAttribute))!
+                    .Value,
+                Is.EqualTo(nameof(StripInvalidCharsSample.ValueForAttribute)));
+        }
+
+        [Test]
+        public void StripInvalidChars_List_Serialization()
+        {
+            const string listFirstItem = "firstItemPlusInvalid";
+            var sample = new StripInvalidCharsSample();
+            sample.TheList.Add(listFirstItem + "\u0003");
+
+            var serializer = CreateSerializer<StripInvalidCharsSample>(new SerializerOptions
+            {
+                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
+                ExceptionBehavior = YAXExceptionTypes.Error,
+                SerializationOptions = YAXSerializationOptions.StripInvalidXmlChars
+            });
+
+            var result = serializer.SerializeToXDocument(sample);
+
+            Assert.That(
+                result.Root!
+                    .Element(nameof(StripInvalidCharsSample.TheList))!
+                    .Element("String")!.Value,
+                Is.EqualTo(listFirstItem));
+        }
+
+        [Test]
+        public void StripInvalidChars_Dictionary_Serialization()
+        {
+            const string dictFirstValue = "firstValuePlusInvalid";
+            var sample = new StripInvalidCharsSample();
+            sample.TheDictionary.Add("FirstKey", dictFirstValue + "\u0003");
+
+            var serializer = CreateSerializer<StripInvalidCharsSample>(new SerializerOptions
+            {
+                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
+                ExceptionBehavior = YAXExceptionTypes.Error,
+                SerializationOptions = YAXSerializationOptions.StripInvalidXmlChars
+            });
+
+            var result = serializer.SerializeToXDocument(sample);
+
+            Assert.That(
+                result
+                    .Root!
+                    .Element(nameof(StripInvalidCharsSample.TheDictionary))!
+                    .Element("KeyValuePairOfStringString")!
+                    .Element("Value")!.Value,
+                Is.EqualTo(dictFirstValue));
         }
     }
 }

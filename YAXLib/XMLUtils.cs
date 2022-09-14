@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Xml;
 using System.Xml.Linq;
 using YAXLib.Exceptions;
 
@@ -71,6 +72,21 @@ namespace YAXLib
 
             return currentLocation;
         }
+
+#nullable enable
+        /// <summary>
+        /// Strips all invalid characters from the input value, if <paramref name="enabled"/> is <see langword="true"/>.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="enabled"></param>
+        /// <returns></returns>
+        public static string StripInvalidXmlChars(this string? input, bool enabled)
+        {
+            return enabled && input != null
+                ? new string(input.Where(XmlConvert.IsXmlChar).ToArray())
+                : input ?? string.Empty;
+        }
+#nullable disable
 
         /// <summary>
         ///     Determines whether the specified location can be created in the specified XML element.
