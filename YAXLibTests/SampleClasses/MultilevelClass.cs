@@ -14,7 +14,7 @@ namespace YAXLibTests.SampleClasses
       and a discussion on this matter.")]
     public class MultilevelClass
     {
-        public List<FirstLevelClass> items { get; set; }
+        public List<FirstLevelClass> Items { get; set; } = new();
 
         public override string ToString()
         {
@@ -23,30 +23,32 @@ namespace YAXLibTests.SampleClasses
 
         public static MultilevelClass GetSampleInstance()
         {
-            var obj = new MultilevelClass();
-            obj.items = new List<FirstLevelClass>();
-            obj.items.Add(new FirstLevelClass());
-            obj.items.Add(new FirstLevelClass());
+            var obj = new MultilevelClass {
+                Items = new List<FirstLevelClass> {
+                    new FirstLevelClass(),
+                    new FirstLevelClass()
+                }
+            };
 
-            obj.items[0].Second = new SecondLevelClass();
-            obj.items[0].ID = "1";
-            obj.items[0].Second.SecondID = "1-2";
+            obj.Items[0].Second = new SecondLevelClass();
+            obj.Items[0].Id = "1";
+            obj.Items[0].Second!.SecondId = "1-2";
 
-            obj.items[1].ID = "2";
-            obj.items[1].Second = null;
+            obj.Items[1].Id = "2";
+            obj.Items[1].Second = null;
             return obj;
         }
     }
 
     public class FirstLevelClass
     {
-        public string ID { get; set; }
+        public string? Id { get; set; }
 
-        public SecondLevelClass Second { get; set; }
+        public SecondLevelClass? Second { get; set; }
     }
 
     public class SecondLevelClass
     {
-        public string SecondID { get; set; }
+        public string? SecondId { get; set; }
     }
 }

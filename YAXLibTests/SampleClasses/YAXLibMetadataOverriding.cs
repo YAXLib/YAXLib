@@ -7,11 +7,11 @@ using YAXLib.Attributes;
 namespace YAXLibTests.SampleClasses
 {
     [ShowInDemoApplication]
-    public class YAXLibMetadataOverriding
+    public class YaxLibMetadataOverriding
     {
-        public int[,] IntArray { get; set; }
+        public int[,]? IntArray { get; set; }
 
-        public object Obj { get; set; }
+        public object? Obj { get; set; }
 
 
         public override string ToString()
@@ -19,9 +19,9 @@ namespace YAXLibTests.SampleClasses
             return GeneralToStringProvider.GeneralToString(this);
         }
 
-        public static YAXLibMetadataOverriding GetSampleInstance()
+        public static YaxLibMetadataOverriding GetSampleInstance()
         {
-            var instance = new YAXLibMetadataOverriding();
+            var instance = new YaxLibMetadataOverriding();
             instance.SetSampleData();
             return instance;
         }
@@ -40,11 +40,11 @@ namespace YAXLibTests.SampleClasses
 
     [ShowInDemoApplication]
     [YAXNamespace("http://namespace.org/sample")]
-    public class YAXLibMetadataOverridingWithNamespace : YAXLibMetadataOverriding
+    public class YaxLibMetadataOverridingWithNamespace : YaxLibMetadataOverriding
     {
-        public new static YAXLibMetadataOverridingWithNamespace GetSampleInstance()
+        public new static YaxLibMetadataOverridingWithNamespace GetSampleInstance()
         {
-            var instance = new YAXLibMetadataOverridingWithNamespace();
+            var instance = new YaxLibMetadataOverridingWithNamespace();
             instance.SetSampleData();
             return instance;
         }

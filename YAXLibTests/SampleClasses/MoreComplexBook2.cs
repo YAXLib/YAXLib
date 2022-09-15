@@ -10,7 +10,7 @@ namespace YAXLibTests.SampleClasses
     {
         [YAXSerializeAs("Author's Name")]
         [YAXAttributeFor("..")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [YAXSerializeAs("Author's Age")]
         [YAXElementFor("../Something/Or/Another")]
@@ -32,7 +32,7 @@ namespace YAXLibTests.SampleClasses
         ///     otherwise, false.
         /// </returns>
         /// <param name="obj">The object to compare with the current object. </param>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
@@ -59,9 +59,9 @@ namespace YAXLibTests.SampleClasses
         addresses including ""..""")]
     public class MoreComplexBook2
     {
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
-        public Author Author { get; set; }
+        public Author? Author { get; set; }
 
         public int PublishYear { get; set; }
         public double Price { get; set; }

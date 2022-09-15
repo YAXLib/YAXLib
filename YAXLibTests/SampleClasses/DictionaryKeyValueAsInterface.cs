@@ -49,9 +49,9 @@ namespace YAXLibTests.SampleClasses
 
     public interface IParameter
     {
-        string Name { get; set; }
-        string Type { get; set; }
-        string Body { get; set; }
+        string? Name { get; set; }
+        string? Type { get; set; }
+        string? Body { get; set; }
     }
 
     [YAXSerializeAs("parameter")]
@@ -60,16 +60,16 @@ namespace YAXLibTests.SampleClasses
         [YAXSerializeAs("name")]
         [YAXAttributeFor("..")]
         [YAXErrorIfMissed(YAXExceptionTypes.Error)]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [YAXSerializeAs("type")]
         [YAXAttributeFor("..")]
         [YAXErrorIfMissed(YAXExceptionTypes.Ignore)]
-        public string Type { get; set; }
+        public string? Type { get; set; }
 
         [YAXValueFor("..")]
         [YAXErrorIfMissed(YAXExceptionTypes.Ignore)]
-        public string Body { get; set; }
+        public string? Body { get; set; }
     }
 
     public class GenericMessageParameter : ParameterBase

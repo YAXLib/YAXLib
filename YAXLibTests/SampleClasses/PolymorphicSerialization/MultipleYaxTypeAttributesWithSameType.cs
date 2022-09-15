@@ -10,6 +10,6 @@ namespace YAXLibTests.SampleClasses.PolymorphicSerialization
     {
         [YAXType(typeof(string))]
         [YAXType(typeof(string))]
-        public object Object { get; set; }
+        public object? Object { get; set; }
     }
 }

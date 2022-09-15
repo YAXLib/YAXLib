@@ -10,7 +10,7 @@ namespace YAXLibTests.SampleClasses
     [YAXComment("This exmaple shows the usage of nullable fields with an attribute blocking specific one.")]
     public class NullableClassAttribute
     {
-        public string Title { get; set; }
+        public string? Title { get; set; }
         public int PublishYear { get; set; }
 
         [YAXDontSerializeIfNull] public int? PurchaseYear { get; set; }

@@ -13,19 +13,19 @@ namespace YAXLibTests.SampleClasses
         of collection objects in ""System.Collections.Generic"" namespaces")]
     public class GenericCollectionsSample
     {
-        public Stack<int> TheStack { get; set; }
+        public Stack<int> TheStack { get; set; } = new();
 
         [YAXDictionary(EachPairName = "Item", SerializeKeyAs = YAXNodeTypes.Attribute,
             SerializeValueAs = YAXNodeTypes.Attribute)]
-        public SortedList<double, string> TheSortedList { get; set; }
+        public SortedList<double, string> TheSortedList { get; set; } = new();
 
         [YAXDictionary(EachPairName = "Item", SerializeKeyAs = YAXNodeTypes.Attribute,
             SerializeValueAs = YAXNodeTypes.Attribute)]
-        public SortedDictionary<int, double> TheSortedDictionary { get; set; }
+        public SortedDictionary<int, double> TheSortedDictionary { get; set; } = new();
 
-        public Queue<string> TheQueue { get; set; }
-        public HashSet<int> TheHashSet { get; set; }
-        public LinkedList<double> TheLinkedList { get; set; }
+        public Queue<string> TheQueue { get; set; } = new();
+        public HashSet<int> TheHashSet { get; set; } = new();
+        public LinkedList<double> TheLinkedList { get; set; } = new();
 
         public override string ToString()
         {

@@ -15,7 +15,7 @@ namespace YAXLibTests.SampleClasses
         public TimeSpan TheTimeSpan { get; set; }
         public TimeSpan AnotherTimeSpan { get; set; }
 
-        public Dictionary<TimeSpan, int> DicTimeSpans { get; set; }
+        public Dictionary<TimeSpan, int>? DicTimeSpans { get; set; }
 
         public override string ToString()
         {

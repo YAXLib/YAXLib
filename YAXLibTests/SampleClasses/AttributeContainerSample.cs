@@ -10,7 +10,7 @@ namespace YAXLibTests.SampleClasses
     [YAXSerializeAs("container")]
     public class AttributeContainerSample
     {
-        [YAXSerializeAs("range")] public AttributeSample Range { get; set; }
+        [YAXSerializeAs("range")] public AttributeSample Range { get; set; } = new();
 
         public static AttributeContainerSample GetSampleInstance()
         {
@@ -45,7 +45,7 @@ namespace YAXLibTests.SampleClasses
 
     public interface IAttributeSample<T> : IList<T>
     {
-        string Url { get; set; }
+        string? Url { get; set; }
         int Page { get; }
     }
 
@@ -53,7 +53,7 @@ namespace YAXLibTests.SampleClasses
     {
         [YAXSerializeAs("url")]
         [YAXAttributeForClass]
-        public string Url { get; set; }
+        public string? Url { get; set; }
 
         [YAXSerializeAs("page")]
         [YAXAttributeForClass]

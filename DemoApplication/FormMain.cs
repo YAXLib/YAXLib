@@ -86,7 +86,7 @@ namespace DemoApplication
                     var type = tuple.Type;
                     var method = type.GetMethod(tuple.SampleInstanceMethod, Type.EmptyTypes);
                     var instance = method?.Invoke(null, null);
-                    lstSampleClasses.Items.Add(new ClassInfoListItem(type, instance));
+                    lstSampleClasses.Items.Add(new ClassInfoListItem(type, instance!));
                 }
                 catch
                 {
@@ -101,27 +101,27 @@ namespace DemoApplication
             }
         }
 
-        private void btnSerialize_Click(object sender, EventArgs e)
+        private void BtnSerialize_Click(object sender, EventArgs e)
         {
             OnSerialize(false);
         }
 
-        private void btnDeserialize_Click(object sender, EventArgs e)
+        private void BtnDeserialize_Click(object sender, EventArgs e)
         {
             OnDeserialize(false);
         }
 
-        private void lstSampleClasses_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void LstSampleClasses_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             OnSerialize(false);
         }
 
-        private void btnSerializeToFile_Click(object sender, EventArgs e)
+        private void BtnSerializeToFile_Click(object sender, EventArgs e)
         {
             OnSerialize(true);
         }
 
-        private void btnDeserializeFromFile_Click(object sender, EventArgs e)
+        private void BtnDeserializeFromFile_Click(object sender, EventArgs e)
         {
             OnDeserialize(true);
         }
@@ -133,7 +133,7 @@ namespace DemoApplication
             if (selItem is not ClassInfoListItem info)
                 return;
 
-            string fileName = null;
+            var fileName = string.Empty;
             if (openFromFile)
             {
                 if (DialogResult.OK != openFileDialog1.ShowDialog())
@@ -147,7 +147,7 @@ namespace DemoApplication
 
             try
             {
-                object deserializedObject;
+                object? deserializedObject;
                 var serializer = new YAXSerializer(info.ClassType, new SerializerOptions {
                     ExceptionHandlingPolicies = exPolicy,
                     ExceptionBehavior = defaultExType,
@@ -196,7 +196,7 @@ namespace DemoApplication
             if (selItem is not ClassInfoListItem info)
                 return;
 
-            string fileName = null;
+            var fileName = string.Empty;
             if (saveToFile)
             {
                 if (DialogResult.OK != saveFileDialog1.ShowDialog()) 

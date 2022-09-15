@@ -16,12 +16,12 @@ namespace YAXLibTests
     ///     Summary description for XMLUtilsTest
     /// </summary>
     [TestFixture]
-    public class XMLUtilsTest
+    public class XmlUtilsTest
     {
         [Test]
         public void CanCreateLocationTest()
         {
-            var elem = new XElement("Base", null);
+            var elem = new XElement("Base", string.Empty);
 
             Assert.That(XMLUtils.CanCreateLocation(elem, "level1/level2"), Is.True);
             var created = XMLUtils.CreateLocation(elem, "level1/level2");

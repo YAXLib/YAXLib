@@ -11,7 +11,7 @@ namespace YAXLibTests.SampleClasses
     [YAXSerializableType(FieldsToSerialize = YAXSerializationFields.AllFields)]
     public class NullableSample3
     {
-        public string Text { get; set; }
+        public string? Text { get; set; }
         public Sample3Enum TestEnumProperty { get; set; }
         public Sample3Enum? TestEnumNullableProperty { get; set; }
         public Sample3Enum TestEnumField;

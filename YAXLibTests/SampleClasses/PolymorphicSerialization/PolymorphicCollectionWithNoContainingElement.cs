@@ -10,7 +10,7 @@ namespace YAXLibTests.SampleClasses.PolymorphicSerialization
     public class BaseContainer
     {
         [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement)]
-        public BaseItem[] Items { get; set; }
+        public BaseItem[]? Items { get; set; }
     }
 
     public class DerivedContainer : BaseContainer
@@ -19,7 +19,7 @@ namespace YAXLibTests.SampleClasses.PolymorphicSerialization
 
     public class BaseItem
     {
-        [YAXAttributeForClass] public string Data { get; set; }
+        [YAXAttributeForClass] public string? Data { get; set; }
     }
 
     public class DerivedItem : BaseItem

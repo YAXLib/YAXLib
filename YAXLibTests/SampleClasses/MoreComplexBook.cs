@@ -13,10 +13,10 @@ namespace YAXLibTests.SampleClasses
     public class MoreComplexBook
     {
         [YAXAttributeFor("SomeTag/SomeOtherTag/AndSo")]
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         [YAXElementFor("SomeTag/SomeOtherTag/AndSo")]
-        public string Author { get; set; }
+        public string? Author { get; set; }
 
         public int PublishYear { get; set; }
         public double Price { get; set; }

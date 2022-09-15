@@ -6,7 +6,7 @@
     <DelaySign>false</DelaySign>
     <TargetFrameworks>net462;net6.0</TargetFrameworks>
     <IsPackable>false</IsPackable>
-    <nullable>disable</nullable>
+    <nullable>enable</nullable>
   </PropertyGroup>
 
   <ItemGroup>

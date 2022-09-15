@@ -10,7 +10,7 @@ namespace YAXLibTests.SampleClasses
     [YAXComment("This exmaple shows the usage of nullable fields")]
     public class NullableClass
     {
-        public string Title { get; set; }
+        public string? Title { get; set; }
         public int PublishYear { get; set; }
         public int? PurchaseYear { get; set; }
 

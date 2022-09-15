@@ -13,7 +13,7 @@ namespace YAXLibTests.SampleClasses.Namespace
         public bool BoolItem { get; set; }
 
         [YAXNamespace("ns2", "http://namespaces.org/ns2")]
-        public string StringItem { get; set; }
+        public string? StringItem { get; set; }
 
         [YAXNamespace("ns3", "http://namespaces.org/ns3")]
         public int IntItem { get; set; }

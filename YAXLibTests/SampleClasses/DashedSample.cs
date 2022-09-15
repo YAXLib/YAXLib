@@ -11,6 +11,6 @@ namespace YAXLibTests.SampleClasses
     {
         [YAXSerializeAs("dashed-name")]
         [YAXAttributeForClass]
-        public string DashedName { get; set; }
+        public string? DashedName { get; set; }
     }
 }

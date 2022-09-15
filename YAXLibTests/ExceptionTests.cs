@@ -28,8 +28,8 @@ namespace YAXLibTests
                 serializer.Serialize(ClassWithDuplicateYaxAttribute.GetSampleInstance());
             });
 
-            Assert.AreEqual("test", ex.AttrName);
-            StringAssert.Contains("'test'", ex.Message);
+            Assert.AreEqual("test", ex?.AttrName);
+            StringAssert.Contains("'test'", ex?.Message);
         }
 
         [Test]
@@ -70,7 +70,7 @@ namespace YAXLibTests
                 ExceptionBehavior = YAXExceptionTypes.Warning,
             });
 
-            object result = "";
+            object? result = "";
             Assert.That(code: () => { result = serializer.Deserialize(xml); }, Throws.Nothing);
             Assert.That(result, Is.Null);
             Assert.That(serializer.ParsingErrors.ToString(), Does.Contain("not properly formatted"));
@@ -118,7 +118,7 @@ namespace YAXLibTests
             streamWriter.Flush();
             stream.Position = 0;
 
-            object result = "";
+            object? result = "";
             Assert.That(code: () => { result = serializer.Deserialize(streamReader); }, Throws.Nothing);
             Assert.That(result, Is.Null);
             Assert.That(serializer.ParsingErrors.ToString(), Does.Contain("not properly formatted"));
@@ -168,7 +168,7 @@ namespace YAXLibTests
             stream.Position = 0;
 
             using var xmlReader = XmlReader.Create(stream);
-            object result = "";
+            object? result = "";
             Assert.That(code: () => { result = serializer.Deserialize(xmlReader); }, Throws.Nothing);
             Assert.That(result, Is.Null);
             Assert.That(serializer.ParsingErrors.ToString(), Does.Contain("not properly formatted"));
@@ -195,10 +195,10 @@ namespace YAXLibTests
                 });
                 serializer.Deserialize(bookXml);
             });
-            Assert.True(ex.HasLineInfo);
-            Assert.AreEqual(6, ex.LineNumber);
-            Assert.AreEqual(4, ex.LinePosition);
-            StringAssert.Contains("The format of the value specified for the property", ex.Message);
+            Assert.True(ex?.HasLineInfo);
+            Assert.AreEqual(6, ex?.LineNumber);
+            Assert.AreEqual(4, ex?.LinePosition);
+            StringAssert.Contains("The format of the value specified for the property", ex?.Message);
         }
 
         [Test]
@@ -221,10 +221,10 @@ namespace YAXLibTests
                 });
                 serializer.Deserialize(bookXml);
             });
-            Assert.False(ex.HasLineInfo);
-            Assert.AreEqual(0, ex.LineNumber);
-            Assert.AreEqual(0, ex.LinePosition);
-            StringAssert.Contains("The format of the value specified for the property", ex.Message);
+            Assert.False(ex?.HasLineInfo);
+            Assert.AreEqual(0, ex?.LineNumber);
+            Assert.AreEqual(0, ex?.LinePosition);
+            StringAssert.Contains("The format of the value specified for the property", ex?.Message);
         }
 
         [Test]
@@ -238,10 +238,10 @@ namespace YAXLibTests
                 serializer.Serialize(new ClassWithDuplicateYaxAttribute());
             });
 
-            Assert.AreEqual(typeof(Book), ex.ExpectedType);
-            Assert.AreEqual(typeof(ClassWithDuplicateYaxAttribute), ex.ReceivedType);
-            StringAssert.Contains("'Book'", ex.Message);
-            StringAssert.Contains("'ClassWithDuplicateYaxAttribute'", ex.Message);
+            Assert.AreEqual(typeof(Book), ex?.ExpectedType);
+            Assert.AreEqual(typeof(ClassWithDuplicateYaxAttribute), ex?.ReceivedType);
+            StringAssert.Contains("'Book'", ex?.Message);
+            StringAssert.Contains("'ClassWithDuplicateYaxAttribute'", ex?.Message);
         }
 
 
@@ -265,9 +265,9 @@ namespace YAXLibTests
                 });
                 serializer.Deserialize(bookXml);
             });
-            Assert.True(ex.HasLineInfo);
-            Assert.AreEqual(2, ex.LineNumber);
-            Assert.AreEqual(2, ex.LinePosition);
+            Assert.True(ex?.HasLineInfo);
+            Assert.AreEqual(2, ex?.LineNumber);
+            Assert.AreEqual(2, ex?.LinePosition);
         }
 
         [Test]
@@ -291,9 +291,9 @@ namespace YAXLibTests
                 });
                 serializer.Deserialize(collectionXml);
             });
-            Assert.True(ex.HasLineInfo);
-            Assert.AreEqual(2, ex.LineNumber);
-            Assert.AreEqual(2, ex.LinePosition);
+            Assert.True(ex?.HasLineInfo);
+            Assert.AreEqual(2, ex?.LineNumber);
+            Assert.AreEqual(2, ex?.LinePosition);
         }
 
         [Test]
@@ -315,9 +315,9 @@ namespace YAXLibTests
                 });
                 serializer.Deserialize(bookXml);
             });
-            Assert.True(ex.HasLineInfo);
-            Assert.AreEqual(1, ex.LineNumber);
-            Assert.AreEqual(2, ex.LinePosition);
+            Assert.True(ex?.HasLineInfo);
+            Assert.AreEqual(1, ex?.LineNumber);
+            Assert.AreEqual(2, ex?.LinePosition);
         }
 
         [Test]
@@ -325,9 +325,9 @@ namespace YAXLibTests
         {
             var testName = "Test";
 
-            Exception ex =
+            Exception? ex =
                 Assert.Throws<YAXBadLocationException>(code: () => throw new YAXBadLocationException(testName));
-            StringAssert.Contains(testName, ex.Message);
+            StringAssert.Contains(testName, ex?.Message);
         }
 
         [Test]
@@ -336,7 +336,7 @@ namespace YAXLibTests
             var testName = "Test";
             var ex = Assert.Throws<YAXAttributeAlreadyExistsException>(code: () =>
                 throw new YAXAttributeAlreadyExistsException(testName));
-            StringAssert.Contains(testName, ex.Message);
+            StringAssert.Contains(testName, ex?.Message);
         }
 
         [Test]
@@ -345,7 +345,7 @@ namespace YAXLibTests
             var testName = "Test";
             var ex = Assert.Throws<YAXAttributeMissingException>(code: () =>
                 throw new YAXAttributeMissingException(testName));
-            StringAssert.Contains(testName, ex.Message);
+            StringAssert.Contains(testName, ex?.Message);
         }
 
         [Test]
@@ -354,7 +354,7 @@ namespace YAXLibTests
             var testName = "Test";
             var ex = Assert.Throws<YAXElementValueMissingException>(code: () =>
                 throw new YAXElementValueMissingException(testName));
-            StringAssert.Contains(testName, ex.Message);
+            StringAssert.Contains(testName, ex?.Message);
         }
 
         [Test]
@@ -363,7 +363,7 @@ namespace YAXLibTests
             var testName = "Test";
             var ex = Assert.Throws<YAXElementMissingException>(code: () =>
                 throw new YAXElementMissingException(testName));
-            StringAssert.Contains(testName, ex.Message);
+            StringAssert.Contains(testName, ex?.Message);
         }
 
         [Test]
@@ -373,8 +373,8 @@ namespace YAXLibTests
             var testInput = "BadInput";
             var ex = Assert.Throws<YAXBadlyFormedInput>(code: () =>
                 throw new YAXBadlyFormedInput(testName, testInput));
-            StringAssert.Contains(testName, ex.Message);
-            StringAssert.Contains(testInput, ex.Message);
+            StringAssert.Contains(testName, ex?.Message);
+            StringAssert.Contains(testInput, ex?.Message);
         }
 
         [Test]
@@ -383,7 +383,7 @@ namespace YAXLibTests
             var testName = "Test";
             var ex = Assert.Throws<YAXPropertyCannotBeAssignedTo>(code: () =>
                 throw new YAXPropertyCannotBeAssignedTo(testName));
-            StringAssert.Contains(testName, ex.Message);
+            StringAssert.Contains(testName, ex?.Message);
         }
 
         [Test]
@@ -393,8 +393,8 @@ namespace YAXLibTests
             var testValue = 1;
             var ex = Assert.Throws<YAXCannotAddObjectToCollection>(code: () =>
                 throw new YAXCannotAddObjectToCollection(testName, testValue));
-            StringAssert.Contains(testName, ex.Message);
-            StringAssert.Contains(testValue.ToString(), ex.Message);
+            StringAssert.Contains(testName, ex?.Message);
+            StringAssert.Contains(testValue.ToString(), ex?.Message);
         }
 
         [Test]
@@ -404,16 +404,16 @@ namespace YAXLibTests
             var testValue = 1;
             var ex = Assert.Throws<YAXDefaultValueCannotBeAssigned>(code: () =>
                 throw new YAXDefaultValueCannotBeAssigned(testName, testValue, CultureInfo.InvariantCulture));
-            StringAssert.Contains(testName, ex.Message);
-            StringAssert.Contains(testValue.ToString(), ex.Message);
+            StringAssert.Contains(testName, ex?.Message);
+            StringAssert.Contains(testValue.ToString(), ex?.Message);
         }
 
         [Test]
-        public void MalformedXMLLegacyConstructor()
+        public void MalformedXmlLegacyConstructor()
         {
             var testName = "Test";
             var ex = Assert.Throws<YAXBadlyFormedXML>(() => { throw new YAXBadlyFormedXML(new Exception(testName)); });
-            StringAssert.Contains(testName, ex.Message);
+            StringAssert.Contains(testName, ex?.Message);
         }
 
         [Test]
@@ -422,7 +422,7 @@ namespace YAXLibTests
             var testType = typeof(string);
             var ex = Assert.Throws<YAXCannotSerializeSelfReferentialTypes>(code: () =>
                 throw new YAXCannotSerializeSelfReferentialTypes(testType));
-            StringAssert.Contains(testType.Name, ex.Message);
+            StringAssert.Contains(testType.Name, ex?.Message);
         }
 
         [Test]
@@ -432,8 +432,8 @@ namespace YAXLibTests
             var testType2 = typeof(int);
             var ex = Assert.Throws<YAXObjectTypeMismatch>(code: () =>
                 throw new YAXObjectTypeMismatch(testType, testType2));
-            StringAssert.Contains(testType.Name, ex.Message);
-            StringAssert.Contains(testType2.Name, ex.Message);
+            StringAssert.Contains(testType.Name, ex?.Message);
+            StringAssert.Contains(testType2.Name, ex?.Message);
         }
 
         [Test]
@@ -441,7 +441,7 @@ namespace YAXLibTests
         {
             var testName = "Test";
             var ex = Assert.Throws<YAXPolymorphicException>(code: () => throw new YAXPolymorphicException(testName));
-            StringAssert.Contains(testName, ex.Message);
+            StringAssert.Contains(testName, ex?.Message);
         }
     }
 }

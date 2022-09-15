@@ -27,11 +27,11 @@ namespace YAXLibTests.SampleClasses
     [YAXComment("This example shows the serialization of arrays")]
     public class WarehouseWithArray
     {
-        [YAXAttributeForClass] public string Name { get; set; }
+        [YAXAttributeForClass] public string? Name { get; set; }
 
         [YAXSerializeAs("address")]
         [YAXAttributeFor("SiteInfo")]
-        public string Address { get; set; }
+        public string? Address { get; set; }
 
         [YAXSerializeAs("SurfaceArea")]
         [YAXElementFor("SiteInfo")]
@@ -39,7 +39,7 @@ namespace YAXLibTests.SampleClasses
 
         [YAXCollection(YAXCollectionSerializationTypes.Serially, SeparateBy = ", ")]
         [YAXSerializeAs("StoreableItems")]
-        public PossibleItems[] Items { get; set; }
+        public PossibleItems[]? Items { get; set; }
 
         public override string ToString()
         {

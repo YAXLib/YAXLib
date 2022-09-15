@@ -13,7 +13,7 @@ namespace YAXLibTests.SampleClasses
 
         public int SomeInt { get; set; }
 
-        public string SomeString { get; set; }
+        public string? SomeString { get; set; }
 
         public override string ToString()
         {

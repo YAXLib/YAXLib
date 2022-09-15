@@ -15,7 +15,7 @@ namespace YAXLibTests.SampleClasses
     public class NestedDicSample
     {
         public Dictionary<Dictionary<double, Dictionary<int, int>>, Dictionary<Dictionary<string, string>, List<double>>
-        > SomeDic { get; set; }
+        > SomeDic { get; set; } = new();
 
         public override string ToString()
         {
@@ -24,36 +24,41 @@ namespace YAXLibTests.SampleClasses
 
         public static NestedDicSample GetSampleInstance()
         {
-            var dicKV1 = new Dictionary<int, int>();
-            dicKV1.Add(1, 1);
-            dicKV1.Add(2, 2);
-            dicKV1.Add(3, 3);
-            dicKV1.Add(4, 4);
+            var dicKv1 = new Dictionary<int, int> {
+                { 1, 1 },
+                { 2, 2 },
+                { 3, 3 },
+                { 4, 4 }
+            };
 
-            var dicKV2 = new Dictionary<int, int>();
-            dicKV2.Add(9, 1);
-            dicKV2.Add(8, 2);
+            var dicKv2 = new Dictionary<int, int> {
+                { 9, 1 },
+                { 8, 2 }
+            };
 
-            var dicVK1 = new Dictionary<string, string>();
-            dicVK1.Add("Test", "123");
-            dicVK1.Add("Test2", "456");
+            var dicVk1 = new Dictionary<string, string> {
+                { "Test", "123" },
+                { "Test2", "456" }
+            };
 
-            var dicVK2 = new Dictionary<string, string>();
-            dicVK2.Add("Num1", "123");
-            dicVK2.Add("Num2", "456");
+            var dicVk2 = new Dictionary<string, string> {
+                { "Num1", "123" },
+                { "Num2", "456" }
+            };
 
-            var dicK = new Dictionary<double, Dictionary<int, int>>();
-            dicK.Add(0.99999, dicKV1);
-            dicK.Add(3.14, dicKV2);
+            var dicK = new Dictionary<double, Dictionary<int, int>> {
+                { 0.99999, dicKv1 },
+                { 3.14, dicKv2 }
+            };
 
-            var dicV = new Dictionary<Dictionary<string, string>, List<double>>();
-            dicV.Add(dicVK1, new[] {0.98767, 232, 13.124}.ToList());
-            dicV.Add(dicVK2, new[] {9.8767, 23.2, 1.34}.ToList());
+            var dicV = new Dictionary<Dictionary<string, string>, List<double>> {
+                { dicVk1, new[] { 0.98767, 232, 13.124 }.ToList() },
+                { dicVk2, new[] { 9.8767, 23.2, 1.34 }.ToList() }
+            };
 
             var mainDic =
                 new Dictionary<Dictionary<double, Dictionary<int, int>>,
-                    Dictionary<Dictionary<string, string>, List<double>>>();
-            mainDic.Add(dicK, dicV);
+                    Dictionary<Dictionary<string, string>, List<double>>> { { dicK, dicV } };
 
             return new NestedDicSample
             {

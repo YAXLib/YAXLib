@@ -12,11 +12,11 @@ namespace YAXLibTests.SampleClasses
     [YAXComment("This example shows the serialization of Dictionary")]
     public class WarehouseWithDictionary
     {
-        [YAXAttributeForClass] public string Name { get; set; }
+        [YAXAttributeForClass] public string? Name { get; set; }
 
         [YAXSerializeAs("address")]
         [YAXAttributeFor("SiteInfo")]
-        public string Address { get; set; }
+        public string? Address { get; set; }
 
         [YAXSerializeAs("SurfaceArea")]
         [YAXElementFor("SiteInfo")]
@@ -24,13 +24,13 @@ namespace YAXLibTests.SampleClasses
 
         [YAXCollection(YAXCollectionSerializationTypes.Serially, SeparateBy = ", ")]
         [YAXSerializeAs("StoreableItems")]
-        public PossibleItems[] Items { get; set; }
+        public PossibleItems[]? Items { get; set; }
 
         [YAXDictionary(EachPairName = "ItemInfo", KeyName = "Item", ValueName = "Count",
             SerializeKeyAs = YAXNodeTypes.Attribute,
             SerializeValueAs = YAXNodeTypes.Attribute)]
         [YAXSerializeAs("ItemQuantities")]
-        public Dictionary<PossibleItems, int> ItemQuantitiesDic { get; set; }
+        public Dictionary<PossibleItems, int> ItemQuantitiesDic { get; set; } = new();
 
         public override string ToString()
         {

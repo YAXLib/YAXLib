@@ -18,7 +18,7 @@ namespace YAXLibTests.SampleClasses
         [YAXDictionary(EachPairName = "item",
             KeyName = "key",
             SerializeKeyAs = YAXNodeTypes.Attribute, SerializeValueAs = YAXNodeTypes.Content)]
-        public DictionarySample Items { get; set; }
+        public DictionarySample Items { get; set; } = new();
 
         public static DictionaryContainerSample GetSampleInstance()
         {

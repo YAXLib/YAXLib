@@ -57,11 +57,11 @@ namespace YAXLibTests.SampleClasses
 
     public class Theme
     {
-        [YAXAttributeFor(".#name")] public string Name { get; set; }
+        [YAXAttributeFor(".#name")] public string? Name { get; set; }
 
-        [YAXElementFor("Header#Border")] public BorderInfo HeaderBorder { get; set; }
+        [YAXElementFor("Header#Border")] public BorderInfo HeaderBorder { get; set; } = new();
 
-        [YAXElementFor("Header#Font")] public FontInfo HeaderFont { get; set; }
+        [YAXElementFor("Header#Font")] public FontInfo HeaderFont { get; set; } = new();
 
         [YAXAttributeFor("Header/BackColor#value")]
         [YAXCustomSerializer(typeof(ColorSerializer))]
@@ -70,7 +70,7 @@ namespace YAXLibTests.SampleClasses
         [YAXAttributeFor("Header/FontSize#value")]
         public int HeaderFontSize { get; set; }
 
-        [YAXElementFor("MainContent#Border")] public BorderInfo MainContentBorder { get; set; }
+        [YAXElementFor("MainContent#Border")] public BorderInfo MainContentBorder { get; set; } = new();
 
         [YAXAttributeFor("MainContent/FontSize#value")]
         public int MainContentFontSize { get; set; }
@@ -82,7 +82,7 @@ namespace YAXLibTests.SampleClasses
         [YAXCustomSerializer(typeof(ColorSerializer))]
         public Color LineNumbersSeperatorLineColor { get; set; }
 
-        [YAXElementFor("LineNumbers#Font")] public FontInfo LineNumbersFont { get; set; }
+        [YAXElementFor("LineNumbers#Font")] public FontInfo LineNumbersFont { get; set; } = new();
 
         [YAXCustomSerializer(typeof(ColorSerializer))]
         [YAXAttributeFor("LineNumbers/BackColor#value")]
@@ -95,7 +95,7 @@ namespace YAXLibTests.SampleClasses
         public bool LineNumbersShowStringAfter { get; set; }
 
         [YAXAttributeFor("LineNumbers/CharAfterLineNo#value")]
-        public string LineNumbersStringAfter { get; set; }
+        public string? LineNumbersStringAfter { get; set; }
 
         [YAXAttributeFor("LineNumbers/SpacesAfter#count")]
         public int LineNumbersSpacesAfter { get; set; }
@@ -107,7 +107,7 @@ namespace YAXLibTests.SampleClasses
         [YAXAttributeFor("CodeContent/BackColor#value")]
         public Color CodeContentBackColor { get; set; }
 
-        [YAXElementFor("CodeContent#Font")] public FontInfo CodeContentFont { get; set; }
+        [YAXElementFor("CodeContent#Font")] public FontInfo CodeContentFont { get; set; } = new();
     }
 
     public class BorderInfo

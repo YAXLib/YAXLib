@@ -13,11 +13,11 @@ namespace YAXLibTests.SampleClasses
         their enclosing element")]
     public class WarehouseWithDictionaryNoContainer
     {
-        [YAXAttributeForClass] public string Name { get; set; }
+        [YAXAttributeForClass] public string? Name { get; set; }
 
         [YAXSerializeAs("address")]
         [YAXAttributeFor("SiteInfo")]
-        public string Address { get; set; }
+        public string? Address { get; set; }
 
         [YAXSerializeAs("SurfaceArea")]
         [YAXElementFor("SiteInfo")]
@@ -25,14 +25,14 @@ namespace YAXLibTests.SampleClasses
 
         [YAXCollection(YAXCollectionSerializationTypes.Serially, SeparateBy = ", ")]
         [YAXSerializeAs("StoreableItems")]
-        public PossibleItems[] Items { get; set; }
+        public PossibleItems[]? Items { get; set; }
 
         [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement)]
         [YAXDictionary(EachPairName = "ItemInfo", KeyName = "Item", ValueName = "Count",
             SerializeKeyAs = YAXNodeTypes.Attribute,
             SerializeValueAs = YAXNodeTypes.Attribute)]
         [YAXSerializeAs("ItemQuantities")]
-        public Dictionary<PossibleItems, int> ItemQuantitiesDic { get; set; }
+        public Dictionary<PossibleItems, int> ItemQuantitiesDic { get; set; } = new();
 
         public override string ToString()
         {
@@ -41,11 +41,12 @@ namespace YAXLibTests.SampleClasses
 
         public static WarehouseWithDictionaryNoContainer GetSampleInstance()
         {
-            var dicItems = new Dictionary<PossibleItems, int>();
-            dicItems.Add(PossibleItems.Item3, 10);
-            dicItems.Add(PossibleItems.Item6, 120);
-            dicItems.Add(PossibleItems.Item9, 600);
-            dicItems.Add(PossibleItems.Item12, 25);
+            var dicItems = new Dictionary<PossibleItems, int> {
+                { PossibleItems.Item3, 10 },
+                { PossibleItems.Item6, 120 },
+                { PossibleItems.Item9, 600 },
+                { PossibleItems.Item12, 25 }
+            };
 
             var w = new WarehouseWithDictionaryNoContainer
             {

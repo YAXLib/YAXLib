@@ -49,14 +49,14 @@ namespace YAXLibTests.SampleClasses.CustomSerialization
 
             // Note: Using ISerializationContext here is to complete unit test coverage
             return (ClassLevelCtxSample) serializationContext.TypeContext.Deserialize(
-                serializationContext.TypeContext.Serialize(result, _serializerOptions), _serializerOptions);
+                serializationContext.TypeContext.Serialize(result, _serializerOptions), _serializerOptions)!;
         }
 
         public ClassLevelCtxSample DeserializeFromElement(XElement element, ISerializationContext serializationContext)
         {
-            var result = (ClassLevelCtxSample) serializationContext.TypeContext.Deserialize(element, _serializerOptions);
-            result.Title = result.Title.Replace(Custom, string.Empty);
-            result.MessageBody = result.MessageBody.Replace(Custom, string.Empty);
+            var result = (ClassLevelCtxSample?) serializationContext.TypeContext.Deserialize(element, _serializerOptions);
+            result!.Title = result.Title?.Replace(Custom, string.Empty);
+            result.MessageBody = result.MessageBody?.Replace(Custom, string.Empty);
 
             return result;
         }
@@ -67,8 +67,8 @@ namespace YAXLibTests.SampleClasses.CustomSerialization
             var result = new ClassLevelCtxSample {Title = split[1], MessageBody = split[2]};
 
             // Note: Using ISerializationContext here is to complete unit test coverage
-            return (ClassLevelCtxSample) serializationContext.TypeContext.Deserialize(
-                serializationContext.TypeContext.Serialize(result, _serializerOptions), _serializerOptions);
+            return (ClassLevelCtxSample?) serializationContext.TypeContext.Deserialize(
+                serializationContext.TypeContext.Serialize(result, _serializerOptions), _serializerOptions)!;
         }
     }
 }

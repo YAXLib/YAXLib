@@ -44,13 +44,13 @@ namespace YAXLibTests.SampleClasses.CustomSerialization
 
         public ISampleInterface DeserializeFromElement(XElement element, ISerializationContext serializationContext)
         {
-            var o = (ISampleInterface) Activator.CreateInstance(serializationContext.TypeContext.Type!);
+            var o = (ISampleInterface?) Activator.CreateInstance(serializationContext.TypeContext.Type!);
             if (element.HasElements)
             {
-                o.Id = int.Parse(element.Element("C_" + nameof(ISampleInterface.Id))!.Value);
+                o!.Id = int.Parse(element.Element("C_" + nameof(ISampleInterface.Id))!.Value);
                 o.Name = element.Element("C_" + nameof(ISampleInterface.Name))!.Value;
             }
-            return o;
+            return o!;
         }
 
         public ISampleInterface DeserializeFromValue(string value, ISerializationContext serializationContext)

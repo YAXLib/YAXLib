@@ -13,16 +13,16 @@ namespace YAXLibTests.SampleClasses
     {
         [YAXComment("Comment for name")]
         [YAXElementFor("foo/bar/one/two")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [YAXComment("Comment for OwnerName")]
         [YAXElementFor("foo/bar/one")]
-        public string OwnerName { get; set; }
+        public string? OwnerName { get; set; }
 
         [YAXComment("This will not be shown, because it is an attribute")]
         [YAXSerializeAs("address")]
         [YAXAttributeFor("SiteInfo")]
-        public string Address { get; set; }
+        public string? Address { get; set; }
 
         [YAXSerializeAs("SurfaceArea")]
         [YAXElementFor("SiteInfo")]
@@ -30,7 +30,7 @@ namespace YAXLibTests.SampleClasses
 
         [YAXCollection(YAXCollectionSerializationTypes.Serially, SeparateBy = ", ")]
         [YAXSerializeAs("StoreableItems")]
-        public PossibleItems[] Items { get; set; }
+        public PossibleItems[]? Items { get; set; }
 
         [YAXComment("This dictionary is serilaized without container")]
         [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement)]
@@ -38,7 +38,7 @@ namespace YAXLibTests.SampleClasses
             SerializeKeyAs = YAXNodeTypes.Attribute,
             SerializeValueAs = YAXNodeTypes.Attribute)]
         [YAXSerializeAs("ItemQuantities")]
-        public Dictionary<PossibleItems, int> ItemQuantitiesDic { get; set; }
+        public Dictionary<PossibleItems, int>? ItemQuantitiesDic { get; set; }
 
         public override string ToString()
         {
@@ -47,11 +47,12 @@ namespace YAXLibTests.SampleClasses
 
         public static WarehouseWithComments GetSampleInstance()
         {
-            var dicItems = new Dictionary<PossibleItems, int>();
-            dicItems.Add(PossibleItems.Item3, 10);
-            dicItems.Add(PossibleItems.Item6, 120);
-            dicItems.Add(PossibleItems.Item9, 600);
-            dicItems.Add(PossibleItems.Item12, 25);
+            var dicItems = new Dictionary<PossibleItems, int> {
+                { PossibleItems.Item3, 10 },
+                { PossibleItems.Item6, 120 },
+                { PossibleItems.Item9, 600 },
+                { PossibleItems.Item12, 25 }
+            };
 
             var w = new WarehouseWithComments
             {

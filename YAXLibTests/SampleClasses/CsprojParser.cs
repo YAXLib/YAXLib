@@ -11,7 +11,7 @@ namespace YAXLibTests.SampleClasses
 {
     public class CsprojParser
     {
-        public static ProjectBuildDefinition Parse(string xml)
+        public static ProjectBuildDefinition? Parse(string xml)
         {
             var yaxSer = new YAXSerializer<ProjectBuildDefinition>(new SerializerOptions {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
@@ -40,57 +40,57 @@ namespace YAXLibTests.SampleClasses
     [YAXSerializeAs("Project")]
     public class ProjectBuildDefinition
     {
-        [YAXAttributeForClass] public string ToolsVersion { get; set; }
+        [YAXAttributeForClass] public string? ToolsVersion { get; set; }
 
-        [YAXAttributeForClass] public string DefaultTargets { get; set; }
+        [YAXAttributeForClass] public string? DefaultTargets { get; set; }
 
         [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement,
             EachElementName = "PropertyGroup")]
-        public List<PropertyGroup> PropertyGroups { get; set; }
+        public List<PropertyGroup> PropertyGroups { get; set; } = new();
 
         [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement,
             EachElementName = "ItemGroup")]
-        public List<ItemGroup> ItemGroups { get; set; }
+        public List<ItemGroup> ItemGroups { get; set; } = new();
 
         [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement,
             EachElementName = "Import")]
-        public List<ImportItem> ImportItems { get; set; }
+        public List<ImportItem> ImportItems { get; set; } = new();
     }
 
     public class PropertyGroup
     {
-        public string Configuration { get; set; }
+        public string? Configuration { get; set; }
 
         [YAXSerializeAs("Condition")]
         [YAXAttributeFor("Configuration")]
-        public string ConfigCondition { get; set; }
+        public string? ConfigCondition { get; set; }
 
 
-        public string Platform { get; set; }
+        public string? Platform { get; set; }
 
         [YAXSerializeAs("Condition")]
         [YAXAttributeFor("Platform")]
-        public string PlatformCondition { get; set; }
+        public string? PlatformCondition { get; set; }
 
-        public string ProductVersion { get; set; }
-        public string SchemaVersion { get; set; }
-        public string ProjectGuid { get; set; }
-        public string OutputType { get; set; }
-        public string AppDesignerFolder { get; set; }
-        public string RootNamespace { get; set; }
-        public string AssemblyName { get; set; }
-        public string TargetFrameworkVersion { get; set; }
-        public string FileAlignment { get; set; }
+        public string? ProductVersion { get; set; }
+        public string? SchemaVersion { get; set; }
+        public string? ProjectGuid { get; set; }
+        public string? OutputType { get; set; }
+        public string? AppDesignerFolder { get; set; }
+        public string? RootNamespace { get; set; }
+        public string? AssemblyName { get; set; }
+        public string? TargetFrameworkVersion { get; set; }
+        public string? FileAlignment { get; set; }
 
         public bool DebugSymbols { get; set; }
-        public string DebugType { get; set; }
+        public string? DebugType { get; set; }
         public bool Optimize { get; set; }
-        public string OutputPath { get; set; }
-        public string DefineConstants { get; set; }
-        public string ErrorReport { get; set; }
+        public string? OutputPath { get; set; }
+        public string? DefineConstants { get; set; }
+        public string? ErrorReport { get; set; }
         public int WarningLevel { get; set; }
-        public string DocumentationFile { get; set; }
-        public string PostBuildEvent { get; set; }
+        public string? DocumentationFile { get; set; }
+        public string? PostBuildEvent { get; set; }
     }
 
 
@@ -98,23 +98,23 @@ namespace YAXLibTests.SampleClasses
     {
         [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement,
             EachElementName = "Reference")]
-        public List<ReferenceItem> ReferenceItems { get; set; }
+        public List<ReferenceItem> ReferenceItems { get; set; } = new();
     }
 
 
     [YAXSerializeAs("Reference")]
     public class ReferenceItem
     {
-        [YAXAttributeForClass] public string Include { get; set; }
+        [YAXAttributeForClass] public string? Include { get; set; }
 
-        public string HintPath { get; set; }
-        public string RequiredTargetFramework { get; set; }
+        public string? HintPath { get; set; }
+        public string? RequiredTargetFramework { get; set; }
         public bool SpecificVersion { get; set; }
     }
 
     [YAXSerializeAs("Import")]
     public class ImportItem
     {
-        [YAXAttributeForClass] public string Project { get; set; }
+        [YAXAttributeForClass] public string? Project { get; set; }
     }
 }

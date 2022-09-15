@@ -7,12 +7,12 @@ namespace YAXLibTests.SampleClasses.CustomSerialization
 {
     public class PropertyLevelSample
     {
-        public string Id { get; set; }
+        public string? Id { get; set; }
         
-        public string Title { get; set; }
+        public string? Title { get; set; }
         
         [YAXCustomSerializer(typeof(PropertyLevelSerializer))]
-        public string Body { get; set; }
+        public string? Body { get; set; }
 
         public override string ToString()
         {

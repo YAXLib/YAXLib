@@ -6,7 +6,7 @@ namespace YAXLibTests.SampleClasses.SelfReferencingObjects
     public class DirectSelfReferringObject
     {
         public int Data { get; set; }
-        public DirectSelfReferringObject Next { get; set; }
+        public DirectSelfReferringObject? Next { get; set; }
 
         public override string ToString()
         {
@@ -27,7 +27,7 @@ namespace YAXLibTests.SampleClasses.SelfReferencingObjects
         public static DirectSelfReferringObject GetSampleInstanceWithCycle()
         {
             var instance = GetSampleInstance();
-            instance.Next.Next = instance;
+            instance.Next!.Next = instance;
             return instance;
         }
 

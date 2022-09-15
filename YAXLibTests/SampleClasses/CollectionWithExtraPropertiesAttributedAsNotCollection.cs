@@ -10,7 +10,7 @@ namespace YAXLibTests.SampleClasses
     [YAXNotCollection]
     public class CollectionWithExtraPropertiesAttributedAsNotCollection : List<int>
     {
-        public string Property1 { get; set; }
+        public string? Property1 { get; set; }
         public double Property2 { get; set; }
 
         public static CollectionWithExtraPropertiesAttributedAsNotCollection GetSampleInstance()

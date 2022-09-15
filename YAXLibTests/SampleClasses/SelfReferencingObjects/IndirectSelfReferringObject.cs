@@ -7,8 +7,8 @@ namespace YAXLibTests.SampleClasses.SelfReferencingObjects
 {
     public class IndirectSelfReferringObject
     {
-        public string ParentDescription { get; set; }
-        public ChildReferrenceType Child { get; set; }
+        public string? ParentDescription { get; set; }
+        public ChildReferrenceType? Child { get; set; }
 
         public override string ToString()
         {
@@ -32,24 +32,23 @@ namespace YAXLibTests.SampleClasses.SelfReferencingObjects
             };
 
             parent.Child = child;
-            //child.Parent = parent;
             return parent;
         }
 
         public static IndirectSelfReferringObject GetSampleInstanceWithLoop()
         {
             var instance = GetSampleInstance();
-            instance.Child.Parent = instance;
+            instance.Child!.Parent = instance;
             return instance;
         }
     }
 
     public class ChildReferrenceType
     {
-        public string ChildDescription { get; set; }
-        public IndirectSelfReferringObject Parent { get; set; }
+        public string? ChildDescription { get; set; }
+        public IndirectSelfReferringObject? Parent { get; set; }
 
-        public override string ToString()
+        public override string? ToString()
         {
             return ChildDescription;
         }

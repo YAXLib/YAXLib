@@ -10,7 +10,7 @@ namespace YAXLibTests.SampleClasses.Namespace
     [YAXNamespace("http://namespaces.org/default")]
     public class SingleNamespaceSample
     {
-        public string StringItem { get; set; }
+        public string? StringItem { get; set; }
 
         public int IntItem { get; set; }
 

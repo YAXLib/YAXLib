@@ -7,15 +7,15 @@ namespace YAXLibTests.SampleClasses
 {
     public class PropertylessClassesSample
     {
-        public DBNull ValuedDbNull { get; set; }
-        public DBNull NullDbNull { get; set; }
-        public object ObjValuedDbNull { get; set; }
-        public object ObjNullDbNull { get; set; }
+        public DBNull? ValuedDbNull { get; set; }
+        public DBNull? NullDbNull { get; set; }
+        public object? ObjValuedDbNull { get; set; }
+        public object? ObjNullDbNull { get; set; }
 
-        public Random ValuedRandom { get; set; }
-        public Random NullRandom { get; set; }
-        public object ObjValuedRandom { get; set; }
-        public object ObjNullRandom { get; set; }
+        public Random? ValuedRandom { get; set; }
+        public Random? NullRandom { get; set; }
+        public object? ObjValuedRandom { get; set; }
+        public object? ObjNullRandom { get; set; }
 
         public override string ToString()
         {

@@ -12,7 +12,7 @@ namespace YAXLibTests.SampleClasses
     public class ProgrammingLanguage
     {
         [YAXErrorIfMissed(YAXExceptionTypes.Error)]
-        public string LanguageName { get; set; }
+        public string? LanguageName { get; set; }
 
         [YAXErrorIfMissed(YAXExceptionTypes.Warning, DefaultValue = true)]
         public bool IsCaseSensitive { get; set; }

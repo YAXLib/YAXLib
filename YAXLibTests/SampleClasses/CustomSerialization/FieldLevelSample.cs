@@ -11,16 +11,16 @@ namespace YAXLibTests.SampleClasses.CustomSerialization
     {
         [YAXAttributeForClass]
         [YAXCustomSerializer(typeof(FieldLevelSerializer))]
-        public string Id;
+        public string? Id;
 
         [YAXValueFor(nameof(Title))]
         [YAXCustomSerializer(typeof(FieldLevelSerializer))]
-        public string Title;
+        public string? Title;
 
         [YAXElementFor(nameof(Body))]
         [YAXCustomSerializer(typeof(FieldLevelSerializer))]
         [YAXSerializeAs("ChildOfBody")]
-        public string Body;
+        public string? Body;
 
         public override string ToString()
         {

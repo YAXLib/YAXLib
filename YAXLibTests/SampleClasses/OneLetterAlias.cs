@@ -8,9 +8,9 @@ namespace YAXLibTests.SampleClasses
 {
     public class OneLetterAlias
     {
-        [YAXValueFor("./T")] public string Title { get; set; }
+        [YAXValueFor("./T")] public string? Title { get; set; }
 
-        [YAXValueFor("./A")] public string Author { get; set; }
+        [YAXValueFor("./A")] public string? Author { get; set; }
 
         public override string ToString()
         {

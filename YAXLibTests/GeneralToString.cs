@@ -12,12 +12,12 @@ namespace YAXLibTests
 {
     public class GeneralToStringProvider
     {
-        public static string GeneralToString(object o)
+        public static string GeneralToString(object? o)
         {
             return GeneralToString(o, 0);
         }
 
-        private static string CollectionToString(object collectionInstance, string propName, int layer)
+        private static string CollectionToString(object? collectionInstance, string? propName, int layer)
         {
             //object collectionInstance = prop.GetValue(o, null);
             var sb = new StringBuilder();
@@ -36,25 +36,25 @@ namespace YAXLibTests
                     if (collectionInstance.GetType().IsArray)
                     {
                         var ar = collectionInstance as Array;
-                        var rank = ar.Rank;
+                        var rank = ar?.Rank;
                         var ars = new StringBuilder();
                         for (var i = 0; i < rank; i++)
                         {
                             if (i != 0)
                                 ars.Append('*');
-                            ars.Append(ar.GetLength(i));
+                            ars.Append(ar?.GetLength(i));
                         }
 
-                        strSize = string.Format("[size: {0}]", ars);
+                        strSize = $"[size: {ars}]";
                     }
 
                     sb.AppendLayerFormatLine(layer, "{0}: {1}", propName, strSize);
                 }
 
-                foreach (var item in collectionInstance as IEnumerable)
+                foreach (var item in (collectionInstance as IEnumerable)!)
                     if (item != null && IsBasicType(item.GetType()))
                     {
-                        sb.AppendLayerFormatLine(layer + 1, "[{0}]", item.ToString());
+                        sb.AppendLayerFormatLine(layer + 1, "[{0}]", item.ToString() ?? string.Empty);
                     }
                     else
                     {
@@ -67,7 +67,7 @@ namespace YAXLibTests
             return sb.ToString();
         }
 
-        private static string NonGenericDictionaryToString(object dicInstance, string propName, int layer)
+        private static string NonGenericDictionaryToString(object? dicInstance, string? propName, int layer)
         {
             var sb = new StringBuilder();
             if (dicInstance == null)
@@ -82,7 +82,7 @@ namespace YAXLibTests
                 if (!string.IsNullOrEmpty(propName))
                     sb.AppendLayerFormatLine(layer, "{0}:", propName);
 
-                foreach (var pair in dicInstance as IEnumerable)
+                foreach (var pair in (dicInstance as IEnumerable)!)
                     if (pair == null)
                     {
                         sb.AppendLayerFormatLine(layer + 1, "[null]");
@@ -91,13 +91,13 @@ namespace YAXLibTests
                     {
                         sb.AppendLayerFormatLine(layer + 1, "[");
 
-                        var objKey = pair.GetType().GetProperty("Key").GetValue(pair, null);
-                        var objValue = pair.GetType().GetProperty("Value").GetValue(pair, null);
+                        var objKey = pair.GetType().GetProperty("Key")?.GetValue(pair, null);
+                        var objValue = pair.GetType().GetProperty("Value")?.GetValue(pair, null);
 
                         if (objKey == null || IsBasicType(objKey.GetType()))
                         {
                             sb.AppendLayerFormatLine(layer + 1, "Key: {0}",
-                                objKey == null ? "[null]" : objKey.ToString()
+                                (objKey == null ? "[null]" : objKey.ToString())!
                             );
                         }
                         else
@@ -111,7 +111,7 @@ namespace YAXLibTests
                         if (objValue == null || IsBasicType(objValue.GetType()))
                         {
                             sb.AppendLayerFormatLine(layer + 1, "Value: {0}",
-                                objValue == null ? "[null]" : objValue.ToString()
+                                (objValue == null ? "[null]" : objValue.ToString())!
                             );
                         }
                         else
@@ -130,7 +130,7 @@ namespace YAXLibTests
         }
 
 
-        private static string DictionaryToString(object dicInstance, string propName, int layer)
+        private static string DictionaryToString(object? dicInstance, string? propName, int layer)
         {
             var sb = new StringBuilder();
             if (dicInstance == null)
@@ -145,30 +145,27 @@ namespace YAXLibTests
                 if (!string.IsNullOrEmpty(propName))
                     sb.AppendLayerFormatLine(layer, "{0}:", propName);
 
-                Type keyType, valueType;
-                IsDictionary(dicInstance.GetType(), out keyType, out valueType);
+                IsDictionary(dicInstance.GetType(), out var keyType, out var valueType);
                 if (IsBasicType(keyType) && IsBasicType(valueType))
                 {
-                    object objKey, objValue;
-                    foreach (var pair in dicInstance as IEnumerable)
+                    foreach (var pair in (dicInstance as IEnumerable)!)
                         if (pair == null)
                         {
                             sb.AppendLayerFormatLine(layer + 1, "[null]");
                         }
                         else
                         {
-                            objKey = pair.GetType().GetProperty("Key").GetValue(pair, null);
-                            objValue = pair.GetType().GetProperty("Value").GetValue(pair, null);
+                            var objKey = pair.GetType().GetProperty("Key")?.GetValue(pair, null);
+                            var objValue = pair.GetType().GetProperty("Value")?.GetValue(pair, null);
                             sb.AppendLayerFormatLine(layer + 1, "[{0} -> {1}]",
-                                objKey == null ? "[null]" : objKey.ToString(),
-                                objValue == null ? "[null]" : objValue.ToString()
+                                (objKey == null ? "[null]" : objKey.ToString())!,
+                                (objValue == null ? "[null]" : objValue.ToString())!
                             );
                         }
                 }
                 else
                 {
-                    object objKey, objValue;
-                    foreach (var pair in dicInstance as IEnumerable)
+                    foreach (var pair in (dicInstance as IEnumerable)!)
                         if (pair == null)
                         {
                             sb.AppendLayerFormatLine(layer + 1, "[null]");
@@ -177,13 +174,13 @@ namespace YAXLibTests
                         {
                             sb.AppendLayerFormatLine(layer + 1, "[");
 
-                            objKey = pair.GetType().GetProperty("Key").GetValue(pair, null);
-                            objValue = pair.GetType().GetProperty("Value").GetValue(pair, null);
+                            var objKey = pair.GetType().GetProperty("Key")?.GetValue(pair, null);
+                            var objValue = pair.GetType().GetProperty("Value")?.GetValue(pair, null);
 
                             if (IsBasicType(keyType) || objKey == null)
                             {
                                 sb.AppendLayerFormatLine(layer + 1, "Key: {0}",
-                                    objKey == null ? "[null]" : objKey.ToString()
+                                    (objKey == null ? "[null]" : objKey.ToString())!
                                 );
                             }
                             else
@@ -197,7 +194,7 @@ namespace YAXLibTests
                             if (IsBasicType(valueType) || objValue == null)
                             {
                                 sb.AppendLayerFormatLine(layer + 1, "Value: {0}",
-                                    objValue == null ? "[null]" : objValue.ToString()
+                                    (objValue == null ? "[null]" : objValue.ToString())!
                                 );
                             }
                             else
@@ -216,17 +213,16 @@ namespace YAXLibTests
             return sb.ToString();
         }
 
-        private static string GeneralToString(object o, int layer)
+        private static string GeneralToString(object? o, int layer)
         {
             var sb = new StringBuilder();
             if (o == null)
             {
                 sb.AppendLayerFormatLine(layer, "[null]");
-                //sb.AppendLine("[null]");
             }
             else if (IsBasicType(o.GetType()))
             {
-                sb.AppendLayerFormatLine(layer, o.ToString());
+                sb.AppendLayerFormatLine(layer, o.ToString()!);
             }
             else if (IsDictionary(o.GetType()))
             {
@@ -238,11 +234,10 @@ namespace YAXLibTests
             }
             else if (IsIFormattable(o.GetType()))
             {
-                sb.AppendLayerFormatLine(layer, o.ToString());
+                sb.AppendLayerFormatLine(layer, o.ToString() ?? string.Empty);
             }
             else
             {
-                Type propType;
                 foreach (var prop in o.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))
                 {
                     if (!prop.CanRead)
@@ -254,7 +249,7 @@ namespace YAXLibTests
                     if (ReflectionUtils.IsTypeEqualOrInheritedFromType(prop.PropertyType, typeof(Delegate)))
                         continue; // do not print delegates
 
-                    propType = prop.PropertyType;
+                    var propType = prop.PropertyType;
                     if (IsBasicType(propType))
                     {
                         sb.AppendLayerFormatLine(layer, "{0}: {1}", prop.Name, GetBasicPropertyValue(o, prop));
@@ -437,7 +432,7 @@ namespace YAXLibTests
         private static string GetBasicPropertyValue(object o, PropertyInfo prop)
         {
             var value = prop.GetValue(o, null);
-            return value == null ? "[null]" : value.ToString();
+            return (value == null ? "[null]" : value.ToString())!;
         }
 
         /// <summary>
@@ -514,13 +509,13 @@ namespace YAXLibTests
     public static class StringBuilderExtensions
     {
         public static StringBuilder AppendLayerFormatLine(this StringBuilder sb, int layer, string format,
-            params object[] args)
+            params object?[] args)
         {
             return AppendLayerFormat(sb, layer, format + Environment.NewLine, args);
         }
 
         public static StringBuilder AppendLayerFormat(this StringBuilder sb, int layer, string format,
-            params object[] args)
+            params object?[] args)
         {
             var strToAppend = string.Format(format, args);
             return sb.AppendFormat("{0}{1}", GetLayerPrefix(layer), strToAppend);

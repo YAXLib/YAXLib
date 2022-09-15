@@ -10,7 +10,7 @@ namespace YAXLibTests.SampleClasses
     [YAXComment("This example shows usage of jagged multi-dimensional arrays")]
     public class AnotherArraySample
     {
-        public int[][,] Array1 { get; set; }
+        public int[][,]? Array1 { get; set; }
 
         public override string ToString()
         {

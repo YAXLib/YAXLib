@@ -9,13 +9,13 @@ namespace YAXLibTests.SampleClasses.PolymorphicSerialization
 {
     public class GameScene
     {
-        [YAXType(typeof(Sword))] public IWeapon DefaultWeapon { get; set; }
+        [YAXType(typeof(Sword))] public IWeapon? DefaultWeapon { get; set; }
 
-        [YAXType(typeof(Sword))] public IWeapon AlternativeWeapon { get; set; }
+        [YAXType(typeof(Sword))] public IWeapon? AlternativeWeapon { get; set; }
 
-        [YAXCollectionItemType(typeof(Sword))] public IWeapon[] Weapons { get; set; }
+        [YAXCollectionItemType(typeof(Sword))] public IWeapon[]? Weapons { get; set; }
 
-        [YAXCollectionItemType(typeof(Alien))] public List<CharacterBase> Characters { get; set; }
+        [YAXCollectionItemType(typeof(Alien))] public List<CharacterBase> Characters { get; set; } = new();
 
         public override string ToString()
         {
@@ -80,8 +80,8 @@ namespace YAXLibTests.SampleClasses.PolymorphicSerialization
 
     public abstract class CharacterBase
     {
-        public string Name { get; set; }
-        public string Color { get; set; }
+        public string? Name { get; set; }
+        public string? Color { get; set; }
     }
 
     public class Human : CharacterBase

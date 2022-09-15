@@ -28,14 +28,14 @@ namespace YAXLibTests.SampleClasses
         [YAXAttributeForClass] public Seasons OneInstance { get; set; }
 
         [YAXCollection(YAXCollectionSerializationTypes.Serially, SeparateBy = ";", IsWhiteSpaceSeparator = false)]
-        public Seasons[] TheSeasonSerially { get; set; }
+        public Seasons[]? TheSeasonSerially { get; set; }
 
         [YAXCollection(YAXCollectionSerializationTypes.Recursive)]
-        public Seasons[] TheSeasonRecursive { get; set; }
+        public Seasons[]? TheSeasonRecursive { get; set; }
 
-        public Dictionary<Seasons, int> DicSeasonToInt { get; set; }
+        public Dictionary<Seasons, int> DicSeasonToInt { get; set; } = new();
 
-        public Dictionary<int, Seasons> DicIntToSeason { get; set; }
+        public Dictionary<int, Seasons> DicIntToSeason { get; set; } = new();
 
         public override string ToString()
         {
@@ -44,17 +44,19 @@ namespace YAXLibTests.SampleClasses
 
         public static EnumsSample GetSampleInstance()
         {
-            var dicSeas2Int = new Dictionary<Seasons, int>();
-            dicSeas2Int.Add(Seasons.First, 1);
-            dicSeas2Int.Add(Seasons.Second, 2);
-            dicSeas2Int.Add(Seasons.Third, 3);
-            dicSeas2Int.Add(Seasons.Fourth, 4);
+            var dicSeas2Int = new Dictionary<Seasons, int> {
+                { Seasons.First, 1 },
+                { Seasons.Second, 2 },
+                { Seasons.Third, 3 },
+                { Seasons.Fourth, 4 }
+            };
 
-            var dicInt2Seas = new Dictionary<int, Seasons>();
-            dicInt2Seas.Add(1, Seasons.First);
-            dicInt2Seas.Add(2, Seasons.Second | Seasons.First);
-            dicInt2Seas.Add(3, Seasons.Third);
-            dicInt2Seas.Add(4, Seasons.Fourth);
+            var dicInt2Seas = new Dictionary<int, Seasons> {
+                { 1, Seasons.First },
+                { 2, Seasons.Second | Seasons.First },
+                { 3, Seasons.Third },
+                { 4, Seasons.Fourth }
+            };
 
             return new EnumsSample
             {

@@ -10,8 +10,8 @@ namespace YAXLibTests.SampleClasses
     [YAXComment("This example is our basic hypothetical warehouse")]
     public class WarehouseSimple
     {
-        public string Name { get; set; }
-        public string Address { get; set; }
+        public string? Name { get; set; }
+        public string? Address { get; set; }
         public double Area { get; set; }
 
         public override string ToString()

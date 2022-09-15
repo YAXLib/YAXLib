@@ -12,19 +12,19 @@ namespace YAXLibTests.SampleClasses
         and jagged arrays")]
     public class MultiDimArraySample
     {
-        public int[,] IntArray { get; set; }
+        public int[,]? IntArray { get; set; }
 
-        public double[,,] DoubleArray { get; set; }
+        public double[,,]? DoubleArray { get; set; }
 
-        public int[][] JaggedArray { get; set; }
+        public int[][]? JaggedArray { get; set; }
 
         [YAXComment("The containing element should not disappear because of the dims attribute")]
         [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement)]
-        public int[,] IntArrayNoContainingElems { get; set; }
+        public int[,]? IntArrayNoContainingElems { get; set; }
 
         [YAXComment("This element should not be serialized serially because each element is not of basic type")]
         [YAXCollection(YAXCollectionSerializationTypes.Serially)]
-        public int[][] JaggedNotSerially { get; set; }
+        public int[][]? JaggedNotSerially { get; set; }
 
         public override string ToString()
         {

@@ -31,8 +31,8 @@ namespace YAXLibTests
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
         }
 
-        protected abstract IYAXSerializer<object> CreateSerializer<T>(SerializerOptions options = null);
-        protected abstract YAXSerializer CreateSerializer(Type type, SerializerOptions options = null);
+        protected abstract IYAXSerializer<object> CreateSerializer<T>(SerializerOptions? options = null);
+        protected abstract YAXSerializer CreateSerializer(Type type, SerializerOptions? options = null);
 
         [Test]
         public void BasicTypeSerializationTest()
@@ -144,9 +144,9 @@ namespace YAXLibTests
   <Number1>{instance.Number1.ToString(culture)}</Number1>
   <Number3>{instance.Number3.ToString(culture)}</Number3>
   <Numbers>
-    <Double>{instance.Numbers[0].ToString(culture)}</Double>
-    <Double>{instance.Numbers[1].ToString(culture)}</Double>
-    <Double>{instance.Numbers[2].ToString(culture)}</Double>
+    <Double>{instance.Numbers?[0].ToString(culture)}</Double>
+    <Double>{instance.Numbers?[1].ToString(culture)}</Double>
+    <Double>{instance.Numbers?[2].ToString(culture)}</Double>
   </Numbers>
   <Dec1>{instance.Dec1.ToString(culture)}</Dec1>
   <Date1>{instance.Date1.ToString(culture)}</Date1>
@@ -212,9 +212,9 @@ namespace YAXLibTests
   <Number1>{instance.Number1.ToString(CultureInfo.InvariantCulture)}</Number1>
   <Number3>{instance.Number3.ToString(CultureInfo.InvariantCulture)}</Number3>
   <Numbers>
-    <Double>{instance.Numbers[0].ToString(CultureInfo.InvariantCulture)}</Double>
-    <Double>{instance.Numbers[1].ToString(CultureInfo.InvariantCulture)}</Double>
-    <Double>{instance.Numbers[2].ToString(CultureInfo.InvariantCulture)}</Double>
+    <Double>{instance.Numbers?[0].ToString(CultureInfo.InvariantCulture)}</Double>
+    <Double>{instance.Numbers?[1].ToString(CultureInfo.InvariantCulture)}</Double>
+    <Double>{instance.Numbers?[2].ToString(CultureInfo.InvariantCulture)}</Double>
   </Numbers>
   <Dec1>{instance.Dec1.ToString(CultureInfo.InvariantCulture)}</Dec1>
   <Date1>{instance.Date1.ToString(CultureInfo.InvariantCulture)}</Date1>
@@ -349,7 +349,7 @@ namespace YAXLibTests
         public void DictionaryWithNullValue()
         {
             const string theKey = "TheKey";
-            var d = new Dictionary<string, object> { { theKey, null } };
+            var d = new Dictionary<string, object?> { { theKey, null } };
             var serializer = CreateSerializer<Dictionary<string, object>>(new SerializerOptions
             {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
@@ -358,8 +358,8 @@ namespace YAXLibTests
             });
 
             var got = serializer.Serialize(d);
-            var gotDes = (Dictionary<string, object>) serializer.Deserialize(got);
-            Assert.AreEqual(d[theKey], gotDes[theKey]);
+            var gotDes = (Dictionary<string, object>?) serializer.Deserialize(got);
+            Assert.AreEqual(d[theKey], gotDes?[theKey]);
         }
 
         /// <summary>
@@ -369,7 +369,7 @@ namespace YAXLibTests
         public void DictionaryWithNullValueShouldNotCrash()
         {
             const string theKey = "TheKey";
-            var d = new Dictionary<string, object> { { theKey, null } };
+            var d = new Dictionary<string, object?> { { theKey, null } };
             var serializer = CreateSerializer<Dictionary<string, object>>(new SerializerOptions
             {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
@@ -430,7 +430,7 @@ namespace YAXLibTests
     <ItemInfo Item=""Item9"" Count=""600"" />
     <ItemInfo Item=""Item12"" Count=""25"" />
   </ItemQuantities>
-  <Owner SSN=""123456789"">
+  <Owner Ssn=""123456789"">
     <Identification Name=""John"" Family=""Doe"" />
     <Age>50</Age>
   </Owner>
@@ -494,18 +494,18 @@ namespace YAXLibTests
 <!-- Thanks go to Anton Levshunov for proposing this example, -->
 <!-- and a discussion on this matter. -->
 <MultilevelClass>
-  <items>
+  <Items>
     <FirstLevelClass>
-      <ID>1</ID>
+      <Id>1</Id>
       <Second>
-        <SecondID>1-2</SecondID>
+        <SecondId>1-2</SecondId>
       </Second>
     </FirstLevelClass>
     <FirstLevelClass>
-      <ID>2</ID>
+      <Id>2</Id>
       <Second />
     </FirstLevelClass>
-  </items>
+  </Items>
 </MultilevelClass>";
             var serializer = CreateSerializer<MultilevelClass>(new SerializerOptions
             {
@@ -524,9 +524,9 @@ namespace YAXLibTests
             var result =
                 @"<!-- This example shows how to apply format strings to a class properties -->
 <FormattingExample>
-  <CreationDate>{0}</CreationDate>
-  <ModificationDate>{1}</ModificationDate>
-  <PI>3.14159</PI>
+  <CreationDate>Wednesday, 14 March 2007</CreationDate>
+  <ModificationDate>03/18/2007</ModificationDate>
+  <Pi>3.14159</Pi>
   <NaturalExp>
     <Double>2.718</Double>
     <Double>7.389</Double>
@@ -861,7 +861,7 @@ namespace YAXLibTests
                     SerializationOptions = YAXSerializationOptions.SerializeNullObjects
                 });
             var original = NullableSample2.GetSampleInstance();
-            var des = (NullableSample2) serializer.Deserialize(xml);
+            var des = (NullableSample2?) serializer.Deserialize(xml);
 
             // Assert
             des.Should().BeEquivalentTo(original);
@@ -912,7 +912,7 @@ namespace YAXLibTests
                 });
 
             var original = NullableSample2.GetSampleInstance();
-            var des = (NullableSample2) serializer.Deserialize(xml);
+            var des = (NullableSample2?) serializer.Deserialize(xml);
 
             // Assert
             des.Should().BeEquivalentTo(original);
@@ -950,7 +950,7 @@ namespace YAXLibTests
 </NullableSample1>";
             var original = NullableSample1.GetSampleInstance();
             var serializer = CreateSerializer(typeof(NullableSample1));
-            var des = (NullableSample1) serializer.Deserialize(xml);
+            var des = (NullableSample1?) serializer.Deserialize(xml);
 
             // Assert
             des.Should().BeEquivalentTo(original);
@@ -1052,8 +1052,8 @@ namespace YAXLibTests
         public void RequestTest()
         {
             const string result =
-                @"<Pricing id=""123"">
-  <version major=""1"" minor=""0"" />
+                @"<Pricing Id=""123"">
+  <version Major=""1"" Minor=""0"" />
   <input>
     <value_date>2010-10-5</value_date>
     <storage_date>2010-10-5</storage_date>
@@ -1539,8 +1539,8 @@ namespace YAXLibTests
       <IntInInterface>2</IntInInterface>
       <StringInClass2>Class2</StringInClass2>
     </ISample>
-    <ISample yaxlib:realtype=""YAXLibTests.SampleClasses.Class3_1"">
-      <StringInClass3_1>Class3_1</StringInClass3_1>
+    <ISample yaxlib:realtype=""YAXLibTests.SampleClasses.Class31"">
+      <StringInClass31>Class3_1</StringInClass31>
       <IntInInterface>3</IntInInterface>
       <DoubleInClass1>3</DoubleInClass1>
     </ISample>
@@ -1561,8 +1561,8 @@ namespace YAXLibTests
       <Value>2</Value>
     </KeyValuePairOfISampleInt32>
     <KeyValuePairOfISampleInt32>
-      <Key yaxlib:realtype=""YAXLibTests.SampleClasses.Class3_1"">
-        <StringInClass3_1>Class3_1</StringInClass3_1>
+      <Key yaxlib:realtype=""YAXLibTests.SampleClasses.Class31"">
+        <StringInClass31>Class3_1</StringInClass31>
         <IntInInterface>3</IntInInterface>
         <DoubleInClass1>3</DoubleInClass1>
       </Key>
@@ -1586,8 +1586,8 @@ namespace YAXLibTests
     </KeyValuePairOfInt32ISample>
     <KeyValuePairOfInt32ISample>
       <Key>3</Key>
-      <Value yaxlib:realtype=""YAXLibTests.SampleClasses.Class3_1"">
-        <StringInClass3_1>Class3_1</StringInClass3_1>
+      <Value yaxlib:realtype=""YAXLibTests.SampleClasses.Class31"">
+        <StringInClass31>Class3_1</StringInClass31>
         <IntInInterface>3</IntInInterface>
         <DoubleInClass1>3</DoubleInClass1>
       </Value>
@@ -1632,17 +1632,16 @@ namespace YAXLibTests
         [Test]
         public void InterfaceMatchingSampleTest()
         {
+            // Note: Before YAXLib 4, which is built with nullable reference types enabled,
+            // there was a test containing a Dictionary with a nullable TKey.
+            // However, the dictionary has a [NotNull] constraint, and this part of the test was removed.
+
             const string result =
                 @"<!-- This example shows serialization and deserialization of objects -->
 <!-- through a reference to their base class or interface while used in -->
 <!-- collection classes -->
 <InterfaceMatchingSample SomeNumber=""10"">
   <ListOfSamples>2 4 8</ListOfSamples>
-  <DictNullable2Int>
-    <KeyValuePairOfNullableOfDoubleInt32 Key=""1"" Value=""1"" />
-    <KeyValuePairOfNullableOfDoubleInt32 Key=""2"" Value=""2"" />
-    <KeyValuePairOfNullableOfDoubleInt32 Key=""3"" Value=""3"" />
-  </DictNullable2Int>
   <DictInt2Nullable>
     <KeyValuePairOfInt32NullableOfDouble Key=""1"" Value=""1"" />
     <KeyValuePairOfInt32NullableOfDouble Key=""2"" Value=""2"" />
@@ -1959,7 +1958,7 @@ namespace YAXLibTests
 
             var initialInstDes = ser.Deserialize(initialXmlSer) as ClassContainingXElement;
             Assert.That(initialInstDes, Is.Not.Null);
-            var initialInstDesString = initialInstDes.ToString();
+            var initialInstDesString = initialInstDes?.ToString();
 
             Assert.That(initialInstDesString, Is.EqualTo(initialInstanceString));
 
@@ -1969,7 +1968,7 @@ namespace YAXLibTests
             var nulledElemXmlSer = ser.Serialize(initialInstance);
 
             var nulledInstanceDeser = ser.Deserialize(nulledElemXmlSer);
-            Assert.That(nulledInstanceDeser.ToString(), Is.EqualTo(nulledElementString));
+            Assert.That(nulledInstanceDeser?.ToString(), Is.EqualTo(nulledElementString));
         }
 
         [Test]
@@ -2092,7 +2091,7 @@ namespace YAXLibTests
 
             Assert.That(xmlResult, Is.EqualTo(expectedResult));
             var desObj = ser.Deserialize(xmlResult);
-            Assert.That(desObj.ToString(), Is.EqualTo(content.ToString()));
+            Assert.That(desObj?.ToString(), Is.EqualTo(content.ToString()));
         }
 
         [TestCase("mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")] // NETFRAMEWORK2.x
@@ -2116,9 +2115,9 @@ namespace YAXLibTests
 
             Assert.That(xmlResult.StripTypeAssemblyVersion(), Is.EqualTo(expectedResult.StripTypeAssemblyVersion()));
             var desObj = ser.Deserialize(xmlResult);
-            Assert.That(desObj.GetType(), Is.EqualTo(lst.GetType()));
-            var desLst = (List<int>) desObj;
-            Assert.That(lst, Has.Count.EqualTo(desLst.Count));
+            Assert.That(desObj?.GetType(), Is.EqualTo(lst.GetType()));
+            var desLst = (List<int>?) desObj;
+            Assert.That(lst, Has.Count.EqualTo(desLst?.Count));
             Assert.That(lst, Is.EquivalentTo(desLst));
         }
 
@@ -2144,9 +2143,9 @@ namespace YAXLibTests
 
             Assert.That(xmlResult.StripTypeAssemblyVersion(), Is.EqualTo(expectedResult.StripTypeAssemblyVersion()));
             var desObj = ser.Deserialize(xmlResult);
-            Assert.That(desObj.GetType(), Is.EqualTo(lst.GetType()));
-            var desLst = (List<object>)desObj;
-            Assert.That(lst, Has.Count.EqualTo(desLst.Count));
+            Assert.That(desObj?.GetType(), Is.EqualTo(lst.GetType()));
+            var desLst = (List<object>?)desObj;
+            Assert.That(lst, Has.Count.EqualTo(desLst?.Count));
             Assert.That(lst, Is.EquivalentTo(desLst));
         }
 
@@ -2724,7 +2723,7 @@ namespace YAXLibTests
         [Test]
         public void PolymorphicDictionaryWithValueAsNull()
         {
-            var dict = new Dictionary<string, object> { { "foo", null } };
+            var dict = new Dictionary<string, object?> { { "foo", null } };
             var serializer = CreateSerializer<Dictionary<string, object>>();
             var result = serializer.Serialize(dict);
 
@@ -2741,7 +2740,7 @@ namespace YAXLibTests
         [Test]
         public void CollectionWithNullElements()
         {
-            var list = new List<string> {
+            var list = new List<string?> {
                 "1",
                 null,
                 "3"
@@ -2760,7 +2759,7 @@ namespace YAXLibTests
         [Test]
         public void PolymorphicCollectionWithNullElements()
         {
-            var list = new List<object> {
+            var list = new List<object?> {
                 "1",
                 null,
                 3
@@ -2973,7 +2972,7 @@ namespace YAXLibTests
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
             });
 
-            var deserialized = (SuccessfulEmbeddingSample) serializer.Deserialize(xml);
+            var deserialized = (SuccessfulEmbeddingSample?) serializer.Deserialize(xml);
 
             // Assert
             deserialized.Should().BeEquivalentTo(SuccessfulEmbeddingSample.GetSampleInstance());
@@ -3031,7 +3030,7 @@ namespace YAXLibTests
 
             var result = serializer.SerializeToXDocument(sample);
 
-            Assert.That(result.Root!.FirstNode.ToString(), Is.EqualTo(nameof(StripInvalidCharsSample.ValueForClass)));
+            Assert.That(result.Root!.FirstNode?.ToString(), Is.EqualTo(nameof(StripInvalidCharsSample.ValueForClass)));
         }
 
         [Test]

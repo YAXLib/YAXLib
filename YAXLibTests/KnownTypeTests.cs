@@ -96,10 +96,10 @@ public class KnownTypeTests
 </TypeKnownTypeSample>";
         
         var serialized = serializer.Serialize(typeExample);
-        var deserialized = (TypeKnownTypeSample) serializer.Deserialize(serialized);
+        var deserialized = (TypeKnownTypeSample?) serializer.Deserialize(serialized);
 
         Assert.That(serialized, Is.EqualTo(expectedXml));
-        Assert.That(deserialized.TheType.UnderlyingSystemType, Is.EqualTo(typeExample.TheType.UnderlyingSystemType));
+        Assert.That(deserialized?.TheType?.UnderlyingSystemType, Is.EqualTo(typeExample.TheType?.UnderlyingSystemType));
     }
 
     [Test]
@@ -115,7 +115,7 @@ public class KnownTypeTests
         // Known type adds/removes " KnownType" to/from Text property
         // to make sure it is actually invoked
         var serialized = serializer.Serialize(data);
-        var deserialized = (UsingSerializationContextSample) serializer.Deserialize(serialized);
+        var deserialized = (UsingSerializationContextSample?) serializer.Deserialize(serialized);
 
         Assert.That(serialized, Is.EqualTo(expectedXml));
         deserialized.Should().BeEquivalentTo(data);
@@ -136,10 +136,10 @@ public class KnownTypeTests
             new YAXSerializer(typeof(int)));
 
         s.Serialize(typeExample.TheType, serialized, XNamespace.None, discardCtx);
-        var deserialized = (Type) s.Deserialize(serialized, XNamespace.None, discardCtx);
+        var deserialized = (Type?) s.Deserialize(serialized, XNamespace.None, discardCtx);
 
         Assert.That(serialized.ToString(), Is.EqualTo(expectedXml));
-        Assert.That(deserialized!.ToString(), Is.EqualTo("YAXLibTests.KnownTypeTests"));
+        Assert.That(deserialized?.ToString(), Is.EqualTo("YAXLibTests.KnownTypeTests"));
     }
 
     [Test]
@@ -153,7 +153,7 @@ public class KnownTypeTests
         var deserialized = serializer.Deserialize(serialized);
 
         Assert.That(serialized, Is.EqualTo(expectedXml));
-        Assert.That(deserialized.ToString(), Is.EqualTo("YAXLibTests.KnownTypeTests"));
+        Assert.That(deserialized?.ToString(), Is.EqualTo("YAXLibTests.KnownTypeTests"));
     }
 
     [Test]
@@ -218,7 +218,7 @@ public class KnownTypeTests
 
         var xml = ser.Serialize(inst);
         var deserializedInstance = ser.Deserialize(xml);
-        Assert.That(deserializedInstance.ToString(), Is.EqualTo(inst.ToString()));
+        Assert.That(deserializedInstance?.ToString(), Is.EqualTo(inst.ToString()));
     }
 
     [Test]
@@ -315,8 +315,8 @@ public class KnownTypeTests
                 new YAXSerializer(typeof(ColorDynamicKnownType)));
 
         var elem = new XElement("TheColor", "Red");
-        var desCl = (Color) colorKnownType.Deserialize(elem, string.Empty, dummySerializationContext);
-        Assert.That(desCl.ToArgb(), Is.EqualTo(Color.Red.ToArgb()));
+        var desCl = (Color?) colorKnownType.Deserialize(elem, string.Empty, dummySerializationContext);
+        Assert.That(desCl?.ToArgb(), Is.EqualTo(Color.Red.ToArgb()));
 
         var serElem = new XElement("TheColor");
         colorKnownType.Serialize(Color.Red, serElem, "", dummySerializationContext);
@@ -327,16 +327,16 @@ public class KnownTypeTests
             new XElement("R", 255),
             new XElement("G", 0),
             new XElement("B", 0));
-        var desCl2 = (Color) colorKnownType.Deserialize(elemRgbForRed, "", dummySerializationContext);
-        Assert.That(desCl2.ToArgb(), Is.EqualTo(Color.Red.ToArgb()));
+        var desCl2 = (Color?) colorKnownType.Deserialize(elemRgbForRed, "", dummySerializationContext);
+        Assert.That(desCl2?.ToArgb(), Is.EqualTo(Color.Red.ToArgb()));
 
         var elemRgbAndValueForRed = new XElement("TheColor",
             "Blue",
             new XElement("R", 255),
             new XElement("G", 0),
             new XElement("B", 0));
-        var desCl3 = (Color) colorKnownType.Deserialize(elemRgbAndValueForRed, "", dummySerializationContext);
-        Assert.That(desCl3.ToArgb(), Is.EqualTo(Color.Red.ToArgb()));
+        var desCl3 = (Color?) colorKnownType.Deserialize(elemRgbAndValueForRed, "", dummySerializationContext);
+        Assert.That(desCl3?.ToArgb(), Is.EqualTo(Color.Red.ToArgb()));
     }
 
     [Test]
@@ -356,15 +356,15 @@ public class KnownTypeTests
             var outerElement = exceptionSerialized.Root;
 
             Assert.That(outerElement?.Name.LocalName, Is.EqualTo("Exception"), "Element name should be 'Exception'");
-            Assert.That(outerElement.Attribute("{http://www.sinairv.com/yaxlib/}realtype")?.Value,
+            Assert.That(outerElement?.Attribute("{http://www.sinairv.com/yaxlib/}realtype")?.Value,
                 Is.EqualTo("YAXLibTests.SampleClasses.YAXLibTests.SampleClasses.CustomException"), "Exception 'realtype' attribute should exist");
-            Assert.That(outerElement.Element("Message")?.Value, Does.Contain(ex.Message), "Exception message should exist");
+            Assert.That(outerElement?.Element("Message")?.Value, Does.Contain(ex.Message), "Exception message should exist");
 
             var innerElement = exceptionSerialized.Root?.Element("InnerException");
 
             Assert.That(innerElement?.Attribute("{http://www.sinairv.com/yaxlib/}realtype")?.Value,
                 Is.EqualTo("System.DivideByZeroException"), "'InnerException 'realtype' attribute should exist");
-            Assert.That(innerElement.Element("Message")?.Value, Does.Contain(ex.InnerException!.Message),
+            Assert.That(innerElement?.Element("Message")?.Value, Does.Contain(ex.InnerException!.Message),
                 "InnerException message should exist");
         }
     }
@@ -389,9 +389,9 @@ public class KnownTypeTests
             var outerElement = exceptionSerialized.Root;
 
             Assert.That(outerElement?.Name.LocalName, Is.EqualTo("Exception"), "Element name should be 'Exception'");
-            Assert.That(outerElement.Attribute("{http://www.sinairv.com/yaxlib/}realtype")?.Value,
+            Assert.That(outerElement?.Attribute("{http://www.sinairv.com/yaxlib/}realtype")?.Value,
                 Is.EqualTo("System.InvalidOperationException"), "Exception 'realtype' attribute should exist");
-            Assert.That(outerElement.Element("Message")?.Value, Does.Contain(ex.Message),
+            Assert.That(outerElement?.Element("Message")?.Value, Does.Contain(ex.Message),
                 "Exception message should exist");
 
             if (maxRecursion > 3)
@@ -399,7 +399,7 @@ public class KnownTypeTests
                 var innerElement = exceptionSerialized.Root?.Element(XName.Get("InnerException"));
                 Assert.That(innerElement?.Attribute("{http://www.sinairv.com/yaxlib/}realtype")?.Value,
                     Is.EqualTo("System.ArgumentException"), "'InnerException 'realtype' attribute should exist");
-                Assert.That(innerElement.Element("Message")?.Value, Does.Contain(ex.InnerException!.Message),
+                Assert.That(innerElement?.Element("Message")?.Value, Does.Contain(ex.InnerException!.Message),
                     "InnerException message should exist");
             }
         }
@@ -454,12 +454,12 @@ public class KnownTypeTests
              SerializationOptions = YAXSerializationOptions.SerializeNullObjects });
         var deserialized = ser.Deserialize(toDeserialize);
 
-        Assert.That(deserialized.Message, Is.EqualTo("This is a custom exception"));
+        Assert.That(deserialized?.Message, Is.EqualTo("This is a custom exception"));
         if (maxRecursion > 1)
         {
-            Assert.That(deserialized.InnerException, Is.TypeOf<DivideByZeroException>());
-            Assert.That(deserialized.InnerException?.Message, Is.EqualTo("InnerException of CustomException"));
-            Assert.That(deserialized.InnerException?.InnerException, Is.TypeOf<AbandonedMutexException>());
+            Assert.That(deserialized?.InnerException, Is.TypeOf<DivideByZeroException>());
+            Assert.That(deserialized?.InnerException?.Message, Is.EqualTo("InnerException of CustomException"));
+            Assert.That(deserialized?.InnerException?.InnerException, Is.TypeOf<AbandonedMutexException>());
         }
     }
 
@@ -492,9 +492,9 @@ public class KnownTypeTests
             { SerializationOptions = YAXSerializationOptions.SerializeNullObjects });
         var deserialized = ser.Deserialize(toDeserialize);
 
-        Assert.That(deserialized.Message, Is.EqualTo("System exception unit test"));
-        Assert.That(deserialized.InnerException, Is.TypeOf<ArgumentException>());
-        Assert.That(deserialized.InnerException?.Message, Is.EqualTo("Inner exception unit test (Parameter 'arg')"));
+        Assert.That(deserialized?.Message, Is.EqualTo("System exception unit test"));
+        Assert.That(deserialized?.InnerException, Is.TypeOf<ArgumentException>());
+        Assert.That(deserialized?.InnerException?.Message, Is.EqualTo("Inner exception unit test (Parameter 'arg')"));
     }
 
     [Test]
@@ -508,8 +508,8 @@ public class KnownTypeTests
         var deserialized = ser.Deserialize(toDeserialize);
 
         Assert.That(deserialized, Is.InstanceOf<InvalidOperationException>());
-        Assert.That(deserialized.Message, Is.Empty);
-        Assert.That(deserialized.InnerException, Is.Null);
+        Assert.That(deserialized?.Message, Is.Empty);
+        Assert.That(deserialized?.InnerException, Is.Null);
     }
 
     [Test]

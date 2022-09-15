@@ -11,9 +11,9 @@ namespace YAXLibTests.SampleClasses
     [YAXSerializableType(Options = YAXSerializationOptions.DontSerializeNullObjects)]
     public class SomeCollectionItem
     {
-        public string Value { get; set; }
+        public string? Value { get; set; }
 
-        public string SomeElement { get; set; }
+        public string? SomeElement { get; set; }
     }
 
     [ShowInDemoApplication]
@@ -23,12 +23,12 @@ namespace YAXLibTests.SampleClasses
 
         public int PublishYear { get; set; }
 
-        [YAXValueFor(".")] public string Comments { get; set; }
+        [YAXValueFor(".")] public string? Comments { get; set; }
 
-        public string Author { get; set; }
+        public string? Author { get; set; }
 
         [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement)]
-        public List<SomeCollectionItem> TheCollection { get; set; }
+        public List<SomeCollectionItem> TheCollection { get; set; } = new();
 
         public override string ToString()
         {
@@ -37,11 +37,11 @@ namespace YAXLibTests.SampleClasses
 
         public static BookClassTestingSerializeAsValue GetSampleInstance()
         {
-            var theCollection = new List<SomeCollectionItem>();
-
-            theCollection.Add(new SomeCollectionItem {Value = "value1", SomeElement = "elem1"});
-            theCollection.Add(new SomeCollectionItem {Value = "value2", SomeElement = "elem2"});
-            theCollection.Add(new SomeCollectionItem {Value = "value3", SomeElement = "elem3"});
+            var theCollection = new List<SomeCollectionItem> {
+                new SomeCollectionItem { Value = "value1", SomeElement = "elem1" },
+                new SomeCollectionItem { Value = "value2", SomeElement = "elem2" },
+                new SomeCollectionItem {Value = "value3", SomeElement = "elem3"}
+            };
 
             return new BookClassTestingSerializeAsValue
             {

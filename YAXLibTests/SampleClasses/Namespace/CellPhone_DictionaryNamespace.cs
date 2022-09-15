@@ -8,30 +8,30 @@ using YAXLib.Attributes;
 namespace YAXLibTests.SampleClasses.Namespace
 {
     [YAXNamespace("http://namespace.org/nsmain")]
-    public class CellPhone_DictionaryNamespace
+    public class CellPhoneDictionaryNamespace
     {
         [YAXSerializeAs("TheName")]
         [YAXNamespace("x1", "http://namespace.org/x1")]
-        public string DeviceBrand { get; set; }
+        public string? DeviceBrand { get; set; }
 
-        public string OS { get; set; }
+        public string? Os { get; set; }
 
         [YAXNamespace("p1", "namespace/for/prices/only")]
-        public Dictionary<string, double> Prices { get; set; }
+        public Dictionary<string, double> Prices { get; set; } = new();
 
         public override string ToString()
         {
             return GeneralToStringProvider.GeneralToString(this);
         }
 
-        public static CellPhone_DictionaryNamespace GetSampleInstance()
+        public static CellPhoneDictionaryNamespace GetSampleInstance()
         {
             var prices = new Dictionary<string, double> {{"red", 120}, {"blue", 110}, {"black", 140}};
 
-            return new CellPhone_DictionaryNamespace
+            return new CellPhoneDictionaryNamespace
             {
                 DeviceBrand = "HTC",
-                OS = "Windows Phone 8",
+                Os = "Windows Phone 8",
                 Prices = prices
             };
         }

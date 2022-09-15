@@ -16,12 +16,12 @@ namespace YAXLibTests.SampleClasses
 
         [YAXFormat("d")] public DateTime ModificationDate { get; set; }
 
-        [YAXFormat("F05")] public double PI { get; set; }
+        [YAXFormat("F05")] public double Pi { get; set; }
 
-        [YAXFormat("F03")] public List<double> NaturalExp { get; set; }
+        [YAXFormat("F03")] public List<double> NaturalExp { get; set; } = new();
 
         [YAXDictionary(KeyFormatString = "F02", ValueFormatString = "F05")]
-        public Dictionary<double, double> SomeLogarithmExample { get; set; }
+        public Dictionary<double, double> SomeLogarithmExample { get; set; } = new();
 
 
         public override string ToString()
@@ -31,9 +31,9 @@ namespace YAXLibTests.SampleClasses
 
         public static FormattingExample GetSampleInstance()
         {
-            var lstNE = new List<double>();
+            var lstNe = new List<double>();
             for (var i = 1; i <= 4; ++i)
-                lstNE.Add(Math.Exp(i));
+                lstNe.Add(Math.Exp(i));
 
             var dicLog = new Dictionary<double, double>();
             for (var d = 1.5; d <= 10; d *= 2)
@@ -43,8 +43,8 @@ namespace YAXLibTests.SampleClasses
             {
                 CreationDate = new DateTime(2007, 3, 14),
                 ModificationDate = new DateTime(2007, 3, 18),
-                PI = Math.PI,
-                NaturalExp = lstNE,
+                Pi = Math.PI,
+                NaturalExp = lstNe,
                 SomeLogarithmExample = dicLog
             };
         }

@@ -41,7 +41,7 @@ namespace YAXLibTests
             Assert.AreEqual(obj, gottonObject);
         }
 
-        private object GetTheTwoStringsAndReturn(object obj, out string originalString, out string gottonString,
+        private object? GetTheTwoStringsAndReturn(object obj, out string originalString, out string? gottonString,
             out int errorCounts)
         {
             originalString = GeneralToStringProvider.GeneralToString(obj);
@@ -51,7 +51,7 @@ namespace YAXLibTests
             return gottonObject;
         }
 
-        private YAXSerializer SerializeDeserialize(object obj, out object gottonObject)
+        private YAXSerializer SerializeDeserialize(object obj, out object? gottonObject)
         {
             var serializer = CreateSerializer(obj.GetType(),
                 new SerializerOptions
@@ -65,7 +65,7 @@ namespace YAXLibTests
             return serializer;
         }
 
-        private object PerformTestAndReturn(object obj)
+        private object? PerformTestAndReturn(object obj)
         {
             var result = GetTheTwoStringsAndReturn(obj, out var originalString, out var gottonString, out var errorCounts);
             Assert.That(originalString, Is.Not.Null);
@@ -199,14 +199,14 @@ namespace YAXLibTests
                     ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                     SerializationOptions = YAXSerializationOptions.DontSerializeNullObjects
                 });
-            var got = (NullableSample2) serializer.Deserialize(xml);
+            var got = (NullableSample2?) serializer.Deserialize(xml);
 
             Assert.That(got, Is.Not.Null);
-            Assert.That(got.Boolean, Is.Null);
-            Assert.That(got.DateTime, Is.Null);
-            Assert.That(got.Decimal, Is.Null);
-            Assert.That(got.Enum, Is.Null);
-            Assert.That(got.Number, Is.Null);
+            Assert.That(got?.Boolean, Is.Null);
+            Assert.That(got?.DateTime, Is.Null);
+            Assert.That(got?.Decimal, Is.Null);
+            Assert.That(got?.Enum, Is.Null);
+            Assert.That(got?.Number, Is.Null);
         }
 
         [Test]
@@ -370,8 +370,8 @@ namespace YAXLibTests
             var serializer = CreateSerializer<MoreComplexBook2>(new SerializerOptions
                 { ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow });
             serializer.SetDeserializationBaseObject(book);
-            var bookResult = (MoreComplexBook2) serializer.Deserialize(result);
-            Assert.AreNotEqual(bookResult.ToString(), initialToString);
+            var bookResult = (MoreComplexBook2?) serializer.Deserialize(result);
+            Assert.AreNotEqual(bookResult?.ToString(), initialToString);
         }
 
         [Test]
@@ -409,10 +409,10 @@ namespace YAXLibTests
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.DontSerializeNullObjects
             });
-            var gottonObject = (SerializationOptionsSample) serializer.Deserialize(input1);
+            var gottonObject = (SerializationOptionsSample?) serializer.Deserialize(input1);
 
-            Assert.That(gottonObject.ObjectWithOptionsSet.SomeValueType, Is.EqualTo(123), "Missing element: DefaultValue from attribute should be used");
-            Assert.That(gottonObject.ObjectWithOptionsSet.StrNull, Is.Null, "Empty element: Deserializes as null");
+            Assert.That(gottonObject?.ObjectWithOptionsSet.SomeValueType, Is.EqualTo(123), "Missing element: DefaultValue from attribute should be used");
+            Assert.That(gottonObject?.ObjectWithOptionsSet.StrNull, Is.Null, "Empty element: Deserializes as null");
             Assert.That(serializer.ParsingErrors.Count, Is.EqualTo(1));
         }
 
@@ -516,7 +516,7 @@ namespace YAXLibTests
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
             });
             var gottonObject = serializer.Deserialize(serializer.Serialize(obj));
-            Assert.That(obj.ToString(), Is.EqualTo(gottonObject.ToString()));
+            Assert.That(obj.ToString(), Is.EqualTo(gottonObject?.ToString()));
         }
 
         [Test]
@@ -528,13 +528,13 @@ namespace YAXLibTests
 
             var input = ser.Serialize(container);
 
-            var deserializedContainer = (DictionaryContainerSample) ser.Deserialize(input);
+            var deserializedContainer = (DictionaryContainerSample?) ser.Deserialize(input);
 
-            Assert.IsNotNull(deserializedContainer.Items);
-            Assert.IsTrue(deserializedContainer.Items.Count == container.Items.Count,
+            Assert.IsNotNull(deserializedContainer?.Items);
+            Assert.IsTrue(deserializedContainer?.Items.Count == container.Items.Count,
                 "Expected Count: {0}. Actual Count: {1}",
                 container.Items.Count,
-                deserializedContainer.Items.Count);
+                deserializedContainer?.Items.Count);
         }
 
         [Test]
@@ -546,13 +546,13 @@ namespace YAXLibTests
 
             var input = ser.Serialize(inst);
 
-            var deserializedInstance = (DictionarySample) ser.Deserialize(input);
+            var deserializedInstance = (DictionarySample?) ser.Deserialize(input);
 
             Assert.That(deserializedInstance, Is.Not.Null);
-            Assert.IsTrue(deserializedInstance.Count == inst.Count,
+            Assert.IsTrue(deserializedInstance?.Count == inst.Count,
                 "Expected Count: {0}. Actual Count: {1}",
                 inst.Count,
-                deserializedInstance.Count);
+                deserializedInstance?.Count);
         }
 
         [Test]
@@ -617,10 +617,10 @@ namespace YAXLibTests
 
             var input = ser.Serialize(inst);
 
-            var deserializedInstance = (IndirectSelfReferringObject) ser.Deserialize(input);
+            var deserializedInstance = (IndirectSelfReferringObject?) ser.Deserialize(input);
 
             Assert.That(deserializedInstance, Is.Not.Null);
-            Assert.IsNull(deserializedInstance.Child.Parent);
+            Assert.IsNull(deserializedInstance?.Child?.Parent);
         }
 
         [Test]
@@ -636,10 +636,10 @@ namespace YAXLibTests
 
             var input = ser.Serialize(inst);
 
-            var deserializedInstance = (DirectSelfReferringObject) ser.Deserialize(input);
+            var deserializedInstance = (DirectSelfReferringObject?) ser.Deserialize(input);
 
             Assert.That(deserializedInstance, Is.Not.Null);
-            Assert.IsNull(deserializedInstance.Next.Next);
+            Assert.IsNull(deserializedInstance?.Next?.Next);
         }
 
         [Test]
@@ -655,10 +655,10 @@ namespace YAXLibTests
 
             var input = ser.Serialize(inst);
 
-            var deserializedInstance = (DirectSelfReferringObject) ser.Deserialize(input);
+            var deserializedInstance = (DirectSelfReferringObject?) ser.Deserialize(input);
 
             Assert.That(deserializedInstance, Is.Not.Null);
-            Assert.IsNull(deserializedInstance.Next);
+            Assert.IsNull(deserializedInstance?.Next);
         }
 
         [Test]
@@ -684,7 +684,7 @@ namespace YAXLibTests
             var deserializedInstance = ser.Deserialize(result) as CalculatedPropertiesCanCauseInfiniteLoop;
             Assert.IsNotNull(deserializedInstance);
             Assert.That(ser.Options.MaxRecursion, Is.EqualTo(10));
-            Assert.That(deserializedInstance.Data, Is.EqualTo(2.0M));
+            Assert.That(deserializedInstance?.Data, Is.EqualTo(2.0M));
             Assert.That(ser.GetRecursionCount(), Is.EqualTo(0));
         }
 
@@ -692,7 +692,7 @@ namespace YAXLibTests
         public void OrderedDeserialization()
         {
             var obj = BookClassWithOrdering.GetSampleInstance();
-            obj = (BookClassWithOrdering) PerformTestAndReturn(obj);
+            obj = (BookClassWithOrdering) PerformTestAndReturn(obj)!;
 
             obj.DecentralizationOrder.TryGetValue(0, out var first);
             obj.DecentralizationOrder.TryGetValue(1, out var second);
@@ -722,10 +722,10 @@ namespace YAXLibTests
                 }
             };
             var result = ser.Serialize(container);
-            var deserializedInstance = (BaseContainer) ser.Deserialize(result);
+            var deserializedInstance = (BaseContainer?) ser.Deserialize(result);
 
-            Assert.That(deserializedInstance.Items[0].Data, Is.EqualTo("Some Data"));
-            Assert.That(deserializedInstance.Items.Length, Is.EqualTo(1));
+            Assert.That(deserializedInstance?.Items?[0].Data, Is.EqualTo("Some Data"));
+            Assert.That(deserializedInstance?.Items?.Length, Is.EqualTo(1));
         }
 
         [Test]
@@ -740,11 +740,11 @@ namespace YAXLibTests
                 }
             };
             var result = ser.Serialize(container); // This works correct
-            var deserializedInstance = (BaseContainer) ser.Deserialize(result);
+            var deserializedInstance = (BaseContainer?) ser.Deserialize(result);
 
-            Assert.That(deserializedInstance.Items[0], Is.InstanceOf<DerivedItem>());
-            Assert.That(deserializedInstance.Items[0].Data, Is.EqualTo("Some Data"));
-            Assert.That(deserializedInstance.Items.Length, Is.EqualTo(1));
+            Assert.That(deserializedInstance?.Items?[0], Is.InstanceOf<DerivedItem>());
+            Assert.That(deserializedInstance?.Items?[0].Data, Is.EqualTo("Some Data"));
+            Assert.That(deserializedInstance?.Items?.Length, Is.EqualTo(1));
         }
 
         [Test]
@@ -762,8 +762,8 @@ namespace YAXLibTests
             deserializedCustomer.Should().BeEquivalentTo(customer, "Missing elements should deserialize with default values");
         }
 
-        protected abstract IYAXSerializer<object> CreateSerializer<T>(SerializerOptions options = null);
-        protected abstract YAXSerializer CreateSerializer(Type type, SerializerOptions options = null);
+        protected abstract IYAXSerializer<object> CreateSerializer<T>(SerializerOptions? options = null);
+        protected abstract YAXSerializer CreateSerializer(Type type, SerializerOptions? options = null);
 
         [Test]
         public void Attribute_Option_DontSerializeNullObjects_Should_Serialize_And_Deserialize()
@@ -800,7 +800,7 @@ namespace YAXLibTests
 
             serializer.SerializeToFile(book, file);
             
-            var deserializedBook = (Book) serializer.DeserializeFromFile(file);
+            var deserializedBook = (Book?) serializer.DeserializeFromFile(file);
             deserializedBook.Should().BeEquivalentTo(book);
         }
 
@@ -816,7 +816,7 @@ namespace YAXLibTests
             });
             var xDocument = serializer.SerializeToXDocument(book);
 
-            var deserializedBook = serializer.Deserialize(xDocument.Root);
+            var deserializedBook = serializer.Deserialize(xDocument.Root!);
             deserializedBook.Should().BeEquivalentTo(book);
         }
 

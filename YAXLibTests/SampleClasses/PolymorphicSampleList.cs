@@ -41,7 +41,7 @@ namespace YAXLibTests.SampleClasses
 
     public class PolymorphicSampleListAsMember
     {
-        public PolymorphicSampleList SampleList { get; set; }
+        public PolymorphicSampleList SampleList { get; set; } = new();
 
         public static PolymorphicSampleListAsMember GetSampleInstance()
         {

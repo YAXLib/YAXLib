@@ -7,7 +7,7 @@ namespace YAXLibTests.SampleClasses.SelfReferencingObjects
     {
         public decimal Data { get; set; }
 
-        public CalculatedPropertiesCanCauseInfiniteLoop Reciprocal
+        public CalculatedPropertiesCanCauseInfiniteLoop? Reciprocal
         {
             get
             {

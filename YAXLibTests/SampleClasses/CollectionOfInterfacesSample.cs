@@ -21,12 +21,12 @@ namespace YAXLibTests.SampleClasses
     public class Class2 : ISample
     {
         public int IntInInterface { get; set; }
-        public string StringInClass2 { get; set; }
+        public string? StringInClass2 { get; set; }
     }
 
-    public class Class3_1 : Class1
+    public class Class31 : Class1
     {
-        public string StringInClass3_1 { get; set; }
+        public string? StringInClass31 { get; set; }
     }
 
     [ShowInDemoApplication]
@@ -34,10 +34,10 @@ namespace YAXLibTests.SampleClasses
         objects through a reference to their base class or interface")]
     public class CollectionOfInterfacesSample
     {
-        public ISample SingleRef { get; set; }
-        public List<ISample> ListOfSamples { get; set; }
-        public Dictionary<ISample, int> DictSample2Int { get; set; }
-        public Dictionary<int, ISample> DictInt2Sample { get; set; }
+        public ISample? SingleRef { get; set; }
+        public List<ISample> ListOfSamples { get; set; } = new();
+        public Dictionary<ISample, int> DictSample2Int { get; set; } = new();
+        public Dictionary<int, ISample> DictInt2Sample { get; set; } = new();
 
         public override string ToString()
         {
@@ -48,22 +48,25 @@ namespace YAXLibTests.SampleClasses
         {
             var c1 = new Class1 {IntInInterface = 1, DoubleInClass1 = 1.0};
             var c2 = new Class2 {IntInInterface = 2, StringInClass2 = "Class2"};
-            var c3 = new Class3_1 {DoubleInClass1 = 3.0, IntInInterface = 3, StringInClass3_1 = "Class3_1"};
+            var c3 = new Class31 {DoubleInClass1 = 3.0, IntInInterface = 3, StringInClass31 = "Class3_1"};
 
-            var lstOfSamples = new List<ISample>();
-            lstOfSamples.Add(c1);
-            lstOfSamples.Add(c2);
-            lstOfSamples.Add(c3);
+            var lstOfSamples = new List<ISample> {
+                c1,
+                c2,
+                c3
+            };
 
-            var dicSample2Int = new Dictionary<ISample, int>();
-            dicSample2Int.Add(c1, 1);
-            dicSample2Int.Add(c2, 2);
-            dicSample2Int.Add(c3, 3);
+            var dicSample2Int = new Dictionary<ISample, int> {
+                { c1, 1 },
+                { c2, 2 },
+                { c3, 3 }
+            };
 
-            var dicInt2Sample = new Dictionary<int, ISample>();
-            dicInt2Sample.Add(1, c1);
-            dicInt2Sample.Add(2, c2);
-            dicInt2Sample.Add(3, c3);
+            var dicInt2Sample = new Dictionary<int, ISample> {
+                { 1, c1 },
+                { 2, c2 },
+                { 3, c3 }
+            };
 
 
             return new CollectionOfInterfacesSample

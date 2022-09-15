@@ -50,7 +50,7 @@ namespace YAXLibTests.SampleClasses
     [YAXSerializeAs("Base")]
     public class AttributeInheritanceBase
     {
-        [YAXSerializeAs("TheName")] public string Name { get; set; }
+        [YAXSerializeAs("TheName")] public string? Name { get; set; }
 
         [YAXSerializeAs("TheGender")] public virtual string Gender => "Unknown";
     }
