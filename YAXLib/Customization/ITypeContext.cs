@@ -42,7 +42,7 @@ public interface ITypeContext
     /// <param name="obj">The object of type <see cref="Type"/> to serialize.</param>
     /// <param name="options">The <see cref="SerializerOptions"/> or <see langword="null"/> to take options from the parent <seealso cref="YAXSerializer"/>.</param>
     /// <returns>The <see cref="XElement"/> representation of the object graph.</returns>
-    XElement Serialize(object obj, SerializerOptions options);
+    XElement Serialize(object obj, SerializerOptions? options = null);
 
     /// <summary>
     /// Deserializes the <paramref name="element"/> to a new instance of <see cref="Type"/>.
@@ -54,5 +54,5 @@ public interface ITypeContext
     /// <param name="element">The object of type <see cref="Type"/> to serialize.</param>
     /// <param name="options">The <see cref="SerializerOptions"/> or <see langword="null"/> to take options from the parent <seealso cref="YAXSerializer"/>.</param>
     /// <returns>A new instance of <see cref="Type"/> created from the <paramref name="element"/></returns>
-    object? Deserialize(XElement element, SerializerOptions options);
+    object? Deserialize(XElement element, SerializerOptions? options = null);
 }
