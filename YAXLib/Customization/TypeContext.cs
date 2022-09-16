@@ -46,7 +46,7 @@ public class TypeContext : ITypeContext
     }
 
     /// <inheritdoc/>
-    public XElement Serialize(object? obj, SerializerOptions options)
+    public XElement Serialize(object? obj, SerializerOptions? options = null)
     {
         using var serializerPoolObject = SerializerPool.Instance.Get(out var serializer);
         InitializeAsChildSerializer(serializer, options);
@@ -63,7 +63,7 @@ public class TypeContext : ITypeContext
     }
 
     /// <inheritdoc/>
-    public object? Deserialize(XElement element, SerializerOptions options)
+    public object? Deserialize(XElement element, SerializerOptions? options = null)
     {
         using var serializerPoolObject = SerializerPool.Instance.Get(out var serializer);
         InitializeAsChildSerializer(serializer, options);
@@ -90,5 +90,4 @@ public class TypeContext : ITypeContext
         serializer.DocumentDefaultNamespace = _serializer.DocumentDefaultNamespace;
         ((IRecursionCounter) serializer).RecursionCount = ((IRecursionCounter) _serializer).RecursionCount + 1;
     }
-
 }
