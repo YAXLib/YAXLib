@@ -13,7 +13,7 @@ namespace YAXLibTests.SampleClasses
     public class GUIDTest
     {
         public Guid StandaloneGuid { get; set; }
-        public Dictionary<Guid, int> SomeDic { get; set; }
+        public Dictionary<Guid, int> SomeDic { get; set; } = new();
 
         public override string ToString()
         {
@@ -27,10 +27,11 @@ namespace YAXLibTests.SampleClasses
 
         public static GUIDTest GetSampleInstance(Guid g1, Guid g2, Guid g3, Guid g4)
         {
-            var dic = new Dictionary<Guid, int>();
-            dic.Add(g1, 1);
-            dic.Add(g2, 2);
-            dic.Add(g3, 3);
+            var dic = new Dictionary<Guid, int> {
+                { g1, 1 },
+                { g2, 2 },
+                { g3, 3 }
+            };
 
             return new GUIDTest
             {

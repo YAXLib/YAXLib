@@ -13,19 +13,19 @@ namespace YAXLibTests.SampleClasses
     {
         [YAXDictionary(EachPairName = "Pair", KeyName = "Digits", ValueName = "Letters",
             SerializeKeyAs = YAXNodeTypes.Attribute, SerializeValueAs = YAXNodeTypes.Content)]
-        public Dictionary<int, string> DicValueAsContent { get; set; }
+        public Dictionary<int, string> DicValueAsContent { get; set; } = new();
 
         [YAXDictionary(EachPairName = "Pair", KeyName = "Digits", ValueName = "Letters",
             SerializeKeyAs = YAXNodeTypes.Content, SerializeValueAs = YAXNodeTypes.Attribute)]
-        public Dictionary<int, string> DicKeyAsContnet { get; set; }
+        public Dictionary<int, string> DicKeyAsContnet { get; set; } = new();
 
         [YAXDictionary(EachPairName = "Pair", KeyName = "Digits", ValueName = "Letters",
             SerializeKeyAs = YAXNodeTypes.Content, SerializeValueAs = YAXNodeTypes.Element)]
-        public Dictionary<int, string> DicKeyAsContentValueAsElement { get; set; }
+        public Dictionary<int, string> DicKeyAsContentValueAsElement { get; set; } = new();
 
         [YAXDictionary(EachPairName = "Pair", KeyName = "Digits", ValueName = "Letters",
             SerializeKeyAs = YAXNodeTypes.Element, SerializeValueAs = YAXNodeTypes.Content)]
-        public Dictionary<int, string> DicValueAsContentKeyAsElement { get; set; }
+        public Dictionary<int, string> DicValueAsContentKeyAsElement { get; set; } = new();
 
         public static DictionaryKeyValueAsContent GetSampleInstance()
         {

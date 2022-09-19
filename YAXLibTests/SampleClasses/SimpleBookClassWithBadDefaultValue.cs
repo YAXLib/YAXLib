@@ -11,8 +11,8 @@ namespace YAXLibTests.SampleClasses
     [YAXComment("This example demonstrates serailizing a very simple class")]
     public class BookWithBadDefaultValue
     {
-        public string Title { get; set; }
-        public string Author { get; set; }
+        public string? Title { get; set; }
+        public string? Author { get; set; }
         public int PublishYear { get; set; }
 
         [YAXErrorIfMissed(YAXExceptionTypes.Ignore, DefaultValue = "NOTDOUBLE")]

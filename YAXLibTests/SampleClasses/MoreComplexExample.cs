@@ -24,7 +24,7 @@ namespace YAXLibTests.SampleClasses
         [YAXDictionary(EachPairName = "PointInfo", KeyName = "PName",
             ValueName = "ThePoint", SerializeKeyAs = YAXNodeTypes.Attribute,
             SerializeValueAs = YAXNodeTypes.Attribute)]
-        public Dictionary<string, MyPoint> FamousPoints { get; set; }
+        public Dictionary<string, MyPoint> FamousPoints { get; set; } = new();
 
         public IEnumerable<int> IntEnumerable
         {
@@ -33,7 +33,7 @@ namespace YAXLibTests.SampleClasses
             set { _lst = value.ToList(); }
         }
 
-        [YAXNotCollection] public Students Students { get; set; }
+        [YAXNotCollection] public Students Students { get; set; } = new();
 
         public override string ToString()
         {
@@ -74,9 +74,9 @@ namespace YAXLibTests.SampleClasses
     {
         public int Count { get; set; }
 
-        public string[] Names { get; set; }
+        public string[]? Names { get; set; }
 
-        public string[] Families { get; set; }
+        public string[]? Families { get; set; }
 
         #region IEnumerable<string> Members
 
@@ -98,11 +98,13 @@ namespace YAXLibTests.SampleClasses
 
         public string GetAt(int i)
         {
-            return string.Format("{0}, {1}", Families[i], Names[i]);
+            return string.Format("{0}, {1}", Families?[i], Names?[i]);
         }
 
         public override string ToString()
         {
+            if(Names == null || Families == null) return string.Empty;
+
             var sb = new StringBuilder();
 
             sb.AppendLine(string.Format("Count = {0}", Count));
@@ -131,17 +133,17 @@ namespace YAXLibTests.SampleClasses
     public class StudentsEnumerator : IEnumerator<string>
     {
         private readonly Students _students;
-        private int counter = -1;
+        private int _counter = -1;
 
         public StudentsEnumerator(Students studentsInstance)
         {
             _students = studentsInstance;
-            counter = -1;
+            _counter = -1;
         }
 
         #region IEnumerator<string> Members
 
-        public string Current => _students.GetAt(counter);
+        public string Current => _students.GetAt(_counter);
 
         #endregion
 
@@ -156,19 +158,19 @@ namespace YAXLibTests.SampleClasses
 
         #region IEnumerator Members
 
-        object IEnumerator.Current => _students.GetAt(counter);
+        object IEnumerator.Current => _students.GetAt(_counter);
 
         public bool MoveNext()
         {
-            counter++;
-            if (counter >= _students.Count)
+            _counter++;
+            if (_counter >= _students.Count)
                 return false;
             return true;
         }
 
         public void Reset()
         {
-            counter = -1;
+            _counter = -1;
         }
 
         #endregion

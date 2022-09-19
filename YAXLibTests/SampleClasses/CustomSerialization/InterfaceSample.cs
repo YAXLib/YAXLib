@@ -10,23 +10,23 @@ namespace YAXLibTests.SampleClasses.CustomSerialization
     public interface ISampleInterface
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
     }
 
     [YAXCustomSerializer(typeof(InterfaceSerializer))]
     public class NonGenericClassWithInterface : ISampleInterface
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
     }
 
     [YAXCustomSerializer(typeof(InterfaceSerializer))]
     public class GenericClassWithInterface<T> : ISampleInterface
     {
         [YAXErrorIfMissed(YAXExceptionTypes.Ignore)]
-        public T Something { get; set; }
+        public T? Something { get; set; }
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public override string ToString()
         {
             return Id + Name;
@@ -37,9 +37,9 @@ namespace YAXLibTests.SampleClasses.CustomSerialization
     public class GenericClassWithoutInterface<T>
     {
         [YAXErrorIfMissed(YAXExceptionTypes.Ignore)]
-        public T Something { get; set; }
+        public T? Something { get; set; }
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public override string ToString()
         {
             return Id + Name;
@@ -50,7 +50,7 @@ namespace YAXLibTests.SampleClasses.CustomSerialization
     public class IllegalTypeOfClassSerializer : ISampleInterface
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public override string ToString()
         {
             return Id + Name;

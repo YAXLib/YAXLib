@@ -10,11 +10,11 @@ namespace YAXLibTests.SampleClasses
     [YAXComment("This example shows our hypothetical warehouse, a little bit structured")]
     public class WarehouseStructured
     {
-        [YAXAttributeForClass] public string Name { get; set; }
+        [YAXAttributeForClass] public string? Name { get; set; }
 
         [YAXSerializeAs("address")]
         [YAXAttributeFor("SiteInfo")]
-        public string Address { get; set; }
+        public string? Address { get; set; }
 
         [YAXSerializeAs("SurfaceArea")]
         [YAXElementFor("SiteInfo")]

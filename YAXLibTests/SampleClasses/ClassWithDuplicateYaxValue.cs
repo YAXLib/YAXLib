@@ -10,11 +10,11 @@ namespace YAXLibTests.SampleClasses
     {
         [YAXSerializableField]
         [YAXValueForClass]
-        public string Value1 { get; set; }
+        public string? Value1 { get; set; }
 
         [YAXSerializableField]
         [YAXValueForClass]
-        public string Value2 { get; set; }
+        public string? Value2 { get; set; }
 
         public static ClassWithDuplicateYaxValue GetSampleInstance()
         {

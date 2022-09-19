@@ -42,7 +42,7 @@ namespace YAXLibTests
                 {ClassLevelSample = new ClassLevelSample {Title = "The Title", MessageBody = "The Message"}};
             var s = new YAXSerializer(typeof(ClassLevelSampleAsElement));
             var xml = s.Serialize(original);
-            var deserialized = (ClassLevelSampleAsElement) s.Deserialize(xml);
+            var deserialized = (ClassLevelSampleAsElement?) s.Deserialize(xml);
 
             // " CUSTOM" is added by the ClassLevelSerializer
             Assert.That(xml, Is.EqualTo(@"<ClassLevelSampleAsElement>
@@ -52,7 +52,7 @@ namespace YAXLibTests
   </ClassLevelSample>
 </ClassLevelSampleAsElement>"));
             // " CUSTOM" is removed by the ClassLevelSerializer
-            Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()));
+            Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
         }
         
         [Test]
@@ -64,10 +64,10 @@ namespace YAXLibTests
                 {ClassLevelSample = new ClassLevelSample {Title = "The Title", MessageBody = "The Message"}};
             var s = new YAXSerializer(typeof(ClassLevelSampleAsAttribute));
             var xml = s.Serialize(original);
-            var deserialized = (ClassLevelSampleAsAttribute) s.Deserialize(xml);
+            var deserialized = (ClassLevelSampleAsAttribute?) s.Deserialize(xml);
             
             Assert.That(xml, Is.EqualTo("<ClassLevelSampleAsAttribute ClassLevelSample=\"ATTR|The Title|The Message\" />"));
-            Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()));
+            Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
         }
         
         [Test]
@@ -78,10 +78,10 @@ namespace YAXLibTests
             var original = new ClassLevelSampleAsValue { ClassLevelSample = new ClassLevelSample { Title = "The Title", MessageBody = "The Message"}};
             var s = new YAXSerializer(typeof(ClassLevelSampleAsValue));
             var xml = s.Serialize(original);
-            var deserialized = (ClassLevelSampleAsValue) s.Deserialize(xml);
+            var deserialized = (ClassLevelSampleAsValue?) s.Deserialize(xml);
             
             Assert.That(xml, Is.EqualTo("<ClassLevelSampleAsValue>VAL|The Title|The Message</ClassLevelSampleAsValue>"));
-            Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()));
+            Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
         }
 
         [Test]
@@ -93,7 +93,7 @@ namespace YAXLibTests
                 {ClassLevelCtxSample = new ClassLevelCtxSample {Title = "The Title", MessageBody = "The Message"}};
             var s = new YAXSerializer(typeof(ClassLevelCtxSampleAsElement));
             var xml = s.Serialize(original);
-            var deserialized = (ClassLevelCtxSampleAsElement) s.Deserialize(xml);
+            var deserialized = (ClassLevelCtxSampleAsElement?) s.Deserialize(xml);
 
             // " CUSTOM" is added by the ClassLevelSerializer
             Assert.That(xml, Is.EqualTo(@"<ClassLevelCtxSampleAsElement>
@@ -103,7 +103,7 @@ namespace YAXLibTests
   </ClassLevelCtxSample>
 </ClassLevelCtxSampleAsElement>"));
             // " CUSTOM" is removed by the ClassLevelSerializer
-            Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()));
+            Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
         }
         
         [Test]
@@ -113,10 +113,10 @@ namespace YAXLibTests
                 {ClassLevelCtxSample = new ClassLevelCtxSample {Title = "The Title", MessageBody = "The Message"}};
             var s = new YAXSerializer(typeof(ClassLevelCtxSampleAsAttribute));
             var xml = s.Serialize(original);
-            var deserialized = (ClassLevelCtxSampleAsAttribute) s.Deserialize(xml);
+            var deserialized = (ClassLevelCtxSampleAsAttribute?) s.Deserialize(xml);
             
             Assert.That(xml, Is.EqualTo("<ClassLevelCtxSampleAsAttribute ClassLevelCtxSample=\"ATTR|The Title|The Message\" />"));
-            Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()));
+            Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
         }
         
         [Test]
@@ -125,10 +125,10 @@ namespace YAXLibTests
             var original = new ClassLevelCtxSampleAsValue { ClassLevelCtxSample = new ClassLevelCtxSample { Title = "The Title", MessageBody = "The Message"}};
             var s = new YAXSerializer(typeof(ClassLevelCtxSampleAsValue));
             var xml = s.Serialize(original);
-            var deserialized = (ClassLevelCtxSampleAsValue) s.Deserialize(xml);
+            var deserialized = (ClassLevelCtxSampleAsValue?) s.Deserialize(xml);
             
             Assert.That(xml, Is.EqualTo("<ClassLevelCtxSampleAsValue>VAL|The Title|The Message</ClassLevelCtxSampleAsValue>"));
-            Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()));
+            Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
         }
 
         [Test]
@@ -144,7 +144,7 @@ namespace YAXLibTests
             };
             var s = new YAXSerializer(typeof(PropertyLevelSample));
             var xml = s.Serialize(original);
-            var deserialized = (PropertyLevelSample) s.Deserialize(xml);
+            var deserialized = (PropertyLevelSample?) s.Deserialize(xml);
             var expectedXml = 
                 @"<PropertyLevelSample>
   <Id>1234</Id>
@@ -153,7 +153,7 @@ namespace YAXLibTests
 </PropertyLevelSample>";
             
             Assert.That(xml, Is.EqualTo(expectedXml));
-            Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()));
+            Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
         }
 
         [Test]
@@ -169,7 +169,7 @@ namespace YAXLibTests
             };
             var s = new YAXSerializer(typeof(FieldLevelSample));
             var xml = s.Serialize(original);
-            var deserialized = (FieldLevelSample) s.Deserialize(xml);
+            var deserialized = (FieldLevelSample?) s.Deserialize(xml);
             var expectedXml = 
                 @"<FieldLevelSample Id=""ATTR_1234"">
   <Title>VAL__This is the title</Title>
@@ -179,7 +179,7 @@ namespace YAXLibTests
 </FieldLevelSample>";
             
             Assert.That(xml, Is.EqualTo(expectedXml));
-            Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()));
+            Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
         }
         
         [Test]
@@ -196,13 +196,13 @@ namespace YAXLibTests
                 };
             var s = new YAXSerializer(typeof(FieldLevelCombinedSample));
             var xml = s.Serialize(original);
-            var deserialized = (FieldLevelCombinedSample) s.Deserialize(xml);
+            var deserialized = (FieldLevelCombinedSample?) s.Deserialize(xml);
             var expectedXml = 
 @"<FieldLevelCombinedSample Id=""ATTR_1234"">
   <Title>ELE__This is the title</Title>VAL__Just a short message body</FieldLevelCombinedSample>";
             
             Assert.That(xml, Is.EqualTo(expectedXml));
-            Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()));
+            Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
         }
 
         [Test]
@@ -219,7 +219,7 @@ namespace YAXLibTests
             };
             var xml = s.Serialize(original);
             // Deserialization makes use of SerializationContext
-            var deserialized = (ISampleInterface) s.Deserialize(xml);
+            var deserialized = (ISampleInterface?) s.Deserialize(xml);
             var expectedXmlPart = 
                 $@"
   <C_Id>{original.Id}</C_Id>
@@ -229,7 +229,7 @@ namespace YAXLibTests
             // Note: Prefix "C_" is evidence for custom serializer was invoked
             // during serialization and deserialization
             Assert.That(xml, Does.Contain(expectedXmlPart), "Serialized XML");
-            Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()), "Deserialized Object");
+            Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()), "Deserialized Object");
         }
 
         [Test]
@@ -249,7 +249,7 @@ namespace YAXLibTests
             var xml = s.Serialize(original);
 
             // Deserialization makes use of SerializationContext
-            var deserialized = (ISampleInterface) s.Deserialize(xml);
+            var deserialized = (ISampleInterface?) s.Deserialize(xml);
             
             // Comment for 'Something' is just for demonstration
             var expectedXmlPart = 
@@ -262,7 +262,7 @@ namespace YAXLibTests
             // Note: Prefix "C_" is evidence for custom serializer was invoked
             // during serialization and deserialization
             Assert.That(xml, Does.Contain(expectedXmlPart), "Serialized XML");
-            Assert.That(deserialized.ToString(), Is.EqualTo(original.ToString()), "Deserialized Object");
+            Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()), "Deserialized Object");
         }
     }
 }

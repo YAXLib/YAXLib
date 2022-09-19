@@ -5,8 +5,8 @@ namespace YAXLibTests.SampleClasses.SelfReferencingObjects
 {
     public class RepetitiveReferenceIsNotLoop
     {
-        public SmallClass RefA { get; set; }
-        public SmallClass RefB { get; set; }
+        public SmallClass? RefA { get; set; }
+        public SmallClass? RefB { get; set; }
 
         public override string ToString()
         {

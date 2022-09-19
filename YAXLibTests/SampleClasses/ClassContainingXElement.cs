@@ -9,8 +9,8 @@ namespace YAXLibTests.SampleClasses
 {
     public class ClassContainingXElement
     {
-        public XElement TheElement { get; set; }
-        public XAttribute TheAttribute { get; set; }
+        public XElement? TheElement { get; set; }
+        public XAttribute? TheAttribute { get; set; }
 
         public override string ToString()
         {

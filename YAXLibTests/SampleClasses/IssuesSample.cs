@@ -13,11 +13,11 @@ namespace YAXLibTests.SampleClasses
     public class IssuesSample
     {
         [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement, EachElementName = "issue")]
-        public List<Issue> Issues { get; set; }
+        public List<Issue> Issues { get; set; } = new();
 
         [YAXSerializeAs("type")]
         [YAXAttributeForClass]
-        public string Type { get; set; }
+        public string? Type { get; set; }
 
         [YAXSerializeAs("count")]
         [YAXAttributeForClass]
@@ -29,7 +29,7 @@ namespace YAXLibTests.SampleClasses
 
             var issue1 = new Issue
             {
-                IssueID = 425,
+                IssueId = 425,
                 ProjectName = "Tech Pubs Box",
                 ProjectId = 141,
                 TrackerName = "Bug",
@@ -63,11 +63,11 @@ namespace YAXLibTests.SampleClasses
 
     public class Issue
     {
-        [YAXSerializeAs("id")] public int IssueID { get; set; }
+        [YAXSerializeAs("id")] public int IssueId { get; set; }
 
         [YAXSerializeAs("name")]
         [YAXAttributeFor("project")]
-        public string ProjectName { get; set; }
+        public string? ProjectName { get; set; }
 
         [YAXSerializeAs("id")]
         [YAXAttributeFor("project")]
@@ -75,7 +75,7 @@ namespace YAXLibTests.SampleClasses
 
         [YAXSerializeAs("name")]
         [YAXAttributeFor("tracker")]
-        public string TrackerName { get; set; }
+        public string? TrackerName { get; set; }
 
         [YAXSerializeAs("id")]
         [YAXAttributeFor("tracker")]
@@ -83,9 +83,9 @@ namespace YAXLibTests.SampleClasses
 
         // do the same for status, priority, author
 
-        [YAXSerializeAs("subject")] public string Subject { get; set; }
+        [YAXSerializeAs("subject")] public string? Subject { get; set; }
 
-        [YAXSerializeAs("description")] public string Description { get; set; }
+        [YAXSerializeAs("description")] public string? Description { get; set; }
 
         [YAXSerializeAs("start_date")]
         [YAXFormat("yyyy-MM-dd")]
@@ -99,7 +99,7 @@ namespace YAXLibTests.SampleClasses
 
         [YAXCollection(YAXCollectionSerializationTypes.Recursive, EachElementName = "custom_field")]
         [YAXSerializeAs("custom_fields")]
-        public List<CustomField> CustomFields { get; set; }
+        public List<CustomField> CustomFields { get; set; } = new();
 
         [YAXSerializeAs("created_on")]
         [YAXFormat("R")]
@@ -115,7 +115,7 @@ namespace YAXLibTests.SampleClasses
         public CustomField(string name, int id, string value)
         {
             Name = name;
-            ID = id;
+            Id = id;
             Value = value;
         }
 
@@ -125,7 +125,7 @@ namespace YAXLibTests.SampleClasses
 
         [YAXSerializeAs("id")]
         [YAXAttributeForClass]
-        public int ID { get; set; }
+        public int Id { get; set; }
 
         [YAXSerializeAs("value")]
         [YAXAttributeForClass]

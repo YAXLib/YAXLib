@@ -7,7 +7,7 @@ namespace YAXLibTests.SampleClasses.KnownTypes
 {
     public class TypeKnownTypeSample
     {
-        public Type TheType { get; set; }
+        public Type? TheType { get; set; }
 
         public static TypeKnownTypeSample GetSampleInstance()
         {

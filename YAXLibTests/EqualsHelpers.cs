@@ -17,7 +17,7 @@ namespace YAXLibTests
         /// <param name="me"></param>
         /// <param name="other"></param>
         /// <returns></returns>
-        public static bool CollectionEquals(ICollection me, ICollection other)
+        public static bool CollectionEquals(ICollection? me, ICollection? other)
         {
             if (me == null) return other == null;
             if (other == null) return false;
@@ -29,7 +29,7 @@ namespace YAXLibTests
         /// <summary>
         ///     Equals IDictionary, order doesn't matter
         /// </summary>
-        public static bool DictionaryEquals(IDictionary me, IDictionary other)
+        public static bool DictionaryEquals(IDictionary? me, IDictionary? other)
         {
             if (me == null) return other == null;
             if (other == null) return false;

@@ -9,17 +9,17 @@ namespace YAXLibTests.SampleClasses
 {
     public class PreserveWhitespaceOnClassSample
     {
-        [YAXPreserveWhitespace] public string Str1 { get; set; }
+        [YAXPreserveWhitespace] public string? Str1 { get; set; }
 
-        [YAXPreserveWhitespace] public string Str2 { get; set; }
+        [YAXPreserveWhitespace] public string? Str2 { get; set; }
 
         [YAXPreserveWhitespace]
         [YAXValueFor("SomeElem")]
-        public string Str3 { get; set; }
+        public string? Str3 { get; set; }
 
-        [YAXPreserveWhitespace] public string[] Strings { get; set; }
+        [YAXPreserveWhitespace] public string[]? Strings { get; set; }
 
-        [YAXPreserveWhitespace] public Dictionary<string, int> StringDic { get; set; }
+        [YAXPreserveWhitespace] public Dictionary<string, int>? StringDic { get; set; }
 
         public override string ToString()
         {

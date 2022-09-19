@@ -16,22 +16,22 @@ namespace YAXLibTests.SampleClasses
 
         public Guid GuidAsElem { get; set; }
 
-        public Guid[] GuidArray { get; set; }
+        public Guid[]? GuidArray { get; set; }
 
         [YAXCollection(YAXCollectionSerializationTypes.Serially)]
-        public Guid[] GuidArraySerially { get; set; }
+        public Guid[]? GuidArraySerially { get; set; }
 
-        public List<Guid> GuidsList { get; set; }
+        public List<Guid> GuidsList { get; set; } = new();
 
-        public Dictionary<Guid, int> DicKeyGuid { get; set; }
+        public Dictionary<Guid, int> DicKeyGuid { get; set; } = new();
 
         [YAXDictionary(EachPairName = "Pair", KeyName = "TheGuid", SerializeKeyAs = YAXNodeTypes.Attribute)]
-        public Dictionary<Guid, int> DicKeyAttrGuid { get; set; }
+        public Dictionary<Guid, int> DicKeyAttrGuid { get; set; } = new();
 
-        public Dictionary<int, Guid> DicValueGuid { get; set; }
+        public Dictionary<int, Guid> DicValueGuid { get; set; } = new();
 
         [YAXDictionary(EachPairName = "Pair", ValueName = "TheGuid", SerializeValueAs = YAXNodeTypes.Attribute)]
-        public Dictionary<int, Guid> DicValueAttrGuid { get; set; }
+        public Dictionary<int, Guid> DicValueAttrGuid { get; set; } = new();
 
         public override string ToString()
         {

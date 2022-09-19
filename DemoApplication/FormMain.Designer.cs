@@ -71,7 +71,7 @@
             this.btnSerialize.TabIndex = 0;
             this.btnSerialize.Text = "Serialize";
             this.btnSerialize.UseVisualStyleBackColor = true;
-            this.btnSerialize.Click += new System.EventHandler(this.btnSerialize_Click);
+            this.btnSerialize.Click += new System.EventHandler(this.BtnSerialize_Click);
             // 
             // rtbXMLOutput
             // 
@@ -97,7 +97,7 @@
             this.btnDeserialize.TabIndex = 2;
             this.btnDeserialize.Text = "Deserialize";
             this.btnDeserialize.UseVisualStyleBackColor = true;
-            this.btnDeserialize.Click += new System.EventHandler(this.btnDeserialize_Click);
+            this.btnDeserialize.Click += new System.EventHandler(this.BtnDeserialize_Click);
             // 
             // lstSampleClasses
             // 
@@ -110,7 +110,7 @@
             this.lstSampleClasses.Name = "lstSampleClasses";
             this.lstSampleClasses.Size = new System.Drawing.Size(234, 616);
             this.lstSampleClasses.TabIndex = 3;
-            this.lstSampleClasses.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstSampleClasses_MouseDoubleClick);
+            this.lstSampleClasses.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.LstSampleClasses_MouseDoubleClick);
             // 
             // rtbParsingErrors
             // 
@@ -156,7 +156,7 @@
             this.btnSerializeToFile.TabIndex = 7;
             this.btnSerializeToFile.Text = "Serialize To File";
             this.btnSerializeToFile.UseVisualStyleBackColor = true;
-            this.btnSerializeToFile.Click += new System.EventHandler(this.btnSerializeToFile_Click);
+            this.btnSerializeToFile.Click += new System.EventHandler(this.BtnSerializeToFile_Click);
             // 
             // btnDeserializeFromFile
             // 
@@ -167,7 +167,7 @@
             this.btnDeserializeFromFile.TabIndex = 8;
             this.btnDeserializeFromFile.Text = "Deserialize From File";
             this.btnDeserializeFromFile.UseVisualStyleBackColor = true;
-            this.btnDeserializeFromFile.Click += new System.EventHandler(this.btnDeserializeFromFile_Click);
+            this.btnDeserializeFromFile.Click += new System.EventHandler(this.BtnDeserializeFromFile_Click);
             // 
             // label3
             // 

@@ -14,11 +14,11 @@ namespace YAXLibTests.SampleClasses
             Delegate1 = AwesomeMethod;
         }
 
-        public AwesomeDelegate Delegate1 { get; set; }
-        public AwesomeDelegate Delegate2 { get; set; }
+        public AwesomeDelegate? Delegate1 { get; set; }
+        public AwesomeDelegate? Delegate2 { get; set; }
 
-        public Func<string> SomeFunc { get; set; }
-        public Action SomeAction { get; set; }
+        public Func<string>? SomeFunc { get; set; }
+        public Action? SomeAction { get; set; }
 
         public int SomeNumber { get; set; }
 

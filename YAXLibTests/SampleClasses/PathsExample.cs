@@ -15,7 +15,7 @@ namespace YAXLibTests.SampleClasses
     public class PathsExample
     {
         [YAXCollection(YAXCollectionSerializationTypes.Serially, SeparateBy = ";", IsWhiteSpaceSeparator = false)]
-        public List<string> Paths { get; set; }
+        public List<string> Paths { get; set; } = new();
 
         public override string ToString()
         {

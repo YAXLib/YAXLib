@@ -32,12 +32,12 @@ namespace YAXLibTests
                 $"{nameof(SerializerPool.Instance.Pool.CountInactive)}: {SerializerPool.Instance.Pool.CountInactive}");
         }
 
-        protected override IYAXSerializer<object> CreateSerializer<T>(SerializerOptions options = null)
+        protected override IYAXSerializer<object> CreateSerializer<T>(SerializerOptions? options = null)
         {
             return new GenericSerializerWrapper<T>(new YAXSerializer<T>(options ?? new SerializerOptions()));
         }
 
-        protected override YAXSerializer CreateSerializer(Type type, SerializerOptions options = null)
+        protected override YAXSerializer CreateSerializer(Type type, SerializerOptions? options = null)
         {
             return new YAXSerializer(type, options ?? new SerializerOptions());
         }

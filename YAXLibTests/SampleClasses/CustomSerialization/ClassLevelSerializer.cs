@@ -37,9 +37,9 @@ namespace YAXLibTests.SampleClasses.CustomSerialization
         {
             return new ClassLevelSample {
                 Title = element.Element(nameof(ClassLevelSample.Title))?
-                    .Value.Replace(Custom, string.Empty),
+                    .Value.Replace(Custom, string.Empty)!,
                 MessageBody = element.Element(nameof(ClassLevelSample.MessageBody))?
-                    .Value.Replace(Custom, string.Empty)
+                    .Value.Replace(Custom, string.Empty)!
             };
         }
 

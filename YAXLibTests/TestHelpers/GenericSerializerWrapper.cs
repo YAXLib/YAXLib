@@ -24,59 +24,59 @@ namespace YAXLibTests.TestHelpers
         /// <inheritdoc />
         public YAXParsingErrors ParsingErrors => _serializer.ParsingErrors;
 
-        public string Serialize(object obj)
+        public string Serialize(object? obj)
         {
-            return _serializer.Serialize((T)obj);
+            return _serializer.Serialize((T?)obj);
         }
 
-        public void Serialize(object obj, TextWriter textWriter)
+        public void Serialize(object? obj, TextWriter textWriter)
         {
-            _serializer.Serialize((T)obj, textWriter);
+            _serializer.Serialize((T?)obj, textWriter);
         }
 
-        public void Serialize(object obj, XmlWriter xmlWriter)
+        public void Serialize(object? obj, XmlWriter xmlWriter)
         {
-            _serializer.Serialize((T)obj, xmlWriter);
+            _serializer.Serialize((T?)obj, xmlWriter);
         }
 
-        public XDocument SerializeToXDocument(object obj)
+        public XDocument SerializeToXDocument(object? obj)
         {
-            return _serializer.SerializeToXDocument((T)obj);
+            return _serializer.SerializeToXDocument((T?)obj);
         }
 
-        public void SerializeToFile(object obj, string fileName)
+        public void SerializeToFile(object? obj, string fileName)
         {
-            _serializer.SerializeToFile((T)obj, fileName);
+            _serializer.SerializeToFile((T?)obj, fileName);
         }
 
-        public object Deserialize(string input)
+        public object? Deserialize(string input)
         {
             return _serializer.Deserialize(input);
         }
 
-        public object Deserialize(XmlReader xmlReader)
+        public object? Deserialize(XmlReader xmlReader)
         {
             return _serializer.Deserialize(xmlReader);
         }
 
-        public object Deserialize(TextReader textReader)
+        public object? Deserialize(TextReader textReader)
         {
             return _serializer.Deserialize(textReader);
         }
 
-        public object Deserialize(XElement element)
+        public object? Deserialize(XElement element)
         {
             return _serializer.Deserialize(element);
         }
 
-        public object DeserializeFromFile(string fileName)
+        public object? DeserializeFromFile(string fileName)
         {
             return _serializer.DeserializeFromFile(fileName);
         }
 
-        public void SetDeserializationBaseObject(object obj)
+        public void SetDeserializationBaseObject(object? obj)
         {
-            _serializer.SetDeserializationBaseObject((T)obj);
+            _serializer.SetDeserializationBaseObject((T?)obj);
         }
 
         #region Implementation of IRecursionCounter

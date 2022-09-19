@@ -5,9 +5,9 @@ namespace YAXLibTests.SampleClasses
 {
     public class NamesExample
     {
-        public string FirstName { get; set; }
+        public string? FirstName { get; set; }
 
-        public PersonInfo[] Persons { get; set; }
+        public PersonInfo[]? Persons { get; set; }
 
         public static NamesExample GetSampleInstance()
         {
@@ -30,7 +30,7 @@ namespace YAXLibTests.SampleClasses
 
     public class PersonInfo
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
     }
 }

@@ -4,7 +4,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
-    <nullable>disable</nullable>
+    <nullable>enable</nullable>
   </PropertyGroup>
 
   <ItemGroup>

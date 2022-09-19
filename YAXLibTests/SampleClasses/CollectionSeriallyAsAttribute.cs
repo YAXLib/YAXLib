@@ -12,15 +12,15 @@ namespace YAXLibTests.SampleClasses
     {
         [YAXAttributeFor("Info#names")]
         [YAXCollection(YAXCollectionSerializationTypes.Serially, SeparateBy = ",", IsWhiteSpaceSeparator = false)]
-        public string[] Names { get; set; }
+        public string[]? Names { get; set; }
 
         [YAXValueFor("TheCities")]
         [YAXCollection(YAXCollectionSerializationTypes.Serially, SeparateBy = ",", IsWhiteSpaceSeparator = false)]
-        public string[] Cities { get; set; }
+        public string[]? Cities { get; set; }
 
         [YAXElementFor("Location")]
         [YAXCollection(YAXCollectionSerializationTypes.Serially, SeparateBy = ",", IsWhiteSpaceSeparator = false)]
-        public string[] Countries { get; set; }
+        public string[]? Countries { get; set; }
 
         public static CollectionSeriallyAsAttribute GetSampleInstance()
         {

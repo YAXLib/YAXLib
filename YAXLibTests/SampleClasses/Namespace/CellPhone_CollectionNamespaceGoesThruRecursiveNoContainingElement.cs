@@ -9,26 +9,26 @@ using YAXLib.Enums;
 namespace YAXLibTests.SampleClasses.Namespace
 {
     [YAXSerializeAs("MobilePhone")]
-    public class CellPhone_CollectionNamespaceGoesThruRecursiveNoContainingElement
+    public class CellPhoneCollectionNamespaceGoesThruRecursiveNoContainingElement
     {
-        public string DeviceBrand { get; set; }
-        public string OS { get; set; }
+        public string? DeviceBrand { get; set; }
+        public string? Os { get; set; }
 
         [YAXNamespace("app", "http://namespace.org/apps")]
         [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement)]
-        public List<string> IntalledApps { get; set; }
+        public List<string> IntalledApps { get; set; } = new();
 
         public override string ToString()
         {
             return GeneralToStringProvider.GeneralToString(this);
         }
 
-        public static CellPhone_CollectionNamespaceGoesThruRecursiveNoContainingElement GetSampleInstance()
+        public static CellPhoneCollectionNamespaceGoesThruRecursiveNoContainingElement GetSampleInstance()
         {
-            return new CellPhone_CollectionNamespaceGoesThruRecursiveNoContainingElement
+            return new CellPhoneCollectionNamespaceGoesThruRecursiveNoContainingElement
             {
                 DeviceBrand = "Samsung Galaxy Nexus",
-                OS = "Android",
+                Os = "Android",
                 IntalledApps = new List<string> {"Google Map", "Google+", "Google Play"}
             };
         }

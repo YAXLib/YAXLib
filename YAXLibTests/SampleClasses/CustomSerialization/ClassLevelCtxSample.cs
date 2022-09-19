@@ -8,14 +8,14 @@ namespace YAXLibTests.SampleClasses.CustomSerialization
     [YAXCustomSerializer(typeof(ClassLevelCtxSerializer))]
     public class ClassLevelCtxSample
     {
-        public string MessageBody { get; set; }
+        public string? MessageBody { get; set; }
         
-        public string Title { get; set; }
+        public string? Title { get; set; }
     }
 
     public class ClassLevelCtxSampleAsElement
     {
-        public ClassLevelCtxSample ClassLevelCtxSample { get; set; }
+        public ClassLevelCtxSample ClassLevelCtxSample { get; set; } = new();
         public override string ToString()
         {
             return GeneralToStringProvider.GeneralToString(this);
@@ -25,7 +25,7 @@ namespace YAXLibTests.SampleClasses.CustomSerialization
     public class ClassLevelCtxSampleAsAttribute
     {
         [YAXAttributeForClass]
-        public ClassLevelCtxSample ClassLevelCtxSample { get; set; }
+        public ClassLevelCtxSample ClassLevelCtxSample { get; set; } = new();
         public override string ToString()
         {
             return GeneralToStringProvider.GeneralToString(this);
@@ -35,7 +35,7 @@ namespace YAXLibTests.SampleClasses.CustomSerialization
     public class ClassLevelCtxSampleAsValue
     {
         [YAXValueForClass]
-        public ClassLevelCtxSample ClassLevelCtxSample { get; set; }
+        public ClassLevelCtxSample ClassLevelCtxSample { get; set; } = new();
         public override string ToString()
         {
             return GeneralToStringProvider.GeneralToString(this);

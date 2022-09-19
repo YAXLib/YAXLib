@@ -13,8 +13,8 @@ namespace YAXLibTests.SampleClasses
     [YAXCustomSerializer(typeof(CustomMessageClassSerializer))]
     public class Message
     {
-        public string MessageText { get; set; }
-        public string BoldContent { get; set; }
+        public string? MessageText { get; set; }
+        public string? BoldContent { get; set; }
         public int BoldIndex { get; set; }
         public int BoldLength { get; set; }
 
@@ -29,9 +29,9 @@ namespace YAXLibTests.SampleClasses
     {
         [YAXCustomSerializer(typeof(CustomTitleSerializer))]
         [YAXElementFor("SomeTitle")]
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
-        public Message Message { get; set; }
+        public Message Message { get; set; } = new();
 
         public override string ToString()
         {
@@ -65,7 +65,7 @@ namespace YAXLibTests.SampleClasses
 
         public void SerializeToElement(Message objectToSerialize, XElement elemToFill, ISerializationContext serializationContext)
         {
-            var message = objectToSerialize.MessageText;
+            var message = objectToSerialize.MessageText ?? string.Empty;
             var beforeBold = message.Substring(0, objectToSerialize.BoldIndex);
             var afterBold = message.Substring(objectToSerialize.BoldIndex + objectToSerialize.BoldLength);
 
@@ -94,12 +94,12 @@ namespace YAXLibTests.SampleClasses
             foreach (var node in element.Nodes())
                 if (node is XText)
                 {
-                    wholeMessage += (node as XText).Value;
+                    wholeMessage += ((node as XText)!).Value;
                 }
                 else if (node is XElement)
                 {
                     var boldElement = node as XElement;
-                    if (boldElement.Name.ToString() == "b")
+                    if (boldElement?.Name.ToString() == "b")
                     {
                         boldContent = boldElement.Value;
                         boldIndex = wholeMessage.Length;

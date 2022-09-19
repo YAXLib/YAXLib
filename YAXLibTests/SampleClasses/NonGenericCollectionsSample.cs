@@ -13,19 +13,19 @@ namespace YAXLibTests.SampleClasses
     [YAXComment("This sample demonstrates serialization of non-generic collection classes")]
     public class NonGenericCollectionsSample
     {
-        public List<object> ObjList { get; set; }
+        public List<object>? ObjList { get; set; }
 
-        public ArrayList TheArrayList { get; set; }
+        public ArrayList? TheArrayList { get; set; }
 
-        public Hashtable TheHashtable { get; set; }
+        public Hashtable? TheHashtable { get; set; }
 
-        public Queue TheQueue { get; set; }
+        public Queue? TheQueue { get; set; }
 
-        public Stack TheStack { get; set; }
+        public Stack? TheStack { get; set; }
 
-        public SortedList TheSortedList { get; set; }
+        public SortedList? TheSortedList { get; set; }
 
-        public BitArray TheBitArray { get; set; }
+        public BitArray? TheBitArray { get; set; }
 
         public override string ToString()
         {
@@ -34,27 +34,31 @@ namespace YAXLibTests.SampleClasses
 
         public static NonGenericCollectionsSample GetSampleInstance()
         {
-            var lst = new List<object>();
-            lst.Add(1);
-            lst.Add(3.0);
-            lst.Add("Hello");
-            lst.Add(new DateTime(2010, 3, 4));
-            lst.Add(new Author {Name = "Charles", Age = 50});
+            var lst = new List<object> {
+                1,
+                3.0,
+                "Hello",
+                new DateTime(2010, 3, 4),
+                new Author {Name = "Charles", Age = 50}
+            };
 
-            var arLst = new ArrayList();
-            arLst.Add(2);
-            arLst.Add(8.5);
-            arLst.Add("Hi");
-            arLst.Add(new Author {Name = "Steve", Age = 30});
+            var arLst = new ArrayList {
+                2,
+                8.5,
+                "Hi",
+                new Author {Name = "Steve", Age = 30}
+            };
 
-            var table = new Hashtable();
-            table.Add(1.0, "Tim");
-            table.Add("Tom", "Sam");
-            table.Add(new DateTime(2009, 2, 1), 7);
+            var table = new Hashtable {
+                { 1.0, "Tim" },
+                { "Tom", "Sam" },
+                { new DateTime(2009, 2, 1), 7 }
+            };
 
-            var bitArray = new BitArray(10);
-            bitArray[1] = true;
-            bitArray[6] = true;
+            var bitArray = new BitArray(10) {
+                [1] = true,
+                [6] = true
+            };
 
             var queue = new Queue();
             queue.Enqueue(10);
@@ -67,10 +71,11 @@ namespace YAXLibTests.SampleClasses
             stack.Push(300);
 
 
-            var sortedList = new SortedList();
-            sortedList.Add(1, 2);
-            sortedList.Add(5, 7);
-            sortedList.Add(8, 2);
+            var sortedList = new SortedList {
+                { 1, 2 },
+                { 5, 7 },
+                { 8, 2 }
+            };
 
             return new NonGenericCollectionsSample
             {
@@ -86,15 +91,15 @@ namespace YAXLibTests.SampleClasses
 
         #region Equality members
 
-        protected bool Equals(NonGenericCollectionsSample other)
+        protected bool Equals(NonGenericCollectionsSample? other)
         {
-            return EqualsHelpers.CollectionEquals(ObjList, other.ObjList)
-                   && EqualsHelpers.CollectionEquals(TheArrayList, other.TheArrayList)
-                   && EqualsHelpers.DictionaryEquals(TheHashtable, other.TheHashtable)
-                   && EqualsHelpers.CollectionEquals(TheQueue, other.TheQueue)
-                   && EqualsHelpers.CollectionEquals(TheStack, other.TheStack)
-                   && EqualsHelpers.DictionaryEquals(TheSortedList, other.TheSortedList)
-                   && EqualsHelpers.CollectionEquals(TheBitArray, other.TheBitArray);
+            return EqualsHelpers.CollectionEquals(ObjList, other?.ObjList)
+                   && EqualsHelpers.CollectionEquals(TheArrayList, other?.TheArrayList)
+                   && EqualsHelpers.DictionaryEquals(TheHashtable, other?.TheHashtable)
+                   && EqualsHelpers.CollectionEquals(TheQueue, other?.TheQueue)
+                   && EqualsHelpers.CollectionEquals(TheStack, other?.TheStack)
+                   && EqualsHelpers.DictionaryEquals(TheSortedList, other?.TheSortedList)
+                   && EqualsHelpers.CollectionEquals(TheBitArray, other?.TheBitArray);
         }
 
 
@@ -107,7 +112,7 @@ namespace YAXLibTests.SampleClasses
         ///     otherwise, false.
         /// </returns>
         /// <param name="obj">The object to compare with the current object. </param>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;

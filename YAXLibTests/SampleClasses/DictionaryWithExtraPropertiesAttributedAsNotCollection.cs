@@ -10,7 +10,7 @@ namespace YAXLibTests.SampleClasses
     [YAXNotCollection]
     public class DictionaryWithExtraPropertiesAttributedAsNotCollection : Dictionary<int, string>
     {
-        public string Prop1 { get; set; }
+        public string? Prop1 { get; set; }
         public double Prop2 { get; set; }
 
         public static DictionaryWithExtraPropertiesAttributedAsNotCollection GetSampleInstance()

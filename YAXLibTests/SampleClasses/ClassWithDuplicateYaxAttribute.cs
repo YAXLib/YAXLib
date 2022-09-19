@@ -10,11 +10,11 @@ namespace YAXLibTests.SampleClasses
     {
         [YAXAttributeForClass]
         [YAXSerializeAs("test")]
-        public string Test1 { get; set; }
+        public string? Test1 { get; set; }
 
         [YAXAttributeForClass]
         [YAXSerializeAs("test")]
-        public string Test2 { get; set; }
+        public string? Test2 { get; set; }
 
         public static ClassWithDuplicateYaxAttribute GetSampleInstance()
         {

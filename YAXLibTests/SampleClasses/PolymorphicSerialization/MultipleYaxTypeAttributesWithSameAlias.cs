@@ -10,6 +10,6 @@ namespace YAXLibTests.SampleClasses.PolymorphicSerialization
     {
         [YAXType(typeof(int), Alias = "SameAlias")]
         [YAXType(typeof(string), Alias = "SameAlias")]
-        public object Object { get; set; }
+        public object? Object { get; set; }
     }
 }

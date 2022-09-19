@@ -11,8 +11,8 @@ namespace YAXLibTests.SampleClasses
     [YAXComment("This example demonstrates serializing a very simple class")]
     public class Book : IEquatable<Book>
     {
-        public string Title { get; set; }
-        public string Author { get; set; }
+        public string? Title { get; set; }
+        public string? Author { get; set; }
         public int PublishYear { get; set; }
         public double Price { get; set; }
 
@@ -32,46 +32,43 @@ namespace YAXLibTests.SampleClasses
             };
         }
 
-        public bool Equals(Book other)
+        public bool Equals(Book? other)
         {
             if (other == null)
                 return false;
 
-            if (this.Title == other.Title && this.Price == other.Price && this.Author == other.Author && this.PublishYear == other.PublishYear)
+            if (Title == other.Title && Price == other.Price && Author == other.Author && PublishYear == other.PublishYear)
                 return true;
             else
                 return false;
         }
 
-        public override bool Equals(Object obj)
+        public override bool Equals(object? obj)
         {
             if (obj == null)
                 return false;
 
-            Book personObj = obj as Book;
-            if (personObj == null)
-                return false;
-            else
-                return Equals(personObj);
+            var personObj = obj as Book;
+            return personObj != null && Equals(personObj);
         }
 
         public override int GetHashCode()
         {
-            return (this.Author, this.Price, this.PublishYear, this.Title).GetHashCode();
+            return (Author, Price, PublishYear, Title).GetHashCode();
         }
 
-        public static bool operator ==(Book book1, Book book2)
+        public static bool operator ==(Book? book1, Book? book2)
         {
-            if (((object) book1) == null || ((object) book2) == null)
-                return Object.Equals(book1, book2);
+            if (((object?) book1) == null || ((object?) book2) == null)
+                return Equals(book1, book2);
 
             return book1.Equals(book2);
         }
 
-        public static bool operator !=(Book book1, Book book2)
+        public static bool operator !=(Book? book1, Book? book2)
         {
-            if (((object) book1) == null || ((object) book2) == null)
-                return !Object.Equals(book1, book2);
+            if (((object?) book1) == null || ((object?) book2) == null)
+                return !Equals(book1, book2);
 
             return !(book1.Equals(book2));
         }

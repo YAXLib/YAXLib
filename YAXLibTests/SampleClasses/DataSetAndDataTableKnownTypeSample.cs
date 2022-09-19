@@ -8,9 +8,9 @@ namespace YAXLibTests.SampleClasses
 {
     public class DataSetAndDataTableKnownTypeSample
     {
-        public DataTable TheDataTable { get; set; }
+        public DataTable TheDataTable { get; set; } = new();
 
-        public DataSet TheDataSet { get; set; }
+        public DataSet TheDataSet { get; set; } = new();
 
         public static DataSetAndDataTableKnownTypeSample GetSampleInstance()
         {

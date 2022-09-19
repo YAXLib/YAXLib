@@ -7,25 +7,25 @@ using YAXLib.Attributes;
 namespace YAXLibTests.SampleClasses.Namespace
 {
     [YAXNamespace("xmain", "http://namespace.org/nsmain")]
-    public class CellPhone_MemberAndClassDifferentNamespacePrefixes
+    public class CellPhoneMemberAndClassDifferentNamespacePrefixes
     {
         [YAXSerializeAs("TheName")]
         [YAXNamespace("x1", "http://namespace.org/x1")]
-        public string DeviceBrand { get; set; }
+        public string? DeviceBrand { get; set; }
 
-        public string OS { get; set; }
+        public string? Os { get; set; }
 
         public override string ToString()
         {
             return GeneralToStringProvider.GeneralToString(this);
         }
 
-        public static CellPhone_MemberAndClassDifferentNamespacePrefixes GetSampleInstance()
+        public static CellPhoneMemberAndClassDifferentNamespacePrefixes GetSampleInstance()
         {
-            return new CellPhone_MemberAndClassDifferentNamespacePrefixes
+            return new CellPhoneMemberAndClassDifferentNamespacePrefixes
             {
                 DeviceBrand = "HTC",
-                OS = "Windows Phone 8"
+                Os = "Windows Phone 8"
             };
         }
     }

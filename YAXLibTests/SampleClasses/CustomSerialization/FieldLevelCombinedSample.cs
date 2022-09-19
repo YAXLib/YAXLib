@@ -18,17 +18,17 @@ namespace YAXLibTests.SampleClasses.CustomSerialization
     {
         [YAXCustomSerializer(typeof(FieldLevelCombinedSerializer))]
         [YAXAttributeForClass]
-        public string Id { get; set; }
+        public string? Id { get; set; }
         
         /// <summary>
         /// Serialize as element
         /// </summary>
         [YAXCustomSerializer(typeof(FieldLevelCombinedSerializer))]
-        public string Title { get; set; }
+        public string? Title { get; set; }
         
         [YAXCustomSerializer(typeof(FieldLevelCombinedSerializer))]
         [YAXValueForClass]
-        public string Body { get; set; }
+        public string? Body { get; set; }
 
         public override string ToString()
         {

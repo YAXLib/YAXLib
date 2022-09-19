@@ -16,7 +16,7 @@ namespace YAXLibTests.SampleClasses
         [YAXSerializableField]
         [YAXSerializeAs("{http://example.com/namespace}name")]
         [YAXAttributeForClass]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         public static AttributeWithNamespace GetSampleInstance()
         {
@@ -34,7 +34,7 @@ namespace YAXLibTests.SampleClasses
 
     public class AttributeWithNamespaceAsMember
     {
-        public AttributeWithNamespace Member { get; set; }
+        public AttributeWithNamespace Member { get; set; } = new();
 
         public static AttributeWithNamespaceAsMember GetSampleInstance()
         {

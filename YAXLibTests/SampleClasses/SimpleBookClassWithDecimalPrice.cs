@@ -9,8 +9,8 @@ namespace YAXLibTests.SampleClasses
     [YAXComment("This example demonstrates serializing a very simple class")]
     public class SimpleBookClassWithDecimalPrice
     {
-        public string Title { get; set; }
-        public string Author { get; set; }
+        public string? Title { get; set; }
+        public string? Author { get; set; }
         public int PublishYear { get; set; }
         public decimal Price { get; set; }
 

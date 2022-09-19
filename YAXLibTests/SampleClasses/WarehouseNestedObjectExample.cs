@@ -10,11 +10,11 @@ namespace YAXLibTests.SampleClasses
 {
     public class PersonFormatted
     {
-        [YAXAttributeForClass] public string SSN { get; set; }
+        [YAXAttributeForClass] public string? Ssn { get; set; }
 
-        [YAXAttributeFor("Identification")] public string Name { get; set; }
+        [YAXAttributeFor("Identification")] public string? Name { get; set; }
 
-        [YAXAttributeFor("Identification")] public string Family { get; set; }
+        [YAXAttributeFor("Identification")] public string? Family { get; set; }
 
         public int Age { get; set; }
     }
@@ -23,11 +23,11 @@ namespace YAXLibTests.SampleClasses
     [YAXComment("This example demonstrates serializing nested objects")]
     public class WarehouseNestedObjectExample
     {
-        [YAXAttributeForClass] public string Name { get; set; }
+        [YAXAttributeForClass] public string? Name { get; set; }
 
         [YAXSerializeAs("address")]
         [YAXAttributeFor("SiteInfo")]
-        public string Address { get; set; }
+        public string? Address { get; set; }
 
         [YAXSerializeAs("SurfaceArea")]
         [YAXElementFor("SiteInfo")]
@@ -35,15 +35,15 @@ namespace YAXLibTests.SampleClasses
 
         [YAXCollection(YAXCollectionSerializationTypes.Serially, SeparateBy = ", ")]
         [YAXSerializeAs("StoreableItems")]
-        public PossibleItems[] Items { get; set; }
+        public PossibleItems[]? Items { get; set; }
 
         [YAXDictionary(EachPairName = "ItemInfo", KeyName = "Item", ValueName = "Count",
             SerializeKeyAs = YAXNodeTypes.Attribute,
             SerializeValueAs = YAXNodeTypes.Attribute)]
         [YAXSerializeAs("ItemQuantities")]
-        public Dictionary<PossibleItems, int> ItemQuantitiesDic { get; set; }
+        public Dictionary<PossibleItems, int>? ItemQuantitiesDic { get; set; }
 
-        public PersonFormatted Owner { get; set; }
+        public PersonFormatted? Owner { get; set; }
 
         public override string ToString()
         {
@@ -65,7 +65,7 @@ namespace YAXLibTests.SampleClasses
                 Area = 120000.50, // square meters
                 Items = new[] {PossibleItems.Item3, PossibleItems.Item6, PossibleItems.Item9, PossibleItems.Item12},
                 ItemQuantitiesDic = dicItems,
-                Owner = new PersonFormatted {SSN = "123456789", Name = "John", Family = "Doe", Age = 50}
+                Owner = new PersonFormatted {Ssn = "123456789", Name = "John", Family = "Doe", Age = 50}
             };
 
             return w;

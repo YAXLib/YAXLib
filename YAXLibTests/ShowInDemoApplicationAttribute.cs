@@ -14,7 +14,7 @@ namespace YAXLibTests
             GetSampleInstanceMethodName = "GetSampleInstance";
         }
 
-        public string SortKey { get; set; }
+        public string? SortKey { get; set; }
 
         public string GetSampleInstanceMethodName { get; set; }
     }
