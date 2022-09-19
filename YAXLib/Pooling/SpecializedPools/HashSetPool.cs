@@ -8,7 +8,7 @@ using System.Threading;
 namespace YAXLib.Pooling.SpecializedPools;
 
 /// <summary>
-/// Generic object pool implementation for <see cref="HashSet{T}"/>s.
+/// Generic object pool implementation for <see cref="HashSet{T}" />s.
 /// </summary>
 internal sealed class HashSetPool<T> : CollectionPool<HashSet<T>, T>
 {
@@ -19,7 +19,7 @@ internal sealed class HashSetPool<T> : CollectionPool<HashSet<T>, T>
     /// CTOR.
     /// </summary>
     /// <remarks>
-    /// <see cref="SpecializedPoolBase{T}.Policy"/> must be set before initializing the pool
+    /// <see cref="SpecializedPoolBase{T}.Policy" /> must be set before initializing the pool
     /// </remarks>
     private HashSetPool()
     {

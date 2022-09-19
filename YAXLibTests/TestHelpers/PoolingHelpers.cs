@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using YAXLib;
 using YAXLib.Pooling;
 using YAXLib.Pooling.ObjectPools;
 using YAXLib.Pooling.YAXLibPools;
@@ -88,13 +87,13 @@ public class PoolingHelpers
     }
 
     /// <summary>
-    /// Tests whether the <paramref name="typeToTest"/> is a subclass of <paramref name="genericTypeDefinition"/>
-    /// in <paramref name="assembly"/>.
+    /// Tests whether the <paramref name="typeToTest" /> is a subclass of <paramref name="genericTypeDefinition" />
+    /// in <paramref name="assembly" />.
     /// </summary>
     /// <param name="typeToTest"></param>
     /// <param name="assembly"></param>
     /// <param name="genericTypeDefinition"></param>
-    /// <returns><see langword="true"/>, if the <paramref name="typeToTest"/> is a subclass.</returns>
+    /// <returns><see langword="true" />, if the <paramref name="typeToTest" /> is a subclass.</returns>
     public static bool IsSubclassOf(Type typeToTest, Assembly assembly, Type genericTypeDefinition)
     {
         return GetSubclassesOf(assembly, genericTypeDefinition).Any(t => t == typeToTest);

@@ -5,7 +5,7 @@ using YAXLib.Options;
 
 namespace YAXLib.Customization;
 
-/// <inheritdoc/>
+/// <inheritdoc />
 internal class SerializationContext : ISerializationContext
 {
     /// <summary>
@@ -28,15 +28,15 @@ internal class SerializationContext : ISerializationContext
         MemberContext = new MemberContext(memberWrapper, serializer);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public IMemberContext? MemberContext { get; }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public ITypeContext TypeContext { get; }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public SerializerOptions SerializerOptions { get; }
 
-    /// <inheritdoc cref="IRecursionCounter.RecursionCount"/>
+    /// <inheritdoc cref="IRecursionCounter.RecursionCount" />
     public int RecursionCount { get; }
 }

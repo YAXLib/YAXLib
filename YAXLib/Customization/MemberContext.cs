@@ -25,24 +25,26 @@ public class MemberContext : IMemberContext
         MemberInfo = memberWrapper.MemberInfo;
         FieldInfo = memberWrapper.FieldInfo;
         PropertyInfo = memberWrapper.PropertyInfo;
-        TypeContext = new TypeContext(UdtWrapperCache.Instance.GetOrAddItem(memberWrapper.MemberType, serializer.Options), serializer);
+        TypeContext =
+            new TypeContext(UdtWrapperCache.Instance.GetOrAddItem(memberWrapper.MemberType, serializer.Options),
+                serializer);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public MemberInfo MemberInfo { get; }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public FieldInfo? FieldInfo { get; }
 
     /// <summary>
-    /// The member's <see cref="PropertyInfo"/> for property serialization, else <see langword="null"/>.
+    /// The member's <see cref="PropertyInfo" /> for property serialization, else <see langword="null" />.
     /// </summary>
     public PropertyInfo? PropertyInfo { get; }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public TypeContext TypeContext { get; }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public object? GetValue(object? obj, object[]? index = null)
     {
         return _memberWrapper.GetOriginalValue(obj, index);

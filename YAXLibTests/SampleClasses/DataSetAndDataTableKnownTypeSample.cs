@@ -4,62 +4,60 @@
 using System.Data;
 using System.Text;
 
-namespace YAXLibTests.SampleClasses
+namespace YAXLibTests.SampleClasses;
+
+public class DataSetAndDataTableKnownTypeSample
 {
-    public class DataSetAndDataTableKnownTypeSample
+    public DataTable TheDataTable { get; set; } = new();
+
+    public DataSet TheDataSet { get; set; } = new();
+
+    public static DataSetAndDataTableKnownTypeSample GetSampleInstance()
     {
-        public DataTable TheDataTable { get; set; } = new();
+        var dataTable = new DataTable("TableName", "http://tableNs/");
+        dataTable.Columns.Add(new DataColumn("Col1", typeof(string)));
+        dataTable.Columns.Add(new DataColumn("Col2", typeof(int)));
+        dataTable.Columns.Add(new DataColumn("Col3", typeof(string)));
 
-        public DataSet TheDataSet { get; set; } = new();
+        dataTable.Rows.Add("1", 2, "3");
+        dataTable.Rows.Add("y", 4, "n");
 
-        public static DataSetAndDataTableKnownTypeSample GetSampleInstance()
-        {
-            var dataTable = new DataTable("TableName", "http://tableNs/");
-            dataTable.Columns.Add(new DataColumn("Col1", typeof(string)));
-            dataTable.Columns.Add(new DataColumn("Col2", typeof(int)));
-            dataTable.Columns.Add(new DataColumn("Col3", typeof(string)));
+        var dataTable1 = new DataTable("Table1");
+        dataTable1.Columns.Add(new DataColumn("Cl1", typeof(string)));
+        dataTable1.Columns.Add(new DataColumn("Cl2", typeof(int)));
 
-            dataTable.Rows.Add("1", 2, "3");
-            dataTable.Rows.Add("y", 4, "n");
+        dataTable1.Rows.Add("num1", 34);
+        dataTable1.Rows.Add("num2", 54);
 
-            var dataTable1 = new DataTable("Table1");
-            dataTable1.Columns.Add(new DataColumn("Cl1", typeof(string)));
-            dataTable1.Columns.Add(new DataColumn("Cl2", typeof(int)));
+        var dataTable2 = new DataTable("Table2");
+        dataTable2.Columns.Add(new DataColumn("C1", typeof(string)));
+        dataTable2.Columns.Add(new DataColumn("C2", typeof(int)));
+        dataTable2.Columns.Add(new DataColumn("C3", typeof(double)));
 
-            dataTable1.Rows.Add("num1", 34);
-            dataTable1.Rows.Add("num2", 54);
+        dataTable2.Rows.Add("one", 1, 1.5);
+        dataTable2.Rows.Add("two", 2, 2.5);
 
-            var dataTable2 = new DataTable("Table2");
-            dataTable2.Columns.Add(new DataColumn("C1", typeof(string)));
-            dataTable2.Columns.Add(new DataColumn("C2", typeof(int)));
-            dataTable2.Columns.Add(new DataColumn("C3", typeof(double)));
+        var dataSet = new DataSet("MyDataSet");
+        dataSet.Tables.AddRange(new[] { dataTable1, dataTable2 });
 
-            dataTable2.Rows.Add("one", 1, 1.5);
-            dataTable2.Rows.Add("two", 2, 2.5);
+        return new DataSetAndDataTableKnownTypeSample {
+            TheDataTable = dataTable,
+            TheDataSet = dataSet
+        };
+    }
 
-            var dataSet = new DataSet("MyDataSet");
-            dataSet.Tables.AddRange(new[] {dataTable1, dataTable2});
+    public override string ToString()
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine(TheDataTable == null
+            ? "TheDataTable: null"
+            : string.Format("TheDataTable: {0} rows", TheDataTable.Rows.Count));
 
-            return new DataSetAndDataTableKnownTypeSample
-            {
-                TheDataTable = dataTable,
-                TheDataSet = dataSet
-            };
-        }
+        sb.AppendLine(TheDataSet == null
+            ? "TheDataSet: null"
+            : string.Format("TheDataSet: {0} tables, {1} rows in the 0th table",
+                TheDataSet.Tables.Count, TheDataSet.Tables[0].Rows.Count));
 
-        public override string ToString()
-        {
-            var sb = new StringBuilder();
-            sb.AppendLine(TheDataTable == null
-                ? "TheDataTable: null"
-                : string.Format("TheDataTable: {0} rows", TheDataTable.Rows.Count));
-
-            sb.AppendLine(TheDataSet == null
-                ? "TheDataSet: null"
-                : string.Format("TheDataSet: {0} tables, {1} rows in the 0th table",
-                    TheDataSet.Tables.Count, TheDataSet.Tables[0].Rows.Count));
-
-            return sb.ToString();
-        }
+        return sb.ToString();
     }
 }

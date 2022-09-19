@@ -4,25 +4,24 @@
 using System;
 using YAXLib.Options;
 
-namespace YAXLib.Customization
+namespace YAXLib.Customization;
+
+/// <summary>
+/// Provides information about <see cref="Type" />s and/or its members being serialized or deserialized.
+/// </summary>
+public interface ISerializationContext
 {
+    /// <inheritdoc cref="ITypeContext" />
+    ITypeContext TypeContext { get; }
+
+    /// <inheritdoc cref="IMemberContext" />
+    IMemberContext? MemberContext { get; }
+
     /// <summary>
-    /// Provides information about <see cref="Type"/>s and/or its members being serialized or deserialized.
+    /// Gets the <see cref="Options.SerializerOptions" /> of the <see cref="YAXSerializer" /> instance.
     /// </summary>
-    public interface ISerializationContext
-    {
-        /// <inheritdoc cref="ITypeContext"/>
-        ITypeContext TypeContext { get; }
+    SerializerOptions SerializerOptions { get; }
 
-        /// <inheritdoc cref="IMemberContext"/>
-        IMemberContext? MemberContext { get; }
-
-        /// <summary>
-        /// Gets the <see cref="Options.SerializerOptions"/> of the <see cref="YAXSerializer"/> instance.
-        /// </summary>
-        SerializerOptions SerializerOptions { get; }
-
-        /// <inheritdoc cref="IRecursionCounter.RecursionCount"/>
-        int RecursionCount { get; }
-    }
+    /// <inheritdoc cref="IRecursionCounter.RecursionCount" />
+    int RecursionCount { get; }
 }

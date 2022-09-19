@@ -6,25 +6,24 @@ using YAXLib;
 using YAXLib.Exceptions;
 using YAXLibTests.SampleClasses.PolymorphicSerialization;
 
-namespace YAXLibTests
-{
-    [TestFixture]
-    public class PolymorphicSerializationTests
-    {
-        [Test]
-        public void MultipleYaxTypeAttributesWithSameTypeMustThrowAnException()
-        {
-            var ser = new YAXSerializer(typeof(MultipleYaxTypeAttributesWithSameType));
-            var obj = new MultipleYaxTypeAttributesWithSameType();
-            Assert.Throws<YAXPolymorphicException>(() => ser.Serialize(obj));
-        }
+namespace YAXLibTests;
 
-        [Test]
-        public void MultipleYaxTypeAttributesWIthSameAliasMustThrowAnException()
-        {
-            var ser = new YAXSerializer(typeof(MultipleYaxTypeAttributesWithSameAlias));
-            var obj = new MultipleYaxTypeAttributesWithSameAlias();
-            Assert.Throws<YAXPolymorphicException>(() => ser.Serialize(obj));
-        }
+[TestFixture]
+public class PolymorphicSerializationTests
+{
+    [Test]
+    public void MultipleYaxTypeAttributesWithSameTypeMustThrowAnException()
+    {
+        var ser = new YAXSerializer(typeof(MultipleYaxTypeAttributesWithSameType));
+        var obj = new MultipleYaxTypeAttributesWithSameType();
+        Assert.Throws<YAXPolymorphicException>(() => ser.Serialize(obj));
+    }
+
+    [Test]
+    public void MultipleYaxTypeAttributesWIthSameAliasMustThrowAnException()
+    {
+        var ser = new YAXSerializer(typeof(MultipleYaxTypeAttributesWithSameAlias));
+        var obj = new MultipleYaxTypeAttributesWithSameAlias();
+        Assert.Throws<YAXPolymorphicException>(() => ser.Serialize(obj));
     }
 }

@@ -7,12 +7,12 @@ using System.Collections.Generic;
 namespace YAXLib.Caching;
 
 /// <summary>
-///     Implements a singleton cache for <see cref="MemberWrapper"/>s
-///     to prevent creation of <see cref="MemberWrapper"/>s for the same type repetitively.
-///     <para>
-///     <b>Note</b>: The cache contains <b>all members</b> of a type that can <b>generally</b> be serialized.
-///     Filtering of undesired members takes place later in the de/serialization process.
-///     </para>
+/// Implements a singleton cache for <see cref="MemberWrapper" />s
+/// to prevent creation of <see cref="MemberWrapper" />s for the same type repetitively.
+/// <para>
+/// <b>Note</b>: The cache contains <b>all members</b> of a type that can <b>generally</b> be serialized.
+/// Filtering of undesired members takes place later in the de/serialization process.
+/// </para>
 /// </summary>
 internal class MemberWrapperCache : TypeCacheBase<IList<MemberWrapper>>
 {
@@ -24,7 +24,7 @@ internal class MemberWrapperCache : TypeCacheBase<IList<MemberWrapper>>
     }
 
     /// <summary>
-    ///     Gets the singleton instance of the <see cref="MemberWrapperCache"/>.
+    /// Gets the singleton instance of the <see cref="MemberWrapperCache" />.
     /// </summary>
     public static MemberWrapperCache Instance
     {
@@ -43,14 +43,14 @@ internal class MemberWrapperCache : TypeCacheBase<IList<MemberWrapper>>
     }
 
     /// <summary>
-    ///     Gets the <see cref="MemberWrapper"/>s for to the specified type.
+    /// Gets the <see cref="MemberWrapper" />s for to the specified type.
     /// </summary>
     /// <param name="t">The member whose wrapper is needed.</param>
     /// <param name="memberWrappers">
-    /// The lists of <see cref="MemberWrapper"/>s from the cache,
+    /// The lists of <see cref="MemberWrapper" />s from the cache,
     /// or an empty list, if the type did not exist in the cache.
     /// </param>
-    /// <returns><see langword="true"/>, if <paramref name="t"/> was found in the cache.</returns>
+    /// <returns><see langword="true" />, if <paramref name="t" /> was found in the cache.</returns>
     public bool TryGetItem(Type t, out IList<MemberWrapper> memberWrappers)
     {
         if (_instance is not null)

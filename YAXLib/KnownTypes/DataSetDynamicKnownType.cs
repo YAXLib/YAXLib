@@ -6,36 +6,35 @@ using System.Linq;
 using System.Xml.Linq;
 using YAXLib.Customization;
 
-namespace YAXLib.KnownTypes
+namespace YAXLib.KnownTypes;
+
+internal class DataSetDynamicKnownType : DynamicKnownTypeBase
 {
-    internal class DataSetDynamicKnownType : DynamicKnownTypeBase
+    /// <inheritdoc />
+    public override string TypeName => "System.Data.DataSet";
+
+    /// <inheritdoc />
+    public override void Serialize(object? obj, XElement elem, XNamespace overridingNamespace,
+        ISerializationContext serializationContext)
     {
-        /// <inheritdoc />
-        public override string TypeName => "System.Data.DataSet";
+        if (obj == null) throw new ArgumentException("Object must not be null", nameof(obj));
 
-        /// <inheritdoc />
-        public override void Serialize(object? obj, XElement elem, XNamespace overridingNamespace,
-            ISerializationContext serializationContext)
-        {
-            if (obj == null) throw new ArgumentException("Object must not be null", nameof(obj));
+        using var xw = elem.CreateWriter();
+        ReflectionUtils.InvokeMethod(obj, "WriteXml", xw);
+    }
 
-            using var xw = elem.CreateWriter();
-            ReflectionUtils.InvokeMethod(obj, "WriteXml", xw);
-        }
+    /// <inheritdoc />
+    public override object? Deserialize(XElement elem, XNamespace overridingNamespace,
+        ISerializationContext serializationContext)
+    {
+        var child = elem.Elements().FirstOrDefault();
+        if (child == null)
+            return null;
 
-        /// <inheritdoc />
-        public override object? Deserialize(XElement elem, XNamespace overridingNamespace,
-            ISerializationContext serializationContext)
-        {
-            var child = elem.Elements().FirstOrDefault();
-            if (child == null)
-                return null;
-
-            using var xr = child.CreateReader();
-            var dsType = ReflectionUtils.GetTypeByName("System.Data.DataSet");
-            var ds = Activator.CreateInstance(dsType);
-            ReflectionUtils.InvokeMethod(ds, "ReadXml", xr);
-            return ds;
-        }
+        using var xr = child.CreateReader();
+        var dsType = ReflectionUtils.GetTypeByName("System.Data.DataSet");
+        var ds = Activator.CreateInstance(dsType);
+        ReflectionUtils.InvokeMethod(ds, "ReadXml", xr);
+        return ds;
     }
 }

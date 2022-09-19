@@ -3,7 +3,6 @@ using NUnit.Framework;
 using YAXLib;
 using YAXLib.Enums;
 using YAXLib.Options;
-using YAXLib.Pooling;
 using YAXLib.Pooling.ObjectPools;
 using YAXLibTests.TestHelpers;
 
@@ -19,8 +18,7 @@ public class PoolBalanceTests
         // Do some work
         for (var i = 0; i < 4; i++)
         {
-            var serializer = new YAXSerializer(typeof(int), new SerializerOptions
-            {
+            var serializer = new YAXSerializer(typeof(int), new SerializerOptions {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -46,8 +44,10 @@ public class PoolBalanceTests
             if (p.Counters!.CountAll <= 0) continue;
 
             Console.WriteLine();
-            Assert.That(p.Counters.CountActive, Is.EqualTo(0), string.Join(" ", nameof(IPoolCounters.CountActive), p.Type?.ToString()));
-            Assert.That(p.Counters.CountInactive, Is.GreaterThan(0), string.Join(" ", nameof(IPoolCounters.CountInactive), p.Type?.ToString()));
+            Assert.That(p.Counters.CountActive, Is.EqualTo(0),
+                string.Join(" ", nameof(IPoolCounters.CountActive), p.Type?.ToString()));
+            Assert.That(p.Counters.CountInactive, Is.GreaterThan(0),
+                string.Join(" ", nameof(IPoolCounters.CountInactive), p.Type?.ToString()));
         }
     }
 }

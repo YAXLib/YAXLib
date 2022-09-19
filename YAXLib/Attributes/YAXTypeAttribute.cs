@@ -3,24 +3,23 @@
 
 using System;
 
-namespace YAXLib.Attributes
+namespace YAXLib.Attributes;
+
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
+internal class YAXTypeAttribute : YAXBaseAttribute, IYaxMemberLevelAttribute
 {
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
-    internal class YAXTypeAttribute : YAXBaseAttribute, IYaxMemberLevelAttribute
+    public YAXTypeAttribute(Type type)
     {
-        public YAXTypeAttribute(Type type)
-        {
-            Type = type;
-        }
+        Type = type;
+    }
 
-        public Type Type { get; }
+    public Type Type { get; }
 
-        public string Alias { get; set; } = string.Empty;
+    public string Alias { get; set; } = string.Empty;
 
-        /// <inheritdoc/>
-        void IYaxMemberLevelAttribute.Setup(MemberWrapper memberWrapper)
-        {
-            memberWrapper.AddAttributeToListOfRealTypes(this);
-        }
+    /// <inheritdoc />
+    void IYaxMemberLevelAttribute.Setup(MemberWrapper memberWrapper)
+    {
+        memberWrapper.AddAttributeToListOfRealTypes(this);
     }
 }

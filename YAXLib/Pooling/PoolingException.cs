@@ -12,7 +12,7 @@ namespace YAXLib.Pooling;
 public class PoolingException : InvalidOperationException
 {
     /// <summary>
-    /// Creates a instance of a <see cref="PoolingException"/>.
+    /// Creates a instance of a <see cref="PoolingException" />.
     /// </summary>
     /// <param name="message"></param>
     /// <param name="poolType"></param>
@@ -21,7 +21,7 @@ public class PoolingException : InvalidOperationException
         PoolType = poolType;
     }
 
-    ///<inheritdoc/>
+    /// <inheritdoc />
     protected PoolingException(
         System.Runtime.Serialization.SerializationInfo info,
         System.Runtime.Serialization.StreamingContext context) : base(info, context)

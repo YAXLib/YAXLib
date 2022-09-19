@@ -24,8 +24,7 @@ public class ObjectPoolClassesTests
     internal static IEnumerable<ObjectPool<SomePoolObject>> GetObjectPoolBasedPools(bool withValidPolicy)
     {
         var policy = withValidPolicy
-            ? new PoolPolicy<SomePoolObject>
-            {
+            ? new PoolPolicy<SomePoolObject> {
                 FunctionOnCreate = () => new SomePoolObject { Value = "created" },
                 ActionOnGet = o => o.Value = "get",
                 ActionOnReturn = o => o.Value = "returned",
@@ -39,7 +38,7 @@ public class ObjectPoolClassesTests
         foreach (var type in types)
         {
             var constructedType = type.MakeGenericType(typeof(SomePoolObject));
-            var instance = (ObjectPool<SomePoolObject>)Activator.CreateInstance(constructedType, policy)!;
+            var instance = (ObjectPool<SomePoolObject>) Activator.CreateInstance(constructedType, policy)!;
             instance.Clear();
             yield return instance;
         }
@@ -69,7 +68,7 @@ public class ObjectPoolClassesTests
         var destroyed = obj.Value.ToLower();
 
         Assert.That(created, Is.EqualTo(nameof(created)), poolAsObj.GetType().Name);
-        Assert.That(returned,Is.EqualTo(nameof(returned)), poolAsObj.GetType().Name);
+        Assert.That(returned, Is.EqualTo(nameof(returned)), poolAsObj.GetType().Name);
         Assert.That(get, Is.EqualTo(nameof(get)), poolAsObj.GetType().Name);
         Assert.That(destroyed, Is.EqualTo(nameof(destroyed)), poolAsObj.GetType().Name);
     }

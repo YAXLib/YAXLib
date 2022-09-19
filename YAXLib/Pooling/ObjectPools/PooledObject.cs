@@ -6,12 +6,12 @@ using System;
 namespace YAXLib.Pooling.ObjectPools;
 
 /// <summary>
-/// A <see cref="PooledObject{T}"/> wraps a reference to an instance that will be returned
-/// to the pool when the <see cref="PooledObject{T}"/> is disposed.
+/// A <see cref="PooledObject{T}" /> wraps a reference to an instance that will be returned
+/// to the pool when the <see cref="PooledObject{T}" /> is disposed.
 /// The purpose is to automate the return of references so that they do not need to be returned manually.
 /// <example>
-/// <para>A <see cref="PooledObject{T}"/> can be used like so:</para>
-/// <code>
+///     <para>A <see cref="PooledObject{T}" /> can be used like so:</para>
+///     <code>
 /// MyClass myInstance;
 /// using(myPool.Get(out myInstance)) // When leaving the scope myInstance will be returned to the pool.
 /// {

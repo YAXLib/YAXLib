@@ -3,13 +3,12 @@
 
 using System;
 
-namespace YAXLib.Attributes
+namespace YAXLib.Attributes;
+
+/// <summary>
+/// The base class for all attributes defined in YAXLib.
+/// </summary>
+[AttributeUsage(AttributeTargets.All)]
+public abstract class YAXBaseAttribute : Attribute
 {
-    /// <summary>
-    ///     The base class for all attributes defined in YAXLib.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.All)]
-    public abstract class YAXBaseAttribute : Attribute
-    {
-    }
 }

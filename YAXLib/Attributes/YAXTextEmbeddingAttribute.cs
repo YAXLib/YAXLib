@@ -17,25 +17,26 @@ public class YAXTextEmbeddingAttribute : YAXBaseAttribute, IYaxMemberLevelAttrib
     private static readonly Type[] CompatibleAttributes = {
         typeof(YAXTextEmbeddingAttribute), typeof(YAXDontSerializeAttribute), typeof(YAXDontSerializeIfNullAttribute),
         typeof(YAXSerializeAsAttribute), typeof(YAXCommentAttribute), typeof(YAXSerializableFieldAttribute),
-        typeof(YAXNamespaceAttribute), typeof(YAXErrorIfMissedAttribute), typeof(YAXElementOrder), typeof(YAXElementForAttribute)
+        typeof(YAXNamespaceAttribute), typeof(YAXErrorIfMissedAttribute), typeof(YAXElementOrder),
+        typeof(YAXElementForAttribute)
     };
 
     /// <summary>
-    /// Determines how to embed a value of an XML <see cref="XElement"/> or <see cref="XAttribute"/>.
+    /// Determines how to embed a value of an XML <see cref="XElement" /> or <see cref="XAttribute" />.
     /// </summary>
     /// <param name="embedding">
-    /// The kind of <see cref="TextEmbedding"/> to use for the value.
-    /// The attribute can be omitted, if embedding is <see cref="TextEmbedding.None"/>.
+    /// The kind of <see cref="TextEmbedding" /> to use for the value.
+    /// The attribute can be omitted, if embedding is <see cref="TextEmbedding.None" />.
     /// </param>
     public YAXTextEmbeddingAttribute(TextEmbedding embedding)
     {
         Embedding = embedding;
     }
 
-    /// <inheritdoc cref="TextEmbedding"/>
+    /// <inheritdoc cref="TextEmbedding" />
     public TextEmbedding Embedding { get; }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     void IYaxMemberLevelAttribute.Setup(MemberWrapper memberWrapper)
     {
         if (GetCustomAttributes(memberWrapper.MemberInfo, typeof(Attribute), true)
@@ -49,7 +50,8 @@ public class YAXTextEmbeddingAttribute : YAXBaseAttribute, IYaxMemberLevelAttrib
         }
 
         if (memberWrapper.MemberType != typeof(string))
-            throw new InvalidOperationException($"Only fields or properties of type string may be decorated with {nameof(YAXTextEmbeddingAttribute)}.");
+            throw new InvalidOperationException(
+                $"Only fields or properties of type string may be decorated with {nameof(YAXTextEmbeddingAttribute)}.");
 
         memberWrapper.TextEmbedding = Embedding;
     }

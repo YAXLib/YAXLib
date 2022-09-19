@@ -7,8 +7,8 @@ using YAXLib.Options;
 namespace YAXLib.Caching;
 
 /// <summary>
-///     Implements a singleton cache for <see cref="UdtWrapper"/>s
-///     to prevent creation of <see cref="UdtWrapper"/>s for the same type repetitively.
+/// Implements a singleton cache for <see cref="UdtWrapper" />s
+/// to prevent creation of <see cref="UdtWrapper" />s for the same type repetitively.
 /// </summary>
 internal class UdtWrapperCache : TypeCacheBase<UdtWrapper>
 {
@@ -18,9 +18,9 @@ internal class UdtWrapperCache : TypeCacheBase<UdtWrapper>
     {
         MaxCacheSize = DefaultCacheSize;
     }
-    
+
     /// <summary>
-    ///     Gets the singleton instance of the <see cref="UdtWrapperCache"/>.
+    /// Gets the singleton instance of the <see cref="UdtWrapperCache" />.
     /// </summary>
     public static UdtWrapperCache Instance
     {
@@ -39,10 +39,10 @@ internal class UdtWrapperCache : TypeCacheBase<UdtWrapper>
     }
 
     /// <summary>
-    ///     Gets the <see cref="UdtWrapper"/> for to the specified type.
+    /// Gets the <see cref="UdtWrapper" /> for to the specified type.
     /// </summary>
     /// <param name="t">The type whose wrapper is needed.</param>
-    /// <param name="serializerOptions">The <see cref="SerializerOptions"/> to use.</param>
+    /// <param name="serializerOptions">The <see cref="SerializerOptions" /> to use.</param>
     /// <returns>the type wrapper corresponding to the specified type</returns>
     public UdtWrapper GetOrAddItem(Type t, SerializerOptions serializerOptions)
     {

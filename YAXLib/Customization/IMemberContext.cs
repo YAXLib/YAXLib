@@ -11,22 +11,22 @@ namespace YAXLib.Customization;
 public interface IMemberContext
 {
     /// <summary>
-    /// The member's <see cref="MemberInfo"/> for member serialization, else <see langword="null"/>.
+    /// The member's <see cref="MemberInfo" /> for member serialization, else <see langword="null" />.
     /// </summary>
     MemberInfo MemberInfo { get; }
 
     /// <summary>
-    /// The member's <see cref="FieldInfo"/> for field serialization, else <see langword="null"/>.
+    /// The member's <see cref="FieldInfo" /> for field serialization, else <see langword="null" />.
     /// </summary>
     FieldInfo? FieldInfo { get; }
 
     /// <summary>
-    /// The member's <see cref="PropertyInfo"/> for property serialization, else <see langword="null"/>.
+    /// The member's <see cref="PropertyInfo" /> for property serialization, else <see langword="null" />.
     /// </summary>
     PropertyInfo? PropertyInfo { get; }
 
     /// <summary>
-    /// The member's <see cref="Customization.TypeContext"/> for member serialization./>.
+    /// The member's <see cref="Customization.TypeContext" /> for member serialization./>.
     /// </summary>
     TypeContext TypeContext { get; }
 
@@ -34,8 +34,10 @@ public interface IMemberContext
     /// Gets value of this member in the specified object.
     /// </summary>
     /// <param name="obj">The object from which the value must be retrieved.</param>
-    /// <param name="index">Optional index values for indexed properties.
-    /// The indexes of indexed properties are zero-based. This value should be <see langword="null" /> for non-indexed properties.
+    /// <param name="index">
+    /// Optional index values for indexed properties.
+    /// The indexes of indexed properties are zero-based. This value should be <see langword="null" /> for non-indexed
+    /// properties.
     /// </param>
     /// <returns>The value for this member.</returns>
     object? GetValue(object? obj, object[]? index = null);

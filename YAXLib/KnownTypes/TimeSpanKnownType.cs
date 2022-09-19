@@ -6,30 +6,32 @@ using System.Xml.Linq;
 using YAXLib.Customization;
 using YAXLib.Exceptions;
 
-namespace YAXLib.KnownTypes
+namespace YAXLib.KnownTypes;
+
+internal class TimeSpanKnownType : KnownTypeBase<TimeSpan>
 {
-    internal class TimeSpanKnownType : KnownTypeBase<TimeSpan>
+    /// <inheritdoc />
+    public override void Serialize(TimeSpan timeSpan, XElement elem, XNamespace overridingNamespace,
+        ISerializationContext serializationContext)
     {
-        /// <inheritdoc />
-        public override void Serialize(TimeSpan timeSpan, XElement elem, XNamespace overridingNamespace, ISerializationContext serializationContext)
+        elem.Value = timeSpan.ToString();
+    }
+
+    /// <inheritdoc />
+    public override TimeSpan Deserialize(XElement elem, XNamespace overridingNamespace,
+        ISerializationContext serializationContext)
+    {
+        var elemTicks = elem.Element(overridingNamespace.GetXName("Ticks"));
+        if (elemTicks == null)
         {
-            elem.Value = timeSpan.ToString();
+            var strTimeSpanString = elem.Value;
+            if (!TimeSpan.TryParse(strTimeSpanString, out var timeSpanResult))
+                throw new YAXBadlyFormedInput(elem.Name.ToString(), elem.Value, elem);
+            return timeSpanResult;
         }
 
-        /// <inheritdoc />
-        public override TimeSpan Deserialize(XElement elem, XNamespace overridingNamespace, ISerializationContext serializationContext)
-        {
-            var elemTicks = elem.Element(overridingNamespace.GetXName("Ticks"));
-            if (elemTicks == null)
-            {
-                var strTimeSpanString = elem.Value;
-                if (!TimeSpan.TryParse(strTimeSpanString, out var timeSpanResult))
-                    throw new YAXBadlyFormedInput(elem.Name.ToString(), elem.Value, elem);
-                return timeSpanResult;
-            }
-
-            if (!long.TryParse(elemTicks.Value, out var ticks)) throw new YAXBadlyFormedInput("Ticks", elemTicks.Value, elemTicks);
-            return new TimeSpan(ticks);
-        }
+        if (!long.TryParse(elemTicks.Value, out var ticks))
+            throw new YAXBadlyFormedInput("Ticks", elemTicks.Value, elemTicks);
+        return new TimeSpan(ticks);
     }
 }

@@ -9,7 +9,7 @@ namespace YAXLib.Pooling.ObjectPools;
 /// <summary>
 /// The abstract base class for object pool implementations.
 /// </summary>
-/// <typeparam name="T"><see langword="type"/> of the object pool elements.</typeparam>
+/// <typeparam name="T"><see langword="type" /> of the object pool elements.</typeparam>
 internal abstract class ObjectPool<T> : IObjectPool<T> where T : class
 {
     /// <summary>
@@ -21,7 +21,7 @@ internal abstract class ObjectPool<T> : IObjectPool<T> where T : class
     }
 
     /// <summary>
-    /// The configuration of how an <see cref="IObjectPool{U}"/> works.
+    /// The configuration of how an <see cref="IObjectPool{U}" /> works.
     /// </summary>
     protected PoolPolicy<T> PoolPolicy { get; }
 
@@ -33,7 +33,7 @@ internal abstract class ObjectPool<T> : IObjectPool<T> where T : class
     public abstract int CountAll { get; }
 
     /// <summary>
-    /// Gets a <see cref="IReadOnlyList{T}"/> of the unused items in the object pool.
+    /// Gets a <see cref="IReadOnlyList{T}" /> of the unused items in the object pool.
     /// </summary>
     public abstract IReadOnlyList<T> PoolItems { get; }
 
@@ -56,12 +56,12 @@ internal abstract class ObjectPool<T> : IObjectPool<T> where T : class
     public abstract T Get();
 
     /// <summary>
-    /// Get a new <see cref="PooledObject{T}"/> which can be used to
-    /// return the instance back to the pool when the <see cref="PooledObject{T}"/> is disposed.
+    /// Get a new <see cref="PooledObject{T}" /> which can be used to
+    /// return the instance back to the pool when the <see cref="PooledObject{T}" /> is disposed.
     /// </summary>
     /// <param name="instance">Output new typed object.</param>
     /// <returns>
-    /// A <see cref="PooledObject{T}"/>
+    /// A <see cref="PooledObject{T}" />
     /// </returns>
     public PooledObject<T> Get(out T instance)
     {
@@ -78,15 +78,15 @@ internal abstract class ObjectPool<T> : IObjectPool<T> where T : class
     /// <summary>
     /// Releases all pooled objects so they can be garbage collected.
     /// Pooled items will be destroyed before they will be released to garbage collection.
-    /// <see cref="CountAll"/>, <see cref="CountActive"/> and <see cref="CountInactive"/> are set to zero.
+    /// <see cref="CountAll" />, <see cref="CountActive" /> and <see cref="CountInactive" /> are set to zero.
     /// </summary>
     /// <remarks>
-    /// The method should be called from <see cref="Dispose(bool)"/>.
+    /// The method should be called from <see cref="Dispose(bool)" />.
     /// </remarks>
     public abstract void Clear();
 
     /// <summary>
-    /// Disposes the resources by calling the <see cref="Clear"/> method.
+    /// Disposes the resources by calling the <see cref="Clear" /> method.
     /// </summary>
     /// <param name="disposing"></param>
     protected virtual void Dispose(bool disposing)
@@ -97,7 +97,7 @@ internal abstract class ObjectPool<T> : IObjectPool<T> where T : class
         }
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public void Dispose()
     {
         Dispose(true);

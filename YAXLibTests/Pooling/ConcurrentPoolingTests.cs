@@ -16,13 +16,10 @@ namespace YAXLibTests.Pooling;
 [TestFixture]
 public class ConcurrentPoolingTests
 {
-
-
     [Test]
     public void Parallel_Load_On_Pool()
     {
-        var policy = new PoolPolicy<ObjectPoolClassesTests.SomePoolObject>
-        {
+        var policy = new PoolPolicy<ObjectPoolClassesTests.SomePoolObject> {
             FunctionOnCreate = () => new ObjectPoolClassesTests.SomePoolObject { Value = "created" },
             ActionOnGet = o => o.Value = "get",
             ActionOnReturn = o => o.Value = "returned",
@@ -57,8 +54,7 @@ public class ConcurrentPoolingTests
         Assert.That(() =>
             Parallel.For(1L, maxLoops, options, (i, loopState) =>
             {
-                var serializer = new YAXSerializer(typeof(string), new SerializerOptions
-                {
+                var serializer = new YAXSerializer(typeof(string), new SerializerOptions {
                     ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
                     ExceptionBehavior = YAXExceptionTypes.Warning,
                     SerializationOptions = YAXSerializationOptions.SerializeNullObjects
@@ -83,8 +79,10 @@ public class ConcurrentPoolingTests
             Console.WriteLine(@"{0}: {1}", nameof(IPoolCounters.CountInactive), p.Counters?.CountInactive);
 
             Console.WriteLine();
-            Assert.That(p.Counters!.CountActive, Is.EqualTo(0), string.Join(" ", nameof(IPoolCounters.CountActive), p.Type?.ToString()));
-            Assert.That(p.Counters.CountInactive, Is.GreaterThan(0), string.Join(" ", nameof(IPoolCounters.CountInactive), p.Type?.ToString()));
+            Assert.That(p.Counters!.CountActive, Is.EqualTo(0),
+                string.Join(" ", nameof(IPoolCounters.CountActive), p.Type?.ToString()));
+            Assert.That(p.Counters.CountInactive, Is.GreaterThan(0),
+                string.Join(" ", nameof(IPoolCounters.CountInactive), p.Type?.ToString()));
         }
     }
 }

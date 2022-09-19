@@ -12,11 +12,13 @@ internal class NoopIntCustomSerializer : ICustomSerializer<int>
 {
     private NoopIntCustomSerializer() { }
 
-    public void SerializeToAttribute(int objectToSerialize, XAttribute attrToFill, ISerializationContext serializationContext)
+    public void SerializeToAttribute(int objectToSerialize, XAttribute attrToFill,
+        ISerializationContext serializationContext)
     {
     }
 
-    public void SerializeToElement(int objectToSerialize, XElement elemToFill, ISerializationContext serializationContext)
+    public void SerializeToElement(int objectToSerialize, XElement elemToFill,
+        ISerializationContext serializationContext)
     {
     }
 
@@ -43,11 +45,13 @@ internal class NoopIntCustomSerializer : ICustomSerializer<int>
 
 public class NoopLongCustomSerializer : ICustomSerializer<long>
 {
-    public void SerializeToAttribute(long objectToSerialize, XAttribute attrToFill, ISerializationContext serializationContext)
+    public void SerializeToAttribute(long objectToSerialize, XAttribute attrToFill,
+        ISerializationContext serializationContext)
     {
     }
 
-    public void SerializeToElement(long objectToSerialize, XElement elemToFill, ISerializationContext serializationContext)
+    public void SerializeToElement(long objectToSerialize, XElement elemToFill,
+        ISerializationContext serializationContext)
     {
     }
 
@@ -74,11 +78,13 @@ public class NoopLongCustomSerializer : ICustomSerializer<long>
 
 internal class NoopStringCustomSerializer : ICustomSerializer<string>
 {
-    public void SerializeToAttribute(string objectToSerialize, XAttribute attrToFill, ISerializationContext serializationContext)
+    public void SerializeToAttribute(string objectToSerialize, XAttribute attrToFill,
+        ISerializationContext serializationContext)
     {
     }
 
-    public void SerializeToElement(string objectToSerialize, XElement elemToFill, ISerializationContext serializationContext)
+    public void SerializeToElement(string objectToSerialize, XElement elemToFill,
+        ISerializationContext serializationContext)
     {
     }
 
@@ -105,11 +111,13 @@ internal class NoopStringCustomSerializer : ICustomSerializer<string>
 
 internal class NoopDoubleCustomSerializer : ICustomSerializer<double>
 {
-    public void SerializeToAttribute(double objectToSerialize, XAttribute attrToFill, ISerializationContext serializationContext)
+    public void SerializeToAttribute(double objectToSerialize, XAttribute attrToFill,
+        ISerializationContext serializationContext)
     {
     }
 
-    public void SerializeToElement(double objectToSerialize, XElement elemToFill, ISerializationContext serializationContext)
+    public void SerializeToElement(double objectToSerialize, XElement elemToFill,
+        ISerializationContext serializationContext)
     {
     }
 
@@ -136,11 +144,13 @@ internal class NoopDoubleCustomSerializer : ICustomSerializer<double>
 
 public class NoopFloatCustomSerializer : ICustomSerializer<float>
 {
-    public void SerializeToAttribute(float objectToSerialize, XAttribute attrToFill, ISerializationContext serializationContext)
+    public void SerializeToAttribute(float objectToSerialize, XAttribute attrToFill,
+        ISerializationContext serializationContext)
     {
     }
 
-    public void SerializeToElement(float objectToSerialize, XElement elemToFill, ISerializationContext serializationContext)
+    public void SerializeToElement(float objectToSerialize, XElement elemToFill,
+        ISerializationContext serializationContext)
     {
     }
 

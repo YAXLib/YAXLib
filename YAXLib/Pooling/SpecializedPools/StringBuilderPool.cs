@@ -8,7 +8,7 @@ using System.Threading;
 namespace YAXLib.Pooling.SpecializedPools;
 
 /// <summary>
-/// The object pool for <see cref="StringBuilder"/>.
+/// The object pool for <see cref="StringBuilder" />.
 /// </summary>
 internal sealed class StringBuilderPool : SpecializedPoolBase<StringBuilder>
 {
@@ -19,7 +19,7 @@ internal sealed class StringBuilderPool : SpecializedPoolBase<StringBuilder>
     /// CTOR.
     /// </summary>
     /// <remarks>
-    /// <see cref="SpecializedPoolBase{T}.Policy"/> must be set before initializing the pool
+    /// <see cref="SpecializedPoolBase{T}.Policy" /> must be set before initializing the pool
     /// </remarks>
     private StringBuilderPool()
     {
@@ -32,7 +32,7 @@ internal sealed class StringBuilderPool : SpecializedPoolBase<StringBuilder>
     }
 
     /// <summary>
-    /// Gets or sets the <see cref="StringBuilder.Capacity"/>, that is used
+    /// Gets or sets the <see cref="StringBuilder.Capacity" />, that is used
     /// when creating new instances, or when returning an instance to the pool.
     /// <para>The default capacity is 1024.</para>
     /// </summary>

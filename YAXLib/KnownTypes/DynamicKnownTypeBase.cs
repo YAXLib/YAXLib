@@ -5,31 +5,31 @@ using System;
 using System.Xml.Linq;
 using YAXLib.Customization;
 
-namespace YAXLib.KnownTypes
+namespace YAXLib.KnownTypes;
+
+/// <summary>
+/// A <see cref="DynamicKnownTypeBase" /> is the base class for <see cref="Type" />s,
+/// for which the full type name is defined at compile time.
+/// The actual type is determined at runtime.
+/// </summary>
+public abstract class DynamicKnownTypeBase : IKnownType
 {
+    private Type? _type;
+
     /// <summary>
-    /// A <see cref="DynamicKnownTypeBase"/> is the base class for <see cref="Type"/>s,
-    /// for which the full type name is defined at compile time.
-    /// The actual type is determined at runtime.
+    /// Gets or sets the name of the <seealso cref="Type" />.
     /// </summary>
-    public abstract class DynamicKnownTypeBase : IKnownType
-    {
-        private Type? _type;
+    public abstract string TypeName { get; }
 
-        /// <summary>
-        /// Gets or sets the name of the <seealso cref="Type"/>.
-        /// </summary>
-        public abstract string TypeName { get; }
+    /// <inheritdoc />
+    public Type Type => _type ??= ReflectionUtils.GetTypeByName(TypeName) ??
+                                  throw new InvalidOperationException($"Type for name '{TypeName}' not found.");
 
-        /// <inheritdoc />
-        public Type Type => _type ??= ReflectionUtils.GetTypeByName(TypeName) ?? throw new InvalidOperationException($"Type for name '{TypeName}' not found.");
+    /// <inheritdoc />
+    public abstract void Serialize(object? obj, XElement elem, XNamespace overridingNamespace,
+        ISerializationContext serializationContext);
 
-        /// <inheritdoc />
-        public abstract void Serialize(object? obj, XElement elem, XNamespace overridingNamespace,
-            ISerializationContext serializationContext);
-
-        /// <inheritdoc />
-        public abstract object? Deserialize(XElement elem, XNamespace overridingNamespace,
-            ISerializationContext serializationContext);
-    }
+    /// <inheritdoc />
+    public abstract object? Deserialize(XElement elem, XNamespace overridingNamespace,
+        ISerializationContext serializationContext);
 }

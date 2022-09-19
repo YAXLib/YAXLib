@@ -8,18 +8,18 @@ using YAXLib.Pooling.SpecializedPools;
 namespace YAXLib.Pooling.YAXLibPools;
 
 /// <summary>
-/// The object pool for <see cref="YAXSerializer"/>.
+/// The object pool for <see cref="YAXSerializer" />.
 /// </summary>
 internal sealed class SerializerPool : PoolBase<YAXSerializer>
 {
     private static readonly Lazy<SerializerPool> Lazy = new(() => new SerializerPool(),
-            LazyThreadSafetyMode.PublicationOnly);
+        LazyThreadSafetyMode.PublicationOnly);
 
     /// <summary>
     /// CTOR.
     /// </summary>
     /// <remarks>
-    /// <see cref="SpecializedPoolBase{T}.Policy"/> must be set before initializing the pool
+    /// <see cref="SpecializedPoolBase{T}.Policy" /> must be set before initializing the pool
     /// </remarks>
     private SerializerPool()
     {

@@ -3,42 +3,42 @@
 
 using YAXLib.Attributes;
 
-namespace YAXLibTests.SampleClasses.CustomSerialization
-{
-    [YAXCustomSerializer(typeof(ClassLevelCtxSerializer))]
-    public class ClassLevelCtxSample
-    {
-        public string? MessageBody { get; set; }
-        
-        public string? Title { get; set; }
-    }
+namespace YAXLibTests.SampleClasses.CustomSerialization;
 
-    public class ClassLevelCtxSampleAsElement
+[YAXCustomSerializer(typeof(ClassLevelCtxSerializer))]
+public class ClassLevelCtxSample
+{
+    public string? MessageBody { get; set; }
+
+    public string? Title { get; set; }
+}
+
+public class ClassLevelCtxSampleAsElement
+{
+    public ClassLevelCtxSample ClassLevelCtxSample { get; set; } = new();
+
+    public override string ToString()
     {
-        public ClassLevelCtxSample ClassLevelCtxSample { get; set; } = new();
-        public override string ToString()
-        {
-            return GeneralToStringProvider.GeneralToString(this);
-        }
+        return GeneralToStringProvider.GeneralToString(this);
     }
-    
-    public class ClassLevelCtxSampleAsAttribute
+}
+
+public class ClassLevelCtxSampleAsAttribute
+{
+    [YAXAttributeForClass] public ClassLevelCtxSample ClassLevelCtxSample { get; set; } = new();
+
+    public override string ToString()
     {
-        [YAXAttributeForClass]
-        public ClassLevelCtxSample ClassLevelCtxSample { get; set; } = new();
-        public override string ToString()
-        {
-            return GeneralToStringProvider.GeneralToString(this);
-        }
+        return GeneralToStringProvider.GeneralToString(this);
     }
-    
-    public class ClassLevelCtxSampleAsValue
+}
+
+public class ClassLevelCtxSampleAsValue
+{
+    [YAXValueForClass] public ClassLevelCtxSample ClassLevelCtxSample { get; set; } = new();
+
+    public override string ToString()
     {
-        [YAXValueForClass]
-        public ClassLevelCtxSample ClassLevelCtxSample { get; set; } = new();
-        public override string ToString()
-        {
-            return GeneralToStringProvider.GeneralToString(this);
-        }
+        return GeneralToStringProvider.GeneralToString(this);
     }
 }

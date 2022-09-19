@@ -11,28 +11,28 @@ namespace YAXLib.Pooling.ObjectPools;
 /// <summary>
 /// Generic, thread-safe object pool implementation.
 /// </summary>
-/// <typeparam name="T"><see langword="type"/> of the object pool elements.</typeparam>
+/// <typeparam name="T"><see langword="type" /> of the object pool elements.</typeparam>
 internal class ObjectPoolConcurrent<T> : ObjectPool<T> where T : class
 {
     private readonly ConcurrentStack<T> _stack;
     private int _countAll;
 
-    ///<inheritdoc/>
+    /// <inheritdoc />
     public ObjectPoolConcurrent(PoolPolicy<T> poolPolicy) : base(poolPolicy)
     {
         _stack = new ConcurrentStack<T>();
     }
 
-    ///<inheritdoc/>
+    /// <inheritdoc />
     public override int CountAll => _countAll;
 
-    ///<inheritdoc/>
+    /// <inheritdoc />
     public override IReadOnlyList<T> PoolItems => _stack.ToList().AsReadOnly();
 
-    ///<inheritdoc/>
-    public override int CountInactive  => _stack.Count;
+    /// <inheritdoc />
+    public override int CountInactive => _stack.Count;
 
-    ///<inheritdoc/>
+    /// <inheritdoc />
     public override T Get()
     {
         if (!_stack.TryPop(out var element))
@@ -46,13 +46,14 @@ internal class ObjectPoolConcurrent<T> : ObjectPool<T> where T : class
         return element;
     }
 
-    ///<inheritdoc/>
+    /// <inheritdoc />
     public override void Return(T element)
     {
         // This is a safe, but expensive check
         if (PoolSettings.CheckReturnedObjectsExistInPool && !_stack.IsEmpty && _stack.Contains(element))
             throw new PoolingException(
-                $"Trying to return an object of type '{element.GetType()}', that has already been returned to the pool.", GetType());
+                $"Trying to return an object of type '{element.GetType()}', that has already been returned to the pool.",
+                GetType());
 
         PoolPolicy.ActionOnReturn?.Invoke(element);
 
@@ -62,7 +63,7 @@ internal class ObjectPoolConcurrent<T> : ObjectPool<T> where T : class
             PoolPolicy.ActionOnDestroy?.Invoke(element);
     }
 
-    ///<inheritdoc/>
+    /// <inheritdoc />
     public override void Clear()
     {
         if (PoolPolicy.ActionOnDestroy != null)

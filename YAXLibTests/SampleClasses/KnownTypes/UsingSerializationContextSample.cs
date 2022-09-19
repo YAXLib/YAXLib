@@ -1,10 +1,9 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
-namespace YAXLibTests.SampleClasses.KnownTypes
+namespace YAXLibTests.SampleClasses.KnownTypes;
+
+public class UsingSerializationContextSample
 {
-    public class UsingSerializationContextSample
-    {
-        public string? Text { get; set; }
-    }
+    public string? Text { get; set; }
 }
