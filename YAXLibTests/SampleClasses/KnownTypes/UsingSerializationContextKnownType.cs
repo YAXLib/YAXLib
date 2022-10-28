@@ -26,7 +26,8 @@ internal class UsingSerializationContextKnownType : KnownTypeBase<UsingSerializa
     public override UsingSerializationContextSample? Deserialize(XElement elem, XNamespace overridingNamespace,
         ISerializationContext serializationContext)
     {
-        var deserialized = (UsingSerializationContextSample?) serializationContext.TypeContext.Deserialize(elem, _serializerOptions);
+        var deserialized =
+            (UsingSerializationContextSample?) serializationContext.TypeContext.Deserialize(elem, _serializerOptions);
         deserialized!.Text = deserialized.Text?.Replace(" KnownType", string.Empty);
         return deserialized;
     }

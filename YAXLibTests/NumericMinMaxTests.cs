@@ -6,106 +6,104 @@ using NUnit.Framework;
 using YAXLib;
 using YAXLib.Enums;
 using YAXLib.Options;
-using YAXLibTests.SampleClasses.Namespace;
 
-namespace YAXLibTests
+namespace YAXLibTests;
+
+/// <summary>
+/// Tests around Double or Single min and max values. Kindly contributed by CodePlex user vincentbl
+/// </summary>
+[TestFixture]
+public class NumericMinMaxTests
 {
-    /// <summary>
-    ///     Tests around Double or Single min and max values. Kindly contributed by CodePlex user vincentbl
-    /// </summary>
-    [TestFixture]
-    public class NumericMinMaxTests
+    [Test]
+    public void TestDoubleMax()
     {
-        [Test]
-        public void TestDoubleMax()
+        try
         {
-            try
-            {
-                var ser = new YAXSerializer<double>(new SerializerOptions {
-                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowErrorsOnly,
-                    ExceptionBehavior = YAXExceptionTypes.Warning,
-                    SerializationOptions = YAXSerializationOptions.SerializeNullObjects
-                });
+            var ser = new YAXSerializer<double>(new SerializerOptions {
+                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowErrorsOnly,
+                ExceptionBehavior = YAXExceptionTypes.Warning,
+                SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+            });
 
-                var d = 0.55;
-                var xml = ser.Serialize(d);
-                var deserializedInstance = ser.Deserialize(xml);
-                Assert.AreEqual(d, deserializedInstance);
+            var d = 0.55;
+            var xml = ser.Serialize(d);
+            var deserializedInstance = ser.Deserialize(xml);
+            Assert.AreEqual(d, deserializedInstance);
 
-                d = double.MaxValue;
-                xml = ser.Serialize(d);
-                deserializedInstance = ser.Deserialize(xml);
-                // Causes a System.OverflowException {"Value was either too large or too small for a Double."}
-                Assert.AreEqual(d, deserializedInstance);
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("No exception should have been thrown, but received:" + Environment.NewLine + ex);
-            }
+            d = double.MaxValue;
+            xml = ser.Serialize(d);
+            deserializedInstance = ser.Deserialize(xml);
+            // Causes a System.OverflowException {"Value was either too large or too small for a Double."}
+            Assert.AreEqual(d, deserializedInstance);
         }
-
-        [Test]
-        public void TestDoubleMin()
+        catch (Exception ex)
         {
-            try
-            {
-                var ser = new YAXSerializer<double>(new SerializerOptions {
-                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowErrorsOnly,
-                    ExceptionBehavior = YAXExceptionTypes.Warning,
-                    SerializationOptions = YAXSerializationOptions.SerializeNullObjects
-                });
-                var d = double.MinValue;
-                var xml = ser.Serialize(d);
-                var deserializedInstance = ser.Deserialize(xml);
-                Assert.AreEqual(d, deserializedInstance);
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("No exception should have been thrown, but received:" + Environment.NewLine + ex);
-            }
+            Assert.Fail("No exception should have been thrown, but received:" + Environment.NewLine + ex);
         }
+    }
 
-        [Test]
-        public void TestSingleMax()
+    [Test]
+    public void TestDoubleMin()
+    {
+        try
         {
-            try
-            {
-                var ser = new YAXSerializer<float>(new SerializerOptions {
-                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowErrorsOnly,
-                    ExceptionBehavior = YAXExceptionTypes.Warning,
-                    SerializationOptions = YAXSerializationOptions.SerializeNullObjects
-                });
-
-                var f = float.MaxValue;
-                var xml = ser.Serialize(f);
-                var deserializedInstance = ser.Deserialize(xml);
-                Assert.AreEqual(f, deserializedInstance);
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("No exception should have been thrown, but received:" + Environment.NewLine + ex);
-            }
+            var ser = new YAXSerializer<double>(new SerializerOptions {
+                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowErrorsOnly,
+                ExceptionBehavior = YAXExceptionTypes.Warning,
+                SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+            });
+            var d = double.MinValue;
+            var xml = ser.Serialize(d);
+            var deserializedInstance = ser.Deserialize(xml);
+            Assert.AreEqual(d, deserializedInstance);
         }
-
-        [Test]
-        public void TestSingleMin()
+        catch (Exception ex)
         {
-            try
-            {
-                var ser = new YAXSerializer<float>(new SerializerOptions {
-                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowErrorsOnly,
-                    ExceptionBehavior = YAXExceptionTypes.Warning,
-                    SerializationOptions = YAXSerializationOptions.SerializeNullObjects
-                });
-                var f = float.MinValue;
-                var xml = ser.Serialize(f);
-                var deserializedInstance = ser.Deserialize(xml);
-                Assert.AreEqual(f, deserializedInstance);
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("No exception should have been thrown, but received:" + Environment.NewLine + ex);
-            }
+            Assert.Fail("No exception should have been thrown, but received:" + Environment.NewLine + ex);
+        }
+    }
+
+    [Test]
+    public void TestSingleMax()
+    {
+        try
+        {
+            var ser = new YAXSerializer<float>(new SerializerOptions {
+                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowErrorsOnly,
+                ExceptionBehavior = YAXExceptionTypes.Warning,
+                SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+            });
+
+            var f = float.MaxValue;
+            var xml = ser.Serialize(f);
+            var deserializedInstance = ser.Deserialize(xml);
+            Assert.AreEqual(f, deserializedInstance);
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("No exception should have been thrown, but received:" + Environment.NewLine + ex);
+        }
+    }
+
+    [Test]
+    public void TestSingleMin()
+    {
+        try
+        {
+            var ser = new YAXSerializer<float>(new SerializerOptions {
+                ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowErrorsOnly,
+                ExceptionBehavior = YAXExceptionTypes.Warning,
+                SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+            });
+            var f = float.MinValue;
+            var xml = ser.Serialize(f);
+            var deserializedInstance = ser.Deserialize(xml);
+            Assert.AreEqual(f, deserializedInstance);
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("No exception should have been thrown, but received:" + Environment.NewLine + ex);
         }
     }
 }

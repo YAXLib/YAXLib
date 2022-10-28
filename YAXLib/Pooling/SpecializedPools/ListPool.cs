@@ -8,18 +8,18 @@ using System.Threading;
 namespace YAXLib.Pooling.SpecializedPools;
 
 /// <summary>
-/// Generic object pool implementation for <see cref="IList{T}"/>s.
+/// Generic object pool implementation for <see cref="IList{T}" />s.
 /// </summary>
 internal sealed class ListPool<T> : CollectionPool<List<T>, T>
 {
     private static readonly Lazy<ListPool<T>> Lazy = new(() => new ListPool<T>(),
- LazyThreadSafetyMode.PublicationOnly);
+        LazyThreadSafetyMode.PublicationOnly);
 
     /// <summary>
     /// CTOR.
     /// </summary>
     /// <remarks>
-    /// <see cref="SpecializedPoolBase{T}.Policy"/> must be set before initializing the pool
+    /// <see cref="SpecializedPoolBase{T}.Policy" /> must be set before initializing the pool
     /// </remarks>
     private ListPool()
     {

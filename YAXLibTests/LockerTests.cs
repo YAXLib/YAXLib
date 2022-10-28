@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 using NUnit.Framework;
-using YAXLib;
 using YAXLib.Customization;
 
 namespace YAXLibTests;
@@ -15,7 +14,7 @@ public class LockerTests
     {
         using var l1 = new Locker(typeof(long));
 
-        Assert.That(code:() => _ = new Locker(typeof(long)), Throws.ArgumentException);
+        Assert.That(code: () => _ = new Locker(typeof(long)), Throws.ArgumentException);
     }
 
     [Test]
@@ -24,6 +23,6 @@ public class LockerTests
         var locker = new Locker(typeof(int));
         locker.Dispose();
 
-        Assert.That(code:() => _ = new Locker(typeof(int)), Throws.Nothing);
+        Assert.That(code: () => _ = new Locker(typeof(int)), Throws.Nothing);
     }
 }

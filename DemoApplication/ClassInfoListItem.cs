@@ -3,22 +3,21 @@
 
 using System;
 
-namespace DemoApplication
+namespace DemoApplication;
+
+public class ClassInfoListItem
 {
-    public class ClassInfoListItem
+    public Type ClassType { get; set; }
+    public object SampleObject { get; set; }
+
+    public ClassInfoListItem(Type classType, object sampleObject)
     {
-        public Type ClassType { get; set; }
-        public object SampleObject { get; set; }
+        ClassType = classType;
+        SampleObject = sampleObject;
+    }
 
-        public ClassInfoListItem(Type classType, object sampleObject)
-        {
-            this.ClassType = classType;
-            this.SampleObject = sampleObject;
-        }
-
-        public override string ToString()
-        {
-            return ClassType.Name;
-        }
+    public override string ToString()
+    {
+        return ClassType.Name;
     }
 }

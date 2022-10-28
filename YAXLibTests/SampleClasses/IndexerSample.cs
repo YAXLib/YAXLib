@@ -1,32 +1,30 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
-namespace YAXLibTests.SampleClasses
+namespace YAXLibTests.SampleClasses;
+
+public class IndexerSample
 {
-    public class IndexerSample
+    public int this[int i]
     {
-        public int this[int i]
-        {
-            get { return i * 2; }
-            set { SomeInt = i * value; }
-        }
+        get { return i * 2; }
+        set { SomeInt = i * value; }
+    }
 
-        public int SomeInt { get; set; }
+    public int SomeInt { get; set; }
 
-        public string? SomeString { get; set; }
+    public string? SomeString { get; set; }
 
-        public override string ToString()
-        {
-            return GeneralToStringProvider.GeneralToString(this);
-        }
+    public override string ToString()
+    {
+        return GeneralToStringProvider.GeneralToString(this);
+    }
 
-        public static IndexerSample GetSampleInstance()
-        {
-            return new IndexerSample
-            {
-                SomeInt = 1234,
-                SomeString = "Something"
-            };
-        }
+    public static IndexerSample GetSampleInstance()
+    {
+        return new IndexerSample {
+            SomeInt = 1234,
+            SomeString = "Something"
+        };
     }
 }

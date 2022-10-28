@@ -2,38 +2,35 @@
 // Licensed under the MIT license.
 
 using System;
-using YAXLib;
 using YAXLib.Attributes;
 
-namespace YAXLibTests.SampleClasses
+namespace YAXLibTests.SampleClasses;
+
+public class NullableSample2
 {
-    public class NullableSample2
+    [YAXAttributeForClass] public int? Number { get; set; }
+
+    [YAXFormat("o")] public DateTime? DateTime { get; set; }
+
+    public decimal? Decimal { get; set; }
+
+    public bool? Boolean { get; set; }
+
+    public Seasons? Enum { get; set; }
+
+    public override string ToString()
     {
-        [YAXAttributeForClass] public int? Number { get; set; }
+        return GeneralToStringProvider.GeneralToString(this);
+    }
 
-        [YAXFormat("o")] public DateTime? DateTime { get; set; }
-
-        public decimal? Decimal { get; set; }
-
-        public bool? Boolean { get; set; }
-
-        public Seasons? Enum { get; set; }
-
-        public override string ToString()
-        {
-            return GeneralToStringProvider.GeneralToString(this);
-        }
-
-        public static NullableSample2 GetSampleInstance()
-        {
-            return new NullableSample2
-            {
-                Number = 10,
-                DateTime = new DateTime(624599050212345678, DateTimeKind.Utc),
-                Decimal = 1234.56789m,
-                Boolean = true,
-                Enum = Seasons.Third
-            };
-        }
+    public static NullableSample2 GetSampleInstance()
+    {
+        return new NullableSample2 {
+            Number = 10,
+            DateTime = new DateTime(624599050212345678, DateTimeKind.Utc),
+            Decimal = 1234.56789m,
+            Boolean = true,
+            Enum = Seasons.Third
+        };
     }
 }

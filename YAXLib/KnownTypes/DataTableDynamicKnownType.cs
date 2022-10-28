@@ -6,50 +6,49 @@ using System.Linq;
 using System.Xml.Linq;
 using YAXLib.Customization;
 
-namespace YAXLib.KnownTypes
+namespace YAXLib.KnownTypes;
+
+internal class DataTableDynamicKnownType : DynamicKnownTypeBase
 {
-    internal class DataTableDynamicKnownType : DynamicKnownTypeBase
+    /// <inheritdoc />
+    public override string TypeName => "System.Data.DataTable";
+
+    /// <inheritdoc />
+    public override void Serialize(object? obj, XElement elem, XNamespace overridingNamespace,
+        ISerializationContext serializationContext)
     {
-        /// <inheritdoc />
-        public override string TypeName => "System.Data.DataTable";
+        if (obj == null) throw new ArgumentException("Object must not be null", nameof(obj));
 
-        /// <inheritdoc />
-        public override void Serialize(object? obj, XElement elem, XNamespace overridingNamespace,
-            ISerializationContext serializationContext)
-        {
-            if (obj == null) throw new ArgumentException("Object must not be null", nameof(obj));
+        using var xw = elem.CreateWriter();
+        var dsType = ReflectionUtils.GetTypeByName("System.Data.DataSet");
+        var ds = Activator.CreateInstance(dsType);
+        var dsTables = ReflectionUtils.InvokeGetProperty<object>(ds, "Tables")!;
+        var dtCopy = ReflectionUtils.InvokeMethod(obj, "Copy")!;
+        ReflectionUtils.InvokeMethod(dsTables, "Add", dtCopy);
+        ReflectionUtils.InvokeMethod(ds, "WriteXml", xw);
+    }
 
-            using var xw = elem.CreateWriter();
-            var dsType = ReflectionUtils.GetTypeByName("System.Data.DataSet");
-            var ds = Activator.CreateInstance(dsType);
-            var dsTables = ReflectionUtils.InvokeGetProperty<object>(ds, "Tables")!;
-            var dtCopy = ReflectionUtils.InvokeMethod(obj, "Copy")!;
-            ReflectionUtils.InvokeMethod(dsTables, "Add", dtCopy);
-            ReflectionUtils.InvokeMethod(ds, "WriteXml", xw);
-        }
-
-        /// <inheritdoc />
-        public override object? Deserialize(XElement elem, XNamespace overridingNamespace,
-            ISerializationContext serializationContext)
-        {
-            var dsElem = elem.Elements().FirstOrDefault(x => x.Name.LocalName == "NewDataSet");
-            if (dsElem == null)
-                return null;
-
-            using var xr = dsElem.CreateReader();
-            var dsType = ReflectionUtils.GetTypeByName("System.Data.DataSet");
-            var ds = Activator.CreateInstance(dsType);
-            ReflectionUtils.InvokeMethod(ds, "ReadXml", xr);
-            var dsTables = ReflectionUtils.InvokeGetProperty<object>(ds, "Tables")!;
-            var dsTablesCount = ReflectionUtils.InvokeGetProperty<int>(dsTables, "Count");
-            if (dsTablesCount > 0)
-            {
-                var dsTablesZero = ReflectionUtils.InvokeIntIndexer<object>(dsTables, 0)!;
-                var copyDt = ReflectionUtils.InvokeMethod(dsTablesZero, "Copy");
-                return copyDt;
-            }
-
+    /// <inheritdoc />
+    public override object? Deserialize(XElement elem, XNamespace overridingNamespace,
+        ISerializationContext serializationContext)
+    {
+        var dsElem = elem.Elements().FirstOrDefault(x => x.Name.LocalName == "NewDataSet");
+        if (dsElem == null)
             return null;
+
+        using var xr = dsElem.CreateReader();
+        var dsType = ReflectionUtils.GetTypeByName("System.Data.DataSet");
+        var ds = Activator.CreateInstance(dsType);
+        ReflectionUtils.InvokeMethod(ds, "ReadXml", xr);
+        var dsTables = ReflectionUtils.InvokeGetProperty<object>(ds, "Tables")!;
+        var dsTablesCount = ReflectionUtils.InvokeGetProperty<int>(dsTables, "Count");
+        if (dsTablesCount > 0)
+        {
+            var dsTablesZero = ReflectionUtils.InvokeIntIndexer<object>(dsTables, 0)!;
+            var copyDt = ReflectionUtils.InvokeMethod(dsTablesZero, "Copy");
+            return copyDt;
         }
+
+        return null;
     }
 }

@@ -3,21 +3,20 @@
 
 using System.Xml.Linq;
 
-namespace YAXLib.Options
+namespace YAXLib.Options;
+
+/// <summary>
+/// XML Namespace definitions for the <see cref="YAXSerializer" />.
+/// </summary>
+public class YAXNameSpace
 {
     /// <summary>
-    ///     XML Namespace definitions for the <see cref="YAXSerializer"/>.
+    /// The URI address which holds the xmlns:yaxlib definition.
     /// </summary>
-    public class YAXNameSpace
-    {
-        /// <summary>
-        ///     The URI address which holds the xmlns:yaxlib definition.
-        /// </summary>
-        public XNamespace Uri { get; set; } = XNamespace.None;
-            
-        /// <summary>
-        ///     The prefix used for the xml namespace.
-        /// </summary>
-        public string Prefix { get; set; } = string.Empty;
-    }
+    public XNamespace Uri { get; set; } = XNamespace.None;
+
+    /// <summary>
+    /// The prefix used for the xml namespace.
+    /// </summary>
+    public string Prefix { get; set; } = string.Empty;
 }

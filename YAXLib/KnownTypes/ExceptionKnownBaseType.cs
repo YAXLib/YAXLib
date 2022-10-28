@@ -10,12 +10,13 @@ using YAXLib.Options;
 namespace YAXLib.KnownTypes;
 
 /// <summary>
-/// Class for serialization and deserialization of <see cref="Exception"/>s and its derived classes.
-/// <para>We <b>must not</b> use a custom serializer for Exception types, as this known type class is expected
+/// Class for serialization and deserialization of <see cref="Exception" />s and its derived classes.
+/// <para>
+/// We <b>must not</b> use a custom serializer for Exception types, as this known type class is expected
 /// to process exceptions. Doing different may lead to an infinite loop.
 /// </para>
 /// <para>
-/// <see cref="YAXSerializationOptions.SuppressMetadataAttributes"/> <b>must not</b> be set during
+/// <see cref="YAXSerializationOptions.SuppressMetadataAttributes" /> <b>must not</b> be set during
 /// serialization, when deserialization of exceptions is intended.
 /// </para>
 /// </summary>
@@ -34,7 +35,7 @@ internal class ExceptionKnownBaseType : KnownBaseTypeBase<Exception>
     }
 
     /// <summary>
-    /// Serialize an <see cref="Exception"/>.
+    /// Serialize an <see cref="Exception" />.
     /// May be called recursively
     /// </summary>
     private void Serialize(Exception? obj, XElement elem, XNamespace overridingNamespace,
@@ -49,7 +50,7 @@ internal class ExceptionKnownBaseType : KnownBaseTypeBase<Exception>
             if (!ReflectionUtils.IsBaseClassOrSubclassOf(member.TypeContext.Type, "System.Exception"))
             {
                 SerializeNonExceptionField(obj, member, elem, overridingNamespace);
-            } 
+            }
             else
             {
                 SerializeExceptionField(obj, member, elem, overridingNamespace, serializationContext);
@@ -111,7 +112,7 @@ internal class ExceptionKnownBaseType : KnownBaseTypeBase<Exception>
     }
 
     /// <summary>
-    /// Deserialize an <see cref="XElement"/> containing exception details.
+    /// Deserialize an <see cref="XElement" /> containing exception details.
     /// May be called recursively
     /// </summary>
     private Exception? Deserialize(XElement elem, XNamespace overridingNamespace,

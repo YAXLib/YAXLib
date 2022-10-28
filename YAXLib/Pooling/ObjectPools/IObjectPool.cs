@@ -9,7 +9,7 @@ namespace YAXLib.Pooling.ObjectPools;
 internal interface IObjectPool<T> : IDisposable, IPoolCounters where T : class
 {
     /// <summary>
-    /// Gets a <see cref="IReadOnlyList{T}"/> of the unused items in the object pool.
+    /// Gets a <see cref="IReadOnlyList{T}" /> of the unused items in the object pool.
     /// </summary>
     IReadOnlyList<T> PoolItems { get; }
 
@@ -22,12 +22,12 @@ internal interface IObjectPool<T> : IDisposable, IPoolCounters where T : class
     T Get();
 
     /// <summary>
-    /// Get a new <see cref="PooledObject{T}"/> which can be used to
-    /// return the instance back to the pool when the <see cref="PooledObject{T}"/> is disposed.
+    /// Get a new <see cref="PooledObject{T}" /> which can be used to
+    /// return the instance back to the pool when the <see cref="PooledObject{T}" /> is disposed.
     /// </summary>
     /// <param name="instance">Output new typed object.</param>
     /// <returns>
-    /// A <see cref="PooledObject{T}"/>
+    /// A <see cref="PooledObject{T}" />
     /// </returns>
     PooledObject<T> Get(out T instance);
 

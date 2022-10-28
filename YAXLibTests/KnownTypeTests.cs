@@ -76,7 +76,8 @@ public class KnownTypeTests
         var s = new TypeKnownType();
         var serialized = new XElement(XName.Get(nameof(TypeKnownTypeSample.TheType)));
         // Context is a required argument, but it's not used here
-        var discardCtx = new SerializationContext(null, new UdtWrapper(typeof(TypeKnownTypeSample), new SerializerOptions()),
+        var discardCtx = new SerializationContext(null,
+            new UdtWrapper(typeof(TypeKnownTypeSample), new SerializerOptions()),
             new YAXSerializer(typeof(int)));
 
         s.Serialize(typeExample.TheType, serialized, XNamespace.None, discardCtx);
@@ -94,7 +95,7 @@ public class KnownTypeTests
         const string expectedXml = @"<TypeKnownTypeSample>
   <TheType>YAXLibTests.KnownTypeTests</TheType>
 </TypeKnownTypeSample>";
-        
+
         var serialized = serializer.Serialize(typeExample);
         var deserialized = (TypeKnownTypeSample?) serializer.Deserialize(serialized);
 
@@ -145,10 +146,11 @@ public class KnownTypeTests
     [Test]
     public void RuntimeTypeDynamicKnownTypeSerialization_Using_Serializer()
     {
-        const string expectedXml = @"<Object yaxlib:realtype=""System.RuntimeType"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">YAXLibTests.KnownTypeTests</Object>";
+        const string expectedXml =
+            @"<Object yaxlib:realtype=""System.RuntimeType"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">YAXLibTests.KnownTypeTests</Object>";
         object t = GetType(); // this test class
         var serializer = new YAXSerializer(typeof(object));
-        
+
         var serialized = serializer.Serialize(t);
         var deserialized = serializer.Deserialize(serialized);
 
@@ -167,7 +169,7 @@ public class KnownTypeTests
         // Context is a required argument, but it's not used here
         var discardCtx = new SerializationContext(null, new UdtWrapper(typeof(DBNull), new SerializerOptions()),
             new YAXSerializer(typeof(int)));
-        
+
         s.Serialize(dbNullExample, serialized, XNamespace.None, discardCtx);
         var deserialized = s.Deserialize(serialized, XNamespace.None, discardCtx);
         var deserializedAsNull =
@@ -233,7 +235,7 @@ public class KnownTypeTests
     <Height>40</Height>
   </Rect>
 </RectangleDynamicKnownTypeSample>";
-            
+
         var serializer = new YAXSerializer<RectangleDynamicKnownTypeSample>(new SerializerOptions {
             ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
             ExceptionBehavior = YAXExceptionTypes.Warning,
@@ -294,7 +296,7 @@ public class KnownTypeTests
         var got = serializer.Serialize(DataSetAndDataTableKnownTypeSample.GetSampleInstance());
         Assert.That(got, Is.EqualTo(result));
     }
-        
+
     [Test]
     public void TestExtensionMethod()
     {
@@ -350,15 +352,18 @@ public class KnownTypeTests
         {
             // Use serializer with default MaxRecursion and without SuppressMetadataAttributes
             var ser = new YAXSerializer(typeof(Exception), new SerializerOptions {
-                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects});
+                SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+            });
 
             var exceptionSerialized = ser.SerializeToXDocument(ex);
             var outerElement = exceptionSerialized.Root;
 
             Assert.That(outerElement?.Name.LocalName, Is.EqualTo("Exception"), "Element name should be 'Exception'");
             Assert.That(outerElement?.Attribute("{http://www.sinairv.com/yaxlib/}realtype")?.Value,
-                Is.EqualTo("YAXLibTests.SampleClasses.YAXLibTests.SampleClasses.CustomException"), "Exception 'realtype' attribute should exist");
-            Assert.That(outerElement?.Element("Message")?.Value, Does.Contain(ex.Message), "Exception message should exist");
+                Is.EqualTo("YAXLibTests.SampleClasses.YAXLibTests.SampleClasses.CustomException"),
+                "Exception 'realtype' attribute should exist");
+            Assert.That(outerElement?.Element("Message")?.Value, Does.Contain(ex.Message),
+                "Exception message should exist");
 
             var innerElement = exceptionSerialized.Root?.Element("InnerException");
 
@@ -369,7 +374,7 @@ public class KnownTypeTests
         }
     }
 
-    [TestCase(3)]  // minimum to serialize outer exception
+    [TestCase(3)] // minimum to serialize outer exception
     [TestCase(10)] // serialize including inner exceptions
     public void ExceptionKnownType_Serialize_InvalidOperationException(int maxRecursion)
     {
@@ -380,7 +385,8 @@ public class KnownTypeTests
         catch (Exception ex)
         {
             // Use serializer with custom MaxRecursion and without SuppressMetadataAttributes
-            var ser = new YAXSerializer<Exception>(new SerializerOptions { MaxRecursion = maxRecursion,
+            var ser = new YAXSerializer<Exception>(new SerializerOptions {
+                MaxRecursion = maxRecursion,
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects
             });
 
@@ -405,11 +411,12 @@ public class KnownTypeTests
         }
     }
 
-    [TestCase(1)]  // minimum to deserialize outer exception
+    [TestCase(1)] // minimum to deserialize outer exception
     [TestCase(10)] // deserialize including inner exceptions
     public void ExceptionKnownType_Deserialize_CustomException(int maxRecursion)
     {
-        var toDeserialize = @"<Exception yaxlib:realtype=""YAXLibTests.SampleClasses.YAXLibTests.SampleClasses.CustomException"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
+        var toDeserialize =
+            @"<Exception yaxlib:realtype=""YAXLibTests.SampleClasses.YAXLibTests.SampleClasses.CustomException"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
   <Info />
   <TargetSite>Void ThrowCustomException()</TargetSite>
   <Message>This is a custom exception</Message>
@@ -450,8 +457,10 @@ public class KnownTypeTests
 </Exception>";
 
         // Use serializer with custom MaxRecursion and without SuppressMetadataAttributes
-        var ser = new YAXSerializer<Exception>(new SerializerOptions {MaxRecursion = maxRecursion,
-             SerializationOptions = YAXSerializationOptions.SerializeNullObjects });
+        var ser = new YAXSerializer<Exception>(new SerializerOptions {
+            MaxRecursion = maxRecursion,
+            SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+        });
         var deserialized = ser.Deserialize(toDeserialize);
 
         Assert.That(deserialized?.Message, Is.EqualTo("This is a custom exception"));
@@ -466,7 +475,8 @@ public class KnownTypeTests
     [Test]
     public void ExceptionKnownType_Deserialize_InvalidOperationException()
     {
-        var toDeserialize = @"<Exception yaxlib:realtype=""System.InvalidOperationException"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
+        var toDeserialize =
+            @"<Exception yaxlib:realtype=""System.InvalidOperationException"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
   <TargetSite>Void ThrowException(System.String)</TargetSite>
   <Message>System exception unit test</Message>
   <Data />
@@ -500,7 +510,8 @@ public class KnownTypeTests
     [Test]
     public void ExceptionKnownType_Deserialize_InvalidOperationException_Without_Child_Elements()
     {
-        var toDeserialize = @"<Exception yaxlib:realtype=""System.InvalidOperationException"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
+        var toDeserialize =
+            @"<Exception yaxlib:realtype=""System.InvalidOperationException"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
 </Exception>";
 
         var ser = new YAXSerializer<Exception>(new SerializerOptions
@@ -543,8 +554,7 @@ public class KnownTypeTests
         var result = new ExceptionKnownBaseType().Deserialize(xElem, XNamespace.None,
             new SerializationContext(null, new UdtWrapper(typeof(Exception), new SerializerOptions()),
                 new YAXSerializer(typeof(Exception))));
-        
+
         Assert.That(result, Is.Null);
     }
 }
-

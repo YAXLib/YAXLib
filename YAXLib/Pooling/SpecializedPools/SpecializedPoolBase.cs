@@ -9,11 +9,11 @@ namespace YAXLib.Pooling.SpecializedPools;
 /// <summary>
 /// The abstract base class for specialized pools.
 /// </summary>
-/// <typeparam name="T">The <see langword="type"/> of the smart pool.</typeparam>
+/// <typeparam name="T">The <see langword="type" /> of the smart pool.</typeparam>
 internal abstract class SpecializedPoolBase<T> : IDisposable where T : class
 {
     /// <summary>
-    /// The static <see cref="ObjectPool{T}"/> instance.
+    /// The static <see cref="ObjectPool{T}" /> instance.
     /// </summary>
     internal ObjectPool<T> Pool { get; set; }
 
@@ -31,8 +31,8 @@ internal abstract class SpecializedPoolBase<T> : IDisposable where T : class
     }
 
     /// <summary>
-    /// Disposes the current instance of the <see cref="ObjectPool{T}"/> and
-    /// creates a new one, applying the current <see cref="PoolPolicy{T}"/>.
+    /// Disposes the current instance of the <see cref="ObjectPool{T}" /> and
+    /// creates a new one, applying the current <see cref="PoolPolicy{T}" />.
     /// </summary>
     internal void Reset()
     {
@@ -44,25 +44,25 @@ internal abstract class SpecializedPoolBase<T> : IDisposable where T : class
     private ObjectPool<T> LazyCreateObjectPool()
     {
         return new Lazy<ObjectPoolConcurrent<T>>(() => new ObjectPoolConcurrent<T>(Policy),
-                System.Threading.LazyThreadSafetyMode.PublicationOnly).Value;
+            System.Threading.LazyThreadSafetyMode.PublicationOnly).Value;
     }
 
     /// <summary>
-    /// Gets a <see typeparamref="T"/> instance from the object pool.
+    /// Gets a <see typeparamref="T" /> instance from the object pool.
     /// </summary>
-    /// <returns>A <see typeparamref="T"/> instance from the object pool.</returns>
+    /// <returns>A <see typeparamref="T" /> instance from the object pool.</returns>
     public virtual T Get()
     {
         return Pool.Get();
     }
 
     /// <summary>
-    /// Get a new <see cref="PooledObject{T}"/> which can be used to
-    /// return the instance back to the pool when the <see cref="PooledObject{T}"/> is disposed.
+    /// Get a new <see cref="PooledObject{T}" /> which can be used to
+    /// return the instance back to the pool when the <see cref="PooledObject{T}" /> is disposed.
     /// </summary>
     /// <param name="instance">Output new typed object.</param>
     /// <returns>
-    /// A <see cref="PooledObject{T}"/>
+    /// A <see cref="PooledObject{T}" />
     /// </returns>
     public virtual PooledObject<T> Get(out T instance)
     {
@@ -90,7 +90,7 @@ internal abstract class SpecializedPoolBase<T> : IDisposable where T : class
     }
 
     /// <summary>
-    /// Disposes the resources by calling the <see cref="Clear"/> method.
+    /// Disposes the resources by calling the <see cref="Clear" /> method.
     /// </summary>
     /// <param name="disposing"></param>
     protected virtual void Dispose(bool disposing)
@@ -101,7 +101,7 @@ internal abstract class SpecializedPoolBase<T> : IDisposable where T : class
         }
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public void Dispose()
     {
         Dispose(true);

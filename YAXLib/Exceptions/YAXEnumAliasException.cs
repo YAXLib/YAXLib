@@ -3,29 +3,28 @@
 
 using System;
 
-namespace YAXLib.Exceptions
+namespace YAXLib.Exceptions;
+
+/// <summary>
+/// The exception throws when trying to register an already existing <see cref="Enum" /> alias.
+/// This exception is raised during serialization and deserialization.
+/// </summary>
+[Serializable]
+public class YAXEnumAliasException : YAXException
 {
     /// <summary>
-    ///     The exception throws when trying to register an already existing <see cref="Enum"/> alias.
-    ///     This exception is raised during serialization and deserialization.
+    /// Initializes a new instance of the <see cref="YAXEnumAliasException" /> class.
     /// </summary>
-    [Serializable]
-    public class YAXEnumAliasException : YAXException
+    public YAXEnumAliasException()
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="YAXEnumAliasException" /> class.
-        /// </summary>
-        public YAXEnumAliasException()
-        {
-        }
+    }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="YAXEnumAliasException" /> class.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        public YAXEnumAliasException(string message)
-            : base(message)
-        {
-        }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="YAXEnumAliasException" /> class.
+    /// </summary>
+    /// <param name="message">The message.</param>
+    public YAXEnumAliasException(string message)
+        : base(message)
+    {
     }
 }

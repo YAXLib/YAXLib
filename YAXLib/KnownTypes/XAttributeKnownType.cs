@@ -5,20 +5,21 @@ using System.Linq;
 using System.Xml.Linq;
 using YAXLib.Customization;
 
-namespace YAXLib.KnownTypes
-{
-    internal class XAttributeKnownType : KnownTypeBase<XAttribute>
-    {
-        /// <inheritdoc />
-        public override void Serialize(XAttribute? obj, XElement elem, XNamespace overridingNamespace, ISerializationContext serializationContext)
-        {
-            if (obj != null) elem.Add(obj);
-        }
+namespace YAXLib.KnownTypes;
 
-        /// <inheritdoc />
-        public override XAttribute? Deserialize(XElement elem, XNamespace overridingNamespace, ISerializationContext serializationContext)
-        {
-            return elem.Attributes().FirstOrDefault();
-        }
+internal class XAttributeKnownType : KnownTypeBase<XAttribute>
+{
+    /// <inheritdoc />
+    public override void Serialize(XAttribute? obj, XElement elem, XNamespace overridingNamespace,
+        ISerializationContext serializationContext)
+    {
+        if (obj != null) elem.Add(obj);
+    }
+
+    /// <inheritdoc />
+    public override XAttribute? Deserialize(XElement elem, XNamespace overridingNamespace,
+        ISerializationContext serializationContext)
+    {
+        return elem.Attributes().FirstOrDefault();
     }
 }

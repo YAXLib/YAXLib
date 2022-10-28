@@ -8,9 +8,11 @@ using System.Threading;
 namespace YAXLib.Pooling.SpecializedPools;
 
 /// <summary>
-/// Generic object pool implementation for <see cref="IDictionary{TKey,TValue}"/>s.
+/// Generic object pool implementation for <see cref="IDictionary{TKey,TValue}" />s.
 /// </summary>
-internal sealed class DictionaryPool<TKey, TValue> : CollectionPool<Dictionary<TKey, TValue>, KeyValuePair<TKey, TValue>> where TKey: notnull
+internal sealed class
+    DictionaryPool<TKey, TValue> : CollectionPool<Dictionary<TKey, TValue>, KeyValuePair<TKey, TValue>>
+    where TKey : notnull
 {
     private static readonly Lazy<DictionaryPool<TKey, TValue>> Lazy = new(() => new DictionaryPool<TKey, TValue>(),
         LazyThreadSafetyMode.PublicationOnly
@@ -20,7 +22,7 @@ internal sealed class DictionaryPool<TKey, TValue> : CollectionPool<Dictionary<T
     /// CTOR.
     /// </summary>
     /// <remarks>
-    /// <see cref="SpecializedPoolBase{T}.Policy"/> must be set before initializing the pool
+    /// <see cref="SpecializedPoolBase{T}.Policy" /> must be set before initializing the pool
     /// </remarks>
     private DictionaryPool()
     {

@@ -8,8 +8,8 @@ using System.Xml.Linq;
 namespace YAXLib.Customization;
 
 /// <summary>
-/// A wrapper around an <see cref="ICustomSerializer{T}"/>.
-/// It's methods are invoked with <see cref="System.Reflection"/>.
+/// A wrapper around an <see cref="ICustomSerializer{T}" />.
+/// It's methods are invoked with <see cref="System.Reflection" />.
 /// </summary>
 internal class CustomSerializerWrapper : ICustomSerializer<object>
 {
@@ -27,7 +27,7 @@ internal class CustomSerializerWrapper : ICustomSerializer<object>
         _csInstance = Activator.CreateInstance(csType, true);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public void SerializeToAttribute(object? objectToSerialize, XAttribute attrToFill,
         ISerializationContext serializationContext)
     {
@@ -40,7 +40,7 @@ internal class CustomSerializerWrapper : ICustomSerializer<object>
             });
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public void SerializeToElement(object? objectToSerialize, XElement elemToFill,
         ISerializationContext serializationContext)
     {
@@ -53,7 +53,7 @@ internal class CustomSerializerWrapper : ICustomSerializer<object>
             });
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public string SerializeToValue(object? objectToSerialize, ISerializationContext serializationContext)
     {
         using var _ = new Locker(Type);
@@ -62,10 +62,9 @@ internal class CustomSerializerWrapper : ICustomSerializer<object>
             BindingFlags.InvokeMethod, null,
             _csInstance,
             new[] { objectToSerialize, serializationContext });
-
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public object DeserializeFromAttribute(XAttribute attribute, ISerializationContext serializationContext)
     {
         using var _ = new Locker(Type);
@@ -75,23 +74,23 @@ internal class CustomSerializerWrapper : ICustomSerializer<object>
             new object[] { attribute, serializationContext });
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public object DeserializeFromElement(XElement element, ISerializationContext serializationContext)
     {
         using var _ = new Locker(Type);
 
         return Type.InvokeMember(nameof(ICustomSerializer<object>.DeserializeFromElement),
-                BindingFlags.InvokeMethod, null, _csInstance,
-                new object[] { element, serializationContext });
+            BindingFlags.InvokeMethod, null, _csInstance,
+            new object[] { element, serializationContext });
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public object DeserializeFromValue(string value, ISerializationContext serializationContext)
     {
         using var _ = new Locker(Type);
 
         return Type.InvokeMember(nameof(ICustomSerializer<object>.DeserializeFromValue),
-                BindingFlags.InvokeMethod, null, _csInstance,
-                new object[] { value, serializationContext });
+            BindingFlags.InvokeMethod, null, _csInstance,
+            new object[] { value, serializationContext });
     }
 }

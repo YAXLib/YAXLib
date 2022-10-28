@@ -3,15 +3,14 @@
 
 using System;
 
-namespace YAXLibTests.SampleClasses.KnownTypes
-{
-    public class TypeKnownTypeSample
-    {
-        public Type? TheType { get; set; }
+namespace YAXLibTests.SampleClasses.KnownTypes;
 
-        public static TypeKnownTypeSample GetSampleInstance()
-        {
-            return new TypeKnownTypeSample { TheType = typeof(KnownTypeTests) };
-        }
+public class TypeKnownTypeSample
+{
+    public Type? TheType { get; set; }
+
+    public static TypeKnownTypeSample GetSampleInstance()
+    {
+        return new TypeKnownTypeSample { TheType = typeof(KnownTypeTests) };
     }
 }

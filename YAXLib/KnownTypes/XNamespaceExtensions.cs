@@ -3,15 +3,14 @@
 
 using System.Xml.Linq;
 
-namespace YAXLib.KnownTypes
+namespace YAXLib.KnownTypes;
+
+internal static class XNamespaceExtensions
 {
-    internal static class XNamespaceExtensions
+    internal static XName GetXName(this XNamespace ns, string name)
     {
-        internal static XName GetXName(this XNamespace ns, string name)
-        {
-            return ns.IsEmpty()
-                ? XName.Get(name, ns.NamespaceName)
-                : XName.Get(name);
-        }
+        return ns.IsEmpty()
+            ? XName.Get(name, ns.NamespaceName)
+            : XName.Get(name);
     }
 }

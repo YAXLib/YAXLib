@@ -2,53 +2,51 @@
 // Licensed under the MIT license.
 
 using System.Collections.Generic;
-using YAXLib;
 using YAXLib.Attributes;
 
-namespace YAXLibTests.SampleClasses
-{
-    [ShowInDemoApplication]
-    [YAXComment(@"This example shows a multi-level class, which helps to test 
+namespace YAXLibTests.SampleClasses;
+
+[ShowInDemoApplication]
+[YAXComment(@"This example shows a multi-level class, which helps to test 
       the null references identity problem. 
       Thanks go to Anton Levshunov for proposing this example,
       and a discussion on this matter.")]
-    public class MultilevelClass
+public class MultilevelClass
+{
+    public List<FirstLevelClass> Items { get; set; } = new();
+
+    public override string ToString()
     {
-        public List<FirstLevelClass> Items { get; set; } = new();
-
-        public override string ToString()
-        {
-            return GeneralToStringProvider.GeneralToString(this);
-        }
-
-        public static MultilevelClass GetSampleInstance()
-        {
-            var obj = new MultilevelClass {
-                Items = new List<FirstLevelClass> {
-                    new FirstLevelClass(),
-                    new FirstLevelClass()
-                }
-            };
-
-            obj.Items[0].Second = new SecondLevelClass();
-            obj.Items[0].Id = "1";
-            obj.Items[0].Second!.SecondId = "1-2";
-
-            obj.Items[1].Id = "2";
-            obj.Items[1].Second = null;
-            return obj;
-        }
+        return GeneralToStringProvider.GeneralToString(this);
     }
 
-    public class FirstLevelClass
+    public static MultilevelClass GetSampleInstance()
     {
-        public string? Id { get; set; }
+        var obj = new MultilevelClass {
+            Items = new List<FirstLevelClass> {
+                new FirstLevelClass(),
+                new FirstLevelClass()
+            }
+        };
 
-        public SecondLevelClass? Second { get; set; }
-    }
+        obj.Items[0].Second = new SecondLevelClass();
+        obj.Items[0].Id = "1";
+        obj.Items[0].Second!.SecondId = "1-2";
 
-    public class SecondLevelClass
-    {
-        public string? SecondId { get; set; }
+        obj.Items[1].Id = "2";
+        obj.Items[1].Second = null;
+        return obj;
     }
+}
+
+public class FirstLevelClass
+{
+    public string? Id { get; set; }
+
+    public SecondLevelClass? Second { get; set; }
+}
+
+public class SecondLevelClass
+{
+    public string? SecondId { get; set; }
 }
