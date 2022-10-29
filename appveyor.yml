@@ -21,7 +21,7 @@ for:
     build_script:
       - ps: dotnet restore --verbosity quiet
       - ps: |
-          $version = "4.0.0-pre.1"
+          $version = "4.0.0"
           $versionFile = $version + "." + ${env:APPVEYOR_BUILD_NUMBER}
 
           if ($env:APPVEYOR_PULL_REQUEST_NUMBER) {
@@ -39,7 +39,7 @@ for:
       api_key:
         secure: MDEy3s/MsVPa+RLi3gzmjZrS2IjQKI3Nw72+wZoNaX7SGY6o7IdmVZYRY8/2E7/t
       on:
-        branch: version/4.0
+        branch: master
   
   -
     matrix:

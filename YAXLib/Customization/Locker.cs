@@ -41,9 +41,4 @@ internal class Locker : IDisposable
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
-
-    ~Locker()
-    {
-        Dispose(false);
-    }
 }
