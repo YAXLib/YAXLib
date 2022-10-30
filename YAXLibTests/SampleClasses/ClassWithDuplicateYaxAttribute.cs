@@ -1,28 +1,25 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
-using YAXLib;
 using YAXLib.Attributes;
 
-namespace YAXLibTests.SampleClasses
+namespace YAXLibTests.SampleClasses;
+
+internal class ClassWithDuplicateYaxAttribute
 {
-    internal class ClassWithDuplicateYaxAttribute
+    [YAXAttributeForClass]
+    [YAXSerializeAs("test")]
+    public string? Test1 { get; set; }
+
+    [YAXAttributeForClass]
+    [YAXSerializeAs("test")]
+    public string? Test2 { get; set; }
+
+    public static ClassWithDuplicateYaxAttribute GetSampleInstance()
     {
-        [YAXAttributeForClass]
-        [YAXSerializeAs("test")]
-        public string Test1 { get; set; }
-
-        [YAXAttributeForClass]
-        [YAXSerializeAs("test")]
-        public string Test2 { get; set; }
-
-        public static ClassWithDuplicateYaxAttribute GetSampleInstance()
-        {
-            return new ClassWithDuplicateYaxAttribute
-            {
-                Test1 = "test1",
-                Test2 = "test2"
-            };
-        }
+        return new ClassWithDuplicateYaxAttribute {
+            Test1 = "test1",
+            Test2 = "test2"
+        };
     }
 }

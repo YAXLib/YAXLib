@@ -3,44 +3,42 @@
 
 using System;
 
-namespace YAXLibTests.SampleClasses
+namespace YAXLibTests.SampleClasses;
+
+public class DelegateInstances
 {
-    public class DelegateInstances
+    public delegate string AwesomeDelegate(int n, double d);
+
+    public DelegateInstances()
     {
-        public delegate string AwesomeDelegate(int n, double d);
+        Delegate1 = AwesomeMethod;
+    }
 
-        public DelegateInstances()
-        {
-            Delegate1 = AwesomeMethod;
-        }
+    public AwesomeDelegate? Delegate1 { get; set; }
+    public AwesomeDelegate? Delegate2 { get; set; }
 
-        public AwesomeDelegate Delegate1 { get; set; }
-        public AwesomeDelegate Delegate2 { get; set; }
+    public Func<string>? SomeFunc { get; set; }
+    public Action? SomeAction { get; set; }
 
-        public Func<string> SomeFunc { get; set; }
-        public Action SomeAction { get; set; }
+    public int SomeNumber { get; set; }
 
-        public int SomeNumber { get; set; }
+    private string AwesomeMethod(int n, double d)
+    {
+        return "Hi";
+    }
 
-        private string AwesomeMethod(int n, double d)
-        {
-            return "Hi";
-        }
+    public static DelegateInstances GetSampleInstance()
+    {
+        return new DelegateInstances {
+            Delegate2 = (n, d) => string.Format("Hey n:{0}, d:{1}", n, d),
+            SomeFunc = () => "Some",
+            SomeAction = () => Console.WriteLine("I'm doing something"),
+            SomeNumber = 12
+        };
+    }
 
-        public static DelegateInstances GetSampleInstance()
-        {
-            return new DelegateInstances
-            {
-                Delegate2 = (n, d) => string.Format("Hey n:{0}, d:{1}", n, d),
-                SomeFunc = () => "Some",
-                SomeAction = () => Console.WriteLine("I'm doing something"),
-                SomeNumber = 12
-            };
-        }
-
-        public override string ToString()
-        {
-            return GeneralToStringProvider.GeneralToString(this);
-        }
+    public override string ToString()
+    {
+        return GeneralToStringProvider.GeneralToString(this);
     }
 }

@@ -3,20 +3,19 @@
 
 using System.Drawing;
 
-namespace YAXLibTests.SampleClasses
+namespace YAXLibTests.SampleClasses;
+
+public class RectangleDynamicKnownTypeSample
 {
-    public class RectangleDynamicKnownTypeSample
+    public Rectangle Rect { get; set; }
+
+    public static RectangleDynamicKnownTypeSample GetSampleInstance()
     {
-        public Rectangle Rect { get; set; }
+        return new RectangleDynamicKnownTypeSample { Rect = new Rectangle(10, 20, 30, 40) };
+    }
 
-        public static RectangleDynamicKnownTypeSample GetSampleInstance()
-        {
-            return new RectangleDynamicKnownTypeSample {Rect = new Rectangle(10, 20, 30, 40)};
-        }
-
-        public override string ToString()
-        {
-            return GeneralToStringProvider.GeneralToString(this);
-        }
+    public override string ToString()
+    {
+        return GeneralToStringProvider.GeneralToString(this);
     }
 }

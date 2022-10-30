@@ -3,20 +3,24 @@
 
 using System;
 using System.Xml.Linq;
+using YAXLib.Customization;
 
-namespace YAXLib
+namespace YAXLib.KnownTypes;
+
+internal class TypeKnownType : KnownTypeBase<Type>
 {
-    internal class TypeKnownType : KnownType<Type>
+    /// <inheritdoc />
+    public override void Serialize(Type? obj, XElement elem, XNamespace overridingNamespace,
+        ISerializationContext serializationContext)
     {
-        public override void Serialize(Type obj, XElement elem, XNamespace overridingNamespace)
-        {
-            if (obj != null)
-                elem.Value = obj.FullName ?? string.Empty;
-        }
+        if (obj != null)
+            elem.Value = obj.FullName ?? string.Empty;
+    }
 
-        public override Type Deserialize(XElement elem, XNamespace overridingNamespace)
-        {
-            return ReflectionUtils.GetTypeByName(elem.Value);
-        }
+    /// <inheritdoc />
+    public override Type? Deserialize(XElement elem, XNamespace overridingNamespace,
+        ISerializationContext serializationContext)
+    {
+        return ReflectionUtils.GetTypeByName(elem.Value);
     }
 }

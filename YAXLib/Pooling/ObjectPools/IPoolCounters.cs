@@ -1,0 +1,22 @@
+﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
+// Licensed under the MIT license.
+
+namespace YAXLib.Pooling.ObjectPools;
+
+internal interface IPoolCounters
+{
+    /// <summary>
+    /// The total number of active and inactive objects.
+    /// </summary>
+    int CountAll { get; }
+
+    /// <summary>
+    /// Number of objects that have been created by the pool but are currently in use and have not yet been returned.
+    /// </summary>
+    int CountActive { get; }
+
+    /// <summary>
+    /// Number of objects that are currently available in the pool.
+    /// </summary>
+    int CountInactive { get; }
+}

@@ -4,96 +4,108 @@
 using System;
 using YAXLib.Enums;
 
-namespace YAXLib.Attributes
+namespace YAXLib.Attributes;
+
+/// <summary>
+/// Controls the serialization of generic Dictionary instances.
+/// This attribute is applicable to fields and properties, and
+/// classes derived from the <c>Dictionary</c> base class.
+/// </summary>
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class |
+                AttributeTargets.Struct)]
+public class YAXDictionaryAttribute : YAXBaseAttribute, IYaxMemberLevelAttribute, IYaxTypeLevelAttribute
 {
+    private YAXNodeTypes _serializeKeyAs = YAXNodeTypes.Element;
+    private YAXNodeTypes _serializeValueAs = YAXNodeTypes.Element;
+
     /// <summary>
-    ///     Controls the serialization of generic Dictionary instances.
-    ///     This attribute is applicable to fields and properties, and
-    ///     classes derived from the <c>Dictionary</c> base class.
+    /// Initializes a new instance of the <see cref="YAXDictionaryAttribute" /> class.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class |
-                    AttributeTargets.Struct)]
-    public class YAXDictionaryAttribute : YAXBaseAttribute
+    public YAXDictionaryAttribute()
     {
-        private YAXNodeTypes _serializeKeyAs = YAXNodeTypes.Element;
-        private YAXNodeTypes _serializeValueAs = YAXNodeTypes.Element;
+        KeyName = null;
+        ValueName = null;
+        EachPairName = null;
+        KeyFormatString = string.Empty;
+        ValueFormatString = string.Empty;
+    }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="YAXDictionaryAttribute" /> class.
-        /// </summary>
-        public YAXDictionaryAttribute()
+    /// <summary>
+    /// Gets or sets the alias for the key part of the dictionary.
+    /// </summary>
+    /// <value></value>
+    public string? KeyName { get; set; }
+
+    /// <summary>
+    /// Gets or sets alias for the value part of the dictionary.
+    /// </summary>
+    /// <value></value>
+    public string? ValueName { get; set; }
+
+    /// <summary>
+    /// Gets or sets alias for the element containing the Key-Value pair.
+    /// </summary>
+    /// <value></value>
+    public string? EachPairName { get; set; }
+
+    /// <summary>
+    /// Gets or sets the node type according to which the key part of the dictionary is serialized.
+    /// </summary>
+    /// <value></value>
+    public YAXNodeTypes SerializeKeyAs
+    {
+        get { return _serializeKeyAs; }
+
+        set
         {
-            KeyName = null;
-            ValueName = null;
-            EachPairName = null;
-            KeyFormatString = null;
-            ValueFormatString = null;
+            _serializeKeyAs = value;
+            CheckIntegrity();
         }
+    }
 
-        /// <summary>
-        ///     Gets or sets the alias for the key part of the dicitonary.
-        /// </summary>
-        /// <value></value>
-        public string KeyName { get; set; }
+    /// <summary>
+    /// Gets or sets the node type according to which the value part of the dictionary is serialized.
+    /// </summary>
+    /// <value></value>
+    public YAXNodeTypes SerializeValueAs
+    {
+        get { return _serializeValueAs; }
 
-        /// <summary>
-        ///     Gets or sets alias for the value part of the dicitonary.
-        /// </summary>
-        /// <value></value>
-        public string ValueName { get; set; }
-
-        /// <summary>
-        ///     Gets or sets alias for the element containing the Key-Value pair.
-        /// </summary>
-        /// <value></value>
-        public string EachPairName { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the node type according to which the key part of the dictionary is serialized.
-        /// </summary>
-        /// <value></value>
-        public YAXNodeTypes SerializeKeyAs
+        set
         {
-            get { return _serializeKeyAs; }
-
-            set
-            {
-                _serializeKeyAs = value;
-                CheckIntegrity();
-            }
+            _serializeValueAs = value;
+            CheckIntegrity();
         }
+    }
 
-        /// <summary>
-        ///     Gets or sets the node type according to which the value part of the dictionary is serialized.
-        /// </summary>
-        /// <value></value>
-        public YAXNodeTypes SerializeValueAs
-        {
-            get { return _serializeValueAs; }
+    /// <summary>
+    /// Gets or sets the key format string.
+    /// </summary>
+    /// <value></value>
+    public string KeyFormatString { get; set; }
 
-            set
-            {
-                _serializeValueAs = value;
-                CheckIntegrity();
-            }
-        }
+    /// <summary>
+    /// Gets or sets the value format string.
+    /// </summary>
+    /// <value></value>
+    public string ValueFormatString { get; set; }
 
-        /// <summary>
-        ///     Gets or sets the key format string.
-        /// </summary>
-        /// <value></value>
-        public string KeyFormatString { get; set; }
+    /// <inheritdoc />
+    void IYaxMemberLevelAttribute.Setup(MemberWrapper memberWrapper)
+    {
+        memberWrapper.DictionaryAttributeInstance = this;
+    }
 
-        /// <summary>
-        ///     Gets or sets the value format string.
-        /// </summary>
-        /// <value></value>
-        public string ValueFormatString { get; set; }
+    /// <inheritdoc />
+    void IYaxTypeLevelAttribute.Setup(UdtWrapper udtWrapper)
+    {
+        udtWrapper.DictionaryAttributeInstance = this;
+    }
 
-        private void CheckIntegrity()
-        {
-            if (_serializeKeyAs == _serializeValueAs && _serializeValueAs == YAXNodeTypes.Content)
-                throw new Exception("Key and Value cannot both be serialized as Content at the same time.");
-        }
+    private void CheckIntegrity()
+    {
+        if (_serializeKeyAs == _serializeValueAs && _serializeValueAs == YAXNodeTypes.Content)
+            throw new InvalidOperationException(
+                "Key and Value cannot both be serialized as Content at the same time.");
     }
 }

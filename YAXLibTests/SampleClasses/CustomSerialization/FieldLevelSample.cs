@@ -1,27 +1,27 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using YAXLib;
 using YAXLib.Attributes;
+using YAXLib.Enums;
 
-namespace YAXLibTests.SampleClasses.CustomSerialization
+namespace YAXLibTests.SampleClasses.CustomSerialization;
+
+[YAXSerializableType(FieldsToSerialize = YAXSerializationFields.AllFields)]
+public class FieldLevelSample
 {
-    public class FieldLevelSample
-    {
-        public string Id { get; set; }
-        
-        public string Title { get; set; }
-        
-        [YAXCustomSerializer(typeof(FieldLevelSerializer))]
-        public string Body { get; set; }
+    [YAXAttributeForClass] [YAXCustomSerializer(typeof(FieldLevelSerializer))]
+    public string? Id;
 
-        public override string ToString()
-        {
-            return GeneralToStringProvider.GeneralToString(this);
-        }
+    [YAXValueFor(nameof(Title))] [YAXCustomSerializer(typeof(FieldLevelSerializer))]
+    public string? Title;
+
+    [YAXElementFor(nameof(Body))]
+    [YAXCustomSerializer(typeof(FieldLevelSerializer))]
+    [YAXSerializeAs("ChildOfBody")]
+    public string? Body;
+
+    public override string ToString()
+    {
+        return GeneralToStringProvider.GeneralToString(this);
     }
 }

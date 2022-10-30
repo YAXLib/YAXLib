@@ -3,16 +3,20 @@
 
 using System;
 
-namespace YAXLib.Attributes
+namespace YAXLib.Attributes;
+
+/// <summary>
+/// Add this attribute to properties or fields which you wish to be serialized, when
+/// the enclosing class uses the <c>YAXSerializableType</c> attribute in which <c>FieldsToSerialize</c>
+/// has been set to <c>AttributedFieldsOnly</c>.
+/// This attribute is applicable to fields and properties.
+/// </summary>
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+public class YAXSerializableFieldAttribute : YAXBaseAttribute, IYaxMemberLevelAttribute
 {
-    /// <summary>
-    ///     Add this attribute to properties or fields which you wish to be serialized, when
-    ///     the enclosing class uses the <c>YAXSerializableType</c> attribute in which <c>FieldsToSerialize</c>
-    ///     has been set to <c>AttributedFieldsOnly</c>.
-    ///     This attribute is applicable to fields and properties.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class YAXSerializableFieldAttribute : YAXBaseAttribute
+    /// <inheritdoc />
+    void IYaxMemberLevelAttribute.Setup(MemberWrapper memberWrapper)
     {
+        memberWrapper.IsAttributedAsSerializable = true;
     }
 }

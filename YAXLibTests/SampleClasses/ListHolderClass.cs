@@ -4,33 +4,32 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace YAXLibTests.SampleClasses
+namespace YAXLibTests.SampleClasses;
+
+public class ListHolderClass
 {
-    public class ListHolderClass
+    public ListHolderClass()
     {
-        public ListHolderClass()
-        {
-            ListOfStrings = new List<string>();
-        }
+        ListOfStrings = new List<string>();
+    }
 
-        public List<string> ListOfStrings { get; set; }
+    public List<string> ListOfStrings { get; set; }
 
-        public override string ToString()
-        {
-            var sb = new StringBuilder();
-            foreach (var item in ListOfStrings) sb.AppendLine(item);
+    public override string ToString()
+    {
+        var sb = new StringBuilder();
+        foreach (var item in ListOfStrings) sb.AppendLine(item);
 
-            return sb.ToString();
-        }
+        return sb.ToString();
+    }
 
-        public static ListHolderClass GetSampleInstance()
-        {
-            var inst = new ListHolderClass();
+    public static ListHolderClass GetSampleInstance()
+    {
+        var inst = new ListHolderClass();
 
-            inst.ListOfStrings.Add("Hi");
-            inst.ListOfStrings.Add("Hello");
+        inst.ListOfStrings.Add("Hi");
+        inst.ListOfStrings.Add("Hello");
 
-            return inst;
-        }
+        return inst;
     }
 }

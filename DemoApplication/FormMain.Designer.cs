@@ -43,6 +43,8 @@
             this.comboErrorType = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.numMaxRecursion = new System.Windows.Forms.NumericUpDown();
             this.label7 = new System.Windows.Forms.Label();
             this.comboOptions = new System.Windows.Forms.ComboBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
@@ -51,25 +53,25 @@
             this.label6 = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.numMaxRecursion = new System.Windows.Forms.NumericUpDown();
-            this.label8 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numMaxRecursion)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numMaxRecursion)).BeginInit();
             this.SuspendLayout();
             // 
             // btnSerialize
             // 
-            this.btnSerialize.Location = new System.Drawing.Point(6, 19);
+            this.btnSerialize.Location = new System.Drawing.Point(7, 25);
+            this.btnSerialize.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnSerialize.Name = "btnSerialize";
-            this.btnSerialize.Size = new System.Drawing.Size(75, 23);
+            this.btnSerialize.Size = new System.Drawing.Size(88, 30);
             this.btnSerialize.TabIndex = 0;
             this.btnSerialize.Text = "Serialize";
             this.btnSerialize.UseVisualStyleBackColor = true;
-            this.btnSerialize.Click += new System.EventHandler(this.btnSerialize_Click);
+            this.btnSerialize.Click += new System.EventHandler(this.BtnSerialize_Click);
             // 
             // rtbXMLOutput
             // 
@@ -77,44 +79,49 @@
             this.rtbXMLOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.rtbXMLOutput.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rtbXMLOutput.Location = new System.Drawing.Point(216, 19);
+            this.rtbXMLOutput.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.rtbXMLOutput.Location = new System.Drawing.Point(252, 25);
+            this.rtbXMLOutput.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.rtbXMLOutput.Name = "rtbXMLOutput";
-            this.rtbXMLOutput.Size = new System.Drawing.Size(353, 310);
+            this.rtbXMLOutput.Size = new System.Drawing.Size(411, 405);
             this.rtbXMLOutput.TabIndex = 1;
             this.rtbXMLOutput.Text = "";
             this.rtbXMLOutput.WordWrap = false;
             // 
             // btnDeserialize
             // 
-            this.btnDeserialize.Location = new System.Drawing.Point(87, 19);
+            this.btnDeserialize.Location = new System.Drawing.Point(102, 25);
+            this.btnDeserialize.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnDeserialize.Name = "btnDeserialize";
-            this.btnDeserialize.Size = new System.Drawing.Size(75, 23);
+            this.btnDeserialize.Size = new System.Drawing.Size(88, 30);
             this.btnDeserialize.TabIndex = 2;
             this.btnDeserialize.Text = "Deserialize";
             this.btnDeserialize.UseVisualStyleBackColor = true;
-            this.btnDeserialize.Click += new System.EventHandler(this.btnDeserialize_Click);
+            this.btnDeserialize.Click += new System.EventHandler(this.BtnDeserialize_Click);
             // 
             // lstSampleClasses
             // 
             this.lstSampleClasses.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.lstSampleClasses.FormattingEnabled = true;
-            this.lstSampleClasses.Location = new System.Drawing.Point(9, 19);
+            this.lstSampleClasses.ItemHeight = 17;
+            this.lstSampleClasses.Location = new System.Drawing.Point(10, 25);
+            this.lstSampleClasses.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.lstSampleClasses.Name = "lstSampleClasses";
-            this.lstSampleClasses.Size = new System.Drawing.Size(201, 472);
+            this.lstSampleClasses.Size = new System.Drawing.Size(234, 616);
             this.lstSampleClasses.TabIndex = 3;
-            this.lstSampleClasses.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstSampleClasses_MouseDoubleClick);
+            this.lstSampleClasses.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.LstSampleClasses_MouseDoubleClick);
             // 
             // rtbParsingErrors
             // 
             this.rtbParsingErrors.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.rtbParsingErrors.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rtbParsingErrors.Location = new System.Drawing.Point(216, 348);
+            this.rtbParsingErrors.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.rtbParsingErrors.Location = new System.Drawing.Point(252, 456);
+            this.rtbParsingErrors.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.rtbParsingErrors.Name = "rtbParsingErrors";
             this.rtbParsingErrors.ReadOnly = true;
-            this.rtbParsingErrors.Size = new System.Drawing.Size(353, 144);
+            this.rtbParsingErrors.Size = new System.Drawing.Size(411, 187);
             this.rtbParsingErrors.TabIndex = 4;
             this.rtbParsingErrors.Text = "";
             this.rtbParsingErrors.WordWrap = false;
@@ -122,9 +129,10 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(216, 3);
+            this.label1.Location = new System.Drawing.Point(252, 4);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(322, 13);
+            this.label1.Size = new System.Drawing.Size(401, 17);
             this.label1.TabIndex = 5;
             this.label1.Text = "XML Serialized (Modify and press Deserialize to see what happens)";
             // 
@@ -132,38 +140,42 @@
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(216, 332);
+            this.label2.Location = new System.Drawing.Point(252, 435);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(75, 13);
+            this.label2.Size = new System.Drawing.Size(94, 17);
             this.label2.TabIndex = 6;
             this.label2.Text = "Parsing Errors:";
             // 
             // btnSerializeToFile
             // 
-            this.btnSerializeToFile.Location = new System.Drawing.Point(168, 19);
+            this.btnSerializeToFile.Location = new System.Drawing.Point(196, 25);
+            this.btnSerializeToFile.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnSerializeToFile.Name = "btnSerializeToFile";
-            this.btnSerializeToFile.Size = new System.Drawing.Size(110, 23);
+            this.btnSerializeToFile.Size = new System.Drawing.Size(128, 30);
             this.btnSerializeToFile.TabIndex = 7;
             this.btnSerializeToFile.Text = "Serialize To File";
             this.btnSerializeToFile.UseVisualStyleBackColor = true;
-            this.btnSerializeToFile.Click += new System.EventHandler(this.btnSerializeToFile_Click);
+            this.btnSerializeToFile.Click += new System.EventHandler(this.BtnSerializeToFile_Click);
             // 
             // btnDeserializeFromFile
             // 
-            this.btnDeserializeFromFile.Location = new System.Drawing.Point(284, 19);
+            this.btnDeserializeFromFile.Location = new System.Drawing.Point(331, 25);
+            this.btnDeserializeFromFile.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnDeserializeFromFile.Name = "btnDeserializeFromFile";
-            this.btnDeserializeFromFile.Size = new System.Drawing.Size(121, 23);
+            this.btnDeserializeFromFile.Size = new System.Drawing.Size(141, 30);
             this.btnDeserializeFromFile.TabIndex = 8;
             this.btnDeserializeFromFile.Text = "Deserialize From File";
             this.btnDeserializeFromFile.UseVisualStyleBackColor = true;
-            this.btnDeserializeFromFile.Click += new System.EventHandler(this.btnDeserializeFromFile_Click);
+            this.btnDeserializeFromFile.Click += new System.EventHandler(this.BtnDeserializeFromFile_Click);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(9, 3);
+            this.label3.Location = new System.Drawing.Point(10, 4);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(170, 13);
+            this.label3.Size = new System.Drawing.Size(206, 17);
             this.label3.TabIndex = 9;
             this.label3.Text = "Choose a type to test YAXLib with:";
             // 
@@ -171,17 +183,19 @@
             // 
             this.comboPolicy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboPolicy.FormattingEnabled = true;
-            this.comboPolicy.Location = new System.Drawing.Point(120, 52);
+            this.comboPolicy.Location = new System.Drawing.Point(140, 68);
+            this.comboPolicy.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comboPolicy.Name = "comboPolicy";
-            this.comboPolicy.Size = new System.Drawing.Size(155, 21);
+            this.comboPolicy.Size = new System.Drawing.Size(180, 25);
             this.comboPolicy.TabIndex = 10;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 55);
+            this.label4.Location = new System.Drawing.Point(7, 72);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(108, 13);
+            this.label4.Size = new System.Drawing.Size(134, 17);
             this.label4.TabIndex = 12;
             this.label4.Text = "Error Handling Policy:";
             // 
@@ -189,17 +203,19 @@
             // 
             this.comboErrorType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboErrorType.FormattingEnabled = true;
-            this.comboErrorType.Location = new System.Drawing.Point(396, 52);
+            this.comboErrorType.Location = new System.Drawing.Point(462, 68);
+            this.comboErrorType.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comboErrorType.Name = "comboErrorType";
-            this.comboErrorType.Size = new System.Drawing.Size(80, 21);
+            this.comboErrorType.Size = new System.Drawing.Size(93, 25);
             this.comboErrorType.TabIndex = 13;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(292, 55);
+            this.label5.Location = new System.Drawing.Point(341, 72);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(98, 13);
+            this.label5.Size = new System.Drawing.Size(120, 17);
             this.label5.TabIndex = 14;
             this.label5.Text = "Defaullt Error Type:";
             // 
@@ -219,18 +235,49 @@
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.btnDeserializeFromFile);
             this.groupBox1.Controls.Add(this.comboPolicy);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
+            this.groupBox1.Location = new System.Drawing.Point(14, 16);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(856, 88);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Size = new System.Drawing.Size(999, 115);
             this.groupBox1.TabIndex = 15;
             this.groupBox1.TabStop = false;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(667, 27);
+            this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(97, 17);
+            this.label8.TabIndex = 18;
+            this.label8.Text = "Max Recursion:";
+            // 
+            // numMaxRecursion
+            // 
+            this.numMaxRecursion.Location = new System.Drawing.Point(769, 25);
+            this.numMaxRecursion.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.numMaxRecursion.Maximum = new decimal(new int[] {
+            999999999,
+            0,
+            0,
+            0});
+            this.numMaxRecursion.Name = "numMaxRecursion";
+            this.numMaxRecursion.Size = new System.Drawing.Size(113, 25);
+            this.numMaxRecursion.TabIndex = 17;
+            this.numMaxRecursion.Value = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(486, 55);
+            this.label7.Location = new System.Drawing.Point(567, 72);
+            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(41, 13);
+            this.label7.Size = new System.Drawing.Size(51, 17);
             this.label7.TabIndex = 16;
             this.label7.Text = "Option:";
             // 
@@ -238,9 +285,10 @@
             // 
             this.comboOptions.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboOptions.FormattingEnabled = true;
-            this.comboOptions.Location = new System.Drawing.Point(533, 52);
+            this.comboOptions.Location = new System.Drawing.Point(622, 68);
+            this.comboOptions.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comboOptions.Name = "comboOptions";
-            this.comboOptions.Size = new System.Drawing.Size(223, 21);
+            this.comboOptions.Size = new System.Drawing.Size(259, 25);
             this.comboOptions.TabIndex = 15;
             // 
             // openFileDialog1
@@ -257,11 +305,12 @@
             this.rtbDeserializeOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.rtbDeserializeOutput.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rtbDeserializeOutput.Location = new System.Drawing.Point(6, 22);
+            this.rtbDeserializeOutput.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.rtbDeserializeOutput.Location = new System.Drawing.Point(7, 29);
+            this.rtbDeserializeOutput.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.rtbDeserializeOutput.Name = "rtbDeserializeOutput";
             this.rtbDeserializeOutput.ReadOnly = true;
-            this.rtbDeserializeOutput.Size = new System.Drawing.Size(291, 470);
+            this.rtbDeserializeOutput.Size = new System.Drawing.Size(340, 614);
             this.rtbDeserializeOutput.TabIndex = 16;
             this.rtbDeserializeOutput.Text = "";
             this.rtbDeserializeOutput.WordWrap = false;
@@ -269,9 +318,10 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(3, 3);
+            this.label6.Location = new System.Drawing.Point(4, 4);
+            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(149, 13);
+            this.label6.Size = new System.Drawing.Size(183, 17);
             this.label6.TabIndex = 17;
             this.label6.Text = "Deserialized object\'s ToString:";
             // 
@@ -279,7 +329,8 @@
             // 
             this.splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 107);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 140);
+            this.splitContainer1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -295,8 +346,9 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.rtbDeserializeOutput);
             this.splitContainer1.Panel2.Controls.Add(this.label6);
-            this.splitContainer1.Size = new System.Drawing.Size(880, 497);
-            this.splitContainer1.SplitterDistance = 574;
+            this.splitContainer1.Size = new System.Drawing.Size(1027, 650);
+            this.splitContainer1.SplitterDistance = 669;
+            this.splitContainer1.SplitterWidth = 5;
             this.splitContainer1.TabIndex = 18;
             // 
             // panel1
@@ -304,56 +356,33 @@
             this.panel1.Controls.Add(this.groupBox1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(880, 107);
+            this.panel1.Size = new System.Drawing.Size(1027, 140);
             this.panel1.TabIndex = 19;
-            // 
-            // numMaxRecursion
-            // 
-            this.numMaxRecursion.Location = new System.Drawing.Point(659, 19);
-            this.numMaxRecursion.Maximum = new decimal(new int[] {
-            999999999,
-            0,
-            0,
-            0});
-            this.numMaxRecursion.Name = "numMaxRecursion";
-            this.numMaxRecursion.Size = new System.Drawing.Size(97, 20);
-            this.numMaxRecursion.TabIndex = 17;
-            this.numMaxRecursion.Value = new decimal(new int[] {
-            300,
-            0,
-            0,
-            0});
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(572, 21);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(81, 13);
-            this.label8.TabIndex = 18;
-            this.label8.Text = "Max Recursion:";
             // 
             // FormMain
             // 
             this.AcceptButton = this.btnSerialize;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(880, 604);
+            this.ClientSize = new System.Drawing.Size(1027, 790);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.panel1);
-            this.MinimumSize = new System.Drawing.Size(506, 393);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.MinimumSize = new System.Drawing.Size(588, 502);
             this.Name = "FormMain";
             this.Text = "YAXLib Demo Application";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numMaxRecursion)).EndInit();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.numMaxRecursion)).EndInit();
             this.ResumeLayout(false);
 
         }

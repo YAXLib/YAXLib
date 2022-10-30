@@ -6,11 +6,12 @@
     <Copyright>Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors</Copyright>
     <RepositoryUrl>https://github.com/YAXLib/YAXLib.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <AssemblyVersion>3.0.0.0</AssemblyVersion> <!--only update AssemblyVersion with major releases -->
+    <AssemblyVersion>4.0.0.0</AssemblyVersion> <!--only update AssemblyVersion with major releases -->
     <LangVersion>latest</LangVersion>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisLevel>latest</AnalysisLevel>
     <Features>strict</Features>
+    <nullable>enable</nullable>
   </PropertyGroup>
   
 </Project>

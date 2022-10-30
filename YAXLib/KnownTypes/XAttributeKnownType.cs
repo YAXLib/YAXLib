@@ -3,19 +3,23 @@
 
 using System.Linq;
 using System.Xml.Linq;
+using YAXLib.Customization;
 
-namespace YAXLib
+namespace YAXLib.KnownTypes;
+
+internal class XAttributeKnownType : KnownTypeBase<XAttribute>
 {
-    internal class XAttributeKnownType : KnownType<XAttribute>
+    /// <inheritdoc />
+    public override void Serialize(XAttribute? obj, XElement elem, XNamespace overridingNamespace,
+        ISerializationContext serializationContext)
     {
-        public override void Serialize(XAttribute obj, XElement elem, XNamespace overridingNamespace)
-        {
-            if (obj != null) elem.Add(obj);
-        }
+        if (obj != null) elem.Add(obj);
+    }
 
-        public override XAttribute Deserialize(XElement elem, XNamespace overridingNamespace)
-        {
-            return elem.Attributes().FirstOrDefault();
-        }
+    /// <inheritdoc />
+    public override XAttribute? Deserialize(XElement elem, XNamespace overridingNamespace,
+        ISerializationContext serializationContext)
+    {
+        return elem.Attributes().FirstOrDefault();
     }
 }

@@ -1,20 +1,19 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
-namespace YAXLib.Exceptions
+namespace YAXLib.Exceptions;
+
+/// <summary>
+/// Class for the <see cref="YAXPolymorphicException" />.
+/// </summary>
+public class YAXPolymorphicException : YAXException
 {
     /// <summary>
-    /// Class for the <see cref="YAXPolymorphicException"/>.
+    /// CTOR.
     /// </summary>
-    public class YAXPolymorphicException : YAXException
+    /// <param name="message"></param>
+    public YAXPolymorphicException(string message)
+        : base(message)
     {
-        /// <summary>
-        /// CTOR.
-        /// </summary>
-        /// <param name="message"></param>
-        public YAXPolymorphicException(string message)
-            : base(message)
-        {
-        }
     }
 }

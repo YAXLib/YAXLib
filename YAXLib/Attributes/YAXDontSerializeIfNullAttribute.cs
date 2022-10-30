@@ -3,14 +3,18 @@
 
 using System;
 
-namespace YAXLib.Attributes
+namespace YAXLib.Attributes;
+
+/// <summary>
+/// Prevents serialization of fields or properties when their value is null.
+/// This attribute is applicable to fields and properties.
+/// </summary>
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+public class YAXDontSerializeIfNullAttribute : YAXBaseAttribute, IYaxMemberLevelAttribute
 {
-    /// <summary>
-    ///     Prevents serialization of fields or properties when their value is null.
-    ///     This attribute is applicable to fields and properties.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class YAXDontSerializeIfNullAttribute : YAXBaseAttribute
+    /// <inheritdoc />
+    void IYaxMemberLevelAttribute.Setup(MemberWrapper memberWrapper)
     {
+        memberWrapper.IsAttributedAsDontSerializeIfNull = true;
     }
 }

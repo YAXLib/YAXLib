@@ -2,38 +2,35 @@
 // Licensed under the MIT license.
 
 using System.Collections.Generic;
-using YAXLib;
 using YAXLib.Attributes;
 
-namespace YAXLibTests.SampleClasses.Namespace
+namespace YAXLibTests.SampleClasses.Namespace;
+
+[YAXNamespace("http://namespace.org/nsmain")]
+public class CellPhoneDictionaryNamespace
 {
-    [YAXNamespace("http://namespace.org/nsmain")]
-    public class CellPhone_DictionaryNamespace
+    [YAXSerializeAs("TheName")]
+    [YAXNamespace("x1", "http://namespace.org/x1")]
+    public string? DeviceBrand { get; set; }
+
+    public string? Os { get; set; }
+
+    [YAXNamespace("p1", "namespace/for/prices/only")]
+    public Dictionary<string, double> Prices { get; set; } = new();
+
+    public override string ToString()
     {
-        [YAXSerializeAs("TheName")]
-        [YAXNamespace("x1", "http://namespace.org/x1")]
-        public string DeviceBrand { get; set; }
+        return GeneralToStringProvider.GeneralToString(this);
+    }
 
-        public string OS { get; set; }
+    public static CellPhoneDictionaryNamespace GetSampleInstance()
+    {
+        var prices = new Dictionary<string, double> { { "red", 120 }, { "blue", 110 }, { "black", 140 } };
 
-        [YAXNamespace("p1", "namespace/for/prices/only")]
-        public Dictionary<string, double> Prices { get; set; }
-
-        public override string ToString()
-        {
-            return GeneralToStringProvider.GeneralToString(this);
-        }
-
-        public static CellPhone_DictionaryNamespace GetSampleInstance()
-        {
-            var prices = new Dictionary<string, double> {{"red", 120}, {"blue", 110}, {"black", 140}};
-
-            return new CellPhone_DictionaryNamespace
-            {
-                DeviceBrand = "HTC",
-                OS = "Windows Phone 8",
-                Prices = prices
-            };
-        }
+        return new CellPhoneDictionaryNamespace {
+            DeviceBrand = "HTC",
+            Os = "Windows Phone 8",
+            Prices = prices
+        };
     }
 }

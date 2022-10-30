@@ -3,14 +3,14 @@
 
 using System.Text.RegularExpressions;
 
-namespace YAXLibTests
+namespace YAXLibTests;
+
+public static class StringExtensionsForTest
 {
-    public static class StringExtensionsForTest
+    public static string StripTypeAssemblyVersion(this string str)
     {
-        public static string StripTypeAssemblyVersion(this string str)
-        {
-            const string pattern = @"\,\s+(mscorlib|System\.Private\.CoreLib)\,\s+Version\=\d+(\.\d+)*\,\s+Culture=\b\w+\b\,\s+PublicKeyToken\=\b\w+\b";
-            return Regex.Replace(str, pattern, string.Empty);
-        }
+        const string pattern =
+            @"\,\s+(mscorlib|System\.Private\.CoreLib)\,\s+Version\=\d+(\.\d+)*\,\s+Culture=\b\w+\b\,\s+PublicKeyToken\=\b\w+\b";
+        return Regex.Replace(str, pattern, string.Empty);
     }
 }

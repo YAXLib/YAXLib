@@ -1,49 +1,61 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+
 using System;
 
-namespace YAXLib.Enums
+namespace YAXLib.Enums;
+
+/// <summary>
+/// Enumerates different serialization options which could be set at construction time.
+/// </summary>
+[Flags]
+public enum YAXSerializationOptions
 {
     /// <summary>
-    ///     Enumerates different serialization options which could be set at construction time.
+    /// No serialization options set
     /// </summary>
-    [Flags]
-    public enum YAXSerializationOptions
-    {
-        /// <summary>
-        ///     Serializes null objects also (the default)
-        /// </summary>
-        SerializeNullObjects = 0,
+    None = 0,
 
-        /// <summary>
-        ///     Prevents serialization of null objects.
-        /// </summary>
-        DontSerializeNullObjects = 1,
+    /// <summary>
+    /// Serializes null objects also (the default)
+    /// </summary>
+    SerializeNullObjects = 1,
 
-        /// <summary>
-        ///     TODO: update the comment
-        ///     Prevents serialization of child objects that refer to a parent object which is already serialized, and hene causing
-        ///     a cycle or infinite loop
-        /// </summary>
-        ThrowUponSerializingCyclingReferences = 2,
+    /// <summary>
+    /// Prevents serialization of null objects.
+    /// </summary>
+    DontSerializeNullObjects = 2,
 
-        /// <summary>
-        ///     Prevents serailization of properties with no setter
-        /// </summary>
-        DontSerializePropertiesWithNoSetter = 4,
+    /// <summary>
+    /// Prevents that cycle references from child to parent objects cause an infinite loop.
+    /// </summary>
+    ThrowUponSerializingCyclingReferences = 4,
 
-        /// <summary>
-        ///     Never add YAXLib metadata attributes (e.g., 'yaxlib:realtype') to the serialized XML (even when they would be
-        ///     required for deserialization.)
-        ///     Useful when generating XML intended for another system's consumption.
-        /// </summary>
-        SuppressMetadataAttributes = 8,
+    /// <summary>
+    /// Prevents serialization of properties with no setter
+    /// </summary>
+    DontSerializePropertiesWithNoSetter = 8,
 
-        /// <summary>
-        ///     Provides line number and position (where available) in deserialization exceptions.
-        ///     Enabling this may have a performance impact
-        /// </summary>
-        DisplayLineInfoInExceptions = 16
-    }
+    /// <summary>
+    /// Never add YAXLib metadata attributes (e.g., 'yaxlib:realtype') to the serialized XML (even when they would be
+    /// required for deserialization.)
+    /// Useful when generating XML is targeting third party systems.
+    /// </summary>
+    SuppressMetadataAttributes = 16,
+
+    /// <summary>
+    /// Provides line number and position (where available) in deserialization exceptions.
+    /// Enabling this has a performance impact
+    /// </summary>
+    DisplayLineInfoInExceptions = 32,
+
+    /// <summary>
+    /// Silently removes illegal XML characters when serializing, instead of throwing an exception.
+    /// Note: XML containing illegal characters cannot be loaded and deserialized.
+    /// <para>
+    /// Default: disabled.
+    /// </para>
+    /// </summary>
+    StripInvalidXmlChars = 64
 }

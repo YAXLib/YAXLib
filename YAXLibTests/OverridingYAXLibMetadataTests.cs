@@ -4,28 +4,28 @@
 using NUnit.Framework;
 using YAXLib;
 using YAXLib.Enums;
+using YAXLib.Options;
 using YAXLibTests.SampleClasses;
 
-namespace YAXLibTests
+namespace YAXLibTests;
+
+[TestFixture]
+public class OverridingYaxLibMetadataTests
 {
-    [TestFixture]
-    public class OverridingYAXLibMetadataTests
+    [Test]
+    public void CanOverrideAllMetadata()
     {
-        [Test]
-        public void CanOverrideAllMetadata()
-        {
-            var ser = new YAXSerializer(typeof(YAXLibMetadataOverridingWithNamespace));
+        var ser = new YAXSerializer(typeof(YaxLibMetadataOverridingWithNamespace),
+            new SerializerOptions {
+                Namespace = { Prefix = "yax", Uri = "http://namespace.org/yax" },
+                AttributeName = { Dimensions = "dm", RealType = "type" }
+            });
 
-            ser.YaxLibNamespacePrefix = "yax";
-            ser.YaxLibNamespaceUri = "http://namespace.org/yax";
-            ser.DimensionsAttributeName = "dm";
-            ser.RealTypeAttributeName = "type";
+        var sampleInstance = YaxLibMetadataOverridingWithNamespace.GetSampleInstance();
+        var result = ser.Serialize(sampleInstance);
 
-            var sampleInstance = YAXLibMetadataOverridingWithNamespace.GetSampleInstance();
-            var result = ser.Serialize(sampleInstance);
-
-            var expected =
-                @"<YAXLibMetadataOverridingWithNamespace xmlns:yax=""http://namespace.org/yax"" xmlns=""http://namespace.org/sample"">
+        var expected =
+            @"<YaxLibMetadataOverridingWithNamespace xmlns:yax=""http://namespace.org/yax"" xmlns=""http://namespace.org/sample"">
   <IntArray yax:dm=""2,3"">
     <Int32>1</Int32>
     <Int32>2</Int32>
@@ -35,30 +35,29 @@ namespace YAXLibTests
     <Int32>4</Int32>
   </IntArray>
   <Obj yax:type=""System.String"">Hello, World!</Obj>
-</YAXLibMetadataOverridingWithNamespace>";
-            Assert.That(result, Is.EqualTo(expected));
+</YaxLibMetadataOverridingWithNamespace>";
+        Assert.That(result, Is.EqualTo(expected));
 
-            var desObj = (YAXLibMetadataOverridingWithNamespace) ser.Deserialize(expected);
+        var desObj = (YaxLibMetadataOverridingWithNamespace?) ser.Deserialize(expected);
 
-            Assert.That(desObj.Obj.ToString(), Is.EqualTo(sampleInstance.Obj.ToString()));
-            Assert.That(desObj.IntArray.Length, Is.EqualTo(sampleInstance.IntArray.Length));
-        }
+        Assert.That(desObj?.Obj?.ToString(), Is.EqualTo(sampleInstance.Obj?.ToString()));
+        Assert.That(desObj?.IntArray?.Length, Is.EqualTo(sampleInstance.IntArray?.Length));
+    }
 
-        [Test]
-        public void CanUseTheDefaultNamespace()
-        {
-            var ser = new YAXSerializer(typeof(YAXLibMetadataOverridingWithNamespace));
+    [Test]
+    public void CanUseTheDefaultNamespace()
+    {
+        var ser = new YAXSerializer(typeof(YaxLibMetadataOverridingWithNamespace),
+            new SerializerOptions {
+                Namespace = { Prefix = string.Empty, Uri = "http://namespace.org/sample" },
+                AttributeName = { Dimensions = "dm", RealType = "type" }
+            });
 
-            ser.YaxLibNamespacePrefix = string.Empty;
-            ser.YaxLibNamespaceUri = "http://namespace.org/sample";
-            ser.DimensionsAttributeName = "dm";
-            ser.RealTypeAttributeName = "type";
+        var sampleInstance = YaxLibMetadataOverridingWithNamespace.GetSampleInstance();
+        var result = ser.Serialize(sampleInstance);
 
-            var sampleInstance = YAXLibMetadataOverridingWithNamespace.GetSampleInstance();
-            var result = ser.Serialize(sampleInstance);
-
-            var expected =
-                @"<YAXLibMetadataOverridingWithNamespace xmlns=""http://namespace.org/sample"">
+        var expected =
+            @"<YaxLibMetadataOverridingWithNamespace xmlns=""http://namespace.org/sample"">
   <IntArray dm=""2,3"">
     <Int32>1</Int32>
     <Int32>2</Int32>
@@ -68,26 +67,27 @@ namespace YAXLibTests
     <Int32>4</Int32>
   </IntArray>
   <Obj type=""System.String"">Hello, World!</Obj>
-</YAXLibMetadataOverridingWithNamespace>";
-            Assert.That(result, Is.EqualTo(expected));
+</YaxLibMetadataOverridingWithNamespace>";
+        Assert.That(result, Is.EqualTo(expected));
 
-            var desObj = (YAXLibMetadataOverridingWithNamespace) ser.Deserialize(expected);
+        var desObj = (YaxLibMetadataOverridingWithNamespace?) ser.Deserialize(expected);
 
-            Assert.That(desObj.Obj.ToString(), Is.EqualTo(sampleInstance.Obj.ToString()));
-            Assert.That(desObj.IntArray.Length, Is.EqualTo(sampleInstance.IntArray.Length));
-        }
+        Assert.That(desObj?.Obj?.ToString(), Is.EqualTo(sampleInstance.Obj?.ToString()));
+        Assert.That(desObj?.IntArray?.Length, Is.EqualTo(sampleInstance.IntArray?.Length));
+    }
 
-        [Test]
-        public void CanSuppressMetadata()
-        {
-            var ser = new YAXSerializer(typeof(YAXLibMetadataOverriding),
-                YAXSerializationOptions.SuppressMetadataAttributes);
+    [Test]
+    public void CanSuppressMetadata()
+    {
+        var ser = new YAXSerializer<YaxLibMetadataOverriding>(
+            new SerializerOptions { SerializationOptions = YAXSerializationOptions.SuppressMetadataAttributes }
+        );
 
-            var sampleInstance = YAXLibMetadataOverriding.GetSampleInstance();
-            var result = ser.Serialize(sampleInstance);
+        var sampleInstance = YaxLibMetadataOverriding.GetSampleInstance();
+        var result = ser.Serialize(sampleInstance);
 
-            var expected =
-                @"<YAXLibMetadataOverriding>
+        var expected =
+            @"<YaxLibMetadataOverriding>
   <IntArray>
     <Int32>1</Int32>
     <Int32>2</Int32>
@@ -97,21 +97,22 @@ namespace YAXLibTests
     <Int32>4</Int32>
   </IntArray>
   <Obj>Hello, World!</Obj>
-</YAXLibMetadataOverriding>";
-            Assert.That(result, Is.EqualTo(expected));
-        }
+</YaxLibMetadataOverriding>";
+        Assert.That(result, Is.EqualTo(expected));
+    }
 
-        [Test]
-        public void CanSuppressMetadataButUseCustomNamespace()
-        {
-            var ser = new YAXSerializer(typeof(YAXLibMetadataOverridingWithNamespace),
-                YAXSerializationOptions.SuppressMetadataAttributes);
+    [Test]
+    public void CanSuppressMetadataButUseCustomNamespace()
+    {
+        var ser = new YAXSerializer<YaxLibMetadataOverridingWithNamespace>(
+            new SerializerOptions { SerializationOptions = YAXSerializationOptions.SuppressMetadataAttributes }
+        );
 
-            var sampleInstance = YAXLibMetadataOverridingWithNamespace.GetSampleInstance();
-            var result = ser.Serialize(sampleInstance);
+        var sampleInstance = YaxLibMetadataOverridingWithNamespace.GetSampleInstance();
+        var result = ser.Serialize(sampleInstance);
 
-            var expected =
-                @"<YAXLibMetadataOverridingWithNamespace xmlns=""http://namespace.org/sample"">
+        var expected =
+            @"<YaxLibMetadataOverridingWithNamespace xmlns=""http://namespace.org/sample"">
   <IntArray>
     <Int32>1</Int32>
     <Int32>2</Int32>
@@ -121,8 +122,7 @@ namespace YAXLibTests
     <Int32>4</Int32>
   </IntArray>
   <Obj>Hello, World!</Obj>
-</YAXLibMetadataOverridingWithNamespace>";
-            Assert.That(result, Is.EqualTo(expected));
-        }
+</YaxLibMetadataOverridingWithNamespace>";
+        Assert.That(result, Is.EqualTo(expected));
     }
 }

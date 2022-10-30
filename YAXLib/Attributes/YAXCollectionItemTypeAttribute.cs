@@ -3,18 +3,23 @@
 
 using System;
 
-namespace YAXLib.Attributes
+namespace YAXLib.Attributes;
+
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
+internal class YAXCollectionItemTypeAttribute : YAXBaseAttribute, IYaxMemberLevelAttribute
 {
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
-    internal class YAXCollectionItemTypeAttribute : YAXBaseAttribute
+    public YAXCollectionItemTypeAttribute(Type type)
     {
-        public YAXCollectionItemTypeAttribute(Type type)
-        {
-            Type = type;
-        }
+        Type = type;
+    }
 
-        public Type Type { get; }
+    public Type Type { get; }
 
-        public string Alias { get; set; }
+    public string Alias { get; set; } = string.Empty;
+
+    /// <inheritdoc />
+    void IYaxMemberLevelAttribute.Setup(MemberWrapper memberWrapper)
+    {
+        memberWrapper.AddAttributeToCollectionItemRealTypes(this);
     }
 }

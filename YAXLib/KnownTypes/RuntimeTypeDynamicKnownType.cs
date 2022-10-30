@@ -3,25 +3,30 @@
 
 using System;
 using System.Xml.Linq;
+using YAXLib.Customization;
 
-namespace YAXLib
+namespace YAXLib.KnownTypes;
+
+internal class RuntimeTypeDynamicKnownType : DynamicKnownTypeBase
 {
-    internal class RuntimeTypeDynamicKnownType : DynamicKnownType
+    /// <inheritdoc />
+    public override string TypeName => "System.RuntimeType";
+
+    /// <inheritdoc />
+    public override void Serialize(object? obj, XElement elem, XNamespace overridingNamespace,
+        ISerializationContext serializationContext)
     {
-        public override string TypeName => "System.RuntimeType";
+        var objectType = obj?.GetType();
+        if (obj == null || objectType == null || objectType.FullName != TypeName)
+            throw new ArgumentException("Object type does not match the provided typename", nameof(obj));
 
-        public override void Serialize(object obj, XElement elem, XNamespace overridingNamespace)
-        {
-            var objectType = obj.GetType();
-            if (objectType.FullName != TypeName)
-                throw new ArgumentException("Object type does not match the provided typename", "obj");
+        elem.Value = ReflectionUtils.InvokeGetProperty<string>(obj, "FullName");
+    }
 
-            elem.Value = ReflectionUtils.InvokeGetProperty<string>(obj, "FullName");
-        }
-
-        public override object Deserialize(XElement elem, XNamespace overridingNamespace)
-        {
-            return ReflectionUtils.GetTypeByName(elem.Value);
-        }
+    /// <inheritdoc />
+    public override object? Deserialize(XElement elem, XNamespace overridingNamespace,
+        ISerializationContext serializationContext)
+    {
+        return ReflectionUtils.GetTypeByName(elem.Value);
     }
 }

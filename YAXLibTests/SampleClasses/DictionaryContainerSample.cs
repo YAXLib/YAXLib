@@ -3,61 +3,57 @@
 
 using System;
 using System.Collections.Generic;
-using YAXLib;
 using YAXLib.Attributes;
 using YAXLib.Enums;
 
-namespace YAXLibTests.SampleClasses
+namespace YAXLibTests.SampleClasses;
+
+[YAXSerializeAs("container")]
+[YAXNamespace("http://example.com/")]
+public class DictionaryContainerSample
 {
-    [YAXSerializeAs("container")]
-    [YAXNamespace("http://example.com/")]
-    public class DictionaryContainerSample
+    [YAXSerializeAs("items")]
+    [YAXCollection(YAXCollectionSerializationTypes.Recursive)]
+    [YAXDictionary(EachPairName = "item",
+        KeyName = "key",
+        SerializeKeyAs = YAXNodeTypes.Attribute, SerializeValueAs = YAXNodeTypes.Content)]
+    public DictionarySample Items { get; set; } = new();
+
+    public static DictionaryContainerSample GetSampleInstance()
     {
-        [YAXSerializeAs("items")]
-        [YAXCollection(YAXCollectionSerializationTypes.Recursive)]
-        [YAXDictionary(EachPairName = "item",
-            KeyName = "key",
-            SerializeKeyAs = YAXNodeTypes.Attribute, SerializeValueAs = YAXNodeTypes.Content)]
-        public DictionarySample Items { get; set; }
+        var container = new DictionaryContainerSample {
+            Items = DictionarySample.GetSampleInstance()
+        };
 
-        public static DictionaryContainerSample GetSampleInstance()
-        {
-            var container = new DictionaryContainerSample
-            {
-                Items = DictionarySample.GetSampleInstance()
-            };
-
-            return container;
-        }
-
-        public override string ToString()
-        {
-            return GeneralToStringProvider.GeneralToString(this);
-        }
+        return container;
     }
 
-    [YAXSerializeAs("TheItems")]
-    [YAXNamespace("http://example.com/")]
-    [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement)]
-    [YAXDictionary(EachPairName = "TheItem",
-        KeyName = "TheKey",
-        SerializeKeyAs = YAXNodeTypes.Attribute, SerializeValueAs = YAXNodeTypes.Content)]
-    public class DictionarySample : Dictionary<string, string>
+    public override string ToString()
     {
-        public static DictionarySample GetSampleInstance()
-        {
-            var dictionary = new DictionarySample
-            {
-                {"key1", new Guid(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11).ToString()},
-                {"key2", 1234.ToString()}
-            };
+        return GeneralToStringProvider.GeneralToString(this);
+    }
+}
 
-            return dictionary;
-        }
+[YAXSerializeAs("TheItems")]
+[YAXNamespace("http://example.com/")]
+[YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement)]
+[YAXDictionary(EachPairName = "TheItem",
+    KeyName = "TheKey",
+    SerializeKeyAs = YAXNodeTypes.Attribute, SerializeValueAs = YAXNodeTypes.Content)]
+public class DictionarySample : Dictionary<string, string>
+{
+    public static DictionarySample GetSampleInstance()
+    {
+        var dictionary = new DictionarySample {
+            { "key1", new Guid(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11).ToString() },
+            { "key2", 1234.ToString() }
+        };
 
-        public override string ToString()
-        {
-            return GeneralToStringProvider.GeneralToString(this);
-        }
+        return dictionary;
+    }
+
+    public override string ToString()
+    {
+        return GeneralToStringProvider.GeneralToString(this);
     }
 }

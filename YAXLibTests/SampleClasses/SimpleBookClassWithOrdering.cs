@@ -2,116 +2,113 @@
 // Licensed under the MIT license.
 
 using System.Collections.Generic;
-using YAXLib;
 using YAXLib.Attributes;
 
-namespace YAXLibTests.SampleClasses
+namespace YAXLibTests.SampleClasses;
+
+[ShowInDemoApplication(SortKey = "003")]
+[YAXComment("This example demonstrates serializing a very simple class, but with partial priority ordering.")]
+public class BookClassWithOrdering
 {
-    [ShowInDemoApplication(SortKey = "003")]
-    [YAXComment("This example demonstrates serailizing a very simple class, but with partial priority ordering.")]
-    public class BookClassWithOrdering
+    private string? _author;
+    private string? _editor;
+    private double _price;
+    private string? _publisher;
+    private int _publishYear;
+
+    private string? _review;
+    private string? _title;
+    private int _currentElement;
+
+    [YAXDontSerialize] public Dictionary<int, string> DecentralizationOrder = new Dictionary<int, string>();
+
+    [YAXElementOrder(1)]
+    public string? Title
     {
-        private string _author;
-        private string _editor;
-        private double _price;
-        private string _publisher;
-        private int _publishYear;
-
-        private string _review;
-        private string _title;
-        private int currentElement;
-
-        [YAXDontSerialize] public Dictionary<int, string> DecentralizationOrder = new Dictionary<int, string>();
-
-        [YAXElementOrder(1)]
-        public string Title
+        get { return _title; }
+        set
         {
-            get { return _title; }
-            set
-            {
-                _title = value;
-                DecentralizationOrder.Add(currentElement++, "Title");
-            }
+            _title = value;
+            DecentralizationOrder.Add(_currentElement++, "Title");
         }
+    }
 
-        [YAXElementOrder(0)]
-        public string Author
+    [YAXElementOrder(0)]
+    public string? Author
+    {
+        get { return _author; }
+        set
         {
-            get { return _author; }
-            set
-            {
-                _author = value;
-                DecentralizationOrder.Add(currentElement++, "Author");
-            }
+            _author = value;
+            DecentralizationOrder.Add(_currentElement++, "Author");
         }
+    }
 
-        public int PublishYear
+    public int PublishYear
+    {
+        get { return _publishYear; }
+        set
         {
-            get { return _publishYear; }
-            set
-            {
-                _publishYear = value;
-                DecentralizationOrder.Add(currentElement++, "PublishYear");
-            }
+            _publishYear = value;
+            DecentralizationOrder.Add(_currentElement++, "PublishYear");
         }
+    }
 
-        public double Price
+    public double Price
+    {
+        get { return _price; }
+        set
         {
-            get { return _price; }
-            set
-            {
-                _price = value;
-                DecentralizationOrder.Add(currentElement++, "Price");
-            }
+            _price = value;
+            DecentralizationOrder.Add(_currentElement++, "Price");
         }
+    }
 
-        public string Review
+    public string? Review
+    {
+        get { return _review; }
+        set
         {
-            get { return _review; }
-            set
-            {
-                _review = value;
-                DecentralizationOrder.Add(currentElement++, "Review");
-            }
+            _review = value;
+            DecentralizationOrder.Add(_currentElement++, "Review");
         }
+    }
 
-        public string Publisher
+    public string? Publisher
+    {
+        get { return _publisher; }
+        set
         {
-            get { return _publisher; }
-            set
-            {
-                _publisher = value;
-                DecentralizationOrder.Add(currentElement++, "Publisher");
-            }
+            _publisher = value;
+            DecentralizationOrder.Add(_currentElement++, "Publisher");
         }
+    }
 
-        public string Editor
+    public string? Editor
+    {
+        get { return _editor; }
+        set
         {
-            get { return _editor; }
-            set
-            {
-                _editor = value;
-                DecentralizationOrder.Add(currentElement++, "Editor");
-            }
+            _editor = value;
+            DecentralizationOrder.Add(_currentElement++, "Editor");
         }
+    }
 
-        public override string ToString()
-        {
-            return GeneralToStringProvider.GeneralToString(this);
-        }
+    public override string ToString()
+    {
+        return GeneralToStringProvider.GeneralToString(this);
+    }
 
-        public static BookClassWithOrdering GetSampleInstance()
-        {
-            return new BookClassWithOrdering
-            {
-                Title = "Reinforcement Learning an Introduction",
-                Author = "R. S. Sutton & A. G. Barto",
-                PublishYear = 1998,
-                Price = 38.75,
-                Publisher = "MIT Press",
-                Review = "This book is very good at being a book.",
-                Editor = "MIT Productions"
-            };
-        }
+    public static BookClassWithOrdering GetSampleInstance()
+    {
+        return new BookClassWithOrdering {
+            Title = "Reinforcement Learning an Introduction",
+            Author = "R. S. Sutton & A. G. Barto",
+            PublishYear = 1998,
+            Price = 38.75,
+            Publisher = "MIT Press",
+            Review = "This book is very good at being a book.",
+            Editor = "MIT Productions"
+        };
     }
 }

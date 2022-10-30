@@ -3,40 +3,38 @@
 
 using System;
 using System.Collections.Generic;
-using YAXLib;
 using YAXLib.Attributes;
 
-namespace YAXLibTests.SampleClasses
+namespace YAXLibTests.SampleClasses;
+
+[ShowInDemoApplication]
+[YAXComment("This example shows serialization and deserialization of GUID obejcts")]
+public class GUIDTest
 {
-    [ShowInDemoApplication]
-    [YAXComment("This example shows serialization and deserialization of GUID obejcts")]
-    public class GUIDTest
+    public Guid StandaloneGuid { get; set; }
+    public Dictionary<Guid, int> SomeDic { get; set; } = new();
+
+    public override string ToString()
     {
-        public Guid StandaloneGuid { get; set; }
-        public Dictionary<Guid, int> SomeDic { get; set; }
+        return GeneralToStringProvider.GeneralToString(this);
+    }
 
-        public override string ToString()
-        {
-            return GeneralToStringProvider.GeneralToString(this);
-        }
+    public static GUIDTest GetSampleInstance()
+    {
+        return GetSampleInstance(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+    }
 
-        public static GUIDTest GetSampleInstance()
-        {
-            return GetSampleInstance(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
-        }
+    public static GUIDTest GetSampleInstance(Guid g1, Guid g2, Guid g3, Guid g4)
+    {
+        var dic = new Dictionary<Guid, int> {
+            { g1, 1 },
+            { g2, 2 },
+            { g3, 3 }
+        };
 
-        public static GUIDTest GetSampleInstance(Guid g1, Guid g2, Guid g3, Guid g4)
-        {
-            var dic = new Dictionary<Guid, int>();
-            dic.Add(g1, 1);
-            dic.Add(g2, 2);
-            dic.Add(g3, 3);
-
-            return new GUIDTest
-            {
-                StandaloneGuid = g4,
-                SomeDic = dic
-            };
-        }
+        return new GUIDTest {
+            StandaloneGuid = g4,
+            SomeDic = dic
+        };
     }
 }

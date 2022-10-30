@@ -3,14 +3,18 @@
 
 using System;
 
-namespace YAXLib.Attributes
+namespace YAXLib.Attributes;
+
+/// <summary>
+/// Prevents serialization of some field or property.
+/// This attribute is applicable to fields and properties.
+/// </summary>
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+public class YAXDontSerializeAttribute : YAXBaseAttribute, IYaxMemberLevelAttribute
 {
-    /// <summary>
-    ///     Prevents serialization of some field or property.
-    ///     This attribute is applicable to fields and properties.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class YAXDontSerializeAttribute : YAXBaseAttribute
+    /// <inheritdoc />
+    void IYaxMemberLevelAttribute.Setup(MemberWrapper memberWrapper)
     {
+        memberWrapper.IsAttributedAsDontSerialize = true;
     }
 }

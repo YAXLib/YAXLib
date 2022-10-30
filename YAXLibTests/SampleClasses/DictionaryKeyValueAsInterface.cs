@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 using System.Collections.Generic;
-using YAXLib;
 using YAXLib.Attributes;
 using YAXLib.Enums;
 
@@ -10,69 +9,68 @@ using YAXLib.Enums;
 // http://yaxlib.codeplex.com/discussions/287166
 // reported by CodePlex User: GraywizardX
 
-namespace YAXLibTests.SampleClasses
+namespace YAXLibTests.SampleClasses;
+
+[ShowInDemoApplication]
+public class DictionaryKeyValueAsInterface
 {
-    [ShowInDemoApplication]
-    public class DictionaryKeyValueAsInterface
+    public DictionaryKeyValueAsInterface()
     {
-        public DictionaryKeyValueAsInterface()
-        {
-            Attributes1 = new Dictionary<string, IParameter>();
-            Attributes2 = new Dictionary<IParameter, string>();
-        }
-
-        [YAXComment("Values are serialized through a reference to their interface.")]
-        [YAXErrorIfMissed(YAXExceptionTypes.Ignore)]
-        [YAXDictionary(EachPairName = "attribute", KeyName = "key", SerializeKeyAs = YAXNodeTypes.Attribute)]
-        public Dictionary<string, IParameter> Attributes1 { get; set; }
-
-        [YAXComment("Keys are serialized through a reference to their interface.")]
-        [YAXErrorIfMissed(YAXExceptionTypes.Ignore)]
-        [YAXDictionary(EachPairName = "Entry", ValueName = "value", SerializeValueAs = YAXNodeTypes.Attribute)]
-        public Dictionary<IParameter, string> Attributes2 { get; set; }
-
-        public override string ToString()
-        {
-            return GeneralToStringProvider.GeneralToString(this);
-        }
-
-        public static DictionaryKeyValueAsInterface GetSampleInstance()
-        {
-            var test = new DictionaryKeyValueAsInterface();
-
-            test.Attributes1.Add("test", new GenericMessageParameter {Name = "name1", Type = "int", Body = "27"});
-            test.Attributes2.Add(new GenericMessageParameter {Name = "name2", Type = "str", Body = "30"}, "test");
-
-            return test;
-        }
+        Attributes1 = new Dictionary<string, IParameter>();
+        Attributes2 = new Dictionary<IParameter, string>();
     }
 
-    public interface IParameter
+    [YAXComment("Values are serialized through a reference to their interface.")]
+    [YAXErrorIfMissed(YAXExceptionTypes.Ignore)]
+    [YAXDictionary(EachPairName = "attribute", KeyName = "key", SerializeKeyAs = YAXNodeTypes.Attribute)]
+    public Dictionary<string, IParameter> Attributes1 { get; set; }
+
+    [YAXComment("Keys are serialized through a reference to their interface.")]
+    [YAXErrorIfMissed(YAXExceptionTypes.Ignore)]
+    [YAXDictionary(EachPairName = "Entry", ValueName = "value", SerializeValueAs = YAXNodeTypes.Attribute)]
+    public Dictionary<IParameter, string> Attributes2 { get; set; }
+
+    public override string ToString()
     {
-        string Name { get; set; }
-        string Type { get; set; }
-        string Body { get; set; }
+        return GeneralToStringProvider.GeneralToString(this);
     }
 
-    [YAXSerializeAs("parameter")]
-    public abstract class ParameterBase : IParameter
+    public static DictionaryKeyValueAsInterface GetSampleInstance()
     {
-        [YAXSerializeAs("name")]
-        [YAXAttributeFor("..")]
-        [YAXErrorIfMissed(YAXExceptionTypes.Error)]
-        public string Name { get; set; }
+        var test = new DictionaryKeyValueAsInterface();
 
-        [YAXSerializeAs("type")]
-        [YAXAttributeFor("..")]
-        [YAXErrorIfMissed(YAXExceptionTypes.Ignore)]
-        public string Type { get; set; }
+        test.Attributes1.Add("test", new GenericMessageParameter { Name = "name1", Type = "int", Body = "27" });
+        test.Attributes2.Add(new GenericMessageParameter { Name = "name2", Type = "str", Body = "30" }, "test");
 
-        [YAXValueFor("..")]
-        [YAXErrorIfMissed(YAXExceptionTypes.Ignore)]
-        public string Body { get; set; }
+        return test;
     }
+}
 
-    public class GenericMessageParameter : ParameterBase
-    {
-    }
+public interface IParameter
+{
+    string? Name { get; set; }
+    string? Type { get; set; }
+    string? Body { get; set; }
+}
+
+[YAXSerializeAs("parameter")]
+public abstract class ParameterBase : IParameter
+{
+    [YAXSerializeAs("name")]
+    [YAXAttributeFor("..")]
+    [YAXErrorIfMissed(YAXExceptionTypes.Error)]
+    public string? Name { get; set; }
+
+    [YAXSerializeAs("type")]
+    [YAXAttributeFor("..")]
+    [YAXErrorIfMissed(YAXExceptionTypes.Ignore)]
+    public string? Type { get; set; }
+
+    [YAXValueFor("..")]
+    [YAXErrorIfMissed(YAXExceptionTypes.Ignore)]
+    public string? Body { get; set; }
+}
+
+public class GenericMessageParameter : ParameterBase
+{
 }

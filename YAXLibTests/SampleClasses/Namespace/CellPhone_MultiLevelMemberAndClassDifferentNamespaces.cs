@@ -1,33 +1,30 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
-using YAXLib;
 using YAXLib.Attributes;
 
-namespace YAXLibTests.SampleClasses.Namespace
+namespace YAXLibTests.SampleClasses.Namespace;
+
+[YAXNamespace("http://namespace.org/nsmain")]
+public class CellPhoneMultiLevelMemberAndClassDifferentNamespaces
 {
-    [YAXNamespace("http://namespace.org/nsmain")]
-    public class CellPhone_MultiLevelMemberAndClassDifferentNamespaces
+    [YAXElementFor("Level1/Level2")]
+    [YAXSerializeAs("TheName")]
+    [YAXNamespace("x1", "http://namespace.org/x1")]
+    public string? DeviceBrand { get; set; }
+
+    public string? Os { get; set; }
+
+    public override string ToString()
     {
-        [YAXElementFor("Level1/Level2")]
-        [YAXSerializeAs("TheName")]
-        [YAXNamespace("x1", "http://namespace.org/x1")]
-        public string DeviceBrand { get; set; }
+        return GeneralToStringProvider.GeneralToString(this);
+    }
 
-        public string OS { get; set; }
-
-        public override string ToString()
-        {
-            return GeneralToStringProvider.GeneralToString(this);
-        }
-
-        public static CellPhone_MultiLevelMemberAndClassDifferentNamespaces GetSampleInstance()
-        {
-            return new CellPhone_MultiLevelMemberAndClassDifferentNamespaces
-            {
-                DeviceBrand = "HTC",
-                OS = "Windows Phone 8"
-            };
-        }
+    public static CellPhoneMultiLevelMemberAndClassDifferentNamespaces GetSampleInstance()
+    {
+        return new CellPhoneMultiLevelMemberAndClassDifferentNamespaces {
+            DeviceBrand = "HTC",
+            Os = "Windows Phone 8"
+        };
     }
 }

@@ -3,17 +3,22 @@
 
 using System;
 
-namespace YAXLib.Attributes
-{
-    /// <summary>
-    ///     Makes a field or property to appear as a value for its parent element, if possible.
-    ///     This attribute is applicable to fields and properties.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class YAXValueForClassAttribute : YAXBaseAttribute
-    {
-        #region Constructors
+namespace YAXLib.Attributes;
 
-        #endregion
+/// <summary>
+/// Makes a field or property to appear as a value for its parent element, if possible.
+/// This attribute is applicable to fields and properties.
+/// </summary>
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+public class YAXValueForClassAttribute : YAXBaseAttribute, IYaxMemberLevelAttribute
+{
+    /// <inheritdoc />
+    void IYaxMemberLevelAttribute.Setup(MemberWrapper memberWrapper)
+    {
+        if (memberWrapper.IsAllowedToProcess())
+        {
+            memberWrapper.IsSerializedAsValue = true;
+            memberWrapper.SerializationLocation = ".";
+        }
     }
 }

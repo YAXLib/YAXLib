@@ -3,19 +3,23 @@
 
 using System.Linq;
 using System.Xml.Linq;
+using YAXLib.Customization;
 
-namespace YAXLib
+namespace YAXLib.KnownTypes;
+
+internal class XElementKnownType : KnownTypeBase<XElement>
 {
-    internal class XElementKnownType : KnownType<XElement>
+    /// <inheritdoc />
+    public override void Serialize(XElement? obj, XElement elem, XNamespace overridingNamespace,
+        ISerializationContext serializationContext)
     {
-        public override void Serialize(XElement obj, XElement elem, XNamespace overridingNamespace)
-        {
-            if (obj != null) elem.Add(obj);
-        }
+        if (obj != null) elem.Add(obj);
+    }
 
-        public override XElement Deserialize(XElement elem, XNamespace overridingNamespace)
-        {
-            return elem.Elements().FirstOrDefault();
-        }
+    /// <inheritdoc />
+    public override XElement? Deserialize(XElement elem, XNamespace overridingNamespace,
+        ISerializationContext serializationContext)
+    {
+        return elem.Elements().FirstOrDefault();
     }
 }
