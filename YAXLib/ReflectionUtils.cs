@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using YAXLib.Caching;
 using YAXLib.Options;
 using YAXLib.Pooling.SpecializedPools;
@@ -695,7 +696,8 @@ internal static class ReflectionUtils
                 : @"\,\s+(mscorlib)\,\s+Version\=\d+(\.\d+)*\,\s+Culture=\b\w+\b\,\s+PublicKeyToken\=\b\w+\b";
 
         var execAppFxName =
-            System.Text.RegularExpressions.Regex.Replace(name, pattern, name.GetType().Assembly.FullName);
+            Regex.Replace(name, pattern, name.GetType().Assembly.FullName,
+                RegexOptions.None, TimeSpan.FromMilliseconds(100));
 
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
