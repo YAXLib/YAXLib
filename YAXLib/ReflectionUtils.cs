@@ -756,6 +756,7 @@ internal static class ReflectionUtils
         var assemblyName = memberInfo.DeclaringType?.Assembly.GetName().Name;
         if (assemblyName == null) return false;
 
+#pragma warning disable S2681  // conditional execution
 #if NETSTANDARD || NET6_0_OR_GREATER
             return assemblyName.StartsWith("System.", StringComparison.OrdinalIgnoreCase) ||
                    assemblyName.StartsWith("mscorlib.", StringComparison.OrdinalIgnoreCase) ||
@@ -766,6 +767,7 @@ internal static class ReflectionUtils
                || assemblyName.Equals("System.Core", StringComparison.OrdinalIgnoreCase);
 #endif
     }
+#pragma warning restore S2681
 
     public static bool IsInstantiableCollection(Type colType)
     {

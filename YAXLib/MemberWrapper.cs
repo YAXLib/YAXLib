@@ -489,7 +489,7 @@ internal class MemberWrapper
 
     public YAXTypeAttribute? GetRealTypeDefinition(Type? type)
     {
-        return _possibleRealTypes.FirstOrDefault(x => ReferenceEquals(x.Type, type));
+        return _possibleRealTypes.Find(x => ReferenceEquals(x.Type, type));
     }
 
     /// <summary>
@@ -638,11 +638,11 @@ internal class MemberWrapper
                 alias = null;
         }
 
-        if (_possibleRealTypes.Any(x => x.Type == yaxTypeAttribute.Type))
+        if (_possibleRealTypes.Exists(x => x.Type == yaxTypeAttribute.Type))
             throw new YAXPolymorphicException(
                 $"The type \"{yaxTypeAttribute.Type.Name}\" for field/property \"{MemberInfo}\" has already been defined through another attribute.");
 
-        if (alias != null && _possibleRealTypes.Any(x => alias.Equals(x.Alias, StringComparison.Ordinal)))
+        if (alias != null && _possibleRealTypes.Exists(x => alias.Equals(x.Alias, StringComparison.Ordinal)))
             throw new YAXPolymorphicException(
                 $"The alias \"{alias}\" given to type \"{yaxTypeAttribute.Type.Name}\" for field/property \"{MemberInfo}\" has already been given to another type through another attribute.");
 
@@ -664,13 +664,13 @@ internal class MemberWrapper
                 alias = null;
         }
 
-        if (_possibleCollectionItemRealTypes.Any(x => x.Type == yaxCollectionItemTypeAttr.Type))
+        if (_possibleCollectionItemRealTypes.Exists(x => x.Type == yaxCollectionItemTypeAttr.Type))
             throw new YAXPolymorphicException(string.Format(
                 "The collection-item type \"{0}\" for collection \"{1}\" has already been defined through another attribute.",
                 yaxCollectionItemTypeAttr.Type.Name, MemberInfo));
 
         if (alias != null &&
-            _possibleCollectionItemRealTypes.Any(x => alias.Equals(x.Alias, StringComparison.Ordinal)))
+            _possibleCollectionItemRealTypes.Exists(x => alias.Equals(x.Alias, StringComparison.Ordinal)))
             throw new YAXPolymorphicException(string.Format(
                 "The alias \"{0}\" given to collection-item type \"{1}\" for field/property \"{2}\" has already been given to another type through another attribute.",
                 alias, yaxCollectionItemTypeAttr.Type.Name, MemberInfo));

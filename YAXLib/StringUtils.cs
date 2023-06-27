@@ -89,7 +89,9 @@ internal static class StringUtils
             // Leave namespace part alone, refine localname part.
             var closingBrace = elemName.IndexOf('}');
             var refinedLocalname = RefineSingleElement(elemName.Substring(closingBrace + 1));
+#pragma warning disable CA1845  // span-based 'string.Concat' and 'AsSpan' can only be used for NET6.0+
             return elemName.Substring(0, closingBrace + 1) + refinedLocalname;
+#pragma warning restore CA1845
         }
 
         using var pooledObject = StringBuilderPool.Instance.Get(out var sb);
