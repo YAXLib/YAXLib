@@ -203,8 +203,8 @@ public class KnownTypeTests
     [Test]
     public void DateOnly_Bad_Format_Should_Throw()
     {
-        var xml1 = "<DateOnly>no-time-span</DateOnly>";
-        var xml2 = "<DateOnly><Ticks>not-a-long</Ticks></DateOnly>";
+        var xml1 = "<DateOnly>not-an-int</DateOnly>";
+        var xml2 = "<DateOnly><Ticks>not-an-int</Ticks></DateOnly>";
         var serializer = new YAXSerializer<DateOnly>();
 
         Assert.That(code: () => serializer.Deserialize(xml1), Throws.TypeOf<YAXBadlyFormedInput>());
@@ -255,7 +255,7 @@ public class KnownTypeTests
     [Test]
     public void TimeOnly_Bad_Format_Should_Throw()
     {
-        var xml1 = "<TimeOnly>no-time-span</TimeOnly>";
+        var xml1 = "<TimeOnly>not-a-long</TimeOnly>";
         var xml2 = "<TimeOnly><Ticks>not-a-long</Ticks></TimeOnly>";
         var serializer = new YAXSerializer<TimeOnly>();
 
