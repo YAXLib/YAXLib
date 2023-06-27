@@ -16,7 +16,7 @@ internal static class StringExtensions
     /// <param name="encoding">Default is <see cref="Encoding.UTF8" />.</param>
     /// <param name="insertLineBreaks">Inserts line breaks after every 76 characters in the string representation.</param>
     /// <returns>The encoded string.</returns>
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NET6_0_OR_GREATER
     public static string? ToBase64([System.Diagnostics.CodeAnalysis.NotNullIfNotNull("textToEncode")] this string? textToEncode, Encoding? encoding
         = null, bool insertLineBreaks = true)
     {
@@ -60,7 +60,7 @@ internal static class StringExtensions
     /// <param name="encodedText"></param>
     /// <param name="encoding">Default is <see cref="Encoding.UTF8" />.</param>
     /// <returns>The decoded string.</returns>
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NET6_0_OR_GREATER
     public static string? FromBase64([System.Diagnostics.CodeAnalysis.NotNullIfNotNull("encodedText")] this string? encodedText, Encoding? encoding
         = null)
     {

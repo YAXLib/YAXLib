@@ -752,7 +752,7 @@ internal static class ReflectionUtils
     public static bool IsPartOfNetFx(MemberInfo memberInfo)
     {
         var assemblyName = memberInfo.DeclaringType.Assembly.GetName().Name;
-#if NETSTANDARD
+#if NETSTANDARD || NET6_0_OR_GREATER
             return assemblyName.StartsWith("System.", StringComparison.OrdinalIgnoreCase) ||
                    assemblyName.StartsWith("mscorlib.", StringComparison.OrdinalIgnoreCase) ||
                    assemblyName.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase);
