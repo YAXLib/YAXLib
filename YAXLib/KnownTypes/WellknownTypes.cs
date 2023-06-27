@@ -110,7 +110,7 @@ public static class WellKnownTypes
     public static bool Remove(Type theType)
     {
         return _dictKnownTypes.Remove(theType)
-               || _dictDynamicKnownTypes.Remove(theType.FullName)
+               || _dictDynamicKnownTypes.Remove(theType.FullName!)
                || _dictKnownBaseTypes.Remove(theType);
     }
 

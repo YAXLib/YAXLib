@@ -20,7 +20,7 @@ internal class RuntimeTypeDynamicKnownType : DynamicKnownTypeBase
         if (obj == null || objectType == null || objectType.FullName != TypeName)
             throw new ArgumentException("Object type does not match the provided typename", nameof(obj));
 
-        elem.Value = ReflectionUtils.InvokeGetProperty<string>(obj, "FullName");
+        elem.Value = ReflectionUtils.InvokeGetProperty<string>(obj, "FullName") ?? string.Empty;
     }
 
     /// <inheritdoc />

@@ -32,8 +32,8 @@ internal class DataSetDynamicKnownType : DynamicKnownTypeBase
             return null;
 
         using var xr = child.CreateReader();
-        var dsType = ReflectionUtils.GetTypeByName("System.Data.DataSet");
-        var ds = Activator.CreateInstance(dsType);
+        var dsType = ReflectionUtils.GetTypeByName("System.Data.DataSet") ?? throw new InvalidOperationException($"Type for 'System.Data.DataSet' not found");
+        var ds = Activator.CreateInstance(dsType) ?? throw new InvalidOperationException($"Can't create instance of type '{dsType.Name}'");
         ReflectionUtils.InvokeMethod(ds, "ReadXml", xr);
         return ds;
     }

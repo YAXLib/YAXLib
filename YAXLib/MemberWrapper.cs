@@ -83,7 +83,7 @@ internal class MemberWrapper
             _isProperty = true;
         }
 
-        _alias = Alias = StringUtils.RefineSingleElement(MemberInfo.Name);
+        _alias = Alias = StringUtils.RefineSingleElement(MemberInfo.Name)!;
         if (_isProperty)
         {
             PropertyInfo = (PropertyInfo) memberInfo;
@@ -161,7 +161,7 @@ internal class MemberWrapper
         {
             if (Namespace.IsEmpty())
             {
-                _alias = Namespace + value?.LocalName;
+                _alias = Namespace + value.LocalName;
             }
             else
             {
@@ -460,7 +460,7 @@ internal class MemberWrapper
         {
             _namespace = value;
             // explicit namespace definition overrides namespace definitions in SerializeAs attributes.
-            _alias = _namespace + _alias?.LocalName;
+            _alias = _namespace + _alias.LocalName;
         }
     }
 
@@ -578,7 +578,7 @@ internal class MemberWrapper
     /// </returns>
     public override string ToString()
     {
-        return MemberInfo.ToString();
+        return MemberInfo.ToString()!;
     }
 
     // Private Methods 

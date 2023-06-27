@@ -24,7 +24,7 @@ internal class CustomSerializerWrapper : ICustomSerializer<object>
     {
         Type = csType;
         // Create the instance by invoking a public or non-public constructor
-        _csInstance = Activator.CreateInstance(csType, true);
+        _csInstance = Activator.CreateInstance(csType, true) ?? throw new InvalidOperationException($"Can't create instance for type '{Type.Name}'");
     }
 
     /// <inheritdoc />
@@ -61,7 +61,7 @@ internal class CustomSerializerWrapper : ICustomSerializer<object>
         return (string) Type.InvokeMember(nameof(ICustomSerializer<object>.SerializeToValue),
             BindingFlags.InvokeMethod, null,
             _csInstance,
-            new[] { objectToSerialize, serializationContext });
+            new[] { objectToSerialize, serializationContext })!;
     }
 
     /// <inheritdoc />
@@ -71,7 +71,7 @@ internal class CustomSerializerWrapper : ICustomSerializer<object>
 
         return Type.InvokeMember(nameof(ICustomSerializer<object>.DeserializeFromAttribute),
             BindingFlags.InvokeMethod, null, _csInstance,
-            new object[] { attribute, serializationContext });
+            new object[] { attribute, serializationContext })!;
     }
 
     /// <inheritdoc />
@@ -81,7 +81,7 @@ internal class CustomSerializerWrapper : ICustomSerializer<object>
 
         return Type.InvokeMember(nameof(ICustomSerializer<object>.DeserializeFromElement),
             BindingFlags.InvokeMethod, null, _csInstance,
-            new object[] { element, serializationContext });
+            new object[] { element, serializationContext })!;
     }
 
     /// <inheritdoc />
@@ -91,6 +91,6 @@ internal class CustomSerializerWrapper : ICustomSerializer<object>
 
         return Type.InvokeMember(nameof(ICustomSerializer<object>.DeserializeFromValue),
             BindingFlags.InvokeMethod, null, _csInstance,
-            new object[] { value, serializationContext });
+            new object[] { value, serializationContext })!;
     }
 }

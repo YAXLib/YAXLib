@@ -416,9 +416,9 @@ internal static class XMLUtils
     /// <c>true</c> if the specified element has neither any child attributes nor any child elements; otherwise,
     /// <c>false</c>.
     /// </returns>
-    public static bool IsElementCompletelyEmpty(XElement elem)
+    public static bool IsElementCompletelyEmpty(XElement? elem)
     {
-        return !elem.HasAttributes && !elem.HasElements && elem.IsEmpty;
+        return elem != null && !elem.HasAttributes && !elem.HasElements && elem.IsEmpty;
     }
 
     /// <summary>

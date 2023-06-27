@@ -38,7 +38,7 @@ public class YAXValueForAttribute : YAXBaseAttribute, IYaxMemberLevelAttribute
 
             memberWrapper.SerializationLocation = path;
             if (!string.IsNullOrEmpty(alias))
-                memberWrapper.Alias = StringUtils.RefineSingleElement(alias);
+                memberWrapper.Alias = StringUtils.RefineSingleElement(alias)!;
         }
     }
 }

@@ -31,12 +31,12 @@ public class YAXSerializeAsAttribute : YAXBaseAttribute, IYaxMemberLevelAttribut
     /// <inheritdoc />
     void IYaxMemberLevelAttribute.Setup(MemberWrapper memberWrapper)
     {
-        memberWrapper.Alias = StringUtils.RefineSingleElement(SerializeAs);
+        memberWrapper.Alias = StringUtils.RefineSingleElement(SerializeAs)!;
     }
 
     /// <inheritdoc />
     void IYaxTypeLevelAttribute.Setup(UdtWrapper udtWrapper)
     {
-        udtWrapper.Alias = StringUtils.RefineSingleElement(SerializeAs);
+        udtWrapper.Alias = StringUtils.RefineSingleElement(SerializeAs)!;
     }
 }

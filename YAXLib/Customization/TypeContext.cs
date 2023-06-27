@@ -54,7 +54,7 @@ public class TypeContext : ITypeContext
         try
         {
             ((IRecursionCounter) _serializer).RecursionCount++;
-            return serializer.SerializeToXDocument(obj).Root;
+            return serializer.SerializeToXDocument(obj).Root!;
         }
         finally
         {

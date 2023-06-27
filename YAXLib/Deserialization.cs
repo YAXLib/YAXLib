@@ -151,6 +151,7 @@ internal class Deserialization
     private object DeserializeDefault(XElement baseElement)
     {
         var resultObject = _deserializationObject ?? Activator.CreateInstance(_serializer.Type, Array.Empty<object>());
+        if (resultObject == null) return null!;
 
         foreach (var member in _serializer.UdtWrapper.GetFieldsForDeserialization())
         {
@@ -163,7 +164,7 @@ internal class Deserialization
              */
 
             // The element value gathered at the first phase - must not be NULL at this time
-            string? deserializedRawValue = string.Empty;
+            var deserializedRawValue = string.Empty;
             // The XElement instance gathered at the first phase
             XElement? xElementValue = null;
             // The XAttribute instance gathered at the first phase
@@ -537,7 +538,7 @@ internal class Deserialization
         XName? eachElementName = null;
 
         if (member.CollectionAttributeInstance != null)
-            eachElementName = StringUtils.RefineSingleElement(member.CollectionAttributeInstance.EachElementName);
+            eachElementName = StringUtils.RefineSingleElement(member.CollectionAttributeInstance.EachElementName!);
 
         if (member.DictionaryAttributeInstance != null && member.DictionaryAttributeInstance.EachPairName != null)
             eachElementName = StringUtils.RefineSingleElement(member.DictionaryAttributeInstance.EachPairName);
@@ -550,9 +551,9 @@ internal class Deserialization
 
         // return if such an element exists
         return elem.Element(
-            eachElementName
+            eachElementName?
                 .OverrideNsIfEmpty(member.Namespace.IfEmptyThen(_serializer.TypeNamespace)
-                    .IfEmptyThenNone())) != null;
+                    .IfEmptyThenNone())!) != null;
     }
 
     /// <summary>
@@ -1085,9 +1086,9 @@ internal class Deserialization
         Type collItemType, bool isPrimitive, List<object?> dataItems)
     {
         XName? eachElemName = null;
-        if (collAttrInstance is { EachElementName: { } })
+        if (collAttrInstance is { EachElementName: not null })
         {
-            eachElemName = StringUtils.RefineSingleElement(collAttrInstance.EachElementName);
+            eachElemName = StringUtils.RefineSingleElement(collAttrInstance.EachElementName)!;
             eachElemName =
                 eachElemName.OverrideNsIfEmpty(memberAlias.Namespace.IfEmptyThen(_serializer.TypeNamespace)
                     .IfEmptyThenNone());
@@ -1280,13 +1281,13 @@ internal class Deserialization
 
         // deserialize collection fields
         ReflectionUtils.IsIEnumerable(type, out var pairType);
-        XName eachElementName = StringUtils.RefineSingleElement(ReflectionUtils.GetTypeFriendlyName(pairType));
+        XName? eachElementName = StringUtils.RefineSingleElement(ReflectionUtils.GetTypeFriendlyName(pairType));
         var keyAlias = alias.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThenNone() + "Key";
         var valueAlias = alias.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThenNone() + "Value";
 
         if (collAttributeInstance is { EachElementName: { } })
         {
-            eachElementName = StringUtils.RefineSingleElement(collAttributeInstance.EachElementName);
+            eachElementName = StringUtils.RefineSingleElement(collAttributeInstance.EachElementName)!;
             eachElementName =
                 eachElementName.OverrideNsIfEmpty(alias.Namespace.IfEmptyThen(_serializer.TypeNamespace)
                     .IfEmptyThenNone());
@@ -1300,8 +1301,6 @@ internal class Deserialization
         {
             object? key = null, value = null;
             YAXSerializer? keySerializer = null, valueSerializer = null;
-
-            if (childElem == null) continue;
 
             var isKeyFound = VerifyDictionaryPairElements(ref keyType, ref isKeyAttribute, ref isKeyContent, keyAlias,
                 childElem);
@@ -1427,7 +1426,7 @@ internal class Deserialization
     }
 
     private void GetDictionaryAttributeDetails(YAXDictionaryAttribute? dictAttrInstance, XName alias,
-        ref XName eachElementName, ref XName keyAlias, ref XName valueAlias)
+        ref XName? eachElementName, ref XName keyAlias, ref XName valueAlias)
     {
         if (dictAttrInstance == null) return;
 
@@ -1435,20 +1434,20 @@ internal class Deserialization
         {
             eachElementName = StringUtils.RefineSingleElement(dictAttrInstance.EachPairName);
             eachElementName =
-                eachElementName.OverrideNsIfEmpty(alias.Namespace.IfEmptyThen(_serializer.TypeNamespace)
+                eachElementName?.OverrideNsIfEmpty(alias.Namespace.IfEmptyThen(_serializer.TypeNamespace)
                     .IfEmptyThenNone());
         }
 
         if (dictAttrInstance.KeyName != null)
         {
-            keyAlias = StringUtils.RefineSingleElement(dictAttrInstance.KeyName);
+            keyAlias = StringUtils.RefineSingleElement(dictAttrInstance.KeyName)!;
             keyAlias = keyAlias.OverrideNsIfEmpty(alias.Namespace.IfEmptyThen(_serializer.TypeNamespace)
                 .IfEmptyThenNone());
         }
 
         if (dictAttrInstance.ValueName != null)
         {
-            valueAlias = StringUtils.RefineSingleElement(dictAttrInstance.ValueName);
+            valueAlias = StringUtils.RefineSingleElement(dictAttrInstance.ValueName)!;
             valueAlias =
                 valueAlias.OverrideNsIfEmpty(alias.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThenNone());
         }

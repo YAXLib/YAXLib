@@ -57,8 +57,9 @@ internal class MemberWrapperCache : TypeCacheBase<IList<MemberWrapper>>
         {
             lock (Locker)
             {
-                if (CacheDictionary.TryGetValue(t, out memberWrappers))
+                if (CacheDictionary.TryGetValue(t, out var mw))
                 {
+                    memberWrappers = mw;
                     return true;
                 }
             }

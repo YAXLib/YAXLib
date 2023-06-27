@@ -89,7 +89,7 @@ internal class EnumWrapper
     /// <returns>the alias corresponding to the specified enum member</returns>
     public object GetAlias(object enumMember)
     {
-        var originalName = enumMember.ToString();
+        var originalName = enumMember.ToString()!;
 
         var components = originalName.Split(new[] { ',', ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
 

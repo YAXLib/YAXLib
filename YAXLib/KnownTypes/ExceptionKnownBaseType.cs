@@ -96,7 +96,7 @@ internal class ExceptionKnownBaseType : KnownBaseTypeBase<Exception>
         {
             // The serializer does not call this method recursively
             var parent = new XElement(XName.Get(member.MemberInfo.Name), overridingNamespace);
-            var element = member.TypeContext.Serialize(value, new SerializerOptions { MaxRecursion = 4 }).Document.Root;
+            var element = member.TypeContext.Serialize(value, new SerializerOptions { MaxRecursion = 4 }).Document!.Root;
             if (!XMLUtils.IsElementCompletelyEmpty(element)) parent.Add(element);
             elem.Add(parent);
         }

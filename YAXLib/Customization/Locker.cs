@@ -15,20 +15,20 @@ internal class Locker : IDisposable
     public Locker(Type typeToLock)
     {
         _lockedType = typeToLock;
-        if (!LockedTypes.Value.Add(typeToLock))
+        if (!LockedTypes.Value!.Add(typeToLock))
             throw new ArgumentException("The type is already locked.", nameof(typeToLock));
     }
 
     public static bool IsLocked(Type typeToTest)
     {
-        return LockedTypes.Value.Contains(typeToTest);
+        return LockedTypes.Value!.Contains(typeToTest);
     }
 
     protected virtual void Dispose(bool disposing)
     {
         if (disposing)
         {
-            LockedTypes.Value.Remove(_lockedType);
+            LockedTypes.Value!.Remove(_lockedType);
         }
         else
         {

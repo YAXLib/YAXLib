@@ -73,7 +73,7 @@ internal class UdtWrapper
         _ = WellKnownTypes.TryGetKnownType(_udtType, out var knownType);
         KnownType = knownType;
 
-        _alias = Alias = StringUtils.RefineSingleElement(ReflectionUtils.GetTypeFriendlyName(_udtType));
+        _alias = Alias = StringUtils.RefineSingleElement(ReflectionUtils.GetTypeFriendlyName(_udtType))!;
 
         Comment = null;
         FieldsToSerialize = YAXSerializationFields.PublicPropertiesOnly;
@@ -343,7 +343,7 @@ internal class UdtWrapper
     }
 
     /// <inheritdoc />
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         if (obj is UdtWrapper udtWrapper)
         {
