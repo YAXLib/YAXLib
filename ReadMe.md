@@ -12,7 +12,7 @@
 
 We need your help with this project. If you like it, and you are familiar with XML or are willing to help and learn, you can take on different tasks and open pull requests.
 
-Until 30 April 2023 we will continue to provide support for current users and publish bug fix releases as far as time allows.
+We will continue to provide support for current users and publish bug fix releases as far as time allows.
 
 ## About YAXLib
 
