@@ -1,3 +1,5 @@
+**For releases starting with v4.x please see the release notes for each new version.**
+
 [3.01] August 19, 2021
 
   * Nullable `Enum` will now serialize `YaxEnum` alias ([#161](https://github.com/YAXLib/YAXLib/pull/161))
