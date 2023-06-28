@@ -20,8 +20,9 @@ internal class DataTableDynamicKnownType : DynamicKnownTypeBase
         if (obj == null) throw new ArgumentException("Object must not be null", nameof(obj));
 
         using var xw = elem.CreateWriter();
-        var dsType = ReflectionUtils.GetTypeByName("System.Data.DataSet");
-        var ds = Activator.CreateInstance(dsType);
+
+        var dsType = ReflectionUtils.GetTypeByName("System.Data.DataSet") ?? throw new InvalidOperationException($"Type for 'System.Data.DataSet' not found");
+        var ds = Activator.CreateInstance(dsType) ?? throw new InvalidOperationException($"Can't create instance of type '{dsType.Name}'");
         var dsTables = ReflectionUtils.InvokeGetProperty<object>(ds, "Tables")!;
         var dtCopy = ReflectionUtils.InvokeMethod(obj, "Copy")!;
         ReflectionUtils.InvokeMethod(dsTables, "Add", dtCopy);
@@ -37,8 +38,8 @@ internal class DataTableDynamicKnownType : DynamicKnownTypeBase
             return null;
 
         using var xr = dsElem.CreateReader();
-        var dsType = ReflectionUtils.GetTypeByName("System.Data.DataSet");
-        var ds = Activator.CreateInstance(dsType);
+        var dsType = ReflectionUtils.GetTypeByName("System.Data.DataSet") ?? throw new InvalidOperationException($"Type for 'System.Data.DataSet' not found");
+        var ds = Activator.CreateInstance(dsType) ?? throw new InvalidOperationException($"Can't create instance of type '{dsType.Name}'");
         ReflectionUtils.InvokeMethod(ds, "ReadXml", xr);
         var dsTables = ReflectionUtils.InvokeGetProperty<object>(ds, "Tables")!;
         var dsTablesCount = ReflectionUtils.InvokeGetProperty<int>(dsTables, "Count");

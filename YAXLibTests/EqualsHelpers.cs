@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using System.Collections;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace YAXLibTests;
@@ -38,6 +39,7 @@ internal class EqualsHelpers
 
         foreach (var k in me.Keys)
         {
+            if (k is null) return false;
             if (!other.Contains(k)) return false;
             var val1 = me[k];
             var val2 = other[k];
@@ -45,7 +47,7 @@ internal class EqualsHelpers
         }
 
         foreach (var k in other.Keys)
-            if (!me.Contains(k))
+            if (k is null || !me.Contains(k))
                 return false;
         return true;
     }

@@ -252,7 +252,7 @@ internal class Serialization
 
         AddMetadataAttribute(xElement,
             _serializer.Options.Namespace.Uri + _serializer.Options.AttributeName.RealType,
-            obj.GetType().FullName, _serializer.DocumentDefaultNamespace);
+            obj.GetType().FullName!, _serializer.DocumentDefaultNamespace);
         _serializer.XmlNamespaceManager.AddNamespacesToElement(xElement, _serializer.DocumentDefaultNamespace,
             _serializer.Options, _serializer.UdtWrapper);
 
@@ -458,12 +458,12 @@ internal class Serialization
             if (existingElem == null)
             {
                 // if not add the new element gracefully
-                parElem.Add((object) elemToAdd);
+                parElem.Add(elemToAdd);
             }
             else // if an element with our desired name already exists
             {
                 if (ReflectionUtils.IsBasicType(member.MemberType))
-                    existingElem.SetValue(elementValue);
+                    existingElem.SetValue(elementValue ?? string.Empty);
                 else
                     XMLUtils.MoveDescendants(elemToAdd, existingElem);
             }
@@ -816,7 +816,7 @@ internal class Serialization
         if (eachElementName == null)
         {
             eachElementName =
-                StringUtils.RefineSingleElement(ReflectionUtils.GetTypeFriendlyName(obj.GetType()));
+                StringUtils.RefineSingleElement(ReflectionUtils.GetTypeFriendlyName(obj.GetType()))!;
             eachElementName =
                 eachElementName.OverrideNsIfEmpty(elementName.Namespace.IfEmptyThen(_serializer.TypeNamespace)
                     .IfEmptyThenNone());
@@ -857,7 +857,7 @@ internal class Serialization
 
                 AddMetadataAttribute(addedElem,
                     _serializer.Options.Namespace.Uri + _serializer.Options.AttributeName.RealType,
-                    valueObj!.GetType().FullName, _serializer.DocumentDefaultNamespace);
+                    valueObj!.GetType().FullName!, _serializer.DocumentDefaultNamespace);
             }
         }
     }
@@ -888,7 +888,7 @@ internal class Serialization
                 // keyObj can't be null, if areKeyOfSameType is false
                 AddMetadataAttribute(addedElem,
                     _serializer.Options.Namespace.Uri + _serializer.Options.AttributeName.RealType,
-                    keyObj!.GetType().FullName, _serializer.DocumentDefaultNamespace);
+                    keyObj!.GetType().FullName!, _serializer.DocumentDefaultNamespace);
             }
         }
     }
@@ -916,13 +916,13 @@ internal class Serialization
         details.keyFormat = dicAttrInst.KeyFormatString;
         details.valueFormat = dicAttrInst.ValueFormatString;
 
-        details.keyAlias = StringUtils.RefineSingleElement(dicAttrInst.KeyName ?? "Key");
+        details.keyAlias = StringUtils.RefineSingleElement(dicAttrInst.KeyName ?? "Key")!;
         if (details.keyAlias.Namespace.IsEmpty())
             _serializer.XmlNamespaceManager.RegisterNamespace(details.keyAlias.Namespace, null);
         details.keyAlias = details.keyAlias.OverrideNsIfEmpty(
             elementName.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThenNone());
 
-        details.valueAlias = StringUtils.RefineSingleElement(dicAttrInst.ValueName ?? "Value");
+        details.valueAlias = StringUtils.RefineSingleElement(dicAttrInst.ValueName ?? "Value")!;
         if (details.valueAlias.Namespace.IsEmpty())
             _serializer.XmlNamespaceManager.RegisterNamespace(details.valueAlias.Namespace, null);
         details.valueAlias =
@@ -939,7 +939,7 @@ internal class Serialization
 
         if (collectionAttrInst == null || string.IsNullOrEmpty(collectionAttrInst.EachElementName)) return false;
 
-        eachElementName = StringUtils.RefineSingleElement(collectionAttrInst.EachElementName);
+        eachElementName = StringUtils.RefineSingleElement(collectionAttrInst.EachElementName)!;
         if (eachElementName.Namespace.IsEmpty())
             _serializer.XmlNamespaceManager.RegisterNamespace(eachElementName.Namespace, string.Empty);
         eachElementName =
@@ -954,7 +954,7 @@ internal class Serialization
         eachElementName = null;
         if (dicAttrInst == null || dicAttrInst.EachPairName == null) return false;
 
-        eachElementName = StringUtils.RefineSingleElement(dicAttrInst.EachPairName);
+        eachElementName = StringUtils.RefineSingleElement(dicAttrInst.EachPairName)!;
         if (eachElementName.Namespace.IsEmpty())
             _serializer.XmlNamespaceManager.RegisterNamespace(eachElementName.Namespace, string.Empty);
         eachElementName =
@@ -1090,10 +1090,7 @@ internal class Serialization
         foreach (var obj in collectionInst)
         {
             var objToAdd = ReflectionUtils.TryFormatObject(obj, format);
-            var curElemName = eachElementName;
-
-            if (curElemName == null) curElemName = colItemsUdt.Alias;
-
+            var curElemName = eachElementName ?? colItemsUdt.Alias;
             var itemElem = AddObjectToElement(elemToAdd, curElemName.OverrideNsIfEmpty(elementName.Namespace),
                 objToAdd);
 
@@ -1105,7 +1102,7 @@ internal class Serialization
 
             AddMetadataAttribute(itemElem,
                 _serializer.Options.Namespace.Uri + _serializer.Options.AttributeName.RealType,
-                obj.GetType().FullName, _serializer.DocumentDefaultNamespace);
+                obj.GetType().FullName!, _serializer.DocumentDefaultNamespace);
         }
     }
 
@@ -1192,7 +1189,7 @@ internal class Serialization
         if (ReflectionUtils.IsStringConvertibleIFormattable(value.GetType()))
         {
             var elementValue = (string) value.GetType().InvokeMember("ToString", BindingFlags.InvokeMethod, null,
-                value, Array.Empty<object>());
+                value, Array.Empty<object>())!;
             return new XElement(name, elementValue.StripInvalidXmlChars(_stripInvalidXmlChars));
         }
 

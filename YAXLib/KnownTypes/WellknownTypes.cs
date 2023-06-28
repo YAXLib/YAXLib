@@ -59,6 +59,8 @@ public static class WellKnownTypes
         // Register all known types
 
         Add(new TimeSpanKnownType());
+        Add(new DateOnlyKnownType());
+        Add(new TimeOnlyKnownType());
         Add(new XElementKnownType());
         Add(new XAttributeKnownType());
         Add(new DbNullKnownType());
@@ -108,7 +110,7 @@ public static class WellKnownTypes
     public static bool Remove(Type theType)
     {
         return _dictKnownTypes.Remove(theType)
-               || _dictDynamicKnownTypes.Remove(theType.FullName)
+               || _dictDynamicKnownTypes.Remove(theType.FullName!)
                || _dictKnownBaseTypes.Remove(theType);
     }
 

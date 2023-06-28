@@ -10,6 +10,7 @@ using NUnit.Framework;
 using YAXLib;
 using YAXLib.Customization;
 using YAXLib.Enums;
+using YAXLib.Exceptions;
 using YAXLib.KnownTypes;
 using YAXLib.Options;
 using YAXLibTests.SampleClasses;
@@ -156,6 +157,110 @@ public class KnownTypeTests
 
         Assert.That(serialized, Is.EqualTo(expectedXml));
         Assert.That(deserialized?.ToString(), Is.EqualTo("YAXLibTests.KnownTypeTests"));
+    }
+
+    [Test]
+    public void DateOnlyKnownTypeSerialization()
+    {
+        const string expectedXml = @"<DateOnly>
+  <DayNumber>738884</DayNumber>
+</DateOnly>";
+        var date = new DateOnly(2023, 12, 31);
+        var serializer = new YAXSerializer(typeof(DateOnly));
+        var serialized = serializer.Serialize(date);
+
+        Assert.That(serialized, Is.EqualTo(expectedXml));
+    }
+
+    [Test]
+    public void DateOnlyKnownTypeDeserialization()
+    {
+        var date = new DateOnly(2023, 12, 31);
+        var xml = @$"<DateOnly>
+  <DayNumber>{date.DayNumber}</DayNumber>
+</DateOnly>";
+        
+        var serializer = new YAXSerializer(typeof(DateOnly));
+        var deserialized = serializer.Deserialize(xml);
+
+        Assert.That(deserialized, Is.EqualTo(date));
+    }
+
+    [Test]
+    public void DateOnlyKnownTypeDeserializationFallback()
+    {
+        var date = new DateOnly(2023, 12, 31);
+        var xml = @$"<DateOnly>
+{date.DayNumber}
+</DateOnly>";
+        
+        var serializer = new YAXSerializer(typeof(DateOnly));
+        var deserialized = serializer.Deserialize(xml);
+
+        Assert.That(deserialized, Is.EqualTo(date));
+    }
+
+    [Test]
+    public void DateOnly_Bad_Format_Should_Throw()
+    {
+        var xml1 = "<DateOnly>not-an-int</DateOnly>";
+        var xml2 = "<DateOnly><Ticks>not-an-int</Ticks></DateOnly>";
+        var serializer = new YAXSerializer<DateOnly>();
+
+        Assert.That(code: () => serializer.Deserialize(xml1), Throws.TypeOf<YAXBadlyFormedInput>());
+        Assert.That(code: () => serializer.Deserialize(xml2), Throws.TypeOf<YAXBadlyFormedInput>());
+    }
+
+    [Test]
+    public void TimeOnlyKnownTypeSerialization()
+    {
+        const string expectedXml = @"<TimeOnly>
+  <Ticks>183670890000</Ticks>
+</TimeOnly>";
+        var time = new TimeOnly(5,6, 7, 89);
+        var serializer = new YAXSerializer(typeof(TimeOnly));
+        var serialized = serializer.Serialize(time);
+
+        Assert.That(serialized, Is.EqualTo(expectedXml));
+    }
+
+    [Test]
+    public void TimeOnlyKnownTypeDeserialization()
+    {
+        var time = new TimeOnly(5,6, 7, 89);
+        var xml = @$"<TimeOnly>
+  <Ticks>{time.Ticks}</Ticks>
+</TimeOnly>";
+        
+        var serializer = new YAXSerializer(typeof(TimeOnly));
+        var deserialized = serializer.Deserialize(xml);
+
+        Assert.That(deserialized, Is.EqualTo(time));
+    }
+
+    [Test]
+    public void TimeOnlyKnownTypeDeserializationFallback()
+    {
+        var time = new TimeOnly(5,6, 7, 89);
+        var xml = @$"<TimeOnly>
+{time.Ticks}
+</TimeOnly>";
+        
+        var serializer = new YAXSerializer(typeof(TimeOnly));
+        var deserialized = serializer.Deserialize(xml);
+
+        Assert.That(deserialized, Is.EqualTo(time));
+    }
+
+    [Test]
+    public void TimeOnly_Bad_Format_Should_Throw()
+    {
+        var xml1 = "<TimeOnly>not-a-long</TimeOnly>";
+        var xml2 = "<TimeOnly><Ticks>not-a-long</Ticks></TimeOnly>";
+        var serializer = new YAXSerializer<TimeOnly>();
+
+        Assert.That(code: () => serializer.Deserialize(xml1), Throws.TypeOf<YAXBadlyFormedInput>());
+        Assert.That(code: () => serializer.Deserialize(xml2), Throws.TypeOf<YAXBadlyFormedInput>());
     }
 
     [Test]

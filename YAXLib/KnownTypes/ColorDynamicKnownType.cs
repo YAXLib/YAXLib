@@ -26,7 +26,7 @@ internal class ColorDynamicKnownType : DynamicKnownTypeBase
         if (isKnownColor)
         {
             var colorName = ReflectionUtils.InvokeGetProperty<string>(obj, "Name");
-            elem.Value = colorName;
+            elem.Value = colorName!;
         }
         else
         {

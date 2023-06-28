@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
@@ -83,7 +84,7 @@ internal class MemberWrapper
             _isProperty = true;
         }
 
-        _alias = Alias = StringUtils.RefineSingleElement(MemberInfo.Name);
+        _alias = Alias = StringUtils.RefineSingleElement(MemberInfo.Name)!;
         if (_isProperty)
         {
             PropertyInfo = (PropertyInfo) memberInfo;
@@ -161,7 +162,7 @@ internal class MemberWrapper
         {
             if (Namespace.IsEmpty())
             {
-                _alias = Namespace + value?.LocalName;
+                _alias = Namespace + value.LocalName;
             }
             else
             {
@@ -460,7 +461,7 @@ internal class MemberWrapper
         {
             _namespace = value;
             // explicit namespace definition overrides namespace definitions in SerializeAs attributes.
-            _alias = _namespace + _alias?.LocalName;
+            _alias = _namespace + _alias.LocalName;
         }
     }
 
@@ -489,7 +490,7 @@ internal class MemberWrapper
 
     public YAXTypeAttribute? GetRealTypeDefinition(Type? type)
     {
-        return _possibleRealTypes.FirstOrDefault(x => ReferenceEquals(x.Type, type));
+        return _possibleRealTypes.Find(x => ReferenceEquals(x.Type, type));
     }
 
     /// <summary>
@@ -502,7 +503,11 @@ internal class MemberWrapper
     /// properties.
     /// </param>
     /// <returns>the original value of this member in the specified object</returns>
+#if NETSTANDARD2_1_OR_GREATER || NET6_0_OR_GREATER
+    public object? GetOriginalValue([NotNullIfNotNull(nameof(obj))]object? obj, object[]? index)
+#else
     public object? GetOriginalValue(object? obj, object[]? index)
+#endif
     {
         if (obj == null) return null;
 
@@ -547,7 +552,7 @@ internal class MemberWrapper
 
     /// <summary>
     /// Determines whether this instance of <see cref="MemberWrapper" /> is allowed to be serialized.
-    /// This method evaluates <see cref="Boolean" />s and <see cref="Enum" />s (no expensive reflection methods).
+    /// This method evaluates <see cref="bool" />s and <see cref="Enum" />s (no expensive reflection methods).
     /// </summary>
     /// <param name="serializationFields">The <see cref="YAXSerializationFields" /> setting.</param>
     /// <param name="dontSerializePropertiesWithNoSetter">Skip serialization of fields which doesn't have a setter.</param>
@@ -578,7 +583,7 @@ internal class MemberWrapper
     /// </returns>
     public override string ToString()
     {
-        return MemberInfo.ToString();
+        return MemberInfo.ToString()!;
     }
 
     // Private Methods 
@@ -638,11 +643,11 @@ internal class MemberWrapper
                 alias = null;
         }
 
-        if (_possibleRealTypes.Any(x => x.Type == yaxTypeAttribute.Type))
+        if (_possibleRealTypes.Exists(x => x.Type == yaxTypeAttribute.Type))
             throw new YAXPolymorphicException(
                 $"The type \"{yaxTypeAttribute.Type.Name}\" for field/property \"{MemberInfo}\" has already been defined through another attribute.");
 
-        if (alias != null && _possibleRealTypes.Any(x => alias.Equals(x.Alias, StringComparison.Ordinal)))
+        if (alias != null && _possibleRealTypes.Exists(x => alias.Equals(x.Alias, StringComparison.Ordinal)))
             throw new YAXPolymorphicException(
                 $"The alias \"{alias}\" given to type \"{yaxTypeAttribute.Type.Name}\" for field/property \"{MemberInfo}\" has already been given to another type through another attribute.");
 
@@ -664,13 +669,13 @@ internal class MemberWrapper
                 alias = null;
         }
 
-        if (_possibleCollectionItemRealTypes.Any(x => x.Type == yaxCollectionItemTypeAttr.Type))
+        if (_possibleCollectionItemRealTypes.Exists(x => x.Type == yaxCollectionItemTypeAttr.Type))
             throw new YAXPolymorphicException(string.Format(
                 "The collection-item type \"{0}\" for collection \"{1}\" has already been defined through another attribute.",
                 yaxCollectionItemTypeAttr.Type.Name, MemberInfo));
 
         if (alias != null &&
-            _possibleCollectionItemRealTypes.Any(x => alias.Equals(x.Alias, StringComparison.Ordinal)))
+            _possibleCollectionItemRealTypes.Exists(x => alias.Equals(x.Alias, StringComparison.Ordinal)))
             throw new YAXPolymorphicException(string.Format(
                 "The alias \"{0}\" given to collection-item type \"{1}\" for field/property \"{2}\" has already been given to another type through another attribute.",
                 alias, yaxCollectionItemTypeAttr.Type.Name, MemberInfo));

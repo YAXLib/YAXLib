@@ -71,7 +71,7 @@ public interface ICustomSerializer<T>
     /// <param name="attribute">The attribute to deserialize.</param>
     /// <param name="serializationContext">Contains information about the type and members of the object to deserialize.</param>
     /// <returns></returns>
-    T DeserializeFromAttribute(XAttribute attribute, ISerializationContext serializationContext);
+    T? DeserializeFromAttribute(XAttribute attribute, ISerializationContext serializationContext);
 
     /// <summary>
     /// Deserializes from an xml element, and returns the retrieved value.
@@ -81,7 +81,7 @@ public interface ICustomSerializer<T>
     /// <param name="element">The element to deserialize.</param>
     /// <param name="serializationContext">Contains information about the type and members of the object to deserialize.</param>
     /// <returns></returns>
-    T DeserializeFromElement(XElement element, ISerializationContext serializationContext);
+    T? DeserializeFromElement(XElement element, ISerializationContext serializationContext);
 
     /// <summary>
     /// Deserializes from a string value which has been serialized as the content of an element
@@ -89,5 +89,5 @@ public interface ICustomSerializer<T>
     /// <param name="value">The string value to deserialize.</param>
     /// <param name="serializationContext">Contains information about the type and members of the object to deserialize.</param>
     /// <returns></returns>
-    T DeserializeFromValue(string value, ISerializationContext serializationContext);
+    T? DeserializeFromValue(string value, ISerializationContext serializationContext);
 }

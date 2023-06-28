@@ -54,7 +54,7 @@ internal static class ReflectionUtils
     {
         if (type.IsArray)
         {
-            elementType = type.GetElementType();
+            elementType = type.GetElementType()!;
             return true;
         }
 
@@ -126,7 +126,7 @@ internal static class ReflectionUtils
         }
         else if (type.IsArray)
         {
-            var t = type.GetElementType();
+            var t = type.GetElementType()!;
             name = string.Format(CultureInfo.InvariantCulture, "Array{0}Of{1}", type.GetArrayRank(),
                 GetTypeFriendlyName(t));
         }
@@ -498,14 +498,16 @@ internal static class ReflectionUtils
     public static object? ConvertBasicType(object value, Type dstType, CultureInfo culture)
     {
         object convertedObj;
+        var valueAsString = value.ToString()!;
+
         if (dstType.IsEnum)
         {
             var typeWrapper = UdtWrapperCache.Instance.GetOrAddItem(dstType, DefaultSerializerOptions);
-            convertedObj = typeWrapper.EnumWrapper!.ParseAlias(value.ToString());
+            convertedObj = typeWrapper.EnumWrapper!.ParseAlias(valueAsString);
         }
         else if (dstType == typeof(DateTime))
         {
-            convertedObj = StringUtils.ParseDateTimeTimeZoneSafe(value.ToString(), culture);
+            convertedObj = StringUtils.ParseDateTimeTimeZoneSafe(valueAsString, culture);
         }
         else if (dstType == typeof(decimal))
         {
@@ -514,7 +516,7 @@ internal static class ReflectionUtils
         }
         else if (dstType == typeof(bool))
         {
-            var strValue = value.ToString().Trim().ToLower();
+            var strValue = valueAsString.Trim().ToLower();
             if (strValue == "false" || strValue == "no" || strValue == "0")
             {
                 convertedObj = false;
@@ -534,7 +536,7 @@ internal static class ReflectionUtils
         }
         else if (dstType == typeof(Guid))
         {
-            return new Guid(value.ToString());
+            return new Guid(valueAsString);
         }
         else
         {
@@ -665,7 +667,7 @@ internal static class ReflectionUtils
         try
         {
             formattedObject = src.GetType().InvokeMember("ToString", BindingFlags.InvokeMethod,
-                null, src, new object[] { format });
+                null, src, new object[] { format })!;
         }
         catch
         {
@@ -696,7 +698,7 @@ internal static class ReflectionUtils
                 : @"\,\s+(mscorlib)\,\s+Version\=\d+(\.\d+)*\,\s+Culture=\b\w+\b\,\s+PublicKeyToken\=\b\w+\b";
 
         var execAppFxName =
-            Regex.Replace(name, pattern, name.GetType().Assembly.FullName,
+            Regex.Replace(name, pattern, name.GetType().Assembly.FullName!,
                 RegexOptions.None, TimeSpan.FromMilliseconds(100));
 
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
@@ -751,8 +753,11 @@ internal static class ReflectionUtils
     /// </returns>
     public static bool IsPartOfNetFx(MemberInfo memberInfo)
     {
-        var assemblyName = memberInfo.DeclaringType.Assembly.GetName().Name;
-#if NETSTANDARD
+        var assemblyName = memberInfo.DeclaringType?.Assembly.GetName().Name;
+        if (assemblyName == null) return false;
+
+#pragma warning disable S2681  // conditional execution
+#if NETSTANDARD || NET6_0_OR_GREATER
             return assemblyName.StartsWith("System.", StringComparison.OrdinalIgnoreCase) ||
                    assemblyName.StartsWith("mscorlib.", StringComparison.OrdinalIgnoreCase) ||
                    assemblyName.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase);
@@ -762,6 +767,7 @@ internal static class ReflectionUtils
                || assemblyName.Equals("System.Core", StringComparison.OrdinalIgnoreCase);
 #endif
     }
+#pragma warning restore S2681
 
     public static bool IsInstantiableCollection(Type colType)
     {
@@ -886,7 +892,7 @@ internal static class ReflectionUtils
 
 #pragma warning restore S3011 // restore sonar accessibility bypass warning
 
-    public static bool IsBaseClassOrSubclassOf(Type subType, string baseName)
+    public static bool IsBaseClassOrSubclassOf(Type? subType, string? baseName)
     {
         if (baseName == null || subType == null) return false;
         var baseType = Type.GetType(baseName);
