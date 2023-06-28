@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
@@ -502,7 +503,11 @@ internal class MemberWrapper
     /// properties.
     /// </param>
     /// <returns>the original value of this member in the specified object</returns>
+#if NETSTANDARD2_1_OR_GREATER || NET6_0_OR_GREATER
+    public object? GetOriginalValue([NotNullIfNotNull(nameof(obj))]object? obj, object[]? index)
+#else
     public object? GetOriginalValue(object? obj, object[]? index)
+#endif
     {
         if (obj == null) return null;
 
@@ -547,7 +552,7 @@ internal class MemberWrapper
 
     /// <summary>
     /// Determines whether this instance of <see cref="MemberWrapper" /> is allowed to be serialized.
-    /// This method evaluates <see cref="Boolean" />s and <see cref="Enum" />s (no expensive reflection methods).
+    /// This method evaluates <see cref="bool" />s and <see cref="Enum" />s (no expensive reflection methods).
     /// </summary>
     /// <param name="serializationFields">The <see cref="YAXSerializationFields" /> setting.</param>
     /// <param name="dontSerializePropertiesWithNoSetter">Skip serialization of fields which doesn't have a setter.</param>
