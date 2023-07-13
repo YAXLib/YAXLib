@@ -34,8 +34,8 @@ public class PoolingHelpers
 
         // get pools
         var poolTypes = GetSubclassesOf(typeof(PoolBase<>).Assembly, typeof(PoolBase<>));
-
-        foreach (var poolType in poolTypes)
+        
+        foreach (var poolType in poolTypes.Concat(PoolRegistry.Items.Keys).Distinct())
         {
             dynamic? instance = poolType.GetProperty("Instance")?.GetValue(null, null);
             instance?.Pool.Clear();

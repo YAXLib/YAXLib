@@ -125,6 +125,34 @@ public abstract class SerializationTestBase
         Assert.That(got, Is.EqualTo(result));
     }
 
+    [Test]
+    public void BookWithDefaultValue()
+    {
+        var book = Book.GetSampleInstance();
+        book.PublishYear = 0;
+
+        var serializer = CreateSerializer<Book>(new SerializerOptions
+        {
+            ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
+            ExceptionBehavior = YAXExceptionTypes.Warning,
+            SerializationOptions = YAXSerializationOptions.DontSerializeDefaultValues
+        });
+
+        var got = serializer.Serialize(book);
+        var gotDes = (Book?) serializer.Deserialize(got);
+
+        Assert.AreEqual(book, gotDes);
+        Assert.AreEqual(
+            """
+            <!-- This example demonstrates serializing a very simple class -->
+            <Book>
+              <Title>Inside C#</Title>
+              <Author>Tom Archer &amp; Andrew Whitechapel</Author>
+              <Price>30.5</Price>
+            </Book>
+            """, got);
+    }
+
     [TestCase("fr-FR")]
     [TestCase("fa-IR")]
     [TestCase("en-US")]

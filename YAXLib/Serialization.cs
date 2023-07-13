@@ -4,6 +4,7 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
@@ -271,7 +272,7 @@ internal class Serialization
         foreach (var member in _serializer.UdtWrapper.GetFieldsForSerialization())
         {
             var elementValue = member.GetValue(obj);
-            if (IsNullButDoNotSerializeNull(member, elementValue)) continue;
+            if (!ShouldWriteMember(member, elementValue)) continue;
 
             isAnythingFoundToSerialize = true;
 
@@ -331,6 +332,12 @@ internal class Serialization
             _baseElement.Remove();
     }
 
+    private bool ShouldWriteMember(MemberWrapper member, object? elementValue)
+    {
+        return !IsNullButDoNotSerializeNull(member, elementValue) &&
+               !IsDefaultButDoNotSerializeDefault(member, elementValue);
+    }
+
     /// <summary>
     /// Checks whether the <paramref name="elementValue" /> is <see langword="null" />,
     /// and <see langword="null" /> shall not be serialized.
@@ -348,7 +355,59 @@ internal class Serialization
             member.IsAttributedAsDontSerializeIfNull)
             return true;
 
+
         return false;
+    }
+
+    /// <summary>
+    /// Checks whether the <paramref name="elementValue" /> is <see langword="default" />,
+    /// and <see langword="default" /> shall not be serialized.
+    /// </summary>
+    /// <param name="elementValue"></param>
+    /// <param name="member"></param>
+    /// <returns></returns>
+    private bool IsDefaultButDoNotSerializeDefault(MemberWrapper member, object? elementValue)
+    {
+        if (!_serializer.UdtWrapper.IsNotAllowedDefaultValueSerialization)
+            return false;
+
+        if (elementValue == null || ValueEquals(elementValue, ReflectionUtils.GetDefaultValue(member.MemberType)))
+        {
+           return true;
+        }
+
+        return false;
+    }
+
+    private static bool ValueEquals(object? objA, object? objB)
+    {
+        if (objA == objB)
+        {
+            return true;
+        }
+        if (objA == null || objB == null)
+        {
+            return false;
+        }
+
+        // comparing an Int32 and Int64 both of the same value returns false
+        // make types the same then compare
+        if (objA.GetType() != objB.GetType())
+        {
+            if (ConvertUtils.IsInteger(objA) && ConvertUtils.IsInteger(objB))
+            {
+                return Convert.ToDecimal(objA, CultureInfo.CurrentCulture).Equals(Convert.ToDecimal(objB, CultureInfo.CurrentCulture));
+            }
+
+            if ((objA is double || objA is float || objA is decimal) && (objB is double || objB is float || objB is decimal))
+            {
+                return MathUtils.ApproxEquals(Convert.ToDouble(objA, CultureInfo.CurrentCulture), Convert.ToDouble(objB, CultureInfo.CurrentCulture));
+            }
+
+            return false;
+        }
+
+        return objA.Equals(objB);
     }
 
     /// <summary>

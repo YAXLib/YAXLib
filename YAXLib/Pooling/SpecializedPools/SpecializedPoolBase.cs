@@ -27,7 +27,7 @@ internal abstract class SpecializedPoolBase<T> : IDisposable where T : class
     /// </summary>
     protected SpecializedPoolBase()
     {
-        Pool = LazyCreateObjectPool();
+        Pool = CreateObjectPool();
     }
 
     /// <summary>
@@ -38,13 +38,12 @@ internal abstract class SpecializedPoolBase<T> : IDisposable where T : class
     {
         PoolRegistry.Remove(this);
         Pool.Dispose();
-        Pool = LazyCreateObjectPool();
+        Pool = CreateObjectPool();
     }
 
-    private ObjectPool<T> LazyCreateObjectPool()
+    private ObjectPool<T> CreateObjectPool()
     {
-        return new Lazy<ObjectPoolConcurrent<T>>(() => new ObjectPoolConcurrent<T>(Policy),
-            System.Threading.LazyThreadSafetyMode.PublicationOnly).Value;
+        return new ObjectPoolConcurrent<T>(Policy);
     }
 
     /// <summary>
