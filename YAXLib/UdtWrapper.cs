@@ -445,6 +445,13 @@ internal class UdtWrapper
         var filteredWrappers = memberWrappers.Where(mr => mr.IsAllowedToBeSerialized(FieldsToSerialize,
             DoNotSerializePropertiesWithNoSetter) && !mr.IsAttributedAsDontSerialize);
 
+        if (_serializerOptions.ExcludeTypes?.Count > 0)
+        {
+            filteredWrappers =
+                filteredWrappers.Where(f => string.IsNullOrEmpty(f.MemberType.FullName) ||
+                                            !_serializerOptions.ExcludeTypes.Contains(f.MemberType.FullName));
+        }
+
         return sorted ? filteredWrappers.OrderBy(mr => mr.Order) : filteredWrappers;
     }
 
