@@ -449,7 +449,7 @@ internal class UdtWrapper
         {
             filteredWrappers =
                 filteredWrappers.Where(f => string.IsNullOrEmpty(f.MemberType.FullName) ||
-                                            !_serializerOptions.ExcludeTypes.Contains(f.MemberType.FullName));
+                                       !_serializerOptions.ExcludeTypes.Contains(f.MemberType.FullName));
         }
 
         return sorted ? filteredWrappers.OrderBy(mr => mr.Order) : filteredWrappers;
