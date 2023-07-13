@@ -33,9 +33,11 @@ public class PoolingHelpers
         var l = new List<(Type? Type, IPoolCounters? Counters)>();
 
         // get pools
-        var poolTypes = GetSubclassesOf(typeof(PoolBase<>).Assembly, typeof(PoolBase<>));
+        var poolTypes = GetSubclassesOf(typeof(PoolBase<>).Assembly, typeof(PoolBase<>))
+            .Concat(PoolRegistry.Items.Keys)
+            .Distinct();
         
-        foreach (var poolType in poolTypes.Concat(PoolRegistry.Items.Keys).Distinct())
+        foreach (var poolType in poolTypes)
         {
             dynamic? instance = poolType.GetProperty("Instance")?.GetValue(null, null);
             instance?.Pool.Clear();
@@ -81,7 +83,7 @@ public class PoolingHelpers
                 @"Specified type is not a valid generic type definition.",
                 nameof(genericTypeDefinition));
 
-        return Enumerable.Where<Type>(assembly.GetTypes(), t => GetAllAscendants(t).Any(d =>
+        return assembly.GetTypes().Where(t => GetAllAscendants(t).Any(d =>
             d.IsGenericType &&
             d.GetGenericTypeDefinition() == genericTypeDefinition));
     }
