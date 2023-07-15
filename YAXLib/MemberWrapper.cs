@@ -339,17 +339,17 @@ internal class MemberWrapper
     public Type MemberType { get; }
 
     /// <summary>
-    /// Gets the <see cref="FieldInfo" /> of a field, if the member is a field.
+    /// Gets the <see cref="IYaxFieldInfo" /> of a field, if the member is a field.
     /// </summary>
     public IYaxFieldInfo? FieldInfo { get; }
 
     /// <summary>
-    /// Gets the <see cref="MemberInfo" />.
+    /// Gets the <see cref="IYaxMemberInfo" />.
     /// </summary>
     public IYaxMemberInfo MemberInfo { get; }
 
     /// <summary>
-    /// Gets the <see cref="PropertyInfo" /> of a field, if the member is a property.
+    /// Gets the <see cref="IYaxPropertyInfo" /> of a field, if the member is a property.
     /// </summary>
     public IYaxPropertyInfo? PropertyInfo { get; }
 
