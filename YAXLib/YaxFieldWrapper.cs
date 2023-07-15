@@ -22,7 +22,7 @@ internal class YaxFieldWrapper : IYaxFieldInfo
         Name = fieldInfo.Name;
     }
 
-    public Attribute[] GetCustomAttributesByType(Type attrType, bool inherit)
+    public Attribute[] GetCustomAttributes(Type attrType, bool inherit)
     {
         return Attribute.GetCustomAttributes(_wrappedFieldInfo, attrType, inherit);
     }

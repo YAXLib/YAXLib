@@ -12,6 +12,6 @@ public interface IYaxMemberInfo
     MemberTypes MemberType { get; }
     bool IsPublic { get; }
     Type Type { get; }
-    Attribute[] GetCustomAttributesByType(Type attrType, bool inherit);
+    Attribute[] GetCustomAttributes(Type attrType, bool inherit);
     Attribute[] GetCustomAttributes(bool inherit);
 }

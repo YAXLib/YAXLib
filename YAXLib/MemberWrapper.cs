@@ -115,7 +115,7 @@ internal class MemberWrapper
 
         foreach (var attrType in attrsToProcessEarlier)
         {
-            var customSerAttrs = MemberInfo.GetCustomAttributesByType(attrType, true);
+            var customSerAttrs = MemberInfo.GetCustomAttributes(attrType, true);
             foreach (var attr in customSerAttrs)
             {
                 if (attr is IYaxMemberLevelAttribute memberAttr)
