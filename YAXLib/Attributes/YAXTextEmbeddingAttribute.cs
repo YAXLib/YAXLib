@@ -39,7 +39,7 @@ public class YAXTextEmbeddingAttribute : YAXBaseAttribute, IYaxMemberLevelAttrib
     /// <inheritdoc />
     void IYaxMemberLevelAttribute.Setup(MemberWrapper memberWrapper)
     {
-        if (GetCustomAttributes(memberWrapper.MemberInfo, typeof(Attribute), true)
+        if (memberWrapper.MemberInfo.GetCustomAttributesByType(typeof(Attribute), true)
             .Where(a => a is YAXBaseAttribute)
             .Select(a => a.GetType())
             .Except(CompatibleAttributes)

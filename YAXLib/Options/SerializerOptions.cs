@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Xml.Linq;
 using YAXLib.Enums;
@@ -74,7 +73,7 @@ public class SerializerOptions
     public CultureInfo Culture { get; set; }
 
     /// <summary>
-    /// Gets or sets the type names to be excluded from serialization and de-serialization.
+    /// Allows override default type naming and member list for given type
     /// </summary>
-    public HashSet<string> ExcludeTypes { get; set; } = new HashSet<string>();
+    public ITypeResolver? TypeResolver { get; set; }
 }

@@ -1,8 +1,6 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
-using System.Reflection;
-
 namespace YAXLib.Customization;
 
 /// <summary>
@@ -13,17 +11,17 @@ public interface IMemberContext
     /// <summary>
     /// The member's <see cref="MemberInfo" /> for member serialization, else <see langword="null" />.
     /// </summary>
-    MemberInfo MemberInfo { get; }
+    IYaxMemberInfo MemberInfo { get; }
 
     /// <summary>
     /// The member's <see cref="FieldInfo" /> for field serialization, else <see langword="null" />.
     /// </summary>
-    FieldInfo? FieldInfo { get; }
+    IYaxFieldInfo? FieldInfo { get; }
 
     /// <summary>
     /// The member's <see cref="PropertyInfo" /> for property serialization, else <see langword="null" />.
     /// </summary>
-    PropertyInfo? PropertyInfo { get; }
+    IYaxPropertyInfo? PropertyInfo { get; }
 
     /// <summary>
     /// The member's <see cref="Customization.TypeContext" /> for member serialization./>.

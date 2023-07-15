@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using YAXLib.Options;
 
 namespace YAXLib.Caching;
 
@@ -14,7 +15,7 @@ namespace YAXLib.Caching;
 /// Filtering of undesired members takes place later in the de/serialization process.
 /// </para>
 /// </summary>
-internal class MemberWrapperCache : TypeCacheBase<IList<MemberWrapper>>
+internal class MemberWrapperCache : CacheBase<(Type type, SerializerOptions options), IList<MemberWrapper>>
 {
     public const int DefaultCacheSize = 1000;
 
@@ -45,19 +46,19 @@ internal class MemberWrapperCache : TypeCacheBase<IList<MemberWrapper>>
     /// <summary>
     /// Gets the <see cref="MemberWrapper" />s for to the specified type.
     /// </summary>
-    /// <param name="t">The member whose wrapper is needed.</param>
+    /// <param name="to">The member whose wrapper is needed.</param>
     /// <param name="memberWrappers">
     /// The lists of <see cref="MemberWrapper" />s from the cache,
     /// or an empty list, if the type did not exist in the cache.
     /// </param>
-    /// <returns><see langword="true" />, if <paramref name="t" /> was found in the cache.</returns>
-    public bool TryGetItem(Type t, out IList<MemberWrapper> memberWrappers)
+    /// <returns><see langword="true" />, if <paramref name="to" /> was found in the cache.</returns>
+    public bool TryGetItem((Type type, SerializerOptions options) to, out IList<MemberWrapper> memberWrappers)
     {
         if (_instance is not null)
         {
             lock (Locker)
             {
-                if (CacheDictionary.TryGetValue(t, out var mw))
+                if (CacheDictionary.TryGetValue(to, out var mw))
                 {
                     memberWrappers = mw;
                     return true;

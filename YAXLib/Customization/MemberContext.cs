@@ -1,7 +1,6 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
-using System.Reflection;
 using YAXLib.Caching;
 
 namespace YAXLib.Customization;
@@ -31,15 +30,15 @@ public class MemberContext : IMemberContext
     }
 
     /// <inheritdoc />
-    public MemberInfo MemberInfo { get; }
+    public IYaxMemberInfo MemberInfo { get; }
 
     /// <inheritdoc />
-    public FieldInfo? FieldInfo { get; }
+    public IYaxFieldInfo? FieldInfo { get; }
 
     /// <summary>
     /// The member's <see cref="PropertyInfo" /> for property serialization, else <see langword="null" />.
     /// </summary>
-    public PropertyInfo? PropertyInfo { get; }
+    public IYaxPropertyInfo? PropertyInfo { get; }
 
     /// <inheritdoc />
     public TypeContext TypeContext { get; }

@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
 using YAXLib.Attributes;
@@ -71,7 +70,7 @@ internal class MemberWrapper
     /// </summary>
     /// <param name="memberInfo">The member-info to build this instance from.</param>
     /// <param name="serializerOptions">The <see cref="SerializerOptions" /> to use.</param>
-    public MemberWrapper(MemberInfo memberInfo, SerializerOptions serializerOptions)
+    public MemberWrapper(IYaxMemberInfo memberInfo, SerializerOptions serializerOptions)
     {
         Order = int.MaxValue;
 
@@ -85,17 +84,17 @@ internal class MemberWrapper
         }
 
         _alias = Alias = StringUtils.RefineSingleElement(MemberInfo.Name)!;
+
+        MemberType = memberInfo.Type;
+        _isPublic = memberInfo.IsPublic;
+
         if (_isProperty)
         {
-            PropertyInfo = (PropertyInfo) memberInfo;
-            MemberType = PropertyInfo.PropertyType;
-            _isPublic = ReflectionUtils.IsPublicProperty(PropertyInfo);
+            PropertyInfo = (IYaxPropertyInfo) memberInfo;
         }
         else
         {
-            FieldInfo = (FieldInfo) memberInfo;
-            MemberType = FieldInfo.FieldType;
-            _isPublic = FieldInfo.IsPublic;
+            FieldInfo = (IYaxFieldInfo) memberInfo;
         }
 
         UdtWrapper = UdtWrapperCache.Instance.GetOrAddItem(MemberType, serializerOptions);
@@ -116,7 +115,7 @@ internal class MemberWrapper
 
         foreach (var attrType in attrsToProcessEarlier)
         {
-            var customSerAttrs = Attribute.GetCustomAttributes(MemberInfo, attrType, true);
+            var customSerAttrs = MemberInfo.GetCustomAttributesByType(attrType, true);
             foreach (var attr in customSerAttrs)
             {
                 if (attr is IYaxMemberLevelAttribute memberAttr)
@@ -124,7 +123,7 @@ internal class MemberWrapper
             }
         }
 
-        foreach (var attr in Attribute.GetCustomAttributes(MemberInfo, true))
+        foreach (var attr in MemberInfo.GetCustomAttributes(true))
         {
             // no need to process, it has been processed earlier
             if (attrsToProcessEarlier.Contains(attr.GetType()))
@@ -144,7 +143,7 @@ internal class MemberWrapper
             DictionaryAttributeInstance = UdtWrapper.DictionaryAttributeInstance;
     }
 
-    private static void EnsurePropertyOrField(MemberInfo memberInfo)
+    private static void EnsurePropertyOrField(IYaxMemberInfo memberInfo)
     {
         if (!(memberInfo.MemberType == MemberTypes.Property || memberInfo.MemberType == MemberTypes.Field))
             throw new ArgumentException("Member must be either property or field", nameof(memberInfo));
@@ -342,17 +341,17 @@ internal class MemberWrapper
     /// <summary>
     /// Gets the <see cref="FieldInfo" /> of a field, if the member is a field.
     /// </summary>
-    public FieldInfo? FieldInfo { get; }
+    public IYaxFieldInfo? FieldInfo { get; }
 
     /// <summary>
     /// Gets the <see cref="MemberInfo" />.
     /// </summary>
-    public MemberInfo MemberInfo { get; }
+    public IYaxMemberInfo MemberInfo { get; }
 
     /// <summary>
     /// Gets the <see cref="PropertyInfo" /> of a field, if the member is a property.
     /// </summary>
-    public PropertyInfo? PropertyInfo { get; }
+    public IYaxPropertyInfo? PropertyInfo { get; }
 
     /// <summary>
     /// Gets the type wrapper instance corresponding to the member-type of this instance.

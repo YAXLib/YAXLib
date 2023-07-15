@@ -42,12 +42,6 @@ internal class UdtWrapper
     private EnumWrapper? _enumWrapper;
 
     /// <summary>
-    /// value indicating whether the serialization options has been explicitly adjusted
-    /// using attributes for the class
-    /// </summary>
-    private bool _isSerializationOptionSetByAttribute;
-
-    /// <summary>
     /// the namespace associated with this element
     /// </summary>
     private XNamespace _namespace = XNamespace.None;
@@ -73,13 +67,20 @@ internal class UdtWrapper
         _ = WellKnownTypes.TryGetKnownType(_udtType, out var knownType);
         KnownType = knownType;
 
-        _alias = Alias = StringUtils.RefineSingleElement(ReflectionUtils.GetTypeFriendlyName(_udtType))!;
+        var friendlyTypeName = ReflectionUtils.GetTypeFriendlyName(_udtType);
+
+        if (serializerOptions.TypeResolver != null)
+        {
+            friendlyTypeName = serializerOptions.TypeResolver.GetTypeName(friendlyTypeName, _udtType, serializerOptions) ?? friendlyTypeName;
+        }
+
+        _alias = Alias = StringUtils.RefineSingleElement(friendlyTypeName)!;
 
         Comment = null;
         FieldsToSerialize = YAXSerializationFields.PublicPropertiesOnly;
         IsAttributedAsNotCollection = false;
 
-        SetSerializationOptions(serializerOptions.SerializationOptions);
+        SerializationOptions = serializerOptions.SerializationOptions;
 
         foreach (var attr in _udtType.GetCustomAttributes(true))
             if (attr is IYaxTypeLevelAttribute typeLevelAttribute)
@@ -336,16 +337,6 @@ internal class UdtWrapper
     /// </remarks>
     public string NamespacePrefix { get; internal set; } = string.Empty;
 
-    /// <summary>
-    /// Sets the <see cref="YAXSerializationOptions" />.
-    /// </summary>
-    /// <param name="serializationOptions"></param>
-    public void SetSerializationOptions(YAXSerializationOptions? serializationOptions)
-    {
-        if (!_isSerializationOptionSetByAttribute)
-            SerializationOptions = serializationOptions ?? YAXSerializationOptions.SerializeNullObjects;
-    }
-
     /// <inheritdoc />
     public override string ToString()
     {
@@ -376,7 +367,6 @@ internal class UdtWrapper
     internal void SetSerializationOptionsFromAttribute(YAXSerializationOptions serializationOptions)
     {
         SerializationOptions = serializationOptions;
-        _isSerializationOptionSetByAttribute = true;
     }
 
     /// <summary>
@@ -402,7 +392,9 @@ internal class UdtWrapper
     /// <returns>The sequence of fields to be deserialized for the specified type</returns>
     internal IEnumerable<MemberWrapper> GetFieldsForDeserialization(bool sorted = true)
     {
-        return GetFieldsToBeSerialized(sorted).Where(m => m.CanWrite);
+        var fieldsForDeserialization = GetFieldsToBeSerialized(sorted).Where(m => m.CanWrite);
+        
+        return fieldsForDeserialization;
     }
 
     /// <summary>
@@ -416,8 +408,11 @@ internal class UdtWrapper
     /// <returns>The sequence of fields to be de/serialized for the specified type</returns>
     private IEnumerable<MemberWrapper> GetFieldsToBeSerialized(bool sorted = true)
     {
-        if (!MemberWrapperCache.Instance.TryGetItem(UnderlyingType, out var memberWrappers))
+        if (!MemberWrapperCache.Instance.TryGetItem((UnderlyingType, _serializerOptions), out var memberWrappers))
         {
+
+            IList<IYaxMemberInfo> members = new List<IYaxMemberInfo>();
+
 #pragma warning disable S3011 // disable sonar accessibility bypass warning
             foreach (var member in UnderlyingType.GetMembers(
                          BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
@@ -431,28 +426,32 @@ internal class UdtWrapper
                     && ReflectionUtils.IsPartOfNetFx(member))
                     continue;
 
-                var memInfo = new MemberWrapper(member, _serializerOptions);
-                // Note: The cache contains all generally allowed members
-                memberWrappers.Add(memInfo);
+                members.Add(member.ToYaxMemberInfo());
             }
 
-            _ = MemberWrapperCache.Instance.TryAdd(UnderlyingType, memberWrappers);
+            var memberResolver = _serializerOptions.TypeResolver;
+
+            if (memberResolver != null)
+            {
+                members = memberResolver.ResolveMembers(members, UnderlyingType, _serializerOptions);
+            }
+
+            foreach (var yaxMemberInfo in members)
+            {
+                memberWrappers.Add(new MemberWrapper(yaxMemberInfo, _serializerOptions));
+            }
+
+            // Filter the members that are actually subject to be serialized
+            // according to settings and attributes.
+            // IsAllowedToBeSerialized evaluates only booleans, no reflection.
+            memberWrappers = memberWrappers
+                .Where(mr => mr.IsAllowedToBeSerialized(FieldsToSerialize, DoNotSerializePropertiesWithNoSetter) && !mr.IsAttributedAsDontSerialize)
+                .ToList();
+
+            _ = MemberWrapperCache.Instance.TryAdd((UnderlyingType, _serializerOptions), memberWrappers);
         }
-
-        // Filter the members that are actually subject to be serialized
-        // according to settings and attributes.
-        // IsAllowedToBeSerialized evaluates only booleans, no reflection.
-        var filteredWrappers = memberWrappers.Where(mr => mr.IsAllowedToBeSerialized(FieldsToSerialize,
-            DoNotSerializePropertiesWithNoSetter) && !mr.IsAttributedAsDontSerialize);
-
-        if (_serializerOptions.ExcludeTypes?.Count > 0)
-        {
-            filteredWrappers =
-                filteredWrappers.Where(f => string.IsNullOrEmpty(f.MemberType.FullName) ||
-                                       !_serializerOptions.ExcludeTypes.Contains(f.MemberType.FullName));
-        }
-
-        return sorted ? filteredWrappers.OrderBy(mr => mr.Order) : filteredWrappers;
+        
+        return sorted ? memberWrappers.OrderBy(mr => mr.Order) : memberWrappers;
     }
 
     /// <summary>

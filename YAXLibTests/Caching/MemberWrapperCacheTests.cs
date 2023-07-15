@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using YAXLib;
 using YAXLib.Caching;
+using YAXLib.Options;
 using YAXLibTests.SampleClasses;
 
 namespace YAXLibTests.Caching;
@@ -22,7 +23,7 @@ public class MemberWrapperCacheTests
 
         Assert.That(countAfterClear, Is.EqualTo(0));
         Assert.That(MemberWrapperCache.Instance.CacheDictionary.Count, Is.GreaterThan(0));
-        Assert.That(MemberWrapperCache.Instance.CacheDictionary[typeof(Book)].Count, Is.GreaterThan(0));
+        Assert.That(MemberWrapperCache.Instance.CacheDictionary[(typeof(Book), s.Options)].Count, Is.GreaterThan(0));
     }
 
     [Test]
@@ -39,7 +40,7 @@ public class MemberWrapperCacheTests
 
         Assert.That(countAfterClear, Is.EqualTo(0));
         Assert.That(MemberWrapperCache.Instance.CacheDictionary.Count, Is.GreaterThan(0));
-        Assert.That(MemberWrapperCache.Instance.CacheDictionary[typeof(Book)].Count, Is.GreaterThan(0));
+        Assert.That(MemberWrapperCache.Instance.CacheDictionary[(typeof(Book), s.Options)].Count, Is.GreaterThan(0));
     }
 
     [Test]
@@ -56,18 +57,18 @@ public class MemberWrapperCacheTests
     {
         MemberWrapperCache.Instance.Clear();
         MemberWrapperCache.Instance.MaxCacheSize = 5;
-
-        MemberWrapperCache.Instance.Add(typeof(string), new List<MemberWrapper>());
-        var dupeAdded = MemberWrapperCache.Instance.TryAdd(typeof(string), new List<MemberWrapper>());
-        MemberWrapperCache.Instance.Add(typeof(int), new List<MemberWrapper>());
-        MemberWrapperCache.Instance.Add(typeof(uint), new List<MemberWrapper>());
-        MemberWrapperCache.Instance.Add(typeof(long), new List<MemberWrapper>());
-        MemberWrapperCache.Instance.Add(typeof(ulong), new List<MemberWrapper>());
-        MemberWrapperCache.Instance.Add(typeof(char), new List<MemberWrapper>());
+        var so = new SerializerOptions();
+        MemberWrapperCache.Instance.Add((typeof(string), so), new List<MemberWrapper>());
+        var dupeAdded = MemberWrapperCache.Instance.TryAdd((typeof(string), so), new List<MemberWrapper>());
+        MemberWrapperCache.Instance.Add((typeof(int), so), new List<MemberWrapper>());
+        MemberWrapperCache.Instance.Add((typeof(uint), so), new List<MemberWrapper>());
+        MemberWrapperCache.Instance.Add((typeof(long), so), new List<MemberWrapper>());
+        MemberWrapperCache.Instance.Add((typeof(ulong), so), new List<MemberWrapper>());
+        MemberWrapperCache.Instance.Add((typeof(char), so), new List<MemberWrapper>());
 
         Assert.That(dupeAdded, Is.False);
         Assert.That(MemberWrapperCache.Instance.CacheDictionary.Count, Is.EqualTo(5));
-        Assert.That(MemberWrapperCache.Instance.CacheDictionary.ContainsKey(typeof(string)), Is.False); // FIFO
+        Assert.That(MemberWrapperCache.Instance.CacheDictionary.ContainsKey((typeof(string), so)), Is.False); // FIFO
 
         MemberWrapperCache.Instance.MaxCacheSize = MemberWrapperCache.DefaultCacheSize;
     }

@@ -80,29 +80,29 @@ public abstract class SerializationTestBase
     {
         var options = new ParallelOptions { MaxDegreeOfParallelism = 10 };
 
+        var serializerOptions = new SerializerOptions
+        {
+            ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
+            ExceptionBehavior = YAXExceptionTypes.Warning,
+            SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+        };
+
         Assert.That(() =>
             Parallel.For(0L, 1000, options, (i, loopState) =>
             {
                 MemberWrapperCache.Instance.Clear();
                 UdtWrapperCache.Instance.Clear();
-                var serializer = CreateSerializer<Book>(new SerializerOptions {
-                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
-                    ExceptionBehavior = YAXExceptionTypes.Warning,
-                    SerializationOptions = YAXSerializationOptions.SerializeNullObjects
-                });
+
+                var serializer = CreateSerializer<Book>();
                 var got = serializer.Serialize(Book.GetSampleInstance());
 
-                var deserializer = CreateSerializer<Book>(new SerializerOptions {
-                    ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
-                    ExceptionBehavior = YAXExceptionTypes.Warning,
-                    SerializationOptions = YAXSerializationOptions.SerializeNullObjects
-                });
+                var deserializer = CreateSerializer<Book>(serializerOptions);
                 var book = deserializer.Deserialize(got) as Book;
                 Assert.That(book, Is.Not.Null);
             }), Throws.Nothing);
 
-        Assert.That(MemberWrapperCache.Instance.CacheDictionary, Contains.Key(typeof(Book)));
-        Assert.That(UdtWrapperCache.Instance.CacheDictionary, Contains.Key(typeof(Book)));
+        Assert.That(MemberWrapperCache.Instance.CacheDictionary, Contains.Key((typeof(Book), serializerOptions)));
+        Assert.That(UdtWrapperCache.Instance.CacheDictionary, Contains.Key((typeof(Book), serializerOptions)));
     }
 
     [Test]
