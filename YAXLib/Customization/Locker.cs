@@ -3,29 +3,28 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Threading;
 
 namespace YAXLib.Customization;
 
 internal sealed class Locker : IDisposable
 {
-    private static readonly ConcurrentDictionary<(int, Type), int> LockedTypes = new ConcurrentDictionary<(int, Type), int>();
+    private static readonly ConcurrentDictionary<(int, Type), int> LockedTypes = new();
     private readonly Type _lockedType;
 
     public Locker(Type typeToLock)
     {
         _lockedType = typeToLock;
-        if (!LockedTypes.TryAdd((Thread.CurrentThread.ManagedThreadId, typeToLock), 0))
+        if (!LockedTypes.TryAdd((Environment.CurrentManagedThreadId, typeToLock), 0))
             throw new ArgumentException("The type is already locked.", nameof(typeToLock));
     }
 
     public static bool IsLocked(Type typeToTest)
     {
-        return LockedTypes.ContainsKey((Thread.CurrentThread.ManagedThreadId, typeToTest));
+        return LockedTypes.ContainsKey((Environment.CurrentManagedThreadId, typeToTest));
     }
 
     public void Dispose()
     {
-        LockedTypes.TryRemove((Thread.CurrentThread.ManagedThreadId, _lockedType), out _);
+        LockedTypes.TryRemove((Environment.CurrentManagedThreadId, _lockedType), out _);
     }
 }
