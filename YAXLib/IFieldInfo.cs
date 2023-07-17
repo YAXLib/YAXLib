@@ -3,7 +3,7 @@
 
 namespace YAXLib;
 
-public interface IYaxFieldInfo : IYaxMemberInfo
+public interface IFieldInfo : IMemberInfo
 {
     object? GetValue(object? obj);
     void SetValue(object? obj, object? value);

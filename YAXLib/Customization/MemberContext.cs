@@ -30,15 +30,15 @@ public class MemberContext : IMemberContext
     }
 
     /// <inheritdoc />
-    public IYaxMemberInfo MemberInfo { get; }
+    public IMemberInfo MemberInfo { get; }
 
     /// <inheritdoc />
-    public IYaxFieldInfo? FieldInfo { get; }
+    public IFieldInfo? FieldInfo { get; }
 
     /// <summary>
     /// The member's <see cref="PropertyInfo" /> for property serialization, else <see langword="null" />.
     /// </summary>
-    public IYaxPropertyInfo? PropertyInfo { get; }
+    public IPropertyInfo? PropertyInfo { get; }
 
     /// <inheritdoc />
     public TypeContext TypeContext { get; }

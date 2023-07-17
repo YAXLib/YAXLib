@@ -8,7 +8,7 @@ using YAXLib.Options;
 namespace YAXLib;
 public interface ITypeResolver
 {
-    IList<IYaxMemberInfo> ResolveMembers(IList<IYaxMemberInfo> sourceMembers, Type underlyingType, SerializerOptions options);
+    IList<IMemberInfo> ResolveMembers(IList<IMemberInfo> sourceMembers, Type underlyingType, SerializerOptions options);
 
     string GetTypeName(string proposedName, Type udtType, SerializerOptions serializerOptions);
 }

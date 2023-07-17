@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace YAXLib;
 
-public interface IYaxMemberInfo
+public interface IMemberInfo
 {
     string Name { get; }
     MemberTypes MemberType { get; }

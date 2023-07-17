@@ -14,7 +14,7 @@ public class CustomTypeResolverTests
 {
     internal class CustomResolver : ITypeResolver
     {
-        public IList<IYaxMemberInfo> ResolveMembers(IList<IYaxMemberInfo> sourceMembers, Type underlyingType, SerializerOptions options)
+        public IList<IMemberInfo> ResolveMembers(IList<IMemberInfo> sourceMembers, Type underlyingType, SerializerOptions options)
         {
             return sourceMembers.Where(member => !string.Equals("PublishYear", member.Name, StringComparison.OrdinalIgnoreCase)).ToList();
         }

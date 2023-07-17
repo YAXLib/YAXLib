@@ -5,7 +5,7 @@ using System;
 using System.Reflection;
 
 namespace YAXLib;
-public class YaxPropertyWrapper: IYaxPropertyInfo
+public class PropertyWrapper: IPropertyInfo
 {
     private readonly PropertyInfo _wrappedProperty;
     public string Name { get; }
@@ -15,7 +15,7 @@ public class YaxPropertyWrapper: IYaxPropertyInfo
     public bool CanRead { get; }
     public bool CanWrite { get; }
 
-    public YaxPropertyWrapper(PropertyInfo propertyInfo)
+    public PropertyWrapper(PropertyInfo propertyInfo)
     {
         _wrappedProperty = propertyInfo;
         Name = propertyInfo.Name;

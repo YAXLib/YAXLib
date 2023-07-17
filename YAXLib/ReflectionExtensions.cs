@@ -7,15 +7,15 @@ using System.Reflection;
 namespace YAXLib;
 internal static class ReflectionExtensions
 {
-    public static IYaxMemberInfo ToYaxMemberInfo(this MemberInfo memberInfo)
+    public static IMemberInfo ToYaxMemberInfo(this MemberInfo memberInfo)
     {
         switch (memberInfo.MemberType)
         {
             case MemberTypes.Field:
-               return new YaxFieldWrapper((FieldInfo) memberInfo);
+               return new FieldWrapper((FieldInfo) memberInfo);
             case MemberTypes.Property:
                 var property = (PropertyInfo)memberInfo;
-                return new YaxPropertyWrapper(property);
+                return new PropertyWrapper(property);
             default:
                 throw new ArgumentOutOfRangeException($"MemberType: {memberInfo.MemberType} is not supported. Property and Field are only supported.");
         }

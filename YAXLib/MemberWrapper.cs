@@ -70,7 +70,7 @@ internal class MemberWrapper
     /// </summary>
     /// <param name="memberInfo">The member-info to build this instance from.</param>
     /// <param name="serializerOptions">The <see cref="SerializerOptions" /> to use.</param>
-    public MemberWrapper(IYaxMemberInfo memberInfo, SerializerOptions serializerOptions)
+    public MemberWrapper(IMemberInfo memberInfo, SerializerOptions serializerOptions)
     {
         Order = int.MaxValue;
 
@@ -90,11 +90,11 @@ internal class MemberWrapper
 
         if (_isProperty)
         {
-            PropertyInfo = (IYaxPropertyInfo) memberInfo;
+            PropertyInfo = (IPropertyInfo) memberInfo;
         }
         else
         {
-            FieldInfo = (IYaxFieldInfo) memberInfo;
+            FieldInfo = (IFieldInfo) memberInfo;
         }
 
         UdtWrapper = UdtWrapperCache.Instance.GetOrAddItem(MemberType, serializerOptions);
@@ -143,7 +143,7 @@ internal class MemberWrapper
             DictionaryAttributeInstance = UdtWrapper.DictionaryAttributeInstance;
     }
 
-    private static void EnsurePropertyOrField(IYaxMemberInfo memberInfo)
+    private static void EnsurePropertyOrField(IMemberInfo memberInfo)
     {
         if (!(memberInfo.MemberType == MemberTypes.Property || memberInfo.MemberType == MemberTypes.Field))
             throw new ArgumentException("Member must be either property or field", nameof(memberInfo));
@@ -339,19 +339,19 @@ internal class MemberWrapper
     public Type MemberType { get; }
 
     /// <summary>
-    /// Gets the <see cref="IYaxFieldInfo" /> of a field, if the member is a field.
+    /// Gets the <see cref="IFieldInfo" /> of a field, if the member is a field.
     /// </summary>
-    public IYaxFieldInfo? FieldInfo { get; }
+    public IFieldInfo? FieldInfo { get; }
 
     /// <summary>
-    /// Gets the <see cref="IYaxMemberInfo" />.
+    /// Gets the <see cref="IMemberInfo" />.
     /// </summary>
-    public IYaxMemberInfo MemberInfo { get; }
+    public IMemberInfo MemberInfo { get; }
 
     /// <summary>
-    /// Gets the <see cref="IYaxPropertyInfo" /> of a field, if the member is a property.
+    /// Gets the <see cref="IPropertyInfo" /> of a field, if the member is a property.
     /// </summary>
-    public IYaxPropertyInfo? PropertyInfo { get; }
+    public IPropertyInfo? PropertyInfo { get; }
 
     /// <summary>
     /// Gets the type wrapper instance corresponding to the member-type of this instance.

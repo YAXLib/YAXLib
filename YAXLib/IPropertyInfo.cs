@@ -3,7 +3,7 @@
 
 namespace YAXLib;
 
-public interface IYaxPropertyInfo : IYaxMemberInfo
+public interface IPropertyInfo : IMemberInfo
 {
     bool CanRead { get; }
     bool CanWrite { get; }

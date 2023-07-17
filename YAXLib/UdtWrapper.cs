@@ -411,7 +411,7 @@ internal class UdtWrapper
         if (!MemberWrapperCache.Instance.TryGetItem((UnderlyingType, _serializerOptions), out var memberWrappers))
         {
 
-            IList<IYaxMemberInfo> members = new List<IYaxMemberInfo>();
+            IList<IMemberInfo> members = new List<IMemberInfo>();
 
 #pragma warning disable S3011 // disable sonar accessibility bypass warning
             foreach (var member in UnderlyingType.GetMembers(

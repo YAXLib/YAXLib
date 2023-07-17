@@ -5,7 +5,7 @@ using System;
 using System.Reflection;
 
 namespace YAXLib;
-internal class YaxFieldWrapper : IYaxFieldInfo
+internal class FieldWrapper : IFieldInfo
 {
     private readonly FieldInfo _wrappedFieldInfo;
     public string Name { get; }
@@ -13,7 +13,7 @@ internal class YaxFieldWrapper : IYaxFieldInfo
     public bool IsPublic { get; }
     public Type Type { get; }
 
-    public YaxFieldWrapper(FieldInfo fieldInfo)
+    public FieldWrapper(FieldInfo fieldInfo)
     {
         _wrappedFieldInfo = fieldInfo;
         MemberType = fieldInfo.MemberType;
