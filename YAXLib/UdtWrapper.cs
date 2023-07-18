@@ -408,50 +408,55 @@ internal class UdtWrapper
     /// <returns>The sequence of fields to be de/serialized for the specified type</returns>
     private IEnumerable<MemberWrapper> GetFieldsToBeSerialized(bool sorted = true)
     {
-        if (!MemberWrapperCache.Instance.TryGetItem((UnderlyingType, _serializerOptions), out var memberWrappers))
+        var members = GetMembers();
+
+        return sorted ? members.OrderBy(mr => mr.Order) : members;
+    }
+
+    private IEnumerable<MemberWrapper> GetMembers()
+    {
+        if (MemberWrapperCache.Instance.TryGetItem((UnderlyingType, _serializerOptions), out var memberWrappers))
+            return memberWrappers;
+
+        IList<IMemberInfo> members = new List<IMemberInfo>();
+
+        foreach (var member in UnderlyingType.GetMembers(
+                     BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
+                     IncludePrivateMembersFromBaseTypes))
         {
+            if (!IsValidPropertyOrField(member)) continue;
+            if (member is PropertyInfo prop && !CanSerializeProperty(prop)) continue;
 
-            IList<IMemberInfo> members = new List<IMemberInfo>();
+            if ((IsCollectionType || IsDictionaryType)
+                && ReflectionUtils.IsPartOfNetFx(member))
+                continue;
 
-#pragma warning disable S3011 // disable sonar accessibility bypass warning
-            foreach (var member in UnderlyingType.GetMembers(
-                         BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
-                         IncludePrivateMembersFromBaseTypes))
-#pragma warning restore S3011 // enable sonar accessibility bypass warning
-            {
-                if (!IsValidPropertyOrField(member)) continue;
-                if (member is PropertyInfo prop && !CanSerializeProperty(prop)) continue;
-
-                if ((IsCollectionType || IsDictionaryType)
-                    && ReflectionUtils.IsPartOfNetFx(member))
-                    continue;
-
-                members.Add(member.ToYaxMemberInfo());
-            }
-
-            var memberResolver = _serializerOptions.TypeInfoResolver;
-
-            if (memberResolver != null)
-            {
-                members = memberResolver.ResolveMembers(members, UnderlyingType, _serializerOptions);
-            }
-
-            foreach (var yaxMemberInfo in members)
-            {
-                memberWrappers.Add(new MemberWrapper(yaxMemberInfo, _serializerOptions));
-            }
-
-            // Filter the members that are actually subject to be serialized
-            // according to settings and attributes.
-            // IsAllowedToBeSerialized evaluates only booleans, no reflection.
-            memberWrappers = memberWrappers
-                .Where(mr => mr.IsAllowedToBeSerialized(FieldsToSerialize, DoNotSerializePropertiesWithNoSetter) && !mr.IsAttributedAsDontSerialize)
-                .ToList();
-
-            _ = MemberWrapperCache.Instance.TryAdd((UnderlyingType, _serializerOptions), memberWrappers);
+            members.Add(member.Wrap());
         }
-        
-        return sorted ? memberWrappers.OrderBy(mr => mr.Order) : memberWrappers;
+
+        var memberResolver = _serializerOptions.TypeInfoResolver;
+
+        if (memberResolver != null)
+        {
+            members = memberResolver.ResolveMembers(members, UnderlyingType, _serializerOptions);
+        }
+
+        foreach (var member in members)
+        {
+            memberWrappers.Add(new MemberWrapper(member, _serializerOptions));
+        }
+
+        // Filter the members that are actually subject to be serialized
+        // according to settings and attributes.
+        // IsAllowedToBeSerialized evaluates only booleans, no reflection.
+        memberWrappers = memberWrappers
+            .Where(mr => mr.IsAllowedToBeSerialized(FieldsToSerialize, DoNotSerializePropertiesWithNoSetter) &&
+                         !mr.IsAttributedAsDontSerialize)
+            .ToList();
+
+        _ = MemberWrapperCache.Instance.TryAdd((UnderlyingType, _serializerOptions), memberWrappers);
+
+        return memberWrappers;
     }
 
     /// <summary>

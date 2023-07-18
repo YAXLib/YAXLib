@@ -22,7 +22,7 @@ public class SerializationContextTests
         const string memberName = "Title";
         var serializer = new YAXSerializer(sampleType);
         var udtWrapper = serializer.UdtWrapper;
-        var memberInfo = udtWrapper.UnderlyingType.GetMember(memberName)[0].ToYaxMemberInfo();
+        var memberInfo = udtWrapper.UnderlyingType.GetMember(memberName)[0].Wrap();
         var memberWrapper = new MemberWrapper(memberInfo, serializer.Options);
         var sc = new SerializationContext(memberWrapper, udtWrapper, serializer);
 
@@ -90,7 +90,7 @@ public class SerializationContextTests
         var sampleType = typeof(ClassLevelSample);
         var serializer = new YAXSerializer(sampleType);
         var udtWrapper = serializer.UdtWrapper;
-        var memberInfo = udtWrapper.UnderlyingType.GetMember(memberName)[0].ToYaxMemberInfo();
+        var memberInfo = udtWrapper.UnderlyingType.GetMember(memberName)[0].Wrap();
         var memberWrapper = new MemberWrapper(memberInfo, serializer.Options);
         var data = new ClassLevelSample { Title = "The Title" };
         var sc = new SerializationContext(memberWrapper, udtWrapper, serializer);

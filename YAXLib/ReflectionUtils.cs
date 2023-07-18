@@ -588,6 +588,13 @@ internal static class ReflectionUtils
         return false;
     }
 
+    /// <summary>
+    /// Gets the default value for the specified type.
+    /// </summary>
+    /// <param name="type">The <see cref="Type"/> for which to retrieve the default value.</param>
+    /// <returns>
+    /// The default value for the specified type. If the type is a reference type or a nullable value type, returns <c>null</c>.
+    /// </returns>
     public static object? GetDefaultValue(Type type)
     {
         if (!type.IsValueType)
@@ -597,17 +604,17 @@ internal static class ReflectionUtils
 
         if (type == typeof(BigInteger))
         {
-            return new BigInteger();
+            return BigInteger.Zero;
         }
 
         if (type == typeof(Guid))
         {
-            return new Guid();
+            return Guid.Empty;
         }
 
         if (type == typeof(DateTimeOffset))
         {
-            return new DateTimeOffset();
+            return DateTimeOffset.MinValue;
         }
 
         switch (Type.GetTypeCode(type))
@@ -632,7 +639,7 @@ internal static class ReflectionUtils
             case TypeCode.Decimal:
                 return 0m;
             case TypeCode.DateTime:
-                return new DateTime();
+                return DateTime.MinValue;
         }
 
         if (IsNullable(type))

@@ -7,6 +7,13 @@ namespace YAXLib;
 
 internal static class ConvertUtils
 {
+    /// <summary>
+    /// Determines if the specified value is an integer.
+    /// </summary>
+    /// <param name="value">The value to be checked for integer type.</param>
+    /// <returns>
+    /// <c>true</c> if the value is of a numeric integral type (sbyte, byte, short, ushort, int, uint, long, ulong); otherwise, <c>false</c>.
+    /// </returns>
     public static bool IsInteger(object value)
     {
         switch (Type.GetTypeCode(value.GetType()))
