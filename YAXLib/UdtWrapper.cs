@@ -419,10 +419,11 @@ internal class UdtWrapper
             return memberWrappers;
 
         IList<IMemberInfo> members = new List<IMemberInfo>();
-
+#pragma warning disable S3011 // disable sonar accessibility bypass warning
         foreach (var member in UnderlyingType.GetMembers(
                      BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
                      IncludePrivateMembersFromBaseTypes))
+#pragma warning restore S3011 // enable sonar accessibility bypass warning
         {
             if (!IsValidPropertyOrField(member)) continue;
             if (member is PropertyInfo prop && !CanSerializeProperty(prop)) continue;
