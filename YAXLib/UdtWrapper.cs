@@ -69,9 +69,9 @@ internal class UdtWrapper
 
         var friendlyTypeName = ReflectionUtils.GetTypeFriendlyName(_udtType);
 
-        if (serializerOptions.TypeResolver != null)
+        if (serializerOptions.TypeInfoResolver != null)
         {
-            friendlyTypeName = serializerOptions.TypeResolver.GetTypeName(friendlyTypeName, _udtType, serializerOptions) ?? friendlyTypeName;
+            friendlyTypeName = serializerOptions.TypeInfoResolver.GetTypeName(friendlyTypeName, _udtType, serializerOptions);
         }
 
         _alias = Alias = StringUtils.RefineSingleElement(friendlyTypeName)!;
@@ -429,7 +429,7 @@ internal class UdtWrapper
                 members.Add(member.ToYaxMemberInfo());
             }
 
-            var memberResolver = _serializerOptions.TypeResolver;
+            var memberResolver = _serializerOptions.TypeInfoResolver;
 
             if (memberResolver != null)
             {

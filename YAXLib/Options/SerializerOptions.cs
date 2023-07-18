@@ -75,5 +75,5 @@ public class SerializerOptions
     /// <summary>
     /// Allows override default type naming and member list for given type
     /// </summary>
-    public ITypeResolver? TypeResolver { get; set; }
+    public ITypeInfoResolver? TypeInfoResolver { get; set; }
 }

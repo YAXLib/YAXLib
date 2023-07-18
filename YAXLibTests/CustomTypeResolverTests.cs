@@ -12,14 +12,14 @@ using YAXLibTests.SampleClasses;
 namespace YAXLibTests;
 public class CustomTypeResolverTests
 {
-    internal class CustomResolver : ITypeResolver
+    internal class CustomResolver : ITypeInfoResolver
     {
-        public IList<IMemberInfo> ResolveMembers(IList<IMemberInfo> sourceMembers, Type underlyingType, SerializerOptions options)
+        public IList<IMemberInfo> ResolveMembers(IList<IMemberInfo> proposedMembers, Type type, SerializerOptions options)
         {
-            return sourceMembers.Where(member => !string.Equals("PublishYear", member.Name, StringComparison.OrdinalIgnoreCase)).ToList();
+            return proposedMembers.Where(member => !string.Equals("PublishYear", member.Name, StringComparison.OrdinalIgnoreCase)).ToList();
         }
 
-        public string GetTypeName(string proposedName, Type udtType, SerializerOptions serializerOptions)
+        public string GetTypeName(string proposedName, Type type, SerializerOptions serializerOptions)
         {
             return proposedName;
         }
@@ -31,7 +31,7 @@ public class CustomTypeResolverTests
         var serializer = new YAXSerializer<Book>(
             new SerializerOptions
             {
-                TypeResolver = new CustomResolver()
+                TypeInfoResolver = new CustomResolver()
             });
 
         var result = serializer.Serialize(Book.GetSampleInstance());

@@ -38,7 +38,8 @@ internal abstract class SpecializedPoolBase<T> : IDisposable where T : class
 
     private ObjectPool<T> LazyCreateObjectPool()
     {
-        return LazyInitializer.EnsureInitialized(ref _pool, () => new ObjectPoolConcurrent<T>(Policy));
+        var pool = LazyInitializer.EnsureInitialized(ref _pool, () => new ObjectPoolConcurrent<T>(Policy));
+        return pool!;
     }
 
     /// <summary>

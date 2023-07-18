@@ -5,7 +5,7 @@ using System;
 using System.Reflection;
 
 namespace YAXLib;
-public class PropertyWrapper: IPropertyInfo
+internal class PropertyWrapper: IPropertyInfo
 {
     private readonly PropertyInfo _wrappedProperty;
     public string Name { get; }
