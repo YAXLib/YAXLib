@@ -10,9 +10,9 @@ using YAXLib.Options;
 using YAXLibTests.SampleClasses;
 
 namespace YAXLibTests;
-public class CustomTypeResolverTests
+public class CustomTypeInfoResolverTests
 {
-    internal class CustomResolver : ITypeInfoResolver
+    internal class CustomTypeInfoResolver : ITypeInfoResolver
     {
         public IList<IMemberInfo> ResolveMembers(IList<IMemberInfo> proposedMembers, Type type, SerializerOptions options)
         {
@@ -31,7 +31,7 @@ public class CustomTypeResolverTests
         var serializer = new YAXSerializer<Book>(
             new SerializerOptions
             {
-                TypeInfoResolver = new CustomResolver()
+                TypeInfoResolver = new CustomTypeInfoResolver()
             });
 
         var result = serializer.Serialize(Book.GetSampleInstance());
