@@ -379,7 +379,7 @@ internal class Serialization
         return false;
     }
 
-    private static bool ValueEquals(object? objA, object? objB)
+    public static bool ValueEquals(object? objA, object? objB)
     {
         if (objA == objB)
         {

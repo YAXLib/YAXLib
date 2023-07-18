@@ -93,4 +93,12 @@ in the serializer itself")]
         [YAXSerializeAs("cust_name")] public string? Name { get; set; }
         [YAXSerializeAs("option")] public int? Optional { get; set; }
     }
+
+    [YAXSerializeAs("my_record")]
+    [YAXSerializableType(Options = YAXSerializationOptions.DontSerializeDefaultValues)]
+    public class MissingElementsSample3
+    {
+        [YAXSerializeAs("rec_id")] public int Id { get; set; }
+        [YAXSerializeAs("rec_cnt")] public int Count { get; set; }
+    }
 }
