@@ -785,11 +785,12 @@ public abstract class DeserializationTestBase
             CreateSerializer<SerializationOptionsSample.MissingElementsSample3>();
 
         var record = new SerializationOptionsSample.MissingElementsSample3
-        { Id = 1234 }; // leave count property null
+        { Id = 1234 }; // leave count property zero and count2 property null
         var xml = serializer.Serialize(record);
         var deserializedRecord = serializer.Deserialize(xml);
 
         xml.Should().NotContain("rec_cnt", "0 integer should not be serialized");
+        xml.Should().NotContain("rec_cnt2", "null int? should not be serialized");
         deserializedRecord.Should()
             .BeEquivalentTo(record, "Missing elements should deserialize with default values");
     }

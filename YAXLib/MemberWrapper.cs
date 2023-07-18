@@ -609,7 +609,7 @@ internal class MemberWrapper
     private void InitDefaultValue()
     {
         DefaultValue = MemberType.IsValueType
-            ? Activator.CreateInstance(MemberType, Array.Empty<object>())
+            ? ReflectionUtils.GetDefaultValue(MemberType)
             : null;
     }
 

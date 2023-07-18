@@ -100,5 +100,6 @@ in the serializer itself")]
     {
         [YAXSerializeAs("rec_id")] public int Id { get; set; }
         [YAXSerializeAs("rec_cnt")] public int Count { get; set; }
+        [YAXSerializeAs("rec_cnt2")] public int? Count2 { get; set; }
     }
 }
