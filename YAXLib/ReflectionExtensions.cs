@@ -9,15 +9,11 @@ internal static class ReflectionExtensions
 {
     public static IMemberDescriptor Wrap(this MemberInfo memberInfo)
     {
-        switch (memberInfo.MemberType)
+        return memberInfo.MemberType switch
         {
-            case MemberTypes.Field:
-               return new FieldWrapper((FieldInfo) memberInfo);
-            case MemberTypes.Property:
-                var property = (PropertyInfo)memberInfo;
-                return new PropertyWrapper(property);
-            default:
-                throw new ArgumentOutOfRangeException($"MemberType: {memberInfo.MemberType} is not supported. Property and Field are only supported.");
-        }
+            MemberTypes.Field => new FieldWrapper((FieldInfo) memberInfo),
+            MemberTypes.Property => new PropertyWrapper((PropertyInfo) memberInfo),
+            _ => throw new ArgumentOutOfRangeException($"MemberType: {memberInfo.MemberType} is not supported. Property and Field are only supported."),
+        };
     }
 }
