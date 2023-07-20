@@ -5,31 +5,28 @@ using System;
 using System.Reflection;
 
 namespace YAXLib;
-internal class FieldWrapper : IFieldInfo
+
+internal class FieldWrapper : IMemberDescriptor
 {
     private readonly FieldInfo _wrappedFieldInfo;
-    public string Name { get; }
-    public MemberTypes MemberType { get; }
+    public bool CanRead => true;
+    public bool CanWrite => true;
     public bool IsPublic { get; }
+    public MemberTypes MemberType => MemberTypes.Field;
+    public string Name { get; }
     public Type Type { get; }
 
     public FieldWrapper(FieldInfo fieldInfo)
     {
         _wrappedFieldInfo = fieldInfo;
-        MemberType = fieldInfo.MemberType;
         IsPublic = fieldInfo.IsPublic;
         Type = fieldInfo.FieldType;
         Name = fieldInfo.Name;
     }
 
-    public Attribute[] GetCustomAttributes(Type attrType, bool inherit)
+    public Attribute[] GetCustomAttributes()
     {
-        return Attribute.GetCustomAttributes(_wrappedFieldInfo, attrType, inherit);
-    }
-
-    public Attribute[] GetCustomAttributes(bool inherit)
-    {
-        return Attribute.GetCustomAttributes(_wrappedFieldInfo, inherit);
+        return Attribute.GetCustomAttributes(_wrappedFieldInfo);
     }
 
     public object? GetValue(object? obj)

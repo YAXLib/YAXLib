@@ -1156,7 +1156,7 @@ internal class Serialization
     /// <returns></returns>
     private static bool AreOfSameType(object? obj, MemberWrapper member, object? elementValue)
     {
-        var originalValue = member.GetOriginalValue(obj, null);
+        var originalValue = member.GetOriginalValue(obj);
         return (elementValue == null && originalValue == null)
                || (originalValue != null && member.MemberType.EqualsOrIsNullableOf(originalValue.GetType()));
     }

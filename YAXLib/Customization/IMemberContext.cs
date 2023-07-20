@@ -9,19 +9,9 @@ namespace YAXLib.Customization;
 public interface IMemberContext
 {
     /// <summary>
-    /// The member's <see cref="IMemberInfo" /> for member serialization, else <see langword="null" />.
+    /// The member's <see cref="IMemberDescriptor" /> for member serialization, else <see langword="null" />.
     /// </summary>
-    IMemberInfo MemberInfo { get; }
-
-    /// <summary>
-    /// The member's <see cref="IFieldInfo" /> for field serialization, else <see langword="null" />.
-    /// </summary>
-    IFieldInfo? FieldInfo { get; }
-
-    /// <summary>
-    /// The member's <see cref="IPropertyInfo" /> for property serialization, else <see langword="null" />.
-    /// </summary>
-    IPropertyInfo? PropertyInfo { get; }
+    IMemberDescriptor MemberInfo { get; }
 
     /// <summary>
     /// The member's <see cref="Customization.TypeContext" /> for member serialization./>.
@@ -32,11 +22,6 @@ public interface IMemberContext
     /// Gets value of this member in the specified object.
     /// </summary>
     /// <param name="obj">The object from which the value must be retrieved.</param>
-    /// <param name="index">
-    /// Optional index values for indexed properties.
-    /// The indexes of indexed properties are zero-based. This value should be <see langword="null" /> for non-indexed
-    /// properties.
-    /// </param>
     /// <returns>The value for this member.</returns>
-    object? GetValue(object? obj, object[]? index = null);
+    object? GetValue(object? obj);
 }

@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
 using YAXLib.Attributes;
@@ -21,12 +22,6 @@ namespace YAXLib;
 /// </summary>
 internal class MemberWrapper
 {
-    /// <summary>
-    /// <c>true</c> if this instance corresponds to a property, <c>false</c>
-    /// if it corresponds to a field (i.e., a member variable)
-    /// </summary>
-    private readonly bool _isProperty;
-
     /// <summary>
     /// Returns <see langword="true" />, when the member corresponding to this instance is public.
     /// </summary>
@@ -70,7 +65,7 @@ internal class MemberWrapper
     /// </summary>
     /// <param name="memberInfo">The member-info to build this instance from.</param>
     /// <param name="serializerOptions">The <see cref="SerializerOptions" /> to use.</param>
-    public MemberWrapper(IMemberInfo memberInfo, SerializerOptions serializerOptions)
+    public MemberWrapper(IMemberDescriptor memberInfo, SerializerOptions serializerOptions)
     {
         Order = int.MaxValue;
 
@@ -78,24 +73,11 @@ internal class MemberWrapper
         EnsurePropertyOrField(memberInfo);
 
         MemberInfo = memberInfo;
-        if (memberInfo.MemberType == MemberTypes.Property)
-        {
-            _isProperty = true;
-        }
 
         _alias = Alias = StringUtils.RefineSingleElement(MemberInfo.Name)!;
 
         MemberType = memberInfo.Type;
         _isPublic = memberInfo.IsPublic;
-
-        if (_isProperty)
-        {
-            PropertyInfo = (IPropertyInfo) memberInfo;
-        }
-        else
-        {
-            FieldInfo = (IFieldInfo) memberInfo;
-        }
 
         UdtWrapper = UdtWrapperCache.Instance.GetOrAddItem(MemberType, serializerOptions);
 
@@ -109,28 +91,19 @@ internal class MemberWrapper
 
         TreatErrorsAs = serializerOptions.ExceptionBehavior;
 
-        // discover YAXCustomSerializerAttributes earlier, because some other attributes depend on it
-        var attrsToProcessEarlier = new HashSet<Type>
-            { typeof(YAXCustomSerializerAttribute), typeof(YAXCollectionAttribute) };
-
-        foreach (var attrType in attrsToProcessEarlier)
-        {
-            var customSerAttrs = MemberInfo.GetCustomAttributes(attrType, true);
-            foreach (var attr in customSerAttrs)
+        var attributes = memberInfo.GetCustomAttributes()
+            .OfType<IYaxMemberLevelAttribute>()
+            .OrderBy(attribute => attribute switch
             {
-                if (attr is IYaxMemberLevelAttribute memberAttr)
-                    memberAttr.Setup(this);
-            }
-        }
+                // discover YAXCustomSerializerAttributes earlier, because some other attributes depend on it
+                YAXCustomSerializerAttribute => 0,
+                YAXCollectionAttribute => 1,
+                _ => 2
+            });
 
-        foreach (var attr in MemberInfo.GetCustomAttributes(true))
+        foreach (var attr in attributes)
         {
-            // no need to process, it has been processed earlier
-            if (attrsToProcessEarlier.Contains(attr.GetType()))
-                continue;
-
-            if (attr is IYaxMemberLevelAttribute memberAttr)
-                memberAttr.Setup(this);
+            attr.Setup(this);
         }
 
         // now override some values from member-type-wrapper into member-wrapper
@@ -143,7 +116,7 @@ internal class MemberWrapper
             DictionaryAttributeInstance = UdtWrapper.DictionaryAttributeInstance;
     }
 
-    private static void EnsurePropertyOrField(IMemberInfo memberInfo)
+    private static void EnsurePropertyOrField(IMemberDescriptor memberInfo)
     {
         if (!(memberInfo.MemberType == MemberTypes.Property || memberInfo.MemberType == MemberTypes.Field))
             throw new ArgumentException("Member must be either property or field", nameof(memberInfo));
@@ -176,31 +149,13 @@ internal class MemberWrapper
     /// Gets a value indicating whether the member corresponding to this instance can be read from.
     /// </summary>
     /// <value><c>true</c> if the member corresponding to this instance can be read from; otherwise, <c>false</c>.</value>
-    public bool CanRead
-    {
-        get
-        {
-            if (_isProperty)
-                return PropertyInfo!.CanRead;
-
-            return true;
-        }
-    }
+    public bool CanRead => MemberInfo.CanRead;
 
     /// <summary>
     /// Gets a value indicating whether the member corresponding to this instance can be written to.
     /// </summary>
     /// <value><c>true</c> if the member corresponding to this instance can be written to; otherwise, <c>false</c>.</value>
-    public bool CanWrite
-    {
-        get
-        {
-            if (_isProperty)
-                return PropertyInfo!.CanWrite;
-
-            return true;
-        }
-    }
+    public bool CanWrite => MemberInfo.CanWrite;
 
     /// <summary>
     /// Gets an array of comment lines.
@@ -339,19 +294,9 @@ internal class MemberWrapper
     public Type MemberType { get; }
 
     /// <summary>
-    /// Gets the <see cref="IFieldInfo" /> of a field, if the member is a field.
+    /// Gets the <see cref="IMemberDescriptor" />.
     /// </summary>
-    public IFieldInfo? FieldInfo { get; }
-
-    /// <summary>
-    /// Gets the <see cref="IMemberInfo" />.
-    /// </summary>
-    public IMemberInfo MemberInfo { get; }
-
-    /// <summary>
-    /// Gets the <see cref="IPropertyInfo" /> of a field, if the member is a property.
-    /// </summary>
-    public IPropertyInfo? PropertyInfo { get; }
+    public IMemberDescriptor MemberInfo { get; }
 
     /// <summary>
     /// Gets the type wrapper instance corresponding to the member-type of this instance.
@@ -496,21 +441,16 @@ internal class MemberWrapper
     /// Gets the original value of this member in the specified object
     /// </summary>
     /// <param name="obj">The object whose value corresponding to this instance, must be retrieved.</param>
-    /// <param name="index">
-    /// Optional index values for indexed properties.
-    /// The indexes of indexed properties are zero-based. This value should be <see langword="null" /> for non-indexed
-    /// properties.
-    /// </param>
     /// <returns>the original value of this member in the specified object</returns>
 #if NETSTANDARD2_1_OR_GREATER || NET6_0_OR_GREATER
-    public object? GetOriginalValue([NotNullIfNotNull(nameof(obj))]object? obj, object[]? index)
+    public object? GetOriginalValue([NotNullIfNotNull(nameof(obj))]object? obj)
 #else
-    public object? GetOriginalValue(object? obj, object[]? index)
+    public object? GetOriginalValue(object? obj)
 #endif
     {
         if (obj == null) return null;
 
-        return _isProperty ? PropertyInfo?.GetValue(obj, index) : FieldInfo?.GetValue(obj);
+        return MemberInfo.GetValue(obj);
     }
 
     /// <summary>
@@ -520,7 +460,7 @@ internal class MemberWrapper
     /// <returns>the processed value of this member in the specified object</returns>
     public object? GetValue(object obj)
     {
-        var elementValue = GetOriginalValue(obj, null);
+        var elementValue = GetOriginalValue(obj);
 
         if (elementValue == null)
             return null;
@@ -543,10 +483,7 @@ internal class MemberWrapper
     /// <param name="value">The value.</param>
     public void SetValue(object obj, object? value)
     {
-        if (_isProperty)
-            PropertyInfo?.SetValue(obj, value, null);
-        else
-            FieldInfo?.SetValue(obj, value);
+        MemberInfo.SetValue(obj, value);
     }
 
     /// <summary>
@@ -562,7 +499,7 @@ internal class MemberWrapper
     public bool IsAllowedToBeSerialized(YAXSerializationFields serializationFields,
         bool dontSerializePropertiesWithNoSetter)
     {
-        if (PropertyInfo != null && dontSerializePropertiesWithNoSetter && _isProperty && !PropertyInfo.CanWrite)
+        if (MemberInfo.MemberType ==  MemberTypes.Property && dontSerializePropertiesWithNoSetter && !MemberInfo.CanWrite)
             return false;
 
         if (serializationFields == YAXSerializationFields.AllFields)
@@ -570,7 +507,7 @@ internal class MemberWrapper
         if (serializationFields == YAXSerializationFields.AttributedFieldsOnly)
             return !IsAttributedAsDontSerialize && IsAttributedAsSerializable;
         if (serializationFields == YAXSerializationFields.PublicPropertiesOnly)
-            return !IsAttributedAsDontSerialize && _isProperty && _isPublic;
+            return !IsAttributedAsDontSerialize && MemberInfo.MemberType == MemberTypes.Property && _isPublic;
         throw new ArgumentException("Unknown serialization field option", nameof(serializationFields));
     }
 

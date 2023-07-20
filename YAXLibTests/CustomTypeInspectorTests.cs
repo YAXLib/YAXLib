@@ -10,18 +10,14 @@ using YAXLib.Options;
 using YAXLibTests.SampleClasses;
 
 namespace YAXLibTests;
-public class CustomTypeInfoResolverTests
+public class CustomTypeInspectorTests
 {
-    internal class CustomTypeInfoResolver : ITypeInfoResolver
+    internal class CustomTypeInspector : DefaultTypeInspector
     {
-        public IList<IMemberInfo> ResolveMembers(IList<IMemberInfo> proposedMembers, Type type, SerializerOptions options)
+        public override IEnumerable<IMemberDescriptor> GetMembers(Type type, SerializerOptions options, bool includePrivateMembersFromBaseTypes)
         {
-            return proposedMembers.Where(member => !string.Equals("PublishYear", member.Name, StringComparison.OrdinalIgnoreCase)).ToList();
-        }
-
-        public string GetTypeName(string proposedName, Type type, SerializerOptions serializerOptions)
-        {
-            return proposedName;
+            var members = base.GetMembers(type, options, includePrivateMembersFromBaseTypes);
+            return members.Where(member => !string.Equals("PublishYear", member.Name, StringComparison.OrdinalIgnoreCase));
         }
     }
 
@@ -31,7 +27,7 @@ public class CustomTypeInfoResolverTests
         var serializer = new YAXSerializer<Book>(
             new SerializerOptions
             {
-                TypeInfoResolver = new CustomTypeInfoResolver()
+                TypeInspector = new CustomTypeInspector()
             });
 
         var result = serializer.Serialize(Book.GetSampleInstance());

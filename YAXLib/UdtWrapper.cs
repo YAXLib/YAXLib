@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Xml.Linq;
 using YAXLib.Attributes;
 using YAXLib.Caching;
@@ -47,6 +46,11 @@ internal class UdtWrapper
     private XNamespace _namespace = XNamespace.None;
 
     /// <summary>
+    /// supports customization of type properties and name
+    /// </summary>
+    private readonly ITypeInspector _typeInspector;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="UdtWrapper" /> class.
     /// </summary>
     /// <param name="udtType">
@@ -57,7 +61,6 @@ internal class UdtWrapper
     public UdtWrapper(Type udtType, SerializerOptions serializerOptions)
     {
         _serializerOptions = serializerOptions;
-        IsDictionaryType = false;
         _udtType = ReflectionUtils.IsNullable(udtType, out var nullableUnderlyingType)
             ? nullableUnderlyingType!
             : udtType;
@@ -66,15 +69,9 @@ internal class UdtWrapper
 
         _ = WellKnownTypes.TryGetKnownType(_udtType, out var knownType);
         KnownType = knownType;
+        _typeInspector = serializerOptions.TypeInspector ?? DefaultTypeInspector.Instance;
 
-        var friendlyTypeName = ReflectionUtils.GetTypeFriendlyName(_udtType);
-
-        if (serializerOptions.TypeInfoResolver != null)
-        {
-            friendlyTypeName = serializerOptions.TypeInfoResolver.GetTypeName(friendlyTypeName, _udtType, serializerOptions);
-        }
-
-        _alias = Alias = StringUtils.RefineSingleElement(friendlyTypeName)!;
+        _alias = Alias = StringUtils.RefineSingleElement(_typeInspector.GetTypeName(_udtType, serializerOptions))!;
 
         Comment = null;
         FieldsToSerialize = YAXSerializationFields.PublicPropertiesOnly;
@@ -418,29 +415,7 @@ internal class UdtWrapper
         if (MemberWrapperCache.Instance.TryGetItem((UnderlyingType, _serializerOptions), out var memberWrappers))
             return memberWrappers;
 
-        IList<IMemberInfo> members = new List<IMemberInfo>();
-#pragma warning disable S3011 // disable sonar accessibility bypass warning
-        foreach (var member in UnderlyingType.GetMembers(
-                     BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
-                     IncludePrivateMembersFromBaseTypes))
-#pragma warning restore S3011 // enable sonar accessibility bypass warning
-        {
-            if (!IsValidPropertyOrField(member)) continue;
-            if (member is PropertyInfo prop && !CanSerializeProperty(prop)) continue;
-
-            if ((IsCollectionType || IsDictionaryType)
-                && ReflectionUtils.IsPartOfNetFx(member))
-                continue;
-
-            members.Add(member.Wrap());
-        }
-
-        var memberResolver = _serializerOptions.TypeInfoResolver;
-
-        if (memberResolver != null)
-        {
-            members = memberResolver.ResolveMembers(members, UnderlyingType, _serializerOptions);
-        }
+        var members = _typeInspector.GetMembers(UnderlyingType, _serializerOptions, IncludePrivateMembersFromBaseTypes);
 
         foreach (var member in members)
         {
@@ -475,26 +450,5 @@ internal class UdtWrapper
             return Namespace;
 
         return XNamespace.Get(string.Empty);
-    }
-
-    private static bool IsValidPropertyOrField(MemberInfo member)
-    {
-        // Exclude names of compiler-generated backing fields like "<my_member>k__BackingField"
-        var name0 = member.Name[0];
-        return (char.IsLetter(name0) || name0 == '_') &&
-               (member.MemberType == MemberTypes.Property || member.MemberType == MemberTypes.Field);
-    }
-
-    private static bool CanSerializeProperty(PropertyInfo prop)
-    {
-        // ignore indexers; if member is an indexer property, do not serialize it
-        if (prop.GetIndexParameters().Length > 0)
-            return false;
-
-        // don't serialize delegates as well
-        if (ReflectionUtils.IsTypeEqualOrInheritedFromType(prop.PropertyType, typeof(Delegate)))
-            return false;
-
-        return true;
     }
 }

@@ -7,7 +7,7 @@ using System.Reflection;
 namespace YAXLib;
 internal static class ReflectionExtensions
 {
-    public static IMemberInfo Wrap(this MemberInfo memberInfo)
+    public static IMemberDescriptor Wrap(this MemberInfo memberInfo)
     {
         switch (memberInfo.MemberType)
         {

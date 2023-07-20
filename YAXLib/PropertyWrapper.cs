@@ -5,44 +5,38 @@ using System;
 using System.Reflection;
 
 namespace YAXLib;
-internal class PropertyWrapper: IPropertyInfo
+internal class PropertyWrapper: IMemberDescriptor
 {
     private readonly PropertyInfo _wrappedProperty;
-    public string Name { get; }
-    public MemberTypes MemberType { get; }
-    public bool IsPublic { get; }
-    public Type Type { get; }
     public bool CanRead { get; }
     public bool CanWrite { get; }
+    public bool IsPublic { get; }
+    public MemberTypes MemberType => MemberTypes.Property;
+    public string Name { get; }
+    public Type Type { get; }
 
     public PropertyWrapper(PropertyInfo propertyInfo)
     {
         _wrappedProperty = propertyInfo;
         Name = propertyInfo.Name;
-        MemberType = propertyInfo.MemberType;
         Type = propertyInfo.PropertyType;
         CanRead = propertyInfo.CanRead;
         CanWrite = propertyInfo.CanWrite;
         IsPublic = ReflectionUtils.IsPublicProperty(propertyInfo);
     }
 
-    public Attribute[] GetCustomAttributes(Type attrType, bool inherit)
+    public Attribute[] GetCustomAttributes()
     {
-        return Attribute.GetCustomAttributes(_wrappedProperty, attrType, inherit);
+        return Attribute.GetCustomAttributes(_wrappedProperty);
     }
 
-    public Attribute[] GetCustomAttributes(bool inherit)
+    public object? GetValue(object? obj)
     {
-        return Attribute.GetCustomAttributes(_wrappedProperty, inherit);
+        return _wrappedProperty.GetValue(obj);
     }
 
-    public object? GetValue(object? obj, object[]? index)
+    public void SetValue(object? obj, object? value)
     {
-        return _wrappedProperty.GetValue(obj, index);
-    }
-
-    public void SetValue(object? obj, object? value, object[]? index)
-    {
-        _wrappedProperty.SetValue(obj, value, index);
+        _wrappedProperty.SetValue(obj, value);
     }
 }
