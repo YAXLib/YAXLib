@@ -5,7 +5,7 @@ using System;
 using System.Reflection;
 
 namespace YAXLib;
-internal class PropertyWrapper: IMemberDescriptor
+internal sealed class PropertyWrapper: IMemberDescriptor
 {
     private readonly PropertyInfo _wrappedProperty;
     public bool CanRead { get; }

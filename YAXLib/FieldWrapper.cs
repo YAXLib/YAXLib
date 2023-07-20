@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace YAXLib;
 
-internal class FieldWrapper : IMemberDescriptor
+internal sealed class FieldWrapper : IMemberDescriptor
 {
     private readonly FieldInfo _wrappedFieldInfo;
     public bool CanRead => true;
