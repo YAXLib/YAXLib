@@ -51,13 +51,15 @@ public interface IMemberDescriptor
     /// Gets the value of the member for the specified object.
     /// </summary>
     /// <param name="obj">The object from which to retrieve the member value.</param>
+    /// <param name="index">Optional index parameters for indexed properties.</param>
     /// <returns>The value of the member.</returns>
-    object? GetValue(object? obj);
+    object? GetValue(object? obj, object[]? index = null);
 
     /// <summary>
     /// Sets the value of the member for the specified object.
     /// </summary>
     /// <param name="obj">The object on which to set the member value.</param>
     /// <param name="value">The value to be assigned to the member.</param>
-    void SetValue(object? obj, object? value);
+    /// <param name="index">Optional index parameters for indexed properties.</param>
+    void SetValue(object? obj, object? value, object[]? index = null);
 }

@@ -135,7 +135,7 @@ public abstract class SerializationTestBase
         {
             ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
             ExceptionBehavior = YAXExceptionTypes.Warning,
-            SerializationOptions = YAXSerializationOptions.DontSerializeDefaultValues
+            SerializationOptions = YAXSerializationOptions.DoNotSerializeDefaultValues
         });
 
         var got = serializer.Serialize(book);

@@ -63,21 +63,21 @@ internal class MemberWrapper
     /// <summary>
     /// Initializes a new instance of the <see cref="MemberWrapper" /> class.
     /// </summary>
-    /// <param name="memberInfo">The member-info to build this instance from.</param>
+    /// <param name="memberDescriptor">The member-descriptor to build this instance from.</param>
     /// <param name="serializerOptions">The <see cref="SerializerOptions" /> to use.</param>
-    public MemberWrapper(IMemberDescriptor memberInfo, SerializerOptions serializerOptions)
+    public MemberWrapper(IMemberDescriptor memberDescriptor, SerializerOptions serializerOptions)
     {
         Order = int.MaxValue;
 
         // Throws, if the member is not a property or field
-        EnsurePropertyOrField(memberInfo);
+        EnsurePropertyOrField(memberDescriptor);
 
-        MemberInfo = memberInfo;
+        MemberDescriptor = memberDescriptor;
 
-        _alias = Alias = StringUtils.RefineSingleElement(MemberInfo.Name)!;
+        _alias = Alias = StringUtils.RefineSingleElement(MemberDescriptor.Name)!;
 
-        MemberType = memberInfo.Type;
-        _isPublic = memberInfo.IsPublic;
+        MemberType = memberDescriptor.Type;
+        _isPublic = memberDescriptor.IsPublic;
 
         UdtWrapper = UdtWrapperCache.Instance.GetOrAddItem(MemberType, serializerOptions);
 
@@ -91,7 +91,7 @@ internal class MemberWrapper
 
         TreatErrorsAs = serializerOptions.ExceptionBehavior;
 
-        var attributes = memberInfo.GetCustomAttributes()
+        var attributes = memberDescriptor.GetCustomAttributes()
             .OfType<IYaxMemberLevelAttribute>()
             .OrderBy(attribute => attribute switch
             {
@@ -119,7 +119,7 @@ internal class MemberWrapper
     private static void EnsurePropertyOrField(IMemberDescriptor memberInfo)
     {
         if (!(memberInfo.MemberType == MemberTypes.Property || memberInfo.MemberType == MemberTypes.Field))
-            throw new ArgumentException("Member must be either property or field", nameof(memberInfo));
+            throw new ArgumentException("MemberDescription must be either property or field", nameof(memberInfo));
     }
 
     /// <summary>
@@ -149,13 +149,13 @@ internal class MemberWrapper
     /// Gets a value indicating whether the member corresponding to this instance can be read from.
     /// </summary>
     /// <value><c>true</c> if the member corresponding to this instance can be read from; otherwise, <c>false</c>.</value>
-    public bool CanRead => MemberInfo.CanRead;
+    public bool CanRead => MemberDescriptor.CanRead;
 
     /// <summary>
     /// Gets a value indicating whether the member corresponding to this instance can be written to.
     /// </summary>
     /// <value><c>true</c> if the member corresponding to this instance can be written to; otherwise, <c>false</c>.</value>
-    public bool CanWrite => MemberInfo.CanWrite;
+    public bool CanWrite => MemberDescriptor.CanWrite;
 
     /// <summary>
     /// Gets an array of comment lines.
@@ -296,7 +296,7 @@ internal class MemberWrapper
     /// <summary>
     /// Gets the <see cref="IMemberDescriptor" />.
     /// </summary>
-    public IMemberDescriptor MemberInfo { get; }
+    public IMemberDescriptor MemberDescriptor { get; }
 
     /// <summary>
     /// Gets the type wrapper instance corresponding to the member-type of this instance.
@@ -319,7 +319,7 @@ internal class MemberWrapper
     /// Gets the original of this member (as opposed to its alias).
     /// </summary>
     /// <value>The original of this member .</value>
-    public string OriginalName => MemberInfo.Name;
+    public string OriginalName => MemberDescriptor.Name;
 
     /// <summary>
     /// Gets the serialization location.
@@ -441,16 +441,17 @@ internal class MemberWrapper
     /// Gets the original value of this member in the specified object
     /// </summary>
     /// <param name="obj">The object whose value corresponding to this instance, must be retrieved.</param>
+    /// <param name="index">Optional index parameters for indexed properties.</param>
     /// <returns>the original value of this member in the specified object</returns>
 #if NETSTANDARD2_1_OR_GREATER || NET6_0_OR_GREATER
-    public object? GetOriginalValue([NotNullIfNotNull(nameof(obj))]object? obj)
+    public object? GetOriginalValue([NotNullIfNotNull(nameof(obj))]object? obj, object[]? index = null)
 #else
-    public object? GetOriginalValue(object? obj)
+    public object? GetOriginalValue(object? obj, object[]? index = null)
 #endif
     {
         if (obj == null) return null;
 
-        return MemberInfo.GetValue(obj);
+        return MemberDescriptor.GetValue(obj, index);
     }
 
     /// <summary>
@@ -483,7 +484,7 @@ internal class MemberWrapper
     /// <param name="value">The value.</param>
     public void SetValue(object obj, object? value)
     {
-        MemberInfo.SetValue(obj, value);
+        MemberDescriptor.SetValue(obj, value);
     }
 
     /// <summary>
@@ -499,7 +500,7 @@ internal class MemberWrapper
     public bool IsAllowedToBeSerialized(YAXSerializationFields serializationFields,
         bool dontSerializePropertiesWithNoSetter)
     {
-        if (MemberInfo.MemberType ==  MemberTypes.Property && dontSerializePropertiesWithNoSetter && !MemberInfo.CanWrite)
+        if (MemberDescriptor.MemberType ==  MemberTypes.Property && dontSerializePropertiesWithNoSetter && !MemberDescriptor.CanWrite)
             return false;
 
         if (serializationFields == YAXSerializationFields.AllFields)
@@ -507,7 +508,7 @@ internal class MemberWrapper
         if (serializationFields == YAXSerializationFields.AttributedFieldsOnly)
             return !IsAttributedAsDontSerialize && IsAttributedAsSerializable;
         if (serializationFields == YAXSerializationFields.PublicPropertiesOnly)
-            return !IsAttributedAsDontSerialize && MemberInfo.MemberType == MemberTypes.Property && _isPublic;
+            return !IsAttributedAsDontSerialize && MemberDescriptor.MemberType == MemberTypes.Property && _isPublic;
         throw new ArgumentException("Unknown serialization field option", nameof(serializationFields));
     }
 
@@ -519,7 +520,7 @@ internal class MemberWrapper
     /// </returns>
     public override string ToString()
     {
-        return MemberInfo.ToString()!;
+        return MemberDescriptor.ToString()!;
     }
 
     // Private Methods 
@@ -581,11 +582,11 @@ internal class MemberWrapper
 
         if (_possibleRealTypes.Exists(x => x.Type == yaxTypeAttribute.Type))
             throw new YAXPolymorphicException(
-                $"The type \"{yaxTypeAttribute.Type.Name}\" for field/property \"{MemberInfo}\" has already been defined through another attribute.");
+                $"The type \"{yaxTypeAttribute.Type.Name}\" for field/property \"{MemberDescriptor}\" has already been defined through another attribute.");
 
         if (alias != null && _possibleRealTypes.Exists(x => alias.Equals(x.Alias, StringComparison.Ordinal)))
             throw new YAXPolymorphicException(
-                $"The alias \"{alias}\" given to type \"{yaxTypeAttribute.Type.Name}\" for field/property \"{MemberInfo}\" has already been given to another type through another attribute.");
+                $"The alias \"{alias}\" given to type \"{yaxTypeAttribute.Type.Name}\" for field/property \"{MemberDescriptor}\" has already been given to another type through another attribute.");
 
         _possibleRealTypes.Add(yaxTypeAttribute);
     }
@@ -608,13 +609,13 @@ internal class MemberWrapper
         if (_possibleCollectionItemRealTypes.Exists(x => x.Type == yaxCollectionItemTypeAttr.Type))
             throw new YAXPolymorphicException(string.Format(
                 "The collection-item type \"{0}\" for collection \"{1}\" has already been defined through another attribute.",
-                yaxCollectionItemTypeAttr.Type.Name, MemberInfo));
+                yaxCollectionItemTypeAttr.Type.Name, MemberDescriptor));
 
         if (alias != null &&
             _possibleCollectionItemRealTypes.Exists(x => alias.Equals(x.Alias, StringComparison.Ordinal)))
             throw new YAXPolymorphicException(string.Format(
                 "The alias \"{0}\" given to collection-item type \"{1}\" for field/property \"{2}\" has already been given to another type through another attribute.",
-                alias, yaxCollectionItemTypeAttr.Type.Name, MemberInfo));
+                alias, yaxCollectionItemTypeAttr.Type.Name, MemberDescriptor));
 
         _possibleCollectionItemRealTypes.Add(yaxCollectionItemTypeAttr);
     }

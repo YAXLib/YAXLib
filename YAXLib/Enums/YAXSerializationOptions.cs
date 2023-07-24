@@ -62,5 +62,5 @@ public enum YAXSerializationOptions
     /// <summary>
     /// Prevents serialization of default values.
     /// </summary>
-    DontSerializeDefaultValues = 128
+    DoNotSerializeDefaultValues = 128
 }

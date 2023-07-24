@@ -29,7 +29,7 @@ public class SerializationContextTests
         Assert.That(sc.SerializerOptions, Is.EqualTo(serializer.Options));
         Assert.That(sc.TypeContext.Type!.Name, Is.EqualTo(sampleType.Name));
         Assert.That(sc.MemberContext!.TypeContext!.Type.Name, Is.EqualTo(nameof(String)));
-        Assert.That(sc.MemberContext!.MemberInfo!.Name, Is.EqualTo(memberName));
+        Assert.That(sc.MemberContext!.MemberDescriptor!.Name, Is.EqualTo(memberName));
     }
 
     [Test]
@@ -56,11 +56,11 @@ public class SerializationContextTests
 
         // Get the member context for the "Title" field
         var titleCtx = sc.TypeContext.GetFieldsForSerialization()
-            .FirstOrDefault(f => f.MemberInfo.Name == nameof(FieldLevelSample.Title));
+            .FirstOrDefault(f => f.MemberDescriptor.Name == nameof(FieldLevelSample.Title));
 
         // Get the member context for the "Length" property of the "Title" field
         var lengthCtx = titleCtx!.TypeContext.GetFieldsForSerialization()
-            .FirstOrDefault(p => p.MemberInfo.Name == nameof(string.Length));
+            .FirstOrDefault(p => p.MemberDescriptor.Name == nameof(string.Length));
 
         Assert.That(sc.TypeContext.GetFieldsForSerialization().Count(), Is.EqualTo(3));
         Assert.That(sc.TypeContext.GetFieldsForDeserialization().Count(), Is.EqualTo(3));

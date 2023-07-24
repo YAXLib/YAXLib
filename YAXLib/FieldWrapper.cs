@@ -8,7 +8,7 @@ namespace YAXLib;
 
 internal sealed class FieldWrapper : IMemberDescriptor
 {
-    private readonly FieldInfo _wrappedFieldInfo;
+    private readonly FieldInfo _wrappedField;
     public bool CanRead => true;
     public bool CanWrite => true;
     public bool IsPublic { get; }
@@ -18,7 +18,7 @@ internal sealed class FieldWrapper : IMemberDescriptor
 
     public FieldWrapper(FieldInfo fieldInfo)
     {
-        _wrappedFieldInfo = fieldInfo;
+        _wrappedField = fieldInfo;
         IsPublic = fieldInfo.IsPublic;
         Type = fieldInfo.FieldType;
         Name = fieldInfo.Name;
@@ -26,16 +26,16 @@ internal sealed class FieldWrapper : IMemberDescriptor
 
     public Attribute[] GetCustomAttributes()
     {
-        return Attribute.GetCustomAttributes(_wrappedFieldInfo);
+        return Attribute.GetCustomAttributes(_wrappedField);
     }
 
-    public object? GetValue(object? obj)
+    public object? GetValue(object? obj, object[]? index = null)
     {
-        return _wrappedFieldInfo.GetValue(obj);
+        return _wrappedField.GetValue(obj);
     }
 
-    public void SetValue(object? obj, object? value)
+    public void SetValue(object? obj, object? value, object[]? index = null)
     {
-        _wrappedFieldInfo.SetValue(obj, value);
+        _wrappedField.SetValue(obj, value);
     }
 }

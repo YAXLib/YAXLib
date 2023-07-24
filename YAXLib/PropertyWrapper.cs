@@ -30,13 +30,13 @@ internal sealed class PropertyWrapper: IMemberDescriptor
         return Attribute.GetCustomAttributes(_wrappedProperty);
     }
 
-    public object? GetValue(object? obj)
+    public object? GetValue(object? obj, object[]? index = null)
     {
-        return _wrappedProperty.GetValue(obj);
+        return _wrappedProperty.GetValue(obj, index);
     }
 
-    public void SetValue(object? obj, object? value)
+    public void SetValue(object? obj, object? value, object[]? index = null)
     {
-        _wrappedProperty.SetValue(obj, value);
+        _wrappedProperty.SetValue(obj, value, index);
     }
 }

@@ -204,8 +204,8 @@ internal class UdtWrapper
     /// <c>true</c> if serialization of default values is not allowed; otherwise, <c>false</c>.
     /// </returns>
     public bool IsNotAllowedDefaultValueSerialization =>
-        (SerializationOptions & YAXSerializationOptions.DontSerializeDefaultValues) ==
-        YAXSerializationOptions.DontSerializeDefaultValues;
+        (SerializationOptions & YAXSerializationOptions.DoNotSerializeDefaultValues) ==
+        YAXSerializationOptions.DoNotSerializeDefaultValues;
 
     /// <summary>
     /// Determines whether cycling references must be ignored, or an exception needs to be thrown

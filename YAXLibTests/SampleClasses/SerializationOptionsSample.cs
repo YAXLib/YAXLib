@@ -95,7 +95,7 @@ in the serializer itself")]
     }
 
     [YAXSerializeAs("my_record")]
-    [YAXSerializableType(Options = YAXSerializationOptions.DontSerializeDefaultValues)]
+    [YAXSerializableType(Options = YAXSerializationOptions.DoNotSerializeDefaultValues)]
     public class MissingElementsSample3
     {
         [YAXSerializeAs("rec_id")] public int Id { get; set; }
