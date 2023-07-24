@@ -39,4 +39,9 @@ internal sealed class PropertyWrapper: IMemberDescriptor
     {
         WrappedProperty.SetValue(obj, value, index);
     }
+
+    public override string ToString()
+    {
+        return WrappedProperty.ToString();
+    }
 }

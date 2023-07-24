@@ -38,4 +38,9 @@ internal sealed class FieldWrapper : IMemberDescriptor
     {
         WrappedField.SetValue(obj, value);
     }
+
+    public override string ToString()
+    {
+        return WrappedField.ToString();
+    }
 }
