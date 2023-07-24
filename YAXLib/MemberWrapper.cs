@@ -441,12 +441,16 @@ internal class MemberWrapper
     /// Gets the original value of this member in the specified object
     /// </summary>
     /// <param name="obj">The object whose value corresponding to this instance, must be retrieved.</param>
-    /// <param name="index">Optional index parameters for indexed properties.</param>
+    /// <param name="index">
+    /// Optional index values for indexed properties.
+    /// The indexes of indexed properties are zero-based. This value should be <see langword="null" /> for non-indexed
+    /// properties.
+    /// </param>
     /// <returns>the original value of this member in the specified object</returns>
 #if NETSTANDARD2_1_OR_GREATER || NET6_0_OR_GREATER
-    public object? GetOriginalValue([NotNullIfNotNull(nameof(obj))]object? obj, object[]? index = null)
+    public object? GetOriginalValue([NotNullIfNotNull(nameof(obj))]object? obj, object[]? index)
 #else
-    public object? GetOriginalValue(object? obj, object[]? index = null)
+    public object? GetOriginalValue(object? obj, object[]? index)
 #endif
     {
         if (obj == null) return null;
@@ -461,7 +465,7 @@ internal class MemberWrapper
     /// <returns>the processed value of this member in the specified object</returns>
     public object? GetValue(object obj)
     {
-        var elementValue = GetOriginalValue(obj);
+        var elementValue = GetOriginalValue(obj, null);
 
         if (elementValue == null)
             return null;
