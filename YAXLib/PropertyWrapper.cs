@@ -7,7 +7,7 @@ using System.Reflection;
 namespace YAXLib;
 internal sealed class PropertyWrapper: IMemberDescriptor
 {
-    private readonly PropertyInfo _wrappedProperty;
+    internal PropertyInfo WrappedProperty { get; }
     public bool CanRead { get; }
     public bool CanWrite { get; }
     public bool IsPublic { get; }
@@ -17,7 +17,7 @@ internal sealed class PropertyWrapper: IMemberDescriptor
 
     public PropertyWrapper(PropertyInfo propertyInfo)
     {
-        _wrappedProperty = propertyInfo;
+        WrappedProperty = propertyInfo;
         Name = propertyInfo.Name;
         Type = propertyInfo.PropertyType;
         CanRead = propertyInfo.CanRead;
@@ -27,16 +27,16 @@ internal sealed class PropertyWrapper: IMemberDescriptor
 
     public Attribute[] GetCustomAttributes()
     {
-        return Attribute.GetCustomAttributes(_wrappedProperty);
+        return Attribute.GetCustomAttributes(WrappedProperty);
     }
 
     public object? GetValue(object? obj, object[]? index = null)
     {
-        return _wrappedProperty.GetValue(obj, index);
+        return WrappedProperty.GetValue(obj, index);
     }
 
     public void SetValue(object? obj, object? value, object[]? index = null)
     {
-        _wrappedProperty.SetValue(obj, value, index);
+        WrappedProperty.SetValue(obj, value, index);
     }
 }

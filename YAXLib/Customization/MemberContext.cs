@@ -24,21 +24,18 @@ public class MemberContext : IMemberContext
         _memberWrapper = memberWrapper;
         MemberDescriptor = memberWrapper.MemberDescriptor;
 
-// todo remove this code block along with obsolete properties on next major release
+        // todo remove this code block along with obsolete properties on next major release
+        // todo and do PropertyWrapper.WrappedProperty and FieldWrapper.WrappedField private
 #pragma warning disable CS0618
-        MemberInfo = memberWrapper.MemberDescriptor;
-
-        switch (MemberDescriptor.MemberType)
+        switch (MemberDescriptor)
         {
-            case MemberTypes.Field:
+            case PropertyWrapper prop:
 
-                FieldInfo = memberWrapper.MemberDescriptor;
+                MemberInfo = PropertyInfo = prop.WrappedProperty;
                 break;
-            case MemberTypes.Property:
-                PropertyInfo = memberWrapper.MemberDescriptor;
+            case FieldWrapper field:
+                MemberInfo = FieldInfo = field.WrappedField;
                 break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(memberWrapper.MemberDescriptor.MemberType));
         }
 #pragma warning restore CS0618
 
@@ -48,15 +45,15 @@ public class MemberContext : IMemberContext
 
     /// <inheritdoc />
     [Obsolete("Will be removed in a future version, please use the MemberDescriptor property instead.")]
-    public IMemberDescriptor MemberInfo { get; }
+    public MemberInfo MemberInfo { get; } = null!;
 
     /// <inheritdoc />
     [Obsolete("Will be removed in a future version, please use the MemberDescriptor property instead.")]
-    public IMemberDescriptor? FieldInfo { get; }
+    public FieldInfo? FieldInfo { get; }
 
     /// <inheritdoc />
     [Obsolete("Will be removed in a future version, please use the MemberDescriptor property instead.")]
-    public IMemberDescriptor? PropertyInfo { get; }
+    public PropertyInfo? PropertyInfo { get; }
 
     /// <inheritdoc />
     public IMemberDescriptor MemberDescriptor { get; }

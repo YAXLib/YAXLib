@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using System;
+using System.Reflection;
 
 namespace YAXLib.Customization;
 
@@ -11,22 +12,22 @@ namespace YAXLib.Customization;
 public interface IMemberContext
 {
     /// <summary>
-    /// The member's <see cref="IMemberDescriptor" /> for member serialization, else <see langword="null" />.
+    /// The member's <see cref="MemberInfo" /> for member serialization, else <see langword="null" />.
     /// </summary>
     [Obsolete("Will be removed in a future version, please use the MemberDescriptor property instead.")]
-    IMemberDescriptor MemberInfo { get; }
+    MemberInfo MemberInfo { get; }
 
     /// <summary>
-    /// The member's <see cref="IMemberDescriptor" /> for field serialization, else <see langword="null" />.
+    /// The member's <see cref="FieldInfo" /> for field serialization, else <see langword="null" />.
     /// </summary>
     [Obsolete("Will be removed in a future version, please use the MemberDescriptor property instead.")]
-    IMemberDescriptor? FieldInfo { get; }
+    FieldInfo? FieldInfo { get; }
 
     /// <summary>
-    /// The member's <see cref="IMemberDescriptor" /> for property serialization, else <see langword="null" />.
+    /// The member's <see cref="PropertyInfo" /> for property serialization, else <see langword="null" />.
     /// </summary>
     [Obsolete("Will be removed in a future version, please use the MemberDescriptor property instead.")]
-    IMemberDescriptor? PropertyInfo { get; }
+    PropertyInfo? PropertyInfo { get; }
 
     /// <summary>
     /// The member's <see cref="IMemberDescriptor" /> for member serialization, else <see langword="null" />.
