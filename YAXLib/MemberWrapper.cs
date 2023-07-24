@@ -116,10 +116,10 @@ internal class MemberWrapper
             DictionaryAttributeInstance = UdtWrapper.DictionaryAttributeInstance;
     }
 
-    private static void EnsurePropertyOrField(IMemberDescriptor memberInfo)
+    private static void EnsurePropertyOrField(IMemberDescriptor memberDescriptor)
     {
-        if (!(memberInfo.MemberType == MemberTypes.Property || memberInfo.MemberType == MemberTypes.Field))
-            throw new ArgumentException("MemberDescription must be either property or field", nameof(memberInfo));
+        if (!(memberDescriptor.MemberType == MemberTypes.Property || memberDescriptor.MemberType == MemberTypes.Field))
+            throw new ArgumentException("Member must be either property or field", nameof(memberDescriptor));
     }
 
     /// <summary>

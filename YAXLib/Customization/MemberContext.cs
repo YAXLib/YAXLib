@@ -47,15 +47,15 @@ public class MemberContext : IMemberContext
     }
 
     /// <inheritdoc />
-    [Obsolete("Will be removed in a future version, please use the MemberDescription property instead.")]
+    [Obsolete("Will be removed in a future version, please use the MemberDescriptor property instead.")]
     public IMemberDescriptor MemberInfo { get; }
 
     /// <inheritdoc />
-    [Obsolete("Will be removed in a future version, please use the MemberDescription property instead.")]
+    [Obsolete("Will be removed in a future version, please use the MemberDescriptor property instead.")]
     public IMemberDescriptor? FieldInfo { get; }
 
     /// <inheritdoc />
-    [Obsolete("Will be removed in a future version, please use the MemberDescription property instead.")]
+    [Obsolete("Will be removed in a future version, please use the MemberDescriptor property instead.")]
     public IMemberDescriptor? PropertyInfo { get; }
 
     /// <inheritdoc />
