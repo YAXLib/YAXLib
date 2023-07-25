@@ -10,6 +10,11 @@ namespace YAXLib;
 
 /// <summary>
 /// Provides type-specific information during serialization/deserialization.
+/// <para/>
+/// It is recommended to derive a custom <see cref="ITypeInspector"/> from the <see cref="DefaultTypeInspector"/>.
+/// <see cref="DefaultTypeInspector.GetMembers"/> will then return the default members for further processing.
+/// <see cref="DefaultTypeInspector.GetTypeName"/> lets you define the type names.
+/// customization.
 /// </summary>
 public interface ITypeInspector
 {
