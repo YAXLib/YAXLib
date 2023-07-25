@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Xml.Linq;
 using YAXLib.Attributes;
 using YAXLib.Caching;
@@ -42,15 +41,14 @@ internal class UdtWrapper
     private EnumWrapper? _enumWrapper;
 
     /// <summary>
-    /// value indicating whether the serialization options has been explicitly adjusted
-    /// using attributes for the class
-    /// </summary>
-    private bool _isSerializationOptionSetByAttribute;
-
-    /// <summary>
     /// the namespace associated with this element
     /// </summary>
     private XNamespace _namespace = XNamespace.None;
+
+    /// <summary>
+    /// supports customization of type properties and name
+    /// </summary>
+    private readonly ITypeInspector _typeInspector;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UdtWrapper" /> class.
@@ -63,7 +61,6 @@ internal class UdtWrapper
     public UdtWrapper(Type udtType, SerializerOptions serializerOptions)
     {
         _serializerOptions = serializerOptions;
-        IsDictionaryType = false;
         _udtType = ReflectionUtils.IsNullable(udtType, out var nullableUnderlyingType)
             ? nullableUnderlyingType!
             : udtType;
@@ -72,14 +69,15 @@ internal class UdtWrapper
 
         _ = WellKnownTypes.TryGetKnownType(_udtType, out var knownType);
         KnownType = knownType;
+        _typeInspector = serializerOptions.TypeInspector ?? DefaultTypeInspector.Instance;
 
-        _alias = Alias = StringUtils.RefineSingleElement(ReflectionUtils.GetTypeFriendlyName(_udtType))!;
+        _alias = Alias = StringUtils.RefineSingleElement(_typeInspector.GetTypeName(_udtType, serializerOptions))!;
 
         Comment = null;
         FieldsToSerialize = YAXSerializationFields.PublicPropertiesOnly;
         IsAttributedAsNotCollection = false;
 
-        SetSerializationOptions(serializerOptions.SerializationOptions);
+        SerializationOptions = serializerOptions.SerializationOptions;
 
         foreach (var attr in _udtType.GetCustomAttributes(true))
             if (attr is IYaxTypeLevelAttribute typeLevelAttribute)
@@ -198,6 +196,16 @@ internal class UdtWrapper
     public bool IsNotAllowedNullObjectSerialization =>
         (SerializationOptions & YAXSerializationOptions.DontSerializeNullObjects) ==
         YAXSerializationOptions.DontSerializeNullObjects;
+
+    /// <summary>
+    /// Determines whether serialization of default values is not allowed.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if serialization of default values is not allowed; otherwise, <c>false</c>.
+    /// </returns>
+    public bool IsNotAllowedDefaultValueSerialization =>
+        (SerializationOptions & YAXSerializationOptions.DoNotSerializeDefaultValues) ==
+        YAXSerializationOptions.DoNotSerializeDefaultValues;
 
     /// <summary>
     /// Determines whether cycling references must be ignored, or an exception needs to be thrown
@@ -326,16 +334,6 @@ internal class UdtWrapper
     /// </remarks>
     public string NamespacePrefix { get; internal set; } = string.Empty;
 
-    /// <summary>
-    /// Sets the <see cref="YAXSerializationOptions" />.
-    /// </summary>
-    /// <param name="serializationOptions"></param>
-    public void SetSerializationOptions(YAXSerializationOptions? serializationOptions)
-    {
-        if (!_isSerializationOptionSetByAttribute)
-            SerializationOptions = serializationOptions ?? YAXSerializationOptions.SerializeNullObjects;
-    }
-
     /// <inheritdoc />
     public override string ToString()
     {
@@ -366,7 +364,6 @@ internal class UdtWrapper
     internal void SetSerializationOptionsFromAttribute(YAXSerializationOptions serializationOptions)
     {
         SerializationOptions = serializationOptions;
-        _isSerializationOptionSetByAttribute = true;
     }
 
     /// <summary>
@@ -392,7 +389,9 @@ internal class UdtWrapper
     /// <returns>The sequence of fields to be deserialized for the specified type</returns>
     internal IEnumerable<MemberWrapper> GetFieldsForDeserialization(bool sorted = true)
     {
-        return GetFieldsToBeSerialized(sorted).Where(m => m.CanWrite);
+        var fieldsForDeserialization = GetFieldsToBeSerialized(sorted).Where(m => m.CanWrite);
+        
+        return fieldsForDeserialization;
     }
 
     /// <summary>
@@ -406,36 +405,34 @@ internal class UdtWrapper
     /// <returns>The sequence of fields to be de/serialized for the specified type</returns>
     private IEnumerable<MemberWrapper> GetFieldsToBeSerialized(bool sorted = true)
     {
-        if (!MemberWrapperCache.Instance.TryGetItem(UnderlyingType, out var memberWrappers))
+        var members = GetMembers();
+
+        return sorted ? members.OrderBy(mr => mr.Order) : members;
+    }
+
+    private IEnumerable<MemberWrapper> GetMembers()
+    {
+        if (MemberWrapperCache.Instance.TryGetItem((UnderlyingType, _serializerOptions), out var memberWrappers))
+            return memberWrappers;
+
+        var members = _typeInspector.GetMembers(UnderlyingType, _serializerOptions, IncludePrivateMembersFromBaseTypes);
+
+        foreach (var member in members)
         {
-#pragma warning disable S3011 // disable sonar accessibility bypass warning
-            foreach (var member in UnderlyingType.GetMembers(
-                         BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
-                         IncludePrivateMembersFromBaseTypes))
-#pragma warning restore S3011 // enable sonar accessibility bypass warning
-            {
-                if (!IsValidPropertyOrField(member)) continue;
-                if (member is PropertyInfo prop && !CanSerializeProperty(prop)) continue;
-
-                if ((IsCollectionType || IsDictionaryType)
-                    && ReflectionUtils.IsPartOfNetFx(member))
-                    continue;
-
-                var memInfo = new MemberWrapper(member, _serializerOptions);
-                // Note: The cache contains all generally allowed members
-                memberWrappers.Add(memInfo);
-            }
-
-            _ = MemberWrapperCache.Instance.TryAdd(UnderlyingType, memberWrappers);
+            memberWrappers.Add(new MemberWrapper(member, _serializerOptions));
         }
 
         // Filter the members that are actually subject to be serialized
         // according to settings and attributes.
         // IsAllowedToBeSerialized evaluates only booleans, no reflection.
-        var filteredWrappers = memberWrappers.Where(mr => mr.IsAllowedToBeSerialized(FieldsToSerialize,
-            DoNotSerializePropertiesWithNoSetter) && !mr.IsAttributedAsDontSerialize);
+        memberWrappers = memberWrappers
+            .Where(mr => mr.IsAllowedToBeSerialized(FieldsToSerialize, DoNotSerializePropertiesWithNoSetter) &&
+                         !mr.IsAttributedAsDontSerialize)
+            .ToList();
 
-        return sorted ? filteredWrappers.OrderBy(mr => mr.Order) : filteredWrappers;
+        _ = MemberWrapperCache.Instance.TryAdd((UnderlyingType, _serializerOptions), memberWrappers);
+
+        return memberWrappers;
     }
 
     /// <summary>
@@ -453,26 +450,5 @@ internal class UdtWrapper
             return Namespace;
 
         return XNamespace.Get(string.Empty);
-    }
-
-    private static bool IsValidPropertyOrField(MemberInfo member)
-    {
-        // Exclude names of compiler-generated backing fields like "<my_member>k__BackingField"
-        var name0 = member.Name[0];
-        return (char.IsLetter(name0) || name0 == '_') &&
-               (member.MemberType == MemberTypes.Property || member.MemberType == MemberTypes.Field);
-    }
-
-    private static bool CanSerializeProperty(PropertyInfo prop)
-    {
-        // ignore indexers; if member is an indexer property, do not serialize it
-        if (prop.GetIndexParameters().Length > 0)
-            return false;
-
-        // don't serialize delegates as well
-        if (ReflectionUtils.IsTypeEqualOrInheritedFromType(prop.PropertyType, typeof(Delegate)))
-            return false;
-
-        return true;
     }
 }

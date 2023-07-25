@@ -1,9 +1,7 @@
 // Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
-using System;
 using System.Text;
-using System.Threading;
 
 namespace YAXLib.Pooling.SpecializedPools;
 
@@ -12,9 +10,6 @@ namespace YAXLib.Pooling.SpecializedPools;
 /// </summary>
 internal sealed class StringBuilderPool : SpecializedPoolBase<StringBuilder>
 {
-    private static readonly Lazy<StringBuilderPool> Lazy = new(() => new StringBuilderPool(),
-        LazyThreadSafetyMode.PublicationOnly);
-
     /// <summary>
     /// CTOR.
     /// </summary>
@@ -41,6 +36,5 @@ internal sealed class StringBuilderPool : SpecializedPoolBase<StringBuilder>
     /// <summary>
     /// Gets a singleton instance of the pool.
     /// </summary>
-    public static StringBuilderPool Instance =>
-        Lazy.IsValueCreated ? Lazy.Value : PoolRegistry.Add(Lazy.Value);
+    public static StringBuilderPool Instance => PoolRegistry.GetOrAdd(() => new StringBuilderPool());
 }

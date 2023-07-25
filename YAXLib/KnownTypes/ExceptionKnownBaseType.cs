@@ -65,8 +65,8 @@ internal class ExceptionKnownBaseType : KnownBaseTypeBase<Exception>
 
         var exceptionElement = member.TypeContext.Serialize(value, new SerializerOptions { MaxRecursion = 1 });
 
-        exceptionElement.Name = member.MemberInfo.Name == nameof(Exception.InnerException)
-            ? XName.Get(member.MemberInfo.Name)
+        exceptionElement.Name = member.MemberDescriptor.Name == nameof(Exception.InnerException)
+            ? XName.Get(member.MemberDescriptor.Name)
             : XName.Get(nameof(Exception));
 
         if (value is Exception exceptionValue)
@@ -86,16 +86,16 @@ internal class ExceptionKnownBaseType : KnownBaseTypeBase<Exception>
 
         if (value == null || ReflectionUtils.IsBasicType(value.GetType()))
         {
-            elem.Add(new XElement(XName.Get(member.MemberInfo.Name), overridingNamespace, value));
+            elem.Add(new XElement(XName.Get(member.MemberDescriptor.Name), overridingNamespace, value));
         }
-        else if (member.MemberInfo.Name == nameof(Exception.TargetSite))
+        else if (member.MemberDescriptor.Name == nameof(Exception.TargetSite))
         {
-            elem.Add(new XElement(XName.Get(member.MemberInfo.Name), overridingNamespace, value));
+            elem.Add(new XElement(XName.Get(member.MemberDescriptor.Name), overridingNamespace, value));
         }
         else
         {
             // The serializer does not call this method recursively
-            var parent = new XElement(XName.Get(member.MemberInfo.Name), overridingNamespace);
+            var parent = new XElement(XName.Get(member.MemberDescriptor.Name), overridingNamespace);
             var element = member.TypeContext.Serialize(value, new SerializerOptions { MaxRecursion = 4 }).Document!.Root;
             if (!XMLUtils.IsElementCompletelyEmpty(element)) parent.Add(element);
             elem.Add(parent);

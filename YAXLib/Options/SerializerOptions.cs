@@ -71,4 +71,9 @@ public class SerializerOptions
     /// Default is <see cref="CultureInfo.CurrentCulture" />.
     /// </summary>
     public CultureInfo Culture { get; set; }
+
+    /// <summary>
+    /// Allows override default type naming and member list for given type
+    /// </summary>
+    public ITypeInspector? TypeInspector { get; set; }
 }

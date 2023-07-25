@@ -17,12 +17,11 @@ internal static class PoolRegistry
     /// Adds a pool to the registry.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="pool"></param>
+    /// <param name="poolFunc"></param>
     /// <returns>The instance of pool which was added.</returns>
-    public static T Add<T>(T pool) where T : class
+    public static T GetOrAdd<T>(Func<T> poolFunc) where T : class
     {
-        Items.TryAdd(pool.GetType(), pool);
-        return pool;
+        return (T) Items.GetOrAdd(typeof(T), _ => poolFunc());
     }
 
     /// <summary>
