@@ -53,9 +53,9 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"${{ env.repository_owner_lc }}_YAXLib" /o:"${{ env.repository_owner_lc }}" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="**/coverage*.xml"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"${{ env.repository_owner_lc }}_YAXLib" /o:"${{ env.repository_owner_lc }}" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="**/coverage*.xml"
           dotnet add ./YAXLibTests/YAXLibTests.csproj package AltCover
           dotnet restore YAXLib.sln --verbosity quiet
           dotnet build YAXLib.sln --verbosity minimal --configuration release --no-restore /p:IncludeSymbols=true
           dotnet test YAXLib.sln --no-build --verbosity normal /p:configuration=release /p:AltCover=true /p:AltCoverXmlReport="coverage.xml" /p:AltCoverStrongNameKey="../Key/YAXLib.Key.snk" /p:AltCoverAssemblyExcludeFilter="YAXLibTests|NUnit3.TestAdapter"
-          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
