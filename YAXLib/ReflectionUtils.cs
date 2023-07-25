@@ -820,7 +820,7 @@ internal static class ReflectionUtils
         if (assemblyName == null) return false;
 
 #pragma warning disable S2681  // conditional execution
-#if NETSTANDARD || NET6_0_OR_GREATER
+#if NETSTANDARD || NET
             return assemblyName.StartsWith("System.", StringComparison.OrdinalIgnoreCase) ||
                    assemblyName.StartsWith("mscorlib.", StringComparison.OrdinalIgnoreCase) ||
                    assemblyName.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase);

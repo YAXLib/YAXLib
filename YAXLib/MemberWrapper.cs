@@ -447,7 +447,7 @@ internal class MemberWrapper
     /// properties.
     /// </param>
     /// <returns>the original value of this member in the specified object</returns>
-#if NETSTANDARD2_1_OR_GREATER || NET6_0_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NET
     public object? GetOriginalValue([NotNullIfNotNull(nameof(obj))]object? obj, object[]? index)
 #else
     public object? GetOriginalValue(object? obj, object[]? index)
