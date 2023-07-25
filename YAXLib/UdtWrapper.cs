@@ -69,7 +69,7 @@ internal class UdtWrapper
 
         _ = WellKnownTypes.TryGetKnownType(_udtType, out var knownType);
         KnownType = knownType;
-        _typeInspector = serializerOptions.TypeInspector ?? DefaultTypeInspector.Instance;
+        _typeInspector = serializerOptions.TypeInspector;
 
         _alias = Alias = StringUtils.RefineSingleElement(_typeInspector.GetTypeName(_udtType, serializerOptions))!;
 
