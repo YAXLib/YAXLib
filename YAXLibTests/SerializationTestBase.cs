@@ -129,7 +129,7 @@ public abstract class SerializationTestBase
     public void BookWithDefaultValue()
     {
         var book = Book.GetSampleInstance();
-        book.PublishYear = 0;
+        book.PublishYear = 0; // this default value should not get serialized
 
         var serializer = CreateSerializer<Book>(new SerializerOptions
         {
@@ -141,8 +141,8 @@ public abstract class SerializationTestBase
         var got = serializer.Serialize(book);
         var gotDes = (Book?) serializer.Deserialize(got);
 
-        Assert.AreEqual(book, gotDes);
-        Assert.AreEqual(
+        Assert.That(book, Is.EqualTo(gotDes));
+        Assert.That(got, Is.EqualTo(
             """
             <!-- This example demonstrates serializing a very simple class -->
             <Book>
@@ -150,7 +150,7 @@ public abstract class SerializationTestBase
               <Author>Tom Archer &amp; Andrew Whitechapel</Author>
               <Price>30.5</Price>
             </Book>
-            """, got);
+            """));
     }
 
     [TestCase("fr-FR")]
