@@ -53,9 +53,11 @@ public class Author
 }
 
 [ShowInDemoApplication]
-[YAXComment(@"This class shows how members of nested objects 
-        can be serialized in their parents using serialization 
-        addresses including ""..""")]
+[YAXComment("""
+    This class shows how members of nested objects 
+    can be serialized in their parents using serialization 
+    addresses including ".."
+    """)]
 public class MoreComplexBook2
 {
     public string? Title { get; set; }

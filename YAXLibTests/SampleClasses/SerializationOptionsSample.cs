@@ -55,16 +55,22 @@ public class SerializationOptionsSample
         };
     }
 
-    [YAXComment(@"Str2Null must NOT be serialized when it is null, even 
-if the serialization options of the serializer is changed")]
+    [YAXComment("""
+        Str2Null must NOT be serialized when it is null, even 
+        if the serialization options of the serializer is changed
+        """)]
     public ClassWithOptionsSet ObjectWithOptionsSet { get; set; }
 
-    [YAXComment(@"Str2Null must be serialized when it is null, even 
-if the serialization options of the serializer is changed")]
+    [YAXComment("""
+        Str2Null must be serialized when it is null, even 
+        if the serialization options of the serializer is changed
+        """)]
     public AnotherClassWithOptionsSet AnotherObjectWithOptionsSet { get; set; }
 
-    [YAXComment(@"serialization of Str2Null must obey the options set 
-in the serializer itself")]
+    [YAXComment("""
+        serialization of Str2Null must obey the options set 
+        in the serializer itself
+        """)]
     public ClassWithoutOptionsSet ObjectWithoutOptionsSet { get; set; }
 
     public override string ToString()

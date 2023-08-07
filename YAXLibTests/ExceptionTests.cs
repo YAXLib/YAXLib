@@ -35,13 +35,15 @@ internal class ExceptionTests
     [Test]
     public void MalformedXmlStringThatThrows()
     {
-        var badXml = @"<!-- This example demonstrates serializing a very simple class -->
-<Book>
-  <Title>Inside C#</Title>
-  <Author>Tom Archer &amp; Andrew Whitechapel</Author>
-  <PublishYear>2002</PublishYear>
-  <Price>BADDATA<Price>
-</Book>";
+        var badXml = """
+            <!-- This example demonstrates serializing a very simple class -->
+            <Book>
+              <Title>Inside C#</Title>
+              <Author>Tom Archer &amp; Andrew Whitechapel</Author>
+              <PublishYear>2002</PublishYear>
+              <Price>BADDATA<Price>
+            </Book>
+            """;
         var ex = Assert.Throws<YAXBadlyFormedXML>(() =>
         {
             var serializer = new YAXSerializer<Book>(new SerializerOptions {
@@ -62,7 +64,7 @@ internal class ExceptionTests
     public void MalformedXmlStringThatDoesNotThrow()
     {
         const string xml =
-            @"<Book></MalformedXml>";
+            """<Book></MalformedXml>""";
 
         var serializer = new YAXSerializer<Book>(new SerializerOptions {
             ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
@@ -78,7 +80,7 @@ internal class ExceptionTests
     [Test]
     public void DeserializeMalformedXmlFromTextReaderShouldThrow()
     {
-        const string xml = @"<Book></MalformedXml>";
+        const string xml = """<Book></MalformedXml>""";
         var serializer = new YAXSerializer<Book>(new SerializerOptions {
             ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
             ExceptionBehavior = YAXExceptionTypes.Warning,
@@ -101,7 +103,7 @@ internal class ExceptionTests
     [Test]
     public void DeserializeMalformedXmlFromTextReaderDoesNotThrow()
     {
-        const string xml = @"<Book></MalformedXml>";
+        const string xml = """<Book></MalformedXml>""";
         var serializer = new YAXSerializer<Book>(new SerializerOptions {
             ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
             ExceptionBehavior = YAXExceptionTypes.Warning,
@@ -124,7 +126,7 @@ internal class ExceptionTests
     [Test]
     public void DeserializeMalformedXmlFromXmlReaderShouldThrow()
     {
-        const string xml = @"<Book></MalformedXml>";
+        const string xml = """<Book></MalformedXml>""";
         var serializer = new YAXSerializer<Book>(new SerializerOptions {
             ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.ThrowWarningsAndErrors,
             ExceptionBehavior = YAXExceptionTypes.Warning,
@@ -148,7 +150,7 @@ internal class ExceptionTests
     [Test]
     public void DeserializeMalformedXmlFromXmlReaderDoesNotThrow()
     {
-        const string xml = @"<Book></MalformedXml>";
+        const string xml = """<Book></MalformedXml>""";
         var serializer = new YAXSerializer<Book>(new SerializerOptions {
             ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
             ExceptionBehavior = YAXExceptionTypes.Warning,
@@ -173,13 +175,15 @@ internal class ExceptionTests
     public void MalformedInputWithLineNumbersTest()
     {
         const string bookXml =
-            @"<!-- This example demonstrates serailizing a very simple class -->
-<Book>
-  <Title>Inside C#</Title>
-  <Author>Tom Archer &amp; Andrew Whitechapel</Author>
-  <PublishYear>2002</PublishYear>
-  <Price>BADDATA</Price>
-</Book>";
+            """
+                <!-- This example demonstrates serailizing a very simple class -->
+                <Book>
+                  <Title>Inside C#</Title>
+                  <Author>Tom Archer &amp; Andrew Whitechapel</Author>
+                  <PublishYear>2002</PublishYear>
+                  <Price>BADDATA</Price>
+                </Book>
+                """;
 
         var ex = Assert.Throws<YAXBadlyFormedInput>(() =>
         {
@@ -200,13 +204,15 @@ internal class ExceptionTests
     public void MalformedInputWithoutLineNumbersTest()
     {
         const string bookXml =
-            @"<!-- This example demonstrates serailizing a very simple class -->
-<Book>
-  <Title>Inside C#</Title>
-  <Author>Tom Archer &amp; Andrew Whitechapel</Author>
-  <PublishYear>2002</PublishYear>
-  <Price>BADDATA</Price>
-</Book>";
+            """
+                <!-- This example demonstrates serailizing a very simple class -->
+                <Book>
+                  <Title>Inside C#</Title>
+                  <Author>Tom Archer &amp; Andrew Whitechapel</Author>
+                  <PublishYear>2002</PublishYear>
+                  <Price>BADDATA</Price>
+                </Book>
+                """;
 
         var ex = Assert.Throws<YAXBadlyFormedInput>(() =>
         {
@@ -244,12 +250,14 @@ internal class ExceptionTests
     public void ElementValueMissingWithLineNumbersTest()
     {
         const string bookXml =
-            @"<!-- This example demonstrates serailizing a very simple class -->
-<Book>
-  <Title>Inside C#</Title>
-  <Author>Tom Archer &amp; Andrew Whitechapel</Author>
-  <PublishYear>2002</PublishYear>
-</Book>";
+            """
+                <!-- This example demonstrates serailizing a very simple class -->
+                <Book>
+                  <Title>Inside C#</Title>
+                  <Author>Tom Archer &amp; Andrew Whitechapel</Author>
+                  <PublishYear>2002</PublishYear>
+                </Book>
+                """;
 
         var ex = Assert.Throws<YAXElementValueMissingException>(() =>
         {
@@ -269,13 +277,15 @@ internal class ExceptionTests
     public void ElementMissingWithLineNumbersTest()
     {
         const string collectionXml =
-            @"<!-- This example demonstrates serailizing a very simple class -->
-<CollectionSeriallyAsAttribute>
-  <Info names=""John Doe, Jane, Sina, Mike, Rich"" />
-  <Location>
-    <Countries> Iran,Australia,United States of America, France</Countries>
-  </Location>
-</CollectionSeriallyAsAttribute> ";
+            """
+                <!-- This example demonstrates serailizing a very simple class -->
+                <CollectionSeriallyAsAttribute>
+                  <Info names="John Doe, Jane, Sina, Mike, Rich" />
+                  <Location>
+                    <Countries> Iran,Australia,United States of America, France</Countries>
+                  </Location>
+                </CollectionSeriallyAsAttribute> 
+                """;
 
         var ex = Assert.Throws<YAXElementMissingException>(() =>
         {
@@ -295,11 +305,13 @@ internal class ExceptionTests
     public void DefaultValueCannotBeAssignedWithLineNumbersTest()
     {
         const string bookXml =
-            @"<Book>
-  <Title>Inside C#</Title>
-  <Author>Tom Archer &amp; Andrew Whitechapel</Author>
-  <PublishYear>2002</PublishYear>
-</Book>";
+            """
+                <Book>
+                  <Title>Inside C#</Title>
+                  <Author>Tom Archer &amp; Andrew Whitechapel</Author>
+                  <PublishYear>2002</PublishYear>
+                </Book>
+                """;
 
         var ex = Assert.Throws<YAXDefaultValueCannotBeAssigned>(() =>
         {

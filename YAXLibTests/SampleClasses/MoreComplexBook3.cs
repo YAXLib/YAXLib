@@ -18,8 +18,10 @@ public class Author3
 }
 
 [ShowInDemoApplication]
-[YAXComment(@"This example shows how to serialize collection objects while
-            not serializing the element for their enclosing collection itself")]
+[YAXComment("""
+    This example shows how to serialize collection objects while
+    not serializing the element for their enclosing collection itself
+    """)]
 public class MoreComplexBook3
 {
     public string? Title { get; set; }

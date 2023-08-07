@@ -7,8 +7,10 @@ using YAXLib.Enums;
 namespace YAXLibTests.SampleClasses;
 
 [ShowInDemoApplication]
-[YAXComment(@"This example shows serialization of multi-dimensional, 
-        and jagged arrays")]
+[YAXComment("""
+    This example shows serialization of multi-dimensional, 
+    and jagged arrays
+    """)]
 public class MultiDimArraySample
 {
     public int[,]? IntArray { get; set; }

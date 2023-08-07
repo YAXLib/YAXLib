@@ -37,9 +37,9 @@ public class PoolBalanceTests
 
         foreach (var p in pools)
         {
-            Console.WriteLine(p.Type + @":");
-            Console.WriteLine(@"{0}: {1}", nameof(IPoolCounters.CountActive), p.Counters?.CountActive);
-            Console.WriteLine(@"{0}: {1}", nameof(IPoolCounters.CountInactive), p.Counters?.CountInactive);
+            Console.WriteLine(p.Type + """:""");
+            Console.WriteLine("""{0}: {1}""", nameof(IPoolCounters.CountActive), p.Counters?.CountActive);
+            Console.WriteLine("""{0}: {1}""", nameof(IPoolCounters.CountInactive), p.Counters?.CountInactive);
 
             if (p.Counters!.CountAll <= 0) continue;
 

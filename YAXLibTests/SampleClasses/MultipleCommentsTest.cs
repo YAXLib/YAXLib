@@ -9,8 +9,10 @@ namespace YAXLibTests.SampleClasses;
 [YAXComment("How multi-line comments are serialized as multiple XML comments")]
 public class MultipleCommentsTest
 {
-    [YAXComment(@"Using @ quoted style 
-                     comments for multiline comments")]
+    [YAXComment("""
+        Using raw string style 
+        comments for multiline comments
+        """)]
     public int Dummy { get; set; }
 
     [YAXComment("Comment 1 for member\nComment 2 for member")]

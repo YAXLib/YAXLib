@@ -29,8 +29,10 @@ public class Class31 : Class1
 }
 
 [ShowInDemoApplication]
-[YAXComment(@"This example shows serialization and deserialization of
-        objects through a reference to their base class or interface")]
+[YAXComment("""
+    This example shows serialization and deserialization of
+    objects through a reference to their base class or interface
+    """)]
 public class CollectionOfInterfacesSample
 {
     public ISample? SingleRef { get; set; }

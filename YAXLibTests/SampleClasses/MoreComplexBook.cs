@@ -6,9 +6,11 @@ using YAXLib.Attributes;
 namespace YAXLibTests.SampleClasses;
 
 [ShowInDemoApplication]
-[YAXComment(@"This example shows how to provide serialization address
-        for elements and attributes. Theses addresses resemble those used
-        in known file-systems")]
+[YAXComment("""
+    This example shows how to provide serialization address
+    for elements and attributes. Theses addresses resemble those used
+    in known file-systems
+    """)]
 public class MoreComplexBook
 {
     [YAXAttributeFor("SomeTag/SomeOtherTag/AndSo")]

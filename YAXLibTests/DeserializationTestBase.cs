@@ -192,7 +192,7 @@ public abstract class DeserializationTestBase
     [Test]
     public void DesEmptyNullableTest()
     {
-        const string xml = @"<NullableSample2 />";
+        const string xml = """<NullableSample2 />""";
         var serializer = CreateSerializer(typeof(NullableSample2),
             new SerializerOptions {
                 ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
@@ -352,11 +352,13 @@ public abstract class DeserializationTestBase
     public void MoreComplexBookTwoResumedDeserializationTest()
     {
         var result =
-            @"<MoreComplexBook2 Author_s_Name=""Tom Archer"">
-  <Title>Inside C#</Title>
-  <PublishYear>2002</PublishYear>
-  <Price>30.5</Price>
-</MoreComplexBook2>";
+            """
+                <MoreComplexBook2 Author_s_Name="Tom Archer">
+                  <Title>Inside C#</Title>
+                  <PublishYear>2002</PublishYear>
+                  <Price>30.5</Price>
+                </MoreComplexBook2>
+                """;
         var book = new MoreComplexBook2();
         book.Author = new Author {
             Name = null,
@@ -379,27 +381,29 @@ public abstract class DeserializationTestBase
         PerformTest(obj); // uses YAXSerializationOptions.SerializeNullObjects
 
         var input1 =
-            @"<SerializationOptionsSample>
-  <!-- Str2Null must NOT be serialized when it is null, even -->
-  <!-- if the serialization options of the serializer is changed -->
-  <ObjectWithOptionsSet>
-    <StrNotNull>SomeString</StrNotNull>
-    <!-- StrNull : no element -->
-    <!-- SomeValueType : no element -->
-  </ObjectWithOptionsSet>
-  <!-- Str2Null must be serialized when it is null, even -->
-  <!-- if the serialization options of the serializer is changed -->
-  <AnotherObjectWithOptionsSet>
-    <StrNotNull>Some other string</StrNotNull>
-    <StrNull />
-  </AnotherObjectWithOptionsSet>
-  <!-- serialization of Str2Null must obey the options set -->
-  <!-- in the serializer itself -->
-  <ObjectWithoutOptionsSet>
-    <StrNotNull>Another string</StrNotNull>
-    <StrNull />
-  </ObjectWithoutOptionsSet>
-</SerializationOptionsSample>";
+            """
+                <SerializationOptionsSample>
+                  <!-- Str2Null must NOT be serialized when it is null, even -->
+                  <!-- if the serialization options of the serializer is changed -->
+                  <ObjectWithOptionsSet>
+                    <StrNotNull>SomeString</StrNotNull>
+                    <!-- StrNull : no element -->
+                    <!-- SomeValueType : no element -->
+                  </ObjectWithOptionsSet>
+                  <!-- Str2Null must be serialized when it is null, even -->
+                  <!-- if the serialization options of the serializer is changed -->
+                  <AnotherObjectWithOptionsSet>
+                    <StrNotNull>Some other string</StrNotNull>
+                    <StrNull />
+                  </AnotherObjectWithOptionsSet>
+                  <!-- serialization of Str2Null must obey the options set -->
+                  <!-- in the serializer itself -->
+                  <ObjectWithoutOptionsSet>
+                    <StrNotNull>Another string</StrNotNull>
+                    <StrNull />
+                  </ObjectWithoutOptionsSet>
+                </SerializationOptionsSample>
+                """;
 
         var serializer = CreateSerializer<SerializationOptionsSample>(new SerializerOptions {
             ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,

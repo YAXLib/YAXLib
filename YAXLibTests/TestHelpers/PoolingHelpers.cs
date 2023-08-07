@@ -78,7 +78,7 @@ public class PoolingHelpers
 
         if (!genericTypeDefinition.IsGenericTypeDefinition)
             throw new ArgumentException(
-                @"Specified type is not a valid generic type definition.",
+                """Specified type is not a valid generic type definition.""",
                 nameof(genericTypeDefinition));
 
         return Enumerable.Where<Type>(assembly.GetTypes(), t => GetAllAscendants(t).Any(d =>

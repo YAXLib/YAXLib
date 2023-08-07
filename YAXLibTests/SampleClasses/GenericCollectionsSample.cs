@@ -8,8 +8,10 @@ using YAXLib.Enums;
 namespace YAXLibTests.SampleClasses;
 
 [ShowInDemoApplication]
-[YAXComment(@"This class provides an example of successful serialization/deserialization 
-        of collection objects in ""System.Collections.Generic"" namespaces")]
+[YAXComment("""
+    This class provides an example of successful serialization/deserialization 
+    of collection objects in "System.Collections.Generic" namespaces
+    """)]
 public class GenericCollectionsSample
 {
     public Stack<int> TheStack { get; set; } = new();
