@@ -199,4 +199,25 @@ public class ReflectionUtilsTest
         Assert.That(baseClassProperty1AfterSet, Is.EqualTo(113));
         Assert.That(baseClassProperty2AfterSet, Is.EqualTo(123));
     }
+
+    [Test]
+    public void GetDefaultValueTest()
+    {
+        Assert.IsTrue(Equals(ReflectionUtils.GetDefaultValue(typeof(string)), null));
+        Assert.IsTrue(Equals(ReflectionUtils.GetDefaultValue(typeof(bool)), default(bool)));
+        Assert.IsTrue(Equals(ReflectionUtils.GetDefaultValue(typeof(char)), default(char)));
+        Assert.IsTrue(Equals(ReflectionUtils.GetDefaultValue(typeof(sbyte)), default(sbyte)));
+        Assert.IsTrue(Equals(ReflectionUtils.GetDefaultValue(typeof(byte)), default(byte)));
+        Assert.IsTrue(Equals(ReflectionUtils.GetDefaultValue(typeof(short)), default(short)));
+        Assert.IsTrue(Equals(ReflectionUtils.GetDefaultValue(typeof(ushort)), default(ushort)));
+        Assert.IsTrue(Equals(ReflectionUtils.GetDefaultValue(typeof(int)), default(int)));
+        Assert.IsTrue(Equals(ReflectionUtils.GetDefaultValue(typeof(uint)), default(uint)));
+        Assert.IsTrue(Equals(ReflectionUtils.GetDefaultValue(typeof(long)), default(long)));
+        Assert.IsTrue(Equals(ReflectionUtils.GetDefaultValue(typeof(ulong)), default(ulong)));
+        Assert.IsTrue(Equals(ReflectionUtils.GetDefaultValue(typeof(float)), default(float)));
+        Assert.IsTrue(Equals(ReflectionUtils.GetDefaultValue(typeof(double)), default(double)));
+        Assert.IsTrue(Equals(ReflectionUtils.GetDefaultValue(typeof(decimal)), default(decimal)));
+        Assert.IsTrue(Equals(ReflectionUtils.GetDefaultValue(typeof(DateTime)), default(DateTime)));
+        Assert.IsTrue(Equals(ReflectionUtils.GetDefaultValue(typeof(DBNull)), DBNull.Value));
+    }
 }
