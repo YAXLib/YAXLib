@@ -622,22 +622,29 @@ internal static class ReflectionUtils
             case TypeCode.Boolean:
                 return false;
             case TypeCode.Char:
+                return (char) 0;
             case TypeCode.SByte:
+                return (sbyte) 0;
             case TypeCode.Byte:
+                return (byte) 0;
             case TypeCode.Int16:
+                return (short) 0;
             case TypeCode.UInt16:
+                return (ushort) 0;
             case TypeCode.Int32:
-            case TypeCode.UInt32:
                 return 0;
+            case TypeCode.UInt32:
+                return 0U;
             case TypeCode.Int64:
-            case TypeCode.UInt64:
                 return 0L;
+            case TypeCode.UInt64:
+                return 0UL;
             case TypeCode.Single:
-                return 0f;
+                return 0F;
             case TypeCode.Double:
-                return 0.0;
+                return 0D;
             case TypeCode.Decimal:
-                return 0m;
+                return 0M;
             case TypeCode.DateTime:
                 return DateTime.MinValue;
         }
