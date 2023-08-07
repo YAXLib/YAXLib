@@ -57,5 +57,10 @@ public enum YAXSerializationOptions
     /// Default: disabled.
     /// </para>
     /// </summary>
-    StripInvalidXmlChars = 64
+    StripInvalidXmlChars = 64,
+
+    /// <summary>
+    /// Prevents serialization of default values.
+    /// </summary>
+    DoNotSerializeDefaultValues = 128
 }

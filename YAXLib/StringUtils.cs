@@ -69,7 +69,7 @@ internal static class StringUtils
     /// </summary>
     /// <param name="elemName">Name of the element.</param>
     /// <returns>the refined element name</returns>
-#if NETSTANDARD2_1_OR_GREATER || NET6_0_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NET
     public static string? RefineSingleElement([NotNullIfNotNull(nameof(elemName))] string? elemName)
 #else
     public static string? RefineSingleElement(string? elemName)
@@ -93,7 +93,7 @@ internal static class StringUtils
             // Leave namespace part alone, refine localname part.
             var closingBrace = elemName.IndexOf('}');
             var refinedLocalname = RefineSingleElement(elemName.Substring(closingBrace + 1));
-#if NET6_0_OR_GREATER
+#if NET
             return string.Concat(elemName.AsSpan(0, closingBrace + 1), refinedLocalname);
 #else
             return elemName.Substring(0, closingBrace + 1) + refinedLocalname;

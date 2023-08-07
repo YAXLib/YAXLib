@@ -371,7 +371,8 @@ internal class Deserialization
                 }
             }
         }
-        else if (_serializer.UdtWrapper.IsNotAllowedNullObjectSerialization && member.DefaultValue is null)
+        else if ((_serializer.UdtWrapper.IsNotAllowedNullObjectSerialization && member.DefaultValue is null) ||
+                 _serializer.UdtWrapper.IsNotAllowedDefaultValueSerialization)
         {
             // Any missing elements are allowed for deserialization:
             // * Don't set a value - uses default or initial value

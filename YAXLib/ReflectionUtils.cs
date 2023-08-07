@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Numerics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -588,6 +589,79 @@ internal static class ReflectionUtils
     }
 
     /// <summary>
+    /// Gets the default value for the specified type.
+    /// </summary>
+    /// <param name="type">The <see cref="Type"/> for which to retrieve the default value.</param>
+    /// <returns>
+    /// The default value for the specified type. If the type is a reference type or a nullable value type, returns <c>null</c>.
+    /// </returns>
+    public static object? GetDefaultValue(Type type)
+    {
+        if (type == typeof(BigInteger))
+        {
+            return BigInteger.Zero;
+        }
+
+        if (type == typeof(Guid))
+        {
+            return Guid.Empty;
+        }
+
+        if (type == typeof(DateTimeOffset))
+        {
+            return DateTimeOffset.MinValue;
+        }
+
+        switch (Type.GetTypeCode(type))
+        {
+            case TypeCode.Boolean:
+                return false;
+            case TypeCode.Char:
+                return (char) 0;
+            case TypeCode.SByte:
+                return (sbyte) 0;
+            case TypeCode.Byte:
+                return (byte) 0;
+            case TypeCode.Int16:
+                return (short) 0;
+            case TypeCode.UInt16:
+                return (ushort) 0;
+            case TypeCode.Int32:
+                return 0;
+            case TypeCode.UInt32:
+                return 0U;
+            case TypeCode.Int64:
+                return 0L;
+            case TypeCode.UInt64:
+                return 0UL;
+            case TypeCode.Single:
+                return 0F;
+            case TypeCode.Double:
+                return 0D;
+            case TypeCode.Decimal:
+                return 0M;
+            case TypeCode.DateTime:
+                return DateTime.MinValue;
+            case TypeCode.DBNull:
+                return DBNull.Value;
+            case TypeCode.Empty:
+                return null;
+        }
+
+        if (!type.IsValueType)
+        {
+            return null;
+        }
+
+        if (IsNullable(type))
+        {
+            return null;
+        }
+
+        return Activator.CreateInstance(type);
+    }
+
+    /// <summary>
     /// Determines whether the specified type implements <c>IFormattable</c>
     /// </summary>
     /// <param name="type">The type to check.</param>
@@ -757,7 +831,7 @@ internal static class ReflectionUtils
         if (assemblyName == null) return false;
 
 #pragma warning disable S2681  // conditional execution
-#if NETSTANDARD || NET6_0_OR_GREATER
+#if NETSTANDARD || NET
             return assemblyName.StartsWith("System.", StringComparison.OrdinalIgnoreCase) ||
                    assemblyName.StartsWith("mscorlib.", StringComparison.OrdinalIgnoreCase) ||
                    assemblyName.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase);

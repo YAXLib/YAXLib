@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using System;
+using System.Threading;
 using YAXLib.Pooling.ObjectPools;
 
 namespace YAXLib.Pooling.SpecializedPools;
@@ -12,23 +13,17 @@ namespace YAXLib.Pooling.SpecializedPools;
 /// <typeparam name="T">The <see langword="type" /> of the smart pool.</typeparam>
 internal abstract class SpecializedPoolBase<T> : IDisposable where T : class
 {
+    private ObjectPool<T>? _pool;
+
     /// <summary>
     /// The static <see cref="ObjectPool{T}" /> instance.
     /// </summary>
-    internal ObjectPool<T> Pool { get; set; }
+    internal ObjectPool<T> Pool => LazyCreateObjectPool();
 
     /// <summary>
     /// The policy for the pool. Policy must be defined before initializing the pool.
     /// </summary>
     protected readonly PoolPolicy<T> Policy = new();
-
-    /// <summary>
-    /// CTOR.
-    /// </summary>
-    protected SpecializedPoolBase()
-    {
-        Pool = LazyCreateObjectPool();
-    }
 
     /// <summary>
     /// Disposes the current instance of the <see cref="ObjectPool{T}" /> and
@@ -37,14 +32,14 @@ internal abstract class SpecializedPoolBase<T> : IDisposable where T : class
     internal void Reset()
     {
         PoolRegistry.Remove(this);
-        Pool.Dispose();
-        Pool = LazyCreateObjectPool();
+        _pool?.Dispose();
+        _pool = null;
     }
 
     private ObjectPool<T> LazyCreateObjectPool()
     {
-        return new Lazy<ObjectPoolConcurrent<T>>(() => new ObjectPoolConcurrent<T>(Policy),
-            System.Threading.LazyThreadSafetyMode.PublicationOnly).Value;
+        var pool = LazyInitializer.EnsureInitialized(ref _pool, () => new ObjectPoolConcurrent<T>(Policy));
+        return pool!;
     }
 
     /// <summary>

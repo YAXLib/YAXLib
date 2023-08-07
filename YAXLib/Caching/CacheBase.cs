@@ -6,18 +6,15 @@ using System.Collections.Generic;
 
 namespace YAXLib.Caching;
 
-internal abstract class TypeCacheBase<T> : TypeCacheStaticBase
+internal abstract class CacheBase<TKey, TValue> : CacheStaticBase where TKey : notnull
 {
-    /// <summary>
-    /// The <see cref="TypeCacheBase{T}" /> instance.
-    /// </summary>
-    private protected static TypeCacheBase<T>? _instance { get; private set; }
+   private protected static CacheBase<TKey, TValue>? _instance { get; private set; }
 
     /// <summary>
     /// Sets the instance variable, if its current value is null.
     /// </summary>
     /// <param name="instance"></param>
-    protected static void SetInstanceVariable(TypeCacheBase<T> instance)
+    protected static void SetInstanceVariable(CacheBase<TKey, TValue> instance)
     {
         lock (Locker)
         {
@@ -25,15 +22,12 @@ internal abstract class TypeCacheBase<T> : TypeCacheStaticBase
         }
     }
 
-    /// <summary>
-    /// A dictionary from <see cref="Type" />s to the associated cache value.
-    /// </summary>
-    internal readonly Dictionary<Type, T> CacheDictionary = new();
+    internal readonly Dictionary<TKey, TValue> CacheDictionary = new();
 
     /// <summary>
     /// Stores the dictionary keys in the sequence as added
     /// </summary>
-    protected List<Type> TypeList { get; } = new();
+    protected List<TKey> KeyList { get; } = new();
 
     /// <summary>
     /// Gets or sets the maximum number of items in the cache.
@@ -53,7 +47,7 @@ internal abstract class TypeCacheBase<T> : TypeCacheStaticBase
     /// <param name="key">The key.</param>
     /// <param name="value">The value.</param>
     /// <returns><see langword="true" /> if the item could be added, else <see langword="false" />.</returns>
-    public bool TryAdd(Type key, T value)
+    public bool TryAdd(TKey key, TValue value)
     {
         if (_instance is null) return false;
 
@@ -72,7 +66,7 @@ internal abstract class TypeCacheBase<T> : TypeCacheStaticBase
     /// <param name="key">The key.</param>
     /// <param name="value">The value.</param>
     /// <exception cref="ArgumentException">Throws if the <paramref name="key" /> already exists.</exception>
-    public void Add(Type key, T value)
+    public void Add(TKey key, TValue value)
     {
         if (_instance is null) return;
 
@@ -82,7 +76,7 @@ internal abstract class TypeCacheBase<T> : TypeCacheStaticBase
                 EvictItems();
 
             CacheDictionary.Add(key, value);
-            TypeList.Add(key);
+            KeyList.Add(key);
         }
     }
 
@@ -97,8 +91,8 @@ internal abstract class TypeCacheBase<T> : TypeCacheStaticBase
         {
             while (CacheDictionary.Count > 0 && CacheDictionary.Count > MaxCacheSize - 1)
             {
-                CacheDictionary.Remove(TypeList[0]);
-                TypeList.RemoveAt(0);
+                CacheDictionary.Remove(KeyList[0]);
+                KeyList.RemoveAt(0);
             }
         }
     }
@@ -113,7 +107,7 @@ internal abstract class TypeCacheBase<T> : TypeCacheStaticBase
         lock (Locker)
         {
             CacheDictionary.Clear();
-            TypeList.Clear();
+            KeyList.Clear();
         }
     }
 }
