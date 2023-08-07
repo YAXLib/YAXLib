@@ -2,43 +2,29 @@
 // Licensed under the MIT license.
 
 using System;
-using System.Collections.Generic;
-using System.Threading;
+using System.Collections.Concurrent;
 
 namespace YAXLib.Customization;
 
-internal class Locker : IDisposable
+internal sealed class Locker : IDisposable
 {
-    private static readonly ThreadLocal<HashSet<Type>> LockedTypes = new(() => new HashSet<Type>());
+    private static readonly ConcurrentDictionary<(int, Type), int> LockedTypes = new();
     private readonly Type _lockedType;
 
     public Locker(Type typeToLock)
     {
         _lockedType = typeToLock;
-        if (!LockedTypes.Value!.Add(typeToLock))
+        if (!LockedTypes.TryAdd((Environment.CurrentManagedThreadId, typeToLock), 0))
             throw new ArgumentException("The type is already locked.", nameof(typeToLock));
     }
 
     public static bool IsLocked(Type typeToTest)
     {
-        return LockedTypes.Value!.Contains(typeToTest);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            LockedTypes.Value!.Remove(_lockedType);
-        }
-        else
-        {
-            LockedTypes.Dispose();
-        }
+        return LockedTypes.ContainsKey((Environment.CurrentManagedThreadId, typeToTest));
     }
 
     public void Dispose()
     {
-        Dispose(disposing: true);
-        GC.SuppressFinalize(this);
+        LockedTypes.TryRemove((Environment.CurrentManagedThreadId, _lockedType), out _);
     }
 }

@@ -271,7 +271,7 @@ internal class Serialization
         foreach (var member in _serializer.UdtWrapper.GetFieldsForSerialization())
         {
             var elementValue = member.GetValue(obj);
-            if (IsNullButDoNotSerializeNull(member, elementValue)) continue;
+            if (!ShouldWriteMember(member, elementValue)) continue;
 
             isAnythingFoundToSerialize = true;
 
@@ -331,6 +331,12 @@ internal class Serialization
             _baseElement.Remove();
     }
 
+    private bool ShouldWriteMember(MemberWrapper member, object? elementValue)
+    {
+        return !IsNullButDoNotSerializeNull(member, elementValue) &&
+               !IsDefaultButDoNotSerializeDefault(member, elementValue);
+    }
+
     /// <summary>
     /// Checks whether the <paramref name="elementValue" /> is <see langword="null" />,
     /// and <see langword="null" /> shall not be serialized.
@@ -348,7 +354,42 @@ internal class Serialization
             member.IsAttributedAsDontSerializeIfNull)
             return true;
 
+
         return false;
+    }
+
+    /// <summary>
+    /// Checks whether the <paramref name="elementValue" /> is <see langword="default" />,
+    /// and <see langword="default" /> shall not be serialized.
+    /// </summary>
+    /// <param name="elementValue"></param>
+    /// <param name="member"></param>
+    /// <returns></returns>
+    private bool IsDefaultButDoNotSerializeDefault(MemberWrapper member, object? elementValue)
+    {
+        if (!_serializer.UdtWrapper.IsNotAllowedDefaultValueSerialization)
+            return false;
+
+        if (elementValue == null || ValueEquals(elementValue, ReflectionUtils.GetDefaultValue(member.MemberType)))
+        {
+           return true;
+        }
+
+        return false;
+    }
+
+    public static bool ValueEquals(object? objA, object? objB)
+    {
+        if (objA == objB)
+        {
+            return true;
+        }
+        if (objA == null || objB == null)
+        {
+            return false;
+        }
+
+        return objA.Equals(objB);
     }
 
     /// <summary>

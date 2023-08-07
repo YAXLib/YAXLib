@@ -10,7 +10,7 @@ namespace YAXLib.Caching;
 /// Implements a singleton cache for <see cref="UdtWrapper" />s
 /// to prevent creation of <see cref="UdtWrapper" />s for the same type repetitively.
 /// </summary>
-internal class UdtWrapperCache : TypeCacheBase<UdtWrapper>
+internal class UdtWrapperCache : CacheBase<(Type type, SerializerOptions options), UdtWrapper>
 {
     public const int DefaultCacheSize = 500;
 
@@ -48,15 +48,15 @@ internal class UdtWrapperCache : TypeCacheBase<UdtWrapper>
     {
         lock (Locker)
         {
-            if (!CacheDictionary.TryGetValue(t, out var udtWrapper))
+            if (CacheDictionary.TryGetValue((t, serializerOptions), out var udtWrapper))
             {
-                udtWrapper = new UdtWrapper(t, serializerOptions);
-                Add(t, udtWrapper);
+                return udtWrapper;
             }
-            else
-                udtWrapper.SetSerializationOptions(serializerOptions.SerializationOptions);
 
+            udtWrapper = new UdtWrapper(t, serializerOptions);
+            Add((t, serializerOptions), udtWrapper);
             return udtWrapper;
+
         }
     }
 }

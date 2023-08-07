@@ -1,9 +1,7 @@
 // Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
-using System;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace YAXLib.Pooling.SpecializedPools;
 
@@ -12,9 +10,6 @@ namespace YAXLib.Pooling.SpecializedPools;
 /// </summary>
 internal sealed class HashSetPool<T> : CollectionPool<HashSet<T>, T>
 {
-    private static readonly Lazy<HashSetPool<T>> Lazy = new(() => new HashSetPool<T>(),
-        LazyThreadSafetyMode.PublicationOnly);
-
     /// <summary>
     /// CTOR.
     /// </summary>
@@ -29,6 +24,5 @@ internal sealed class HashSetPool<T> : CollectionPool<HashSet<T>, T>
     /// <summary>
     /// Gets a singleton instance of the pool.
     /// </summary>
-    public static new HashSetPool<T> Instance =>
-        Lazy.IsValueCreated ? Lazy.Value : PoolRegistry.Add(Lazy.Value);
+    public static new HashSetPool<T> Instance => PoolRegistry.GetOrAdd(() => new HashSetPool<T>());
 }

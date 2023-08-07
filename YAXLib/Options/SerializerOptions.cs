@@ -31,6 +31,7 @@ public class SerializerOptions
         SerializationOptions = YAXSerializationOptions.SerializeNullObjects;
         AttributeName = new YAXAttributeName { Dimensions = "dims", RealType = "realtype" };
         Namespace = new YAXNameSpace { Prefix = "yaxlib", Uri = XNamespace.Get("http://www.sinairv.com/yaxlib/") };
+        TypeInspector = DefaultTypeInspector.Instance;
     }
 
     /// <summary>
@@ -71,4 +72,17 @@ public class SerializerOptions
     /// Default is <see cref="CultureInfo.CurrentCulture" />.
     /// </summary>
     public CultureInfo Culture { get; set; }
+
+    /// <summary>
+    /// Gets or sets the <see cref="ITypeInspector"/>. Is set to <see cref="DefaultTypeInspector"/> by default.
+    /// <para/>
+    /// With a custom <see cref="ITypeInspector"/> it is possible to control
+    /// which members are serialized/deserialized, and which type names are used for a given type.
+    /// <para/>
+    /// It is recommended to derive a custom <see cref="ITypeInspector"/> from the <see cref="DefaultTypeInspector"/>.
+    /// <see cref="DefaultTypeInspector.GetMembers"/> will then return the default members for further processing.
+    /// <see cref="DefaultTypeInspector.GetTypeName"/> lets you define the type names.
+    /// customization.
+    /// </summary>
+    public ITypeInspector TypeInspector { get; set; }
 }

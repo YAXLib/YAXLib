@@ -1,8 +1,6 @@
 // Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
-using System;
-using System.Threading;
 using YAXLib.Pooling.SpecializedPools;
 
 namespace YAXLib.Pooling.YAXLibPools;
@@ -12,9 +10,6 @@ namespace YAXLib.Pooling.YAXLibPools;
 /// </summary>
 internal sealed class SerializerPool : PoolBase<YAXSerializer>
 {
-    private static readonly Lazy<SerializerPool> Lazy = new(() => new SerializerPool(),
-        LazyThreadSafetyMode.PublicationOnly);
-
     /// <summary>
     /// CTOR.
     /// </summary>
@@ -34,6 +29,5 @@ internal sealed class SerializerPool : PoolBase<YAXSerializer>
     /// <summary>
     /// Gets a singleton instance of the pool.
     /// </summary>
-    public static SerializerPool Instance =>
-        Lazy.IsValueCreated ? Lazy.Value : PoolRegistry.Add(Lazy.Value);
+    public static SerializerPool Instance => PoolRegistry.GetOrAdd(() => new SerializerPool());
 }
