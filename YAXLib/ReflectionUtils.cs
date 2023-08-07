@@ -597,11 +597,6 @@ internal static class ReflectionUtils
     /// </returns>
     public static object? GetDefaultValue(Type type)
     {
-        if (!type.IsValueType)
-        {
-            return null;
-        }
-
         if (type == typeof(BigInteger))
         {
             return BigInteger.Zero;
@@ -647,6 +642,15 @@ internal static class ReflectionUtils
                 return 0M;
             case TypeCode.DateTime:
                 return DateTime.MinValue;
+            case TypeCode.DBNull:
+                return DBNull.Value;
+            case TypeCode.Empty:
+                return null;
+        }
+
+        if (!type.IsValueType)
+        {
+            return null;
         }
 
         if (IsNullable(type))
