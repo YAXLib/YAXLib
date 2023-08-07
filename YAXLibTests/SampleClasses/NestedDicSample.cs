@@ -8,9 +8,11 @@ using YAXLib.Attributes;
 namespace YAXLibTests.SampleClasses;
 
 [ShowInDemoApplication]
-[YAXComment(@"This example demonstrates usage of recursive collection serialization
-                and deserialization. In this case a Dictionary whose Key, or Value is 
-                another dictionary or collection has been used.")]
+[YAXComment("""
+    This example demonstrates usage of recursive collection serialization
+    and deserialization. In this case a Dictionary whose Key, or Value is 
+    another dictionary or collection has been used.
+    """)]
 public class NestedDicSample
 {
     public Dictionary<Dictionary<double, Dictionary<int, int>>, Dictionary<Dictionary<string, string>, List<double>>

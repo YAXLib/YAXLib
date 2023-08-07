@@ -7,9 +7,11 @@ using YAXLib.Enums;
 
 namespace YAXLibTests.SampleClasses;
 
-[YAXComment(@"This example shows serialization and deserialization of objects
-                through a reference to their base class or interface while used in 
-                collection classes")]
+[YAXComment("""
+    This example shows serialization and deserialization of objects
+    through a reference to their base class or interface while used in 
+    collection classes
+    """)]
 public class InterfaceMatchingSample
 {
     [YAXAttributeForClass] public int? SomeNumber { get; set; }

@@ -74,9 +74,9 @@ public class ConcurrentPoolingTests
         {
             if (p.Counters!.CountAll <= 0) continue;
 
-            Console.WriteLine(p.Type + @":");
-            Console.WriteLine(@"{0}: {1}", nameof(IPoolCounters.CountActive), p.Counters?.CountActive);
-            Console.WriteLine(@"{0}: {1}", nameof(IPoolCounters.CountInactive), p.Counters?.CountInactive);
+            Console.WriteLine(p.Type + """:""");
+            Console.WriteLine("""{0}: {1}""", nameof(IPoolCounters.CountActive), p.Counters?.CountActive);
+            Console.WriteLine("""{0}: {1}""", nameof(IPoolCounters.CountInactive), p.Counters?.CountInactive);
 
             Console.WriteLine();
             Assert.That(p.Counters!.CountActive, Is.EqualTo(0),

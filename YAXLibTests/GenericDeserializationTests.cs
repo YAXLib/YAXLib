@@ -46,13 +46,15 @@ public class GenericDeserializationTests : DeserializationTestBase
     public void GenericDeserializationTest()
     {
         const string xml =
-            @"<!-- This example demonstrates serailizing a very simple class -->
-<Book>
-  <Title>Inside C#</Title>
-  <Author>Tom Archer &amp; Andrew Whitechapel</Author>
-  <PublishYear>2002</PublishYear>
-  <Price>30.5</Price>
-</Book>";
+            """
+                <!-- This example demonstrates serailizing a very simple class -->
+                <Book>
+                  <Title>Inside C#</Title>
+                  <Author>Tom Archer &amp; Andrew Whitechapel</Author>
+                  <PublishYear>2002</PublishYear>
+                  <Price>30.5</Price>
+                </Book>
+                """;
         var serializer = new YAXSerializer<Book>();
         var got = serializer.Deserialize(xml);
         Assert.NotNull(got);

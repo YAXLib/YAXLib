@@ -34,12 +34,14 @@ internal class SuccessfulEmbeddingSample
             // translate CRLF and any CR not followed by a LF to a single LF.
             // This behavior is defined in the End-of-Line handling section of the XML 1.0 specification.
             // So, for the unit tests we have to replace CRLF with LF for consistent comparisons.
-            TextCDataEmbedding = @"<script>
-    let X = 4; let Y = 5; let Z = 8;
-    if (Y < Z && Y > X) {
-        console.log(`'X < Y < Z' or 'Z > Y > X'`);
-    }
-</script>".Replace("\r\n", "\n"),
+            TextCDataEmbedding = """
+                <script>
+                    let X = 4; let Y = 5; let Z = 8;
+                    if (Y < Z && Y > X) {
+                        console.log(`'X < Y < Z' or 'Z > Y > X'`);
+                    }
+                </script>
+                """.Replace("\r\n", "\n"),
             // All chars will be encoded
             TextBase64Embedding = "part1\u0000part2"
         };

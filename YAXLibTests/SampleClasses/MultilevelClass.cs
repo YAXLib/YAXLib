@@ -7,10 +7,12 @@ using YAXLib.Attributes;
 namespace YAXLibTests.SampleClasses;
 
 [ShowInDemoApplication]
-[YAXComment(@"This example shows a multi-level class, which helps to test 
-      the null references identity problem. 
-      Thanks go to Anton Levshunov for proposing this example,
-      and a discussion on this matter.")]
+[YAXComment("""
+    This example shows a multi-level class, which helps to test 
+    the null references identity problem. 
+    Thanks go to Anton Levshunov for proposing this example,
+    and a discussion on this matter.
+    """)]
 public class MultilevelClass
 {
     public List<FirstLevelClass> Items { get; set; } = new();

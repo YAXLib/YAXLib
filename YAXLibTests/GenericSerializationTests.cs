@@ -46,13 +46,15 @@ public class GenericSerializationTests : SerializationTestBase
     public void GenericSerializationTest()
     {
         const string result =
-            @"<!-- This example demonstrates serializing a very simple class -->
-<Book>
-  <Title>Inside C#</Title>
-  <Author>Tom Archer &amp; Andrew Whitechapel</Author>
-  <PublishYear>2002</PublishYear>
-  <Price>30.5</Price>
-</Book>";
+            """
+                <!-- This example demonstrates serializing a very simple class -->
+                <Book>
+                  <Title>Inside C#</Title>
+                  <Author>Tom Archer &amp; Andrew Whitechapel</Author>
+                  <PublishYear>2002</PublishYear>
+                  <Price>30.5</Price>
+                </Book>
+                """;
         var serializer = new YAXSerializer<Book>();
         var got = serializer.Serialize(Book.GetSampleInstance());
         Assert.That(got, Is.EqualTo(result));
@@ -62,13 +64,15 @@ public class GenericSerializationTests : SerializationTestBase
     public void GenericDeserializationTest()
     {
         const string xml =
-            @"
-<Book>
-  <Title>Inside C#</Title>
-  <Author>Tom Archer &amp; Andrew Whitechapel</Author>
-  <PublishYear>2002</PublishYear>
-  <Price>30.5</Price>
-</Book>";
+            """
+                
+                <Book>
+                  <Title>Inside C#</Title>
+                  <Author>Tom Archer &amp; Andrew Whitechapel</Author>
+                  <PublishYear>2002</PublishYear>
+                  <Price>30.5</Price>
+                </Book>
+                """;
         var serializer = new YAXSerializer<Book>();
         var got = serializer.Deserialize(xml);
         Assert.NotNull(got);

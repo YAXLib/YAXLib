@@ -25,17 +25,19 @@ public class OverridingYaxLibMetadataTests
         var result = ser.Serialize(sampleInstance);
 
         var expected =
-            @"<YaxLibMetadataOverridingWithNamespace xmlns:yax=""http://namespace.org/yax"" xmlns=""http://namespace.org/sample"">
-  <IntArray yax:dm=""2,3"">
-    <Int32>1</Int32>
-    <Int32>2</Int32>
-    <Int32>3</Int32>
-    <Int32>2</Int32>
-    <Int32>3</Int32>
-    <Int32>4</Int32>
-  </IntArray>
-  <Obj yax:type=""System.String"">Hello, World!</Obj>
-</YaxLibMetadataOverridingWithNamespace>";
+            """
+                <YaxLibMetadataOverridingWithNamespace xmlns:yax="http://namespace.org/yax" xmlns="http://namespace.org/sample">
+                  <IntArray yax:dm="2,3">
+                    <Int32>1</Int32>
+                    <Int32>2</Int32>
+                    <Int32>3</Int32>
+                    <Int32>2</Int32>
+                    <Int32>3</Int32>
+                    <Int32>4</Int32>
+                  </IntArray>
+                  <Obj yax:type="System.String">Hello, World!</Obj>
+                </YaxLibMetadataOverridingWithNamespace>
+                """;
         Assert.That(result, Is.EqualTo(expected));
 
         var desObj = (YaxLibMetadataOverridingWithNamespace?) ser.Deserialize(expected);
@@ -57,17 +59,19 @@ public class OverridingYaxLibMetadataTests
         var result = ser.Serialize(sampleInstance);
 
         var expected =
-            @"<YaxLibMetadataOverridingWithNamespace xmlns=""http://namespace.org/sample"">
-  <IntArray dm=""2,3"">
-    <Int32>1</Int32>
-    <Int32>2</Int32>
-    <Int32>3</Int32>
-    <Int32>2</Int32>
-    <Int32>3</Int32>
-    <Int32>4</Int32>
-  </IntArray>
-  <Obj type=""System.String"">Hello, World!</Obj>
-</YaxLibMetadataOverridingWithNamespace>";
+            """
+                <YaxLibMetadataOverridingWithNamespace xmlns="http://namespace.org/sample">
+                  <IntArray dm="2,3">
+                    <Int32>1</Int32>
+                    <Int32>2</Int32>
+                    <Int32>3</Int32>
+                    <Int32>2</Int32>
+                    <Int32>3</Int32>
+                    <Int32>4</Int32>
+                  </IntArray>
+                  <Obj type="System.String">Hello, World!</Obj>
+                </YaxLibMetadataOverridingWithNamespace>
+                """;
         Assert.That(result, Is.EqualTo(expected));
 
         var desObj = (YaxLibMetadataOverridingWithNamespace?) ser.Deserialize(expected);
@@ -87,17 +91,19 @@ public class OverridingYaxLibMetadataTests
         var result = ser.Serialize(sampleInstance);
 
         var expected =
-            @"<YaxLibMetadataOverriding>
-  <IntArray>
-    <Int32>1</Int32>
-    <Int32>2</Int32>
-    <Int32>3</Int32>
-    <Int32>2</Int32>
-    <Int32>3</Int32>
-    <Int32>4</Int32>
-  </IntArray>
-  <Obj>Hello, World!</Obj>
-</YaxLibMetadataOverriding>";
+            """
+                <YaxLibMetadataOverriding>
+                  <IntArray>
+                    <Int32>1</Int32>
+                    <Int32>2</Int32>
+                    <Int32>3</Int32>
+                    <Int32>2</Int32>
+                    <Int32>3</Int32>
+                    <Int32>4</Int32>
+                  </IntArray>
+                  <Obj>Hello, World!</Obj>
+                </YaxLibMetadataOverriding>
+                """;
         Assert.That(result, Is.EqualTo(expected));
     }
 
@@ -112,17 +118,19 @@ public class OverridingYaxLibMetadataTests
         var result = ser.Serialize(sampleInstance);
 
         var expected =
-            @"<YaxLibMetadataOverridingWithNamespace xmlns=""http://namespace.org/sample"">
-  <IntArray>
-    <Int32>1</Int32>
-    <Int32>2</Int32>
-    <Int32>3</Int32>
-    <Int32>2</Int32>
-    <Int32>3</Int32>
-    <Int32>4</Int32>
-  </IntArray>
-  <Obj>Hello, World!</Obj>
-</YaxLibMetadataOverridingWithNamespace>";
+            """
+                <YaxLibMetadataOverridingWithNamespace xmlns="http://namespace.org/sample">
+                  <IntArray>
+                    <Int32>1</Int32>
+                    <Int32>2</Int32>
+                    <Int32>3</Int32>
+                    <Int32>2</Int32>
+                    <Int32>3</Int32>
+                    <Int32>4</Int32>
+                  </IntArray>
+                  <Obj>Hello, World!</Obj>
+                </YaxLibMetadataOverridingWithNamespace>
+                """;
         Assert.That(result, Is.EqualTo(expected));
     }
 }

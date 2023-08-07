@@ -93,9 +93,11 @@ public class KnownTypeTests
     {
         var typeExample = TypeKnownTypeSample.GetSampleInstance();
         var serializer = new YAXSerializer(typeof(TypeKnownTypeSample));
-        const string expectedXml = @"<TypeKnownTypeSample>
-  <TheType>YAXLibTests.KnownTypeTests</TheType>
-</TypeKnownTypeSample>";
+        const string expectedXml = """
+            <TypeKnownTypeSample>
+              <TheType>YAXLibTests.KnownTypeTests</TheType>
+            </TypeKnownTypeSample>
+            """;
 
         var serialized = serializer.Serialize(typeExample);
         var deserialized = (TypeKnownTypeSample?) serializer.Deserialize(serialized);
@@ -107,9 +109,11 @@ public class KnownTypeTests
     [Test]
     public void KnownType_UsingSerializationContext()
     {
-        const string expectedXml = @"<UsingSerializationContextSample>
-  <Text>Sample Text KnownType</Text>
-</UsingSerializationContextSample>";
+        const string expectedXml = """
+            <UsingSerializationContextSample>
+              <Text>Sample Text KnownType</Text>
+            </UsingSerializationContextSample>
+            """;
         WellKnownTypes.Add(new UsingSerializationContextKnownType());
         var data = new UsingSerializationContextSample { Text = "Sample Text" };
         var serializer = new YAXSerializer(typeof(UsingSerializationContextSample));
@@ -148,7 +152,7 @@ public class KnownTypeTests
     public void RuntimeTypeDynamicKnownTypeSerialization_Using_Serializer()
     {
         const string expectedXml =
-            @"<Object yaxlib:realtype=""System.RuntimeType"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">YAXLibTests.KnownTypeTests</Object>";
+            """<Object yaxlib:realtype="System.RuntimeType" xmlns:yaxlib="http://www.sinairv.com/yaxlib/">YAXLibTests.KnownTypeTests</Object>""";
         object t = GetType(); // this test class
         var serializer = new YAXSerializer(typeof(object));
 
@@ -162,9 +166,11 @@ public class KnownTypeTests
     [Test]
     public void DateOnlyKnownTypeSerialization()
     {
-        const string expectedXml = @"<DateOnly>
-  <DayNumber>738884</DayNumber>
-</DateOnly>";
+        const string expectedXml = """
+            <DateOnly>
+              <DayNumber>738884</DayNumber>
+            </DateOnly>
+            """;
         var date = new DateOnly(2023, 12, 31);
         var serializer = new YAXSerializer(typeof(DateOnly));
         var serialized = serializer.Serialize(date);
@@ -176,9 +182,11 @@ public class KnownTypeTests
     public void DateOnlyKnownTypeDeserialization()
     {
         var date = new DateOnly(2023, 12, 31);
-        var xml = @$"<DateOnly>
-  <DayNumber>{date.DayNumber}</DayNumber>
-</DateOnly>";
+        var xml = $"""
+            <DateOnly>
+              <DayNumber>{date.DayNumber}</DayNumber>
+            </DateOnly>
+            """;
         
         var serializer = new YAXSerializer(typeof(DateOnly));
         var deserialized = serializer.Deserialize(xml);
@@ -190,9 +198,11 @@ public class KnownTypeTests
     public void DateOnlyKnownTypeDeserializationFallback()
     {
         var date = new DateOnly(2023, 12, 31);
-        var xml = @$"<DateOnly>
-{date.DayNumber}
-</DateOnly>";
+        var xml = $"""
+            <DateOnly>
+            {date.DayNumber}
+            </DateOnly>
+            """;
         
         var serializer = new YAXSerializer(typeof(DateOnly));
         var deserialized = serializer.Deserialize(xml);
@@ -214,9 +224,11 @@ public class KnownTypeTests
     [Test]
     public void TimeOnlyKnownTypeSerialization()
     {
-        const string expectedXml = @"<TimeOnly>
-  <Ticks>183670890000</Ticks>
-</TimeOnly>";
+        const string expectedXml = """
+            <TimeOnly>
+              <Ticks>183670890000</Ticks>
+            </TimeOnly>
+            """;
         var time = new TimeOnly(5,6, 7, 89);
         var serializer = new YAXSerializer(typeof(TimeOnly));
         var serialized = serializer.Serialize(time);
@@ -228,9 +240,11 @@ public class KnownTypeTests
     public void TimeOnlyKnownTypeDeserialization()
     {
         var time = new TimeOnly(5,6, 7, 89);
-        var xml = @$"<TimeOnly>
-  <Ticks>{time.Ticks}</Ticks>
-</TimeOnly>";
+        var xml = $"""
+            <TimeOnly>
+              <Ticks>{time.Ticks}</Ticks>
+            </TimeOnly>
+            """;
         
         var serializer = new YAXSerializer(typeof(TimeOnly));
         var deserialized = serializer.Deserialize(xml);
@@ -242,9 +256,11 @@ public class KnownTypeTests
     public void TimeOnlyKnownTypeDeserializationFallback()
     {
         var time = new TimeOnly(5,6, 7, 89);
-        var xml = @$"<TimeOnly>
-{time.Ticks}
-</TimeOnly>";
+        var xml = $"""
+            <TimeOnly>
+            {time.Ticks}
+            </TimeOnly>
+            """;
         
         var serializer = new YAXSerializer(typeof(TimeOnly));
         var deserialized = serializer.Deserialize(xml);
@@ -294,18 +310,20 @@ public class KnownTypeTests
         var col1 = Color.FromArgb(145, 123, 123);
         var colStr1 = serializer.Serialize(col1);
 
-        const string expectedCol1 = @"<Color>
-  <A>255</A>
-  <R>145</R>
-  <G>123</G>
-  <B>123</B>
-</Color>";
+        const string expectedCol1 = """
+            <Color>
+              <A>255</A>
+              <R>145</R>
+              <G>123</G>
+              <B>123</B>
+            </Color>
+            """;
 
         Assert.That(colStr1, Is.EqualTo(expectedCol1));
 
         var col2 = SystemColors.ButtonFace;
         var colStr2 = serializer.Serialize(col2);
-        const string expectedCol2 = @"<Color>ButtonFace</Color>";
+        const string expectedCol2 = """<Color>ButtonFace</Color>""";
 
         Assert.That(colStr2, Is.EqualTo(expectedCol2));
     }
@@ -332,14 +350,16 @@ public class KnownTypeTests
     public void RectangleSerializationTest()
     {
         const string result =
-            @"<RectangleDynamicKnownTypeSample>
-  <Rect>
-    <Left>10</Left>
-    <Top>20</Top>
-    <Width>30</Width>
-    <Height>40</Height>
-  </Rect>
-</RectangleDynamicKnownTypeSample>";
+            """
+                <RectangleDynamicKnownTypeSample>
+                  <Rect>
+                    <Left>10</Left>
+                    <Top>20</Top>
+                    <Width>30</Width>
+                    <Height>40</Height>
+                  </Rect>
+                </RectangleDynamicKnownTypeSample>
+                """;
 
         var serializer = new YAXSerializer<RectangleDynamicKnownTypeSample>(new SerializerOptions {
             ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
@@ -354,44 +374,46 @@ public class KnownTypeTests
     public void DataSetAndDataTableSerializationTest()
     {
         const string result =
-            @"<DataSetAndDataTableKnownTypeSample>
-  <TheDataTable>
-    <NewDataSet>
-      <TableName xmlns=""http://tableNs/"">
-        <Col1>1</Col1>
-        <Col2>2</Col2>
-        <Col3>3</Col3>
-      </TableName>
-      <TableName xmlns=""http://tableNs/"">
-        <Col1>y</Col1>
-        <Col2>4</Col2>
-        <Col3>n</Col3>
-      </TableName>
-    </NewDataSet>
-  </TheDataTable>
-  <TheDataSet>
-    <MyDataSet>
-      <Table1>
-        <Cl1>num1</Cl1>
-        <Cl2>34</Cl2>
-      </Table1>
-      <Table1>
-        <Cl1>num2</Cl1>
-        <Cl2>54</Cl2>
-      </Table1>
-      <Table2>
-        <C1>one</C1>
-        <C2>1</C2>
-        <C3>1.5</C3>
-      </Table2>
-      <Table2>
-        <C1>two</C1>
-        <C2>2</C2>
-        <C3>2.5</C3>
-      </Table2>
-    </MyDataSet>
-  </TheDataSet>
-</DataSetAndDataTableKnownTypeSample>";
+            """
+                <DataSetAndDataTableKnownTypeSample>
+                  <TheDataTable>
+                    <NewDataSet>
+                      <TableName xmlns="http://tableNs/">
+                        <Col1>1</Col1>
+                        <Col2>2</Col2>
+                        <Col3>3</Col3>
+                      </TableName>
+                      <TableName xmlns="http://tableNs/">
+                        <Col1>y</Col1>
+                        <Col2>4</Col2>
+                        <Col3>n</Col3>
+                      </TableName>
+                    </NewDataSet>
+                  </TheDataTable>
+                  <TheDataSet>
+                    <MyDataSet>
+                      <Table1>
+                        <Cl1>num1</Cl1>
+                        <Cl2>34</Cl2>
+                      </Table1>
+                      <Table1>
+                        <Cl1>num2</Cl1>
+                        <Cl2>54</Cl2>
+                      </Table1>
+                      <Table2>
+                        <C1>one</C1>
+                        <C2>1</C2>
+                        <C3>1.5</C3>
+                      </Table2>
+                      <Table2>
+                        <C1>two</C1>
+                        <C2>2</C2>
+                        <C3>2.5</C3>
+                      </Table2>
+                    </MyDataSet>
+                  </TheDataSet>
+                </DataSetAndDataTableKnownTypeSample>
+                """;
 
         var serializer = new YAXSerializer<DataSetAndDataTableKnownTypeSample>(new SerializerOptions {
             ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
@@ -521,45 +543,47 @@ public class KnownTypeTests
     public void ExceptionKnownType_Deserialize_CustomException(int maxRecursion)
     {
         var toDeserialize =
-            @"<Exception yaxlib:realtype=""YAXLibTests.SampleClasses.YAXLibTests.SampleClasses.CustomException"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
-  <Info />
-  <TargetSite>Void ThrowCustomException()</TargetSite>
-  <Message>This is a custom exception</Message>
-  <Data>
-    <IDictionary xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
-      <Object yaxlib:realtype=""System.Collections.DictionaryEntry"">
-        <Key yaxlib:realtype=""System.String"">TheKey</Key>
-        <Value yaxlib:realtype=""System.String"">TheValue</Value>
-      </Object>
-    </IDictionary>
-  </Data>
-  <InnerException yaxlib:realtype=""System.DivideByZeroException"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
-    <TargetSite />
-    <Message>InnerException of CustomException</Message>
-    <Data />
-    <InnerException yaxlib:realtype=""System.Threading.AbandonedMutexException"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
-      <Mutex />
-      <MutexIndex>-1</MutexIndex>
-      <TargetSite />
-      <Message>CustomException / DivideByZero / InnerException</Message>
-      <Data />
-      <InnerException />
-      <HelpLink />
-      <Source />
-      <HResult>-2146233043</HResult>
-      <StackTrace />
-    </InnerException>
-    <HelpLink />
-    <Source />
-    <HResult>-2147352558</HResult>
-    <StackTrace />
-  </InnerException>
-  <HelpLink />
-  <Source>YAXLibTests</Source>
-  <HResult>-2146233088</HResult>
-  <StackTrace>   at YAXLibTests.SampleClasses.YAXLibTests.SampleClasses.ExceptionTestSamples.ThrowCustomException() in X:\YAXLib\YAXLibTests\SampleClasses\ExceptionTestSample.cs:line 37
-   at YAXLibTests.KnownTypeTests.ExceptionKnownType_Serialize_CustomException(Int32 maxRecursion) in X:\YAXLib\YAXLibTests\KnownTypeTests.cs:line 220</StackTrace>
-</Exception>";
+            """
+                <Exception yaxlib:realtype="YAXLibTests.SampleClasses.YAXLibTests.SampleClasses.CustomException" xmlns:yaxlib="http://www.sinairv.com/yaxlib/">
+                  <Info />
+                  <TargetSite>Void ThrowCustomException()</TargetSite>
+                  <Message>This is a custom exception</Message>
+                  <Data>
+                    <IDictionary xmlns:yaxlib="http://www.sinairv.com/yaxlib/">
+                      <Object yaxlib:realtype="System.Collections.DictionaryEntry">
+                        <Key yaxlib:realtype="System.String">TheKey</Key>
+                        <Value yaxlib:realtype="System.String">TheValue</Value>
+                      </Object>
+                    </IDictionary>
+                  </Data>
+                  <InnerException yaxlib:realtype="System.DivideByZeroException" xmlns:yaxlib="http://www.sinairv.com/yaxlib/">
+                    <TargetSite />
+                    <Message>InnerException of CustomException</Message>
+                    <Data />
+                    <InnerException yaxlib:realtype="System.Threading.AbandonedMutexException" xmlns:yaxlib="http://www.sinairv.com/yaxlib/">
+                      <Mutex />
+                      <MutexIndex>-1</MutexIndex>
+                      <TargetSite />
+                      <Message>CustomException / DivideByZero / InnerException</Message>
+                      <Data />
+                      <InnerException />
+                      <HelpLink />
+                      <Source />
+                      <HResult>-2146233043</HResult>
+                      <StackTrace />
+                    </InnerException>
+                    <HelpLink />
+                    <Source />
+                    <HResult>-2147352558</HResult>
+                    <StackTrace />
+                  </InnerException>
+                  <HelpLink />
+                  <Source>YAXLibTests</Source>
+                  <HResult>-2146233088</HResult>
+                  <StackTrace>   at YAXLibTests.SampleClasses.YAXLibTests.SampleClasses.ExceptionTestSamples.ThrowCustomException() in X:\YAXLib\YAXLibTests\SampleClasses\ExceptionTestSample.cs:line 37
+                   at YAXLibTests.KnownTypeTests.ExceptionKnownType_Serialize_CustomException(Int32 maxRecursion) in X:\YAXLib\YAXLibTests\KnownTypeTests.cs:line 220</StackTrace>
+                </Exception>
+                """;
 
         // Use serializer with custom MaxRecursion and without SuppressMetadataAttributes
         var ser = new YAXSerializer<Exception>(new SerializerOptions {
@@ -581,26 +605,28 @@ public class KnownTypeTests
     public void ExceptionKnownType_Deserialize_InvalidOperationException()
     {
         var toDeserialize =
-            @"<Exception yaxlib:realtype=""System.InvalidOperationException"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
-  <TargetSite>Void ThrowException(System.String)</TargetSite>
-  <Message>System exception unit test</Message>
-  <Data />
-  <InnerException yaxlib:realtype=""System.ArgumentException"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
-    <Message>Inner exception unit test (Parameter 'arg')</Message>
-    <ParamName>arg</ParamName>
-    <TargetSite />
-    <Data />
-    <HelpLink />
-    <Source />
-    <HResult>-2147024809</HResult>
-    <StackTrace />
-  </InnerException>
-  <HelpLink />
-  <Source>YAXLibTests</Source>
-  <HResult>-2146233079</HResult>
-  <StackTrace>   at YAXLibTests.KnownTypeTests.ThrowException(String arg) in D:\Projects\Source\Repos\YAXLib\YAXLibTests\KnownTypeTests.cs:line 238
-   at YAXLibTests.KnownTypeTests.Serialize_SystemException() in X:YAXLib\YAXLibTests\KnownTypeTests.cs:line 247</StackTrace>
-</Exception>";
+            """
+                <Exception yaxlib:realtype="System.InvalidOperationException" xmlns:yaxlib="http://www.sinairv.com/yaxlib/">
+                  <TargetSite>Void ThrowException(System.String)</TargetSite>
+                  <Message>System exception unit test</Message>
+                  <Data />
+                  <InnerException yaxlib:realtype="System.ArgumentException" xmlns:yaxlib="http://www.sinairv.com/yaxlib/">
+                    <Message>Inner exception unit test (Parameter 'arg')</Message>
+                    <ParamName>arg</ParamName>
+                    <TargetSite />
+                    <Data />
+                    <HelpLink />
+                    <Source />
+                    <HResult>-2147024809</HResult>
+                    <StackTrace />
+                  </InnerException>
+                  <HelpLink />
+                  <Source>YAXLibTests</Source>
+                  <HResult>-2146233079</HResult>
+                  <StackTrace>   at YAXLibTests.KnownTypeTests.ThrowException(String arg) in D:\Projects\Source\Repos\YAXLib\YAXLibTests\KnownTypeTests.cs:line 238
+                   at YAXLibTests.KnownTypeTests.Serialize_SystemException() in X:YAXLib\YAXLibTests\KnownTypeTests.cs:line 247</StackTrace>
+                </Exception>
+                """;
 
         // Use serializer with default MaxRecursion and without SuppressMetadataAttributes
         var ser = new YAXSerializer<Exception>(new SerializerOptions
@@ -616,8 +642,10 @@ public class KnownTypeTests
     public void ExceptionKnownType_Deserialize_InvalidOperationException_Without_Child_Elements()
     {
         var toDeserialize =
-            @"<Exception yaxlib:realtype=""System.InvalidOperationException"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/"">
-</Exception>";
+            """
+                <Exception yaxlib:realtype="System.InvalidOperationException" xmlns:yaxlib="http://www.sinairv.com/yaxlib/">
+                </Exception>
+                """;
 
         var ser = new YAXSerializer<Exception>(new SerializerOptions
             { SerializationOptions = YAXSerializationOptions.SerializeNullObjects });
@@ -654,7 +682,7 @@ public class KnownTypeTests
     public void ExceptionKnownType_Deserialize_NonExisting_ExceptionType()
     {
         var xElem = XElement.Parse(
-            @"<Exception yaxlib:realtype=""System.DateTime"" xmlns:yaxlib=""http://www.sinairv.com/yaxlib/""></Exception>");
+            """<Exception yaxlib:realtype="System.DateTime" xmlns:yaxlib="http://www.sinairv.com/yaxlib/"></Exception>""");
 
         var result = new ExceptionKnownBaseType().Deserialize(xElem, XNamespace.None,
             new SerializationContext(null, new UdtWrapper(typeof(Exception), new SerializerOptions()),

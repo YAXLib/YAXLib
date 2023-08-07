@@ -20,12 +20,14 @@ internal class DisallowedAttributeCombinationSample
     public static DisallowedAttributeCombinationSample GetSampleInstance()
     {
         return new DisallowedAttributeCombinationSample {
-            TextCDataEmbedding = @"<script>
-    let X = 4; let Y = 5; let Z = 8;
-    if (Y < Z && Y > X) {
-        console.log(`'X < Y < Z' or 'Z > Y > X'`);
-    }
-</script>".Replace("\r\n", "\n")
+            TextCDataEmbedding = """
+                <script>
+                    let X = 4; let Y = 5; let Z = 8;
+                    if (Y < Z && Y > X) {
+                        console.log(`'X < Y < Z' or 'Z > Y > X'`);
+                    }
+                </script>
+                """.Replace("\r\n", "\n")
         };
     }
 }
