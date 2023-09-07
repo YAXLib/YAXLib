@@ -160,17 +160,22 @@ internal class Serialization
 
         _serializer.DocumentDefaultNamespace = _serializer.UdtWrapper.FindDocumentDefaultNamespace();
 
-        if (TrySerializeAsDictionary(obj, out var xElement)) return xElement!;
+        if (TrySerializeAsDictionary(obj, out var xElement))
+            return xElement!;
 
-        if (TrySerializeAsCollection(obj, out xElement)) return xElement!;
+        if (TrySerializeAsCollection(obj, out xElement))
+            return xElement!;
 
-        if (TrySerializeUnderlyingTypeAsBasicType(obj, out xElement)) return xElement!;
+        if (TrySerializeUnderlyingTypeAsBasicType(obj, out xElement))
+            return xElement!;
 
-        if (TrySerializeUnderlyingTypeIfNotEqualOrNullableOfObjectType(obj, out xElement)) return xElement!;
+        if (TrySerializeUnderlyingTypeIfNotEqualOrNullableOfObjectType(obj, out xElement))
+            return xElement!;
 
         // SerializeBase will add the object to the stack
         var elem = SerializeBase(obj, _serializer.UdtWrapper.Alias);
-        if (!_serializer.Type.IsValueType) _serializer.SerializedStack.Pop();
+        if (!_serializer.Type.IsValueType)
+            _serializer.SerializedStack.Pop();
         Debug.Assert(_serializer.SerializedStack.Count == 0,
             "Serialization stack is not empty at the end of serialization");
 
@@ -261,7 +266,8 @@ internal class Serialization
 
     private void PushObjectToSerializationStack(object obj)
     {
-        if (!obj.GetType().IsValueType) _serializer.SerializedStack.Push(obj);
+        if (!obj.GetType().IsValueType)
+            _serializer.SerializedStack.Push(obj);
     }
 
     private void SerializeFields(object obj)
@@ -283,7 +289,7 @@ internal class Serialization
             var hasCustomSerializer =
                 member.HasCustomSerializer || member.UdtWrapper.HasCustomSerializer;
             var isCollectionSerially = member.CollectionAttributeInstance is
-                { SerializationType: YAXCollectionSerializationTypes.Serially };
+            { SerializationType: YAXCollectionSerializationTypes.Serially };
             var isKnownType = member.IsKnownType;
 
             var serializationLocation = member.SerializationLocation;
@@ -333,6 +339,9 @@ internal class Serialization
 
     private bool ShouldWriteMember(MemberWrapper member, object? elementValue)
     {
+        if (_serializer.UdtWrapper.IsMarkNullOrEmpty)
+            return true;
+
         return !IsNullButDoNotSerializeNull(member, elementValue) &&
                !IsDefaultButDoNotSerializeDefault(member, elementValue);
     }
@@ -350,8 +359,7 @@ internal class Serialization
         if (elementValue == null && _serializer.UdtWrapper.IsNotAllowedNullObjectSerialization)
             return true;
 
-        if (elementValue == null &&
-            member.IsAttributedAsDontSerializeIfNull)
+        if (elementValue == null && member.IsAttributedAsDontSerializeIfNull)
             return true;
 
 
@@ -372,7 +380,7 @@ internal class Serialization
 
         if (elementValue == null || ValueEquals(elementValue, ReflectionUtils.GetDefaultValue(member.MemberType)))
         {
-           return true;
+            return true;
         }
 
         return false;
@@ -462,6 +470,7 @@ internal class Serialization
         // make an element with the provided data
         var elemToAdd = MakeElement(parElem, member, elementValue, out var moveDescOnly,
             out var alreadyAdded);
+
         if (!areOfSameType)
         {
             var realType = elementValue?.GetType();
@@ -757,13 +766,29 @@ internal class Serialization
         if (member.PreservesWhitespace)
             XMLUtils.AddPreserveSpaceAttribute(elemToAdd, _serializer.Options.Culture);
 
+        if (_serializer.UdtWrapper.IsMarkNullOrEmpty)
+        {
+            if (elementValue == null)
+            {
+                elemToAdd.Add(new XAttribute("_MarkNullOrEmpty", "NULL"));
+            }
+            if (elementValue is ICollection ValueAsIColl)
+            {
+                if (ValueAsIColl.Count == 0)
+                {
+                    elemToAdd.Add(new XAttribute("_MarkNullOrEmpty", "EMPTY"));
+                }
+            } 
+        }
+
         return elemToAdd;
     }
 
     private static (bool alreadyAdded, bool moveDescOnly) HandleRecursiveCollection(XElement insertionLocation,
         MemberWrapper member, XElement elemToAdd)
     {
-        var moveDescOnly = member.CollectionAttributeInstance is {
+        var moveDescOnly = member.CollectionAttributeInstance is
+        {
             SerializationType: YAXCollectionSerializationTypes.RecursiveWithNoContainingElement
         } && !elemToAdd.HasAttributes;
 
@@ -1028,34 +1053,34 @@ internal class Serialization
         switch (udt)
         {
             case { IsTreatedAsDictionary: true }:
-            {
-                elemToAdd = MakeDictionaryElement(elem, alias, obj, null, null,
-                    udt.IsNotAllowedNullObjectSerialization);
-                if (elemToAdd.Parent != elem)
-                    elem.Add(elemToAdd);
-                break;
-            }
+                {
+                    elemToAdd = MakeDictionaryElement(elem, alias, obj, null, null,
+                        udt.IsNotAllowedNullObjectSerialization);
+                    if (elemToAdd.Parent != elem)
+                        elem.Add(elemToAdd);
+                    break;
+                }
             case { IsTreatedAsCollection: true }:
-            {
-                elemToAdd = MakeCollectionElement(elem, alias, obj, null, null);
-                if (elemToAdd.Parent != elem)
-                    elem.Add(elemToAdd);
-                break;
-            }
+                {
+                    elemToAdd = MakeCollectionElement(elem, alias, obj, null, null);
+                    if (elemToAdd.Parent != elem)
+                        elem.Add(elemToAdd);
+                    break;
+                }
             case { IsEnum: true }:
-            {
-                elemToAdd = MakeBaseElement(elem, alias, udt.EnumWrapper!.GetAlias(obj!), out var alreadyAdded);
-                if (!alreadyAdded)
-                    elem.Add(elemToAdd);
-                break;
-            }
+                {
+                    elemToAdd = MakeBaseElement(elem, alias, udt.EnumWrapper!.GetAlias(obj!), out var alreadyAdded);
+                    if (!alreadyAdded)
+                        elem.Add(elemToAdd);
+                    break;
+                }
             default: // udt is null or none of the cases
-            {
-                elemToAdd = MakeBaseElement(elem, alias, obj, out var alreadyAdded);
-                if (!alreadyAdded)
-                    elem.Add(elemToAdd);
-                break;
-            }
+                {
+                    elemToAdd = MakeBaseElement(elem, alias, obj, out var alreadyAdded);
+                    if (!alreadyAdded)
+                        elem.Add(elemToAdd);
+                    break;
+                }
         }
 
         return elemToAdd;
@@ -1260,10 +1285,10 @@ internal class Serialization
             case TextEmbedding.Base64:
                 elem.Add(new XText(value.ToBase64(System.Text.Encoding.UTF8)!));
                 break;
-            /*
-                TextEmbedding.None and null values uses standard element serialization,
-                which is not handled in this method.
-            */
+                /*
+                    TextEmbedding.None and null values uses standard element serialization,
+                    which is not handled in this method.
+                */
         }
 
         return elem;

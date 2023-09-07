@@ -197,6 +197,10 @@ internal class UdtWrapper
         (SerializationOptions & YAXSerializationOptions.DontSerializeNullObjects) ==
         YAXSerializationOptions.DontSerializeNullObjects;
 
+    public bool IsMarkNullOrEmpty =>
+        (SerializationOptions & YAXSerializationOptions.MarkNullOrEmpty) ==
+        YAXSerializationOptions.MarkNullOrEmpty;
+
     /// <summary>
     /// Determines whether serialization of default values is not allowed.
     /// </summary>

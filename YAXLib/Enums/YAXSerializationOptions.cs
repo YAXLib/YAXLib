@@ -62,5 +62,10 @@ public enum YAXSerializationOptions
     /// <summary>
     /// Prevents serialization of default values.
     /// </summary>
-    DoNotSerializeDefaultValues = 128
+    DoNotSerializeDefaultValues = 128,
+    /// <summary>
+    /// Add attribut to Null object :  _MarkNullOrEmpty="NULL"
+    /// Add attribut to Empty Array:  _MarkNullOrEmpty="EMPTY"
+    /// </summary>
+    MarkNullOrEmpty = 256,
 }
