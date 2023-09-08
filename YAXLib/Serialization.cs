@@ -772,13 +772,15 @@ internal class Serialization
             {
                 elemToAdd.Add(new XAttribute("_MarkNullOrEmpty", "NULL"));
             }
-            if (elementValue is ICollection ValueAsIColl)
+
+            if (member.UdtWrapper.IsTreatedAsCollection)
             {
-                if (ValueAsIColl.Count == 0)
+                var ValueAsIColl = elementValue as ICollection;
+                if (ValueAsIColl?.Count == 0)
                 {
                     elemToAdd.Add(new XAttribute("_MarkNullOrEmpty", "EMPTY"));
                 }
-            } 
+            }
         }
 
         return elemToAdd;
