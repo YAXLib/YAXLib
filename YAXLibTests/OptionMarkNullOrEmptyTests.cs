@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using FluentAssertions.Execution;
 using NUnit.Framework;
 using YAXLib;
 using YAXLib.Customization;
@@ -25,6 +27,10 @@ public class OptionMarkNullOrEmptyTests
         public List<int> TheCollection01 { get; set; }
         public List<int> TheCollection02 { get; set; }
 
+        public int[] IntArr01 { get; set; } = new int[0];
+        public int[] IntArr02 { get; set; } = null;
+
+
         public static NullableSample4 GetSampleInstance()
         {
             return new()
@@ -33,8 +39,11 @@ public class OptionMarkNullOrEmptyTests
                 Text02 = null,
                 TheCollection01 = new List<int> { },
                 TheCollection02 = null,
+                IntArr01 = new int[0],
+                IntArr02 = null,
             };
         }
+
     }
     [Test]
     public void Serialize01()
@@ -45,6 +54,8 @@ public class OptionMarkNullOrEmptyTests
                   <Text02 _MarkNullOrEmpty="NULL" />
                   <TheCollection01 _MarkNullOrEmpty="EMPTY" />
                   <TheCollection02 _MarkNullOrEmpty="NULL" />
+                  <IntArr01 _MarkNullOrEmpty="EMPTY" />
+                  <IntArr02 _MarkNullOrEmpty="NULL" />
                 </NullableSample4>
                 """;
 
@@ -53,9 +64,9 @@ public class OptionMarkNullOrEmptyTests
             SerializationOptions = YAXSerializationOptions.MarkNullOrEmpty
         });
         var instance = NullableSample4.GetSampleInstance();
-        var got = serializer.Serialize(instance); 
+        var got = serializer.Serialize(instance);
         Assert.AreEqual(got, result);
     }
 
- 
+
 }
