@@ -68,5 +68,20 @@ public class OptionMarkNullOrEmptyTests
         Assert.AreEqual(got, result);
     }
 
+    [Test] 
+    public void TestOptionConflictCheck()
+    {
+        var instance = NullableSample4.GetSampleInstance();
+
+        Assert.Throws<YAXOptionConflictException>(() =>
+        {
+            var serializer = new YAXSerializer<NullableSample4>(new SerializerOptions
+            {
+                SerializationOptions = YAXSerializationOptions.MarkNullOrEmpty | YAXSerializationOptions.DontSerializeNullObjects
+            });
+            var got = serializer.Serialize(instance);
+        });
+
+    }
 
 }

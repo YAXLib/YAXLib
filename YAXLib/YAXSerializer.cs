@@ -54,6 +54,7 @@ public class YAXSerializer : IYAXSerializer<object>, IRecursionCounter
     internal void Initialize(Type t, SerializerOptions options)
     {
         Type = t;
+        CheckOption(options);
         Options = options;
         DocumentDefaultNamespace = XNamespace.None;
 
@@ -64,7 +65,23 @@ public class YAXSerializer : IYAXSerializer<object>, IRecursionCounter
         if (UdtWrapper.HasNamespace)
             TypeNamespace = UdtWrapper.Namespace;
     }
-
+    internal void CheckOption(SerializerOptions options)
+    {
+        if (OptContains(YAXSerializationOptions.MarkNullOrEmpty))
+        {
+            if (OptContains(YAXSerializationOptions.DontSerializeNullObjects))
+            {
+                var errmsg = $"YAXSerializationOptions.MarkNullOrEmpty  confilicts with YAXSerializationOptions.DontSerializeNullObjects";
+                throw new YAXOptionConflictException(errmsg);
+            }
+        }
+        return;
+        bool OptContains(YAXSerializationOptions target)
+        {
+            var rst = (options.SerializationOptions & target) == target;
+            return rst;
+        }
+    }
     /// <summary>
     /// Pre-initializes this instance so that it prepared for calling
     /// <see cref="Initialize(System.Type,SerializerOptions)" /> after it is
