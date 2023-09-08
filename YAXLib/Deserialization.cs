@@ -151,7 +151,8 @@ internal class Deserialization
     private object DeserializeDefault(XElement baseElement)
     {
         var resultObject = _deserializationObject ?? Activator.CreateInstance(_serializer.Type, Array.Empty<object>());
-        if (resultObject == null) return null!;
+        if (resultObject == null)
+            return null!;
 
         foreach (var member in _serializer.UdtWrapper.GetFieldsForDeserialization())
         {
@@ -756,7 +757,28 @@ internal class Deserialization
 
             // Take care of empty elements like '<Text />'
             if (string.IsNullOrEmpty(elemValue) && xElementValue != null)
-                elemValue = xElementValue.IsEmpty ? null : string.Empty;
+            {
+                if(_serializer.UdtWrapper.IsMarkNullOrEmpty)
+                {
+                    if(xElementValue.Attribute("_MarkNullOrEmpty")?.Value=="NULL")
+                    {
+                        elemValue = null;
+                    }
+                    else
+                    {
+                        elemValue = string.Empty;
+                    }
+                    
+                }
+                else
+                {
+                    elemValue = xElementValue.IsEmpty ? null : string.Empty;
+                }
+            
+            }
+               
+
+           
 
             member.SetValue(obj, elemValue);
             return true;
@@ -772,9 +794,20 @@ internal class Deserialization
 
     private bool TrySetValueForEmptyElement(object obj, MemberWrapper member, Type memberType, XElement? xElementValue)
     {
+        if (_serializer.UdtWrapper.IsMarkNullOrEmpty)
+        {
+            if (xElementValue.Attribute("_MarkNullOrEmpty")?.Value == "NULL")
+            {
+                member.SetValue(obj, member.DefaultValue);
+                return true;
+            }
+        }
+         
+
         if (xElementValue == null || !XMLUtils.IsElementCompletelyEmpty(xElementValue) ||
             ReflectionUtils.IsBasicType(memberType) || member.IsTreatedAsCollection ||
-            member.IsTreatedAsDictionary || AtLeastOneOfMembersExists(xElementValue, memberType)) return false;
+            member.IsTreatedAsDictionary || AtLeastOneOfMembersExists(xElementValue, memberType))
+            return false;
 
         try
         {

@@ -9,6 +9,7 @@ using NUnit.Framework;
 using YAXLib;
 using YAXLib.Customization;
 using YAXLib.Enums;
+using YAXLib.Exceptions;
 using YAXLib.Options;
 using YAXLibTests.SampleClasses;
 
@@ -67,6 +68,61 @@ public class OptionMarkNullOrEmptyTests
         var got = serializer.Serialize(instance);
         Assert.AreEqual(got, result);
     }
+
+    [Test]
+    public void Deserialize01()
+    {
+        const string xmlInput = """
+                <NullableSample4>
+                  <Text01/>
+                  <Text02 _MarkNullOrEmpty="NULL"/>
+                  <TheCollection01 _MarkNullOrEmpty="EMPTY" />
+                  <TheCollection02 _MarkNullOrEmpty="NULL" />
+                  <IntArr01 _MarkNullOrEmpty="EMPTY" />
+                  <IntArr02 _MarkNullOrEmpty="NULL" />
+                </NullableSample4>
+                """;
+
+        var serializer = new YAXSerializer<NullableSample4>(new SerializerOptions
+        {
+            SerializationOptions = YAXSerializationOptions.MarkNullOrEmpty
+        });
+        var got = serializer.Deserialize(xmlInput); 
+        Assert.AreEqual("",got.Text01,  nameof(got.Text01));
+        Assert.AreEqual(null, got.Text02,  nameof(got.Text02));
+        Assert.AreEqual(0, got.TheCollection01?.Count, nameof(got.TheCollection01));
+        Assert.AreEqual(null, got.TheCollection02, nameof(got.TheCollection02));
+        Assert.AreEqual(0, got.IntArr01?.Length,  nameof(got.IntArr01));
+        Assert.AreEqual(null, got.IntArr02, nameof(got.IntArr02));
+    }
+    [Test]
+    public void Deserialize02()
+    {
+        const string xmlInput = """
+                <NullableSample4>
+                  <Text01></Text01>
+                  <Text02 _MarkNullOrEmpty="NULL" > </Text02>
+                  <TheCollection01 _MarkNullOrEmpty="EMPTY"></TheCollection01>
+                  <TheCollection02 _MarkNullOrEmpty="NULL" ></TheCollection02>
+                  <IntArr01 _MarkNullOrEmpty="EMPTY"></IntArr01>
+                  <IntArr02 _MarkNullOrEmpty="NULL" ></IntArr02>
+                </NullableSample4>
+                """;
+
+        var serializer = new YAXSerializer<NullableSample4>(new SerializerOptions
+        {
+            SerializationOptions = YAXSerializationOptions.MarkNullOrEmpty
+        });
+        var got = serializer.Deserialize(xmlInput);
+        Assert.IsNotNull(got);
+        Assert.AreEqual("", got.Text01, nameof(got.Text01));
+        Assert.AreEqual(null, got.Text02, nameof(got.Text02));
+        Assert.AreEqual(0, got.TheCollection01?.Count, nameof(got.TheCollection01));
+        Assert.AreEqual(null, got.TheCollection02, nameof(got.TheCollection02));
+        Assert.AreEqual(0, got.IntArr01?.Length, nameof(got.IntArr01));
+        Assert.AreEqual(null, got.IntArr02, nameof(got.IntArr02));
+    }
+
 
     [Test] 
     public void TestOptionConflictCheck()
