@@ -14,6 +14,7 @@ using YAXLib.Caching;
 using YAXLib.Customization;
 using YAXLib.Enums;
 using YAXLib.Exceptions;
+using YAXLib.MarkObjWithId;
 
 namespace YAXLib;
 
@@ -151,6 +152,27 @@ internal class Deserialization
     private object DeserializeDefault(XElement baseElement)
     {
         var resultObject = _deserializationObject ?? Activator.CreateInstance(_serializer.Type, Array.Empty<object>());
+
+        if (_serializer.UdtWrapper.IsMarkObjId2AvertSefRef)
+        {
+            var objId = baseElement.GetObjIdFromAttribute();
+            if (objId != null)
+            {
+                if (_serializer.Session.ObjDict.TryGetObj(objId.Value, out object savedInstance))
+                {
+                    if (baseElement.IsNullXmlNode())
+                    {
+                        return savedInstance;
+                    }
+                }
+                else
+                {
+                    _serializer.Session.ObjDict.SaveObj(objId.Value, resultObject);
+
+                }
+            }
+        }
+
         if (resultObject == null) return null!;
 
         foreach (var member in _serializer.UdtWrapper.GetFieldsForDeserialization())
@@ -341,7 +363,7 @@ internal class Deserialization
 
         if ((member.IsTreatedAsCollection || member.IsTreatedAsDictionary) &&
             member.CollectionAttributeInstance is
-                { SerializationType: YAXCollectionSerializationTypes.RecursiveWithNoContainingElement })
+            { SerializationType: YAXCollectionSerializationTypes.RecursiveWithNoContainingElement })
         {
             if (AtLeastOneOfCollectionMembersExists(baseElement, member))
             {
@@ -631,7 +653,7 @@ internal class Deserialization
         // containing the collection, not the collection itself. That's because the containing element of collection is not
         // serialized. In this case the flag `isRealTypeAttributeNotRelevant` is set to true.
         var isRealTypeAttributeNotRelevant = member.CollectionAttributeInstance is
-            { SerializationType: YAXCollectionSerializationTypes.RecursiveWithNoContainingElement };
+        { SerializationType: YAXCollectionSerializationTypes.RecursiveWithNoContainingElement };
 
         GetRealTypeIfSpecified(xElementValue, isRealTypeAttributeNotRelevant, ref memberType);
 
@@ -829,7 +851,7 @@ internal class Deserialization
         var isPrimitive = ReflectionUtils.IsBasicType(collItemType);
 
         if (isPrimitive && collAttrInstance is
-                { SerializationType: YAXCollectionSerializationTypes.Serially })
+            { SerializationType: YAXCollectionSerializationTypes.Serially })
         {
             // The collection was serialized serially
             GetSerialCollectionItems(xElement, memberAlias, collAttrInstance, collItemType, dataItems);
