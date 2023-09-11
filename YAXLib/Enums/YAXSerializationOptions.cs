@@ -62,5 +62,9 @@ public enum YAXSerializationOptions
     /// <summary>
     /// Prevents serialization of default values.
     /// </summary>
-    DoNotSerializeDefaultValues = 128
+    DoNotSerializeDefaultValues = 128,
+    /// <summary>
+    /// Each object is marked number to Prevents that cycle references from child to parent objects cause an infinite loop.
+    /// </summary>
+    MarkObjId2AvertSefRef = 512,
 }
