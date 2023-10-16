@@ -1247,7 +1247,7 @@ internal class Serialization
             if (id != null && value != null)
             {
                 XElement nullElem = new XElement(name);
-                nullElem.Add(new XAttribute(DictObjWithId.ATTR_FLAG_OBJID, id));
+                nullElem.Add(new XAttribute(Xmlhelper.ATTR_FLAG_OBJID, id));
                 return nullElem;
             }
         }
@@ -1273,7 +1273,7 @@ internal class Serialization
             if (value != null && value.GetType().ShouldMarkObjId())
             {
                 var id = _serializer.Session.ObjDict.GetOrNewIdx(value);
-                elem.Add(new XAttribute(DictObjWithId.ATTR_FLAG_OBJID, id));
+                elem.Add(new XAttribute(Xmlhelper.ATTR_FLAG_OBJID, id));
             }
         }
 
