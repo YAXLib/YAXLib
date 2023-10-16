@@ -10,8 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using YAXLib;
-using YAXLib.Options;
-using static YAXLibTests.CustomTypeInspectorTests;
+using YAXLib.Options; 
 
 namespace YAXLibTests;
 [TestFixture]
@@ -56,10 +55,10 @@ public class MarkObjId2AvertSefRef01
     public void Se01()
     {
         var result = """
-            <CPack>
+            <CPack xmlns:yaxlib="http://www.sinairv.com/>
               <Int01>666</Int01>
               <Name>PackLoop</Name>
-              <ItWillLoop _ObjId="1000">
+              <ItWillLoop yaxlib:id="1000">
                 <Int02>333</Int02>
                 <Name>AAA</Name>
                 <Child>
@@ -68,7 +67,7 @@ public class MarkObjId2AvertSefRef01
                   <Child>
                     <Int02>555</Int02>
                     <Name>CCC</Name>
-                    <Child _ObjId="1000" />
+                    <Child yaxlib:ref="1000" />
                   </Child>
                 </Child>
               </ItWillLoop>
@@ -92,10 +91,10 @@ public class MarkObjId2AvertSefRef01
     public void De01()
     {
         var xmlInput = """
-            <CPack>
+            <CPack xmlns:yaxlib="http://www.sinairv.com/>
               <Int01>666</Int01>
               <Name>PackLoop</Name>
-              <ItWillLoop _ObjId="1000">
+              <ItWillLoop yaxlib:id="1000">
                 <Int02>333</Int02>
                 <Name>AAA</Name>
                 <Child>
@@ -104,7 +103,7 @@ public class MarkObjId2AvertSefRef01
                   <Child>
                     <Int02>555</Int02>
                     <Name>CCC</Name>
-                    <Child _ObjId="1000" />
+                    <Child yaxlib:ref="1000" />
                   </Child>
                 </Child>
               </ItWillLoop>
@@ -161,19 +160,19 @@ public class MarkObjId2AvertSefRef01
     public void Se02()
     {
         var result = """
-         <CPack02>
+         <CPack02 xmlns:yaxlib="http://www.sinairv.com/>
            <BoxList>
-             <CBox _ObjId="1000">
+             <CBox yaxlib:id="1000">
                <Name>Node2</Name>
              </CBox>
              <CBox>
                <Name>Node1</Name>
              </CBox>
-             <CBox _ObjId="1000" />
+             <CBox yaxlib:ref="1000" />
              <CBox>
                <Name>Node3</Name>
              </CBox>
-             <CBox _ObjId="1000" />
+             <CBox yaxlib:ref="1000" />
            </BoxList>
          </CPack02>
          """;
@@ -195,19 +194,19 @@ public class MarkObjId2AvertSefRef01
     public void De02()
     {
         var xmlInput = """
-            <CPack02>
+            <CPack02 xmlns:yaxlib="http://www.sinairv.com/>
               <BoxList>
-                <CBox _ObjId="1000">
+                <CBox yaxlib:id="1000">
                   <Name>Node2</Name>
                 </CBox>
                 <CBox>
                   <Name>Node1</Name>
                 </CBox>
-                <CBox _ObjId="1000" />
+                <CBox yaxlib:ref="1000" />
                 <CBox>
                   <Name>Node3</Name>
                 </CBox>
-                <CBox _ObjId="1000" />
+                <CBox yaxlib:ref="1000" />
               </BoxList>
             </CPack02>
             """;
