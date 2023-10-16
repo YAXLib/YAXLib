@@ -13,11 +13,7 @@ using System.Xml.Linq;
 
 namespace YAXLib.MarkObjWithId;
 internal class DictObjWithId
-{
-    public const string ATTR_FLAG_OBJID = "_ObjId";
-
-
-
+{ 
     public Dictionary<int, object> _dict = new();
 
     internal int NextObjIdx = 1000;

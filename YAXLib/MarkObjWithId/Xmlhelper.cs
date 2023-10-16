@@ -10,9 +10,8 @@ namespace YAXLib.MarkObjWithId;
 
 internal static class Xmlhelper
 {
+    public static string ATTR_FLAG_OBJID ="_ObjId";
 
-
-    public static string ATTR_FLAG_OBJID => DictObjWithId.ATTR_FLAG_OBJID;
     /// <summary>
     /// Only the repeated ObjId is keept
     /// </summary>
@@ -76,7 +75,7 @@ internal static class Xmlhelper
 
     public static int? GetObjIdFromAttribute(this XElement? xe)
     {
-        var attr = xe?.Attribute(DictObjWithId.ATTR_FLAG_OBJID);
+        var attr = xe?.Attribute(Xmlhelper.ATTR_FLAG_OBJID);
         if (attr == null)
         {
             return null;
