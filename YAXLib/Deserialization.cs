@@ -154,8 +154,8 @@ internal class Deserialization
         var resultObject = _deserializationObject ?? Activator.CreateInstance(_serializer.Type, Array.Empty<object>());
 
         if (_serializer.UdtWrapper.IsMarkObjId2AvertSefRef)
-        {
-            var objId = baseElement.GetObjIdFromAttribute();
+        { 
+            var objId = baseElement.GetRefObjId() ?? baseElement.GetMarkObjId();
             if (objId != null)
             {
                 if (_serializer.Session.ObjDict.TryGetObj(objId.Value, out object savedInstance))
