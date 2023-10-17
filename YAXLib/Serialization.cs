@@ -67,6 +67,7 @@ internal class Serialization
         if (_serializer.UdtWrapper.IsMarkObjId2AvertSefRef)
         {
             _mainDocument = _mainDocument.ClearUnNecessaryObjId();
+            _mainDocument = _mainDocument.FixObjIdToRef();
             _serializer.Session.Reset();
         }
 

@@ -67,7 +67,7 @@ public class MarkObjId2AvertSefRef01
                   <Child>
                     <Int02>555</Int02>
                     <Name>CCC</Name>
-                    <Child yaxlib:id="1000" />
+                    <Child yaxlib:ref="1000" />
                   </Child>
                 </Child>
               </ItWillLoop>
@@ -103,7 +103,7 @@ public class MarkObjId2AvertSefRef01
                   <Child>
                     <Int02>555</Int02>
                     <Name>CCC</Name>
-                    <Child yaxlib:id="1000" />
+                    <Child yaxlib:ref="1000" />
                   </Child>
                 </Child>
               </ItWillLoop>
@@ -168,11 +168,11 @@ public class MarkObjId2AvertSefRef01
              <CBox>
                <Name>Node1</Name>
              </CBox>
-             <CBox yaxlib:id="1000" />
+             <CBox yaxlib:ref="1000" />
              <CBox>
                <Name>Node3</Name>
              </CBox>
-             <CBox yaxlib:id="1000" />
+             <CBox yaxlib:ref="1000" />
            </BoxList>
          </CPack02>
          """;
@@ -202,11 +202,11 @@ public class MarkObjId2AvertSefRef01
                 <CBox>
                   <Name>Node1</Name>
                 </CBox>
-                <CBox yaxlib:id="1000" />
+                <CBox yaxlib:ref="1000" />
                 <CBox>
                   <Name>Node3</Name>
                 </CBox>
-                <CBox yaxlib:id="1000" />
+                <CBox yaxlib:ref="1000" />
               </BoxList>
             </CPack02>
             """;
