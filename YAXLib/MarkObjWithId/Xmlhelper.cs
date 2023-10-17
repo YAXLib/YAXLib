@@ -10,8 +10,6 @@ namespace YAXLib.MarkObjWithId;
 
 internal static class Xmlhelper
 {
-//    public static string ATTR_FLAG_MARK_OBJID = "yaxlib:id";
-//    public static string ATTR_FLAG_REF_OBJID = "yaxlib:ref";
     public readonly static XNamespace YaxlibNamespace = "http://www.sinairv.com/yaxlib/";
     public readonly static string PrefixNamespace = "yaxlib";
     readonly static XName OBJID_ELEMENT_NAME = XName.Get("id", YaxlibNamespace.ToString());
@@ -103,73 +101,7 @@ internal static class Xmlhelper
     public static void AddAttribute_MarkObjId(this XElement xe, int objId, YAXSerializer _serializer)
     {
         _serializer.XmlNamespaceManager.RegisterNamespace(YaxlibNamespace, PrefixNamespace);
-        xe.Add(new XAttribute(YaxlibNamespace + "id", objId));
-
-        /*
-        //_serializer.XmlNamespaceManager.RegisterNamespace(YaxlibNamespace, PrefixNamespace);
-
-
-        XElement root = xe;
-        {
-
-            while (root.Parent != null)
-            {
-                root = root.Parent;
-            }
-        }
-
-        root.Add(new XAttribute(XNamespace.Xmlns + "yaxlib", YaxlibNamespace.ToString()));
-
-        xe.Add(
-               new XAttribute(YaxlibNamespace + "id", objId)
-            );
-
-        Console.WriteLine(xe);
-        */
-
-
-        /*
-        XNamespace ns = "http://www.sinairv.com/yaxlib/";
-
-         
-
-        xe.Add(new XAttribute(XNamespace.Xmlns + "yaxlib", ns.ToString()),
-               new XAttribute(ns + "id", objId)
-            ); 
-
-        Console.WriteLine(xe);
-        */
-
-        /*
-        XNamespace aw = "http://www.adventure-works.com";
-        XElement root = new XElement(aw + "Root",
-            new XAttribute(XNamespace.Xmlns + "aw", "http://www.adventure-works.com"),
-            new XElement(aw + "Child", "child content")
-        );
-        Console.WriteLine(root);
-        */
-        /*
-
-        XNamespace ns = "http://www.sinairv.com/yaxlib/";      
-        xmlNamespaceManager.RegisterNamespace(ns, "yaxlib");
-
-        XElement root = xe;
-        {
-            
-            while (root.Parent != null)
-            {
-                root = root.Parent;
-            }
-        }
-        xe.Add(new XAttribute(XNamespace.Xmlns + "yaxlib", "http://www.adventure-works.com"),
-               new XAttribute(ns + "id", $"{objId}")            
-            );
-
-        //elem.Add(new XAttribute(Xmlhelper.ATTR_FLAG_MARK_OBJID, id));
-       // var xatt = new XAttribute(ns + "id", $"{objId}");
-      //  xe.Add(xatt);
-
-        */
+        xe.Add(new XAttribute(OBJID_ELEMENT_NAME, objId));
     }
     public static void Attribute_RefObjId(this XElement xe, int objId)
     {
