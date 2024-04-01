@@ -51,7 +51,7 @@ public class SerializerPoolTests
         var serializer = sp.Get();
         sp.Return(serializer);
         sp.Get(out var sb2);
-        Assert.AreSame(serializer, sb2);
+        Assert.That(sb2, Is.SameAs(serializer));
     }
 
     [Test]

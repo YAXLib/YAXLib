@@ -29,13 +29,13 @@ public class NumericMinMaxTests
             var d = 0.55;
             var xml = ser.Serialize(d);
             var deserializedInstance = ser.Deserialize(xml);
-            Assert.AreEqual(d, deserializedInstance);
+            Assert.That(deserializedInstance, Is.EqualTo(d));
 
             d = double.MaxValue;
             xml = ser.Serialize(d);
             deserializedInstance = ser.Deserialize(xml);
             // Causes a System.OverflowException {"Value was either too large or too small for a Double."}
-            Assert.AreEqual(d, deserializedInstance);
+            Assert.That(deserializedInstance, Is.EqualTo(d));
         }
         catch (Exception ex)
         {
@@ -56,7 +56,7 @@ public class NumericMinMaxTests
             var d = double.MinValue;
             var xml = ser.Serialize(d);
             var deserializedInstance = ser.Deserialize(xml);
-            Assert.AreEqual(d, deserializedInstance);
+            Assert.That(deserializedInstance, Is.EqualTo(d));
         }
         catch (Exception ex)
         {
@@ -78,7 +78,7 @@ public class NumericMinMaxTests
             var f = float.MaxValue;
             var xml = ser.Serialize(f);
             var deserializedInstance = ser.Deserialize(xml);
-            Assert.AreEqual(f, deserializedInstance);
+            Assert.That(deserializedInstance, Is.EqualTo(f));
         }
         catch (Exception ex)
         {
@@ -99,7 +99,7 @@ public class NumericMinMaxTests
             var f = float.MinValue;
             var xml = ser.Serialize(f);
             var deserializedInstance = ser.Deserialize(xml);
-            Assert.AreEqual(f, deserializedInstance);
+            Assert.That(deserializedInstance, Is.EqualTo(f));
         }
         catch (Exception ex)
         {

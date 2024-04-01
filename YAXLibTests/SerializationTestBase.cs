@@ -392,7 +392,7 @@ public abstract class SerializationTestBase
 
         var got = serializer.Serialize(d);
         var gotDes = (Dictionary<string, object>?) serializer.Deserialize(got);
-        Assert.AreEqual(d[theKey], gotDes?[theKey]);
+        Assert.That(gotDes?[theKey], Is.EqualTo(d[theKey]));
     }
 
     /// <summary>
@@ -410,14 +410,14 @@ public abstract class SerializationTestBase
         });
 
         var got = serializer.Serialize(d);
-        Assert.AreEqual("""
+        Assert.That(got, Is.EqualTo("""
             <DictionaryOfStringObject>
               <KeyValuePairOfStringObject>
                 <Key>TheKey</Key>
                 <Value />
               </KeyValuePairOfStringObject>
             </DictionaryOfStringObject>
-            """, got);
+            """));
     }
 
     [Test]
@@ -2269,7 +2269,7 @@ public abstract class SerializationTestBase
                 </container>
                 """;
 
-        Assert.That(expectedResult, Is.EqualTo(result));
+        Assert.That(result, Is.EqualTo(expectedResult));
     }
 
     [Test]
@@ -2316,7 +2316,7 @@ public abstract class SerializationTestBase
                   </DicValueAsContentKeyAsElement>
                 </DictionaryKeyValueAsContent>
                 """;
-        Assert.That(expectedResult, Is.EqualTo(result));
+        Assert.That(result, Is.EqualTo(expectedResult));
     }
 
     [Test]
@@ -2334,7 +2334,7 @@ public abstract class SerializationTestBase
                 </TheItems>
                 """;
 
-        Assert.AreEqual(expectedResult, result);
+        Assert.That(result, Is.EqualTo(expectedResult));
     }
 
     [Test]
@@ -2354,7 +2354,7 @@ public abstract class SerializationTestBase
                 </container>
                 """;
 
-        Assert.AreEqual(expectedResult, result);
+        Assert.That(result, Is.EqualTo(expectedResult));
     }
 
     [Test]
@@ -2376,7 +2376,7 @@ public abstract class SerializationTestBase
                 </CollectionWithExtraProperties>
                 """;
 
-        Assert.AreEqual(expectedResult, result);
+        Assert.That(result, Is.EqualTo(expectedResult));
     }
 
     [Test]
@@ -2394,7 +2394,7 @@ public abstract class SerializationTestBase
                 </CollectionWithExtraPropertiesAttributedAsNotCollection>
                 """;
 
-        Assert.AreEqual(expectedResult, result);
+        Assert.That(result, Is.EqualTo(expectedResult));
     }
 
     [Test]
@@ -2424,7 +2424,7 @@ public abstract class SerializationTestBase
                 </DictionaryWithExtraProperties>
                 """;
 
-        Assert.AreEqual(expectedResult, result);
+        Assert.That(result, Is.EqualTo(expectedResult));
     }
 
     [Test]
@@ -2442,7 +2442,7 @@ public abstract class SerializationTestBase
                 </DictionaryWithExtraPropertiesAttributedAsNotCollection>
                 """;
 
-        Assert.AreEqual(expectedResult, result);
+        Assert.That(result, Is.EqualTo(expectedResult));
     }
 
     [Test]
@@ -2500,7 +2500,7 @@ public abstract class SerializationTestBase
                   <sample yaxlib:realtype="YAXLibTests.SampleClasses.PolymorphicTwoSample" />
                 </samples>
                 """;
-        Assert.AreEqual(expectedResult, result);
+        Assert.That(result, Is.EqualTo(expectedResult));
     }
 
     [Test]
@@ -2517,7 +2517,7 @@ public abstract class SerializationTestBase
                 </OneLetterAlias>
                 """;
 
-        Assert.AreEqual(expectedResult, result);
+        Assert.That(result, Is.EqualTo(expectedResult));
     }
 
     [Test]
@@ -2534,7 +2534,7 @@ public abstract class SerializationTestBase
                 </IndexerSample>
                 """;
 
-        Assert.AreEqual(expectedResult, result);
+        Assert.That(result, Is.EqualTo(expectedResult));
     }
 
     [Test]
@@ -2561,7 +2561,7 @@ public abstract class SerializationTestBase
                 </SingleLetterPropertyNames>
                 """;
 
-        Assert.AreEqual(expectedResult, result);
+        Assert.That(result, Is.EqualTo(expectedResult));
     }
 
     [Test]
@@ -2577,7 +2577,7 @@ public abstract class SerializationTestBase
                 </DelegateInstances>
                 """;
 
-        Assert.AreEqual(expectedResult, result);
+        Assert.That(result, Is.EqualTo(expectedResult));
     }
 
     [Test]
@@ -2597,7 +2597,7 @@ public abstract class SerializationTestBase
                   </RefB>
                 </RepetitiveReferenceIsNotLoop>
                 """;
-        Assert.AreEqual(expectedResult, result);
+        Assert.That(result, Is.EqualTo(expectedResult));
     }
 
     [Test]
@@ -2617,7 +2617,7 @@ public abstract class SerializationTestBase
                 </DirectSelfReferringObject>
                 """;
 
-        Assert.AreEqual(expectedResult, result);
+        Assert.That(result, Is.EqualTo(expectedResult));
     }
 
     [Test]
@@ -2650,7 +2650,7 @@ public abstract class SerializationTestBase
                 </IndirectSelfReferringObject>
                 """;
 
-        Assert.AreEqual(expectedResult, result);
+        Assert.That(result, Is.EqualTo(expectedResult));
     }
 
     [Test]
@@ -2686,7 +2686,7 @@ public abstract class SerializationTestBase
                 </IndirectSelfReferringObject>
                 """;
 
-        Assert.AreEqual(expectedResult, result);
+        Assert.That(result, Is.EqualTo(expectedResult));
     }
 
     [Test]
@@ -2727,7 +2727,7 @@ public abstract class SerializationTestBase
                 </DirectSelfReferringObject>
                 """;
 
-        Assert.AreEqual(expectedResult, result);
+        Assert.That(result, Is.EqualTo(expectedResult));
     }
 
     [Test]
@@ -2764,7 +2764,7 @@ public abstract class SerializationTestBase
                 </DirectSelfReferringObject>
                 """;
 
-        Assert.AreEqual(expectedResult, result);
+        Assert.That(result, Is.EqualTo(expectedResult));
     }
 
     [Test]
@@ -2800,7 +2800,7 @@ public abstract class SerializationTestBase
                 </CalculatedPropertiesCanCauseInfiniteLoop>
                 """;
 
-        Assert.AreEqual(expectedResult, result);
+        Assert.That(result, Is.EqualTo(expectedResult));
     }
 
     [Test]
