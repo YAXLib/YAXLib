@@ -139,7 +139,7 @@ public class MarkObjId2AvertSefRef01
         {
             var newone = new CPack02() { BoxList = new List<CBox>() };
 
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
             {
                 newone.BoxList.Add(new CBox
                 {
@@ -186,9 +186,7 @@ public class MarkObjId2AvertSefRef01
 
 
         var got = serializer.Serialize(CPack02.GetSampleInstance());
-        Console.WriteLine("got:" + got);
-        Console.WriteLine("result:" + result);
-        Assert.AreEqual(got, result);
+        Assert.That(result, Is.EqualTo(got));
     }
     [Test]
     public void De02()
@@ -218,11 +216,9 @@ public class MarkObjId2AvertSefRef01
                 SerializationOptions = YAXLib.Enums.YAXSerializationOptions.MarkObjId2AvertSefRef
             });
 
-
         var got = serializer.Deserialize(xmlInput);
-        Console.WriteLine(got);
 
-        Assert.AreSame(got.BoxList[0], got.BoxList[2]);
-        Assert.AreSame(got.BoxList[4], got.BoxList[2]);
+        Assert.That(got.BoxList[2], Is.SameAs(got.BoxList[0]));
+        Assert.That(got.BoxList[2], Is.SameAs(got.BoxList[4]));
     }
 }
