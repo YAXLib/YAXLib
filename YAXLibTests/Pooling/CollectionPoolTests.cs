@@ -49,7 +49,7 @@ public class CollectionPoolTests
         var list = cp.Get();
         cp.Return(list);
         cp.Get(out var list2);
-        Assert.AreSame(list, list2);
+        Assert.That(list2, Is.SameAs(list));
     }
 
     [Test]

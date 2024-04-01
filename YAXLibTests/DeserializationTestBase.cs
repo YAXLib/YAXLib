@@ -37,8 +37,8 @@ public abstract class DeserializationTestBase
     private void PerformTestWithEquals(object obj)
     {
         var serializer = SerializeDeserialize(obj, out var gottonObject);
-        Assert.AreEqual(0, serializer.ParsingErrors.Count);
-        Assert.AreEqual(obj, gottonObject);
+        Assert.That(serializer.ParsingErrors.Count, Is.EqualTo(0));
+        Assert.That(gottonObject, Is.EqualTo(obj));
     }
 
     private object? GetTheTwoStringsAndReturn(object obj, out string originalString, out string? gottonString,
@@ -371,7 +371,7 @@ public abstract class DeserializationTestBase
             { ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow });
         serializer.SetDeserializationBaseObject(book);
         var bookResult = (MoreComplexBook2?) serializer.Deserialize(result);
-        Assert.AreNotEqual(bookResult?.ToString(), initialToString);
+        Assert.That(bookResult?.ToString(), Is.Not.EqualTo(initialToString));
     }
 
     [Test]
@@ -531,11 +531,8 @@ public abstract class DeserializationTestBase
 
         var deserializedContainer = (DictionaryContainerSample?) ser.Deserialize(input);
 
-        Assert.IsNotNull(deserializedContainer?.Items);
-        Assert.IsTrue(deserializedContainer?.Items.Count == container.Items.Count,
-            "Expected Count: {0}. Actual Count: {1}",
-            container.Items.Count,
-            deserializedContainer?.Items.Count);
+        Assert.That(deserializedContainer?.Items, Is.Not.Null);
+        Assert.That(deserializedContainer?.Items.Count == container.Items.Count, $"Expected Count: {container.Items.Count}. Actual Count: {deserializedContainer?.Items.Count}");
     }
 
     [Test]
@@ -550,10 +547,7 @@ public abstract class DeserializationTestBase
         var deserializedInstance = (DictionarySample?) ser.Deserialize(input);
 
         Assert.That(deserializedInstance, Is.Not.Null);
-        Assert.IsTrue(deserializedInstance?.Count == inst.Count,
-            "Expected Count: {0}. Actual Count: {1}",
-            inst.Count,
-            deserializedInstance?.Count);
+        Assert.That(deserializedInstance?.Count == inst.Count, $"Expected Count: {inst.Count}. Actual Count: {deserializedInstance?.Count}");
     }
 
     [Test]
@@ -620,7 +614,7 @@ public abstract class DeserializationTestBase
         var deserializedInstance = (IndirectSelfReferringObject?) ser.Deserialize(input);
 
         Assert.That(deserializedInstance, Is.Not.Null);
-        Assert.IsNull(deserializedInstance?.Child?.Parent);
+        Assert.That(deserializedInstance?.Child?.Parent, Is.Null);
     }
 
     [Test]
@@ -638,7 +632,7 @@ public abstract class DeserializationTestBase
         var deserializedInstance = (DirectSelfReferringObject?) ser.Deserialize(input);
 
         Assert.That(deserializedInstance, Is.Not.Null);
-        Assert.IsNull(deserializedInstance?.Next?.Next);
+        Assert.That(deserializedInstance?.Next?.Next, Is.Null);
     }
 
     [Test]
@@ -656,7 +650,7 @@ public abstract class DeserializationTestBase
         var deserializedInstance = (DirectSelfReferringObject?) ser.Deserialize(input);
 
         Assert.That(deserializedInstance, Is.Not.Null);
-        Assert.IsNull(deserializedInstance?.Next);
+        Assert.That(deserializedInstance?.Next, Is.Null);
     }
 
     [Test]
@@ -670,7 +664,7 @@ public abstract class DeserializationTestBase
         var result = ser.Serialize(CalculatedPropertiesCanCauseInfiniteLoop.GetSampleInstance());
 
         var deserializedInstance = ser.Deserialize(result);
-        Assert.IsNotNull(deserializedInstance);
+        Assert.That(deserializedInstance, Is.Not.Null);
     }
 
     [Test]
@@ -680,7 +674,7 @@ public abstract class DeserializationTestBase
         var ser = CreateSerializer<CalculatedPropertiesCanCauseInfiniteLoop>(options);
         var result = ser.Serialize(CalculatedPropertiesCanCauseInfiniteLoop.GetSampleInstance());
         var deserializedInstance = ser.Deserialize(result) as CalculatedPropertiesCanCauseInfiniteLoop;
-        Assert.IsNotNull(deserializedInstance);
+        Assert.That(deserializedInstance, Is.Not.Null);
         Assert.That(ser.Options.MaxRecursion, Is.EqualTo(10));
         Assert.That(deserializedInstance?.Data, Is.EqualTo(2.0M));
         Assert.That(ser.GetRecursionCount(), Is.EqualTo(0));

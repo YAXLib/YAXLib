@@ -43,15 +43,15 @@ public class CustomTypeInspectorTests
 
         var result = serializer.Serialize(Book.GetSampleInstance());
 
-        Assert.AreEqual(
-            """
+        Assert.That(
+result, Is.EqualTo("""
             <!-- This example demonstrates serializing a very simple class -->
             <Book>
               <Title>Inside C#</Title>
               <Author>Tom Archer &amp; Andrew Whitechapel</Author>
               <Price>30.5</Price>
             </Book>
-            """, result);
+            """));
     }
 
     [Test]

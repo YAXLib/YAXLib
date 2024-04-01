@@ -28,8 +28,8 @@ internal class ExceptionTests
             serializer.Serialize(ClassWithDuplicateYaxAttribute.GetSampleInstance());
         });
 
-        Assert.AreEqual("test", ex?.AttrName);
-        StringAssert.Contains("'test'", ex?.Message);
+        Assert.That(ex?.AttrName, Is.EqualTo("test"));
+        Assert.That(ex?.Message, Does.Contain("'test'"));
     }
 
     [Test]
@@ -54,7 +54,7 @@ internal class ExceptionTests
         });
 
         // YAXBadlyFormedXML exception doesn't need YAXSerializationOptions.DisplayLineInfoInExceptions to get the line numbers
-        Assert.True(ex!.HasLineInfo);
+        Assert.That(ex!.HasLineInfo, Is.True);
         Assert.That(ex.LineNumber, Is.EqualTo(7));
         Assert.That(ex.LinePosition, Is.EqualTo(3));
         Assert.That(ex.Message, Does.Contain("not properly formatted"));
@@ -194,10 +194,10 @@ internal class ExceptionTests
             });
             serializer.Deserialize(bookXml);
         });
-        Assert.True(ex?.HasLineInfo);
-        Assert.AreEqual(6, ex?.LineNumber);
-        Assert.AreEqual(4, ex?.LinePosition);
-        StringAssert.Contains("The format of the value specified for the property", ex?.Message);
+        Assert.That(ex?.HasLineInfo, Is.True);
+        Assert.That(ex?.LineNumber, Is.EqualTo(6));
+        Assert.That(ex?.LinePosition, Is.EqualTo(4));
+        Assert.That(ex?.Message, Does.Contain("The format of the value specified for the property"));
     }
 
     [Test]
@@ -222,10 +222,10 @@ internal class ExceptionTests
             });
             serializer.Deserialize(bookXml);
         });
-        Assert.False(ex?.HasLineInfo);
-        Assert.AreEqual(0, ex?.LineNumber);
-        Assert.AreEqual(0, ex?.LinePosition);
-        StringAssert.Contains("The format of the value specified for the property", ex?.Message);
+        Assert.That(ex?.HasLineInfo, Is.False);
+        Assert.That(ex?.LineNumber, Is.EqualTo(0));
+        Assert.That(ex?.LinePosition, Is.EqualTo(0));
+        Assert.That(ex?.Message, Does.Contain("The format of the value specified for the property"));
     }
 
     [Test]
@@ -239,10 +239,10 @@ internal class ExceptionTests
             serializer.Serialize(new ClassWithDuplicateYaxAttribute());
         });
 
-        Assert.AreEqual(typeof(Book), ex?.ExpectedType);
-        Assert.AreEqual(typeof(ClassWithDuplicateYaxAttribute), ex?.ReceivedType);
-        StringAssert.Contains("'Book'", ex?.Message);
-        StringAssert.Contains("'ClassWithDuplicateYaxAttribute'", ex?.Message);
+        Assert.That(ex?.ExpectedType, Is.EqualTo(typeof(Book)));
+        Assert.That(ex?.ReceivedType, Is.EqualTo(typeof(ClassWithDuplicateYaxAttribute)));
+        Assert.That(ex?.Message, Does.Contain("'Book'"));
+        Assert.That(ex?.Message, Does.Contain("'ClassWithDuplicateYaxAttribute'"));
     }
 
 
@@ -268,9 +268,9 @@ internal class ExceptionTests
             });
             serializer.Deserialize(bookXml);
         });
-        Assert.True(ex?.HasLineInfo);
-        Assert.AreEqual(2, ex?.LineNumber);
-        Assert.AreEqual(2, ex?.LinePosition);
+        Assert.That(ex?.HasLineInfo, Is.True);
+        Assert.That(ex?.LineNumber, Is.EqualTo(2));
+        Assert.That(ex?.LinePosition, Is.EqualTo(2));
     }
 
     [Test]
@@ -296,9 +296,9 @@ internal class ExceptionTests
             });
             serializer.Deserialize(collectionXml);
         });
-        Assert.True(ex?.HasLineInfo);
-        Assert.AreEqual(2, ex?.LineNumber);
-        Assert.AreEqual(2, ex?.LinePosition);
+        Assert.That(ex?.HasLineInfo, Is.True);
+        Assert.That(ex?.LineNumber, Is.EqualTo(2));
+        Assert.That(ex?.LinePosition, Is.EqualTo(2));
     }
 
     [Test]
@@ -322,9 +322,9 @@ internal class ExceptionTests
             });
             serializer.Deserialize(bookXml);
         });
-        Assert.True(ex?.HasLineInfo);
-        Assert.AreEqual(1, ex?.LineNumber);
-        Assert.AreEqual(2, ex?.LinePosition);
+        Assert.That(ex?.HasLineInfo, Is.True);
+        Assert.That(ex?.LineNumber, Is.EqualTo(1));
+        Assert.That(ex?.LinePosition, Is.EqualTo(2));
     }
 
     [Test]
@@ -334,7 +334,7 @@ internal class ExceptionTests
 
         Exception? ex =
             Assert.Throws<YAXBadLocationException>(code: () => throw new YAXBadLocationException(testName));
-        StringAssert.Contains(testName, ex?.Message);
+        Assert.That(ex?.Message, Does.Contain(testName));
     }
 
     [Test]
@@ -343,7 +343,7 @@ internal class ExceptionTests
         var testName = "Test";
         var ex = Assert.Throws<YAXAttributeAlreadyExistsException>(code: () =>
             throw new YAXAttributeAlreadyExistsException(testName));
-        StringAssert.Contains(testName, ex?.Message);
+        Assert.That(ex?.Message, Does.Contain(testName));
     }
 
     [Test]
@@ -352,7 +352,7 @@ internal class ExceptionTests
         var testName = "Test";
         var ex = Assert.Throws<YAXAttributeMissingException>(code: () =>
             throw new YAXAttributeMissingException(testName));
-        StringAssert.Contains(testName, ex?.Message);
+        Assert.That(ex?.Message, Does.Contain(testName));
     }
 
     [Test]
@@ -361,7 +361,7 @@ internal class ExceptionTests
         var testName = "Test";
         var ex = Assert.Throws<YAXElementValueMissingException>(code: () =>
             throw new YAXElementValueMissingException(testName));
-        StringAssert.Contains(testName, ex?.Message);
+        Assert.That(ex?.Message, Does.Contain(testName));
     }
 
     [Test]
@@ -370,7 +370,7 @@ internal class ExceptionTests
         var testName = "Test";
         var ex = Assert.Throws<YAXElementMissingException>(code: () =>
             throw new YAXElementMissingException(testName));
-        StringAssert.Contains(testName, ex?.Message);
+        Assert.That(ex?.Message, Does.Contain(testName));
     }
 
     [Test]
@@ -380,8 +380,8 @@ internal class ExceptionTests
         var testInput = "BadInput";
         var ex = Assert.Throws<YAXBadlyFormedInput>(code: () =>
             throw new YAXBadlyFormedInput(testName, testInput));
-        StringAssert.Contains(testName, ex?.Message);
-        StringAssert.Contains(testInput, ex?.Message);
+        Assert.That(ex?.Message, Does.Contain(testName));
+        Assert.That(ex?.Message, Does.Contain(testInput));
     }
 
     [Test]
@@ -390,7 +390,7 @@ internal class ExceptionTests
         var testName = "Test";
         var ex = Assert.Throws<YAXPropertyCannotBeAssignedTo>(code: () =>
             throw new YAXPropertyCannotBeAssignedTo(testName));
-        StringAssert.Contains(testName, ex?.Message);
+        Assert.That(ex?.Message, Does.Contain(testName));
     }
 
     [Test]
@@ -400,8 +400,8 @@ internal class ExceptionTests
         var testValue = 1;
         var ex = Assert.Throws<YAXCannotAddObjectToCollection>(code: () =>
             throw new YAXCannotAddObjectToCollection(testName, testValue));
-        StringAssert.Contains(testName, ex?.Message);
-        StringAssert.Contains(testValue.ToString(), ex?.Message);
+        Assert.That(ex?.Message, Does.Contain(testName));
+        Assert.That(ex?.Message, Does.Contain(testValue.ToString()));
     }
 
     [Test]
@@ -411,8 +411,8 @@ internal class ExceptionTests
         var testValue = 1;
         var ex = Assert.Throws<YAXDefaultValueCannotBeAssigned>(code: () =>
             throw new YAXDefaultValueCannotBeAssigned(testName, testValue, CultureInfo.InvariantCulture));
-        StringAssert.Contains(testName, ex?.Message);
-        StringAssert.Contains(testValue.ToString(), ex?.Message);
+        Assert.That(ex?.Message, Does.Contain(testName));
+        Assert.That(ex?.Message, Does.Contain(testValue.ToString()));
     }
 
     [Test]
@@ -420,7 +420,7 @@ internal class ExceptionTests
     {
         var testName = "Test";
         var ex = Assert.Throws<YAXBadlyFormedXML>(() => { throw new YAXBadlyFormedXML(new Exception(testName)); });
-        StringAssert.Contains(testName, ex?.Message);
+        Assert.That(ex?.Message, Does.Contain(testName));
     }
 
     [Test]
@@ -429,7 +429,7 @@ internal class ExceptionTests
         var testType = typeof(string);
         var ex = Assert.Throws<YAXCannotSerializeSelfReferentialTypes>(code: () =>
             throw new YAXCannotSerializeSelfReferentialTypes(testType));
-        StringAssert.Contains(testType.Name, ex?.Message);
+        Assert.That(ex?.Message, Does.Contain(testType.Name));
     }
 
     [Test]
@@ -439,8 +439,8 @@ internal class ExceptionTests
         var testType2 = typeof(int);
         var ex = Assert.Throws<YAXObjectTypeMismatch>(code: () =>
             throw new YAXObjectTypeMismatch(testType, testType2));
-        StringAssert.Contains(testType.Name, ex?.Message);
-        StringAssert.Contains(testType2.Name, ex?.Message);
+        Assert.That(ex?.Message, Does.Contain(testType.Name));
+        Assert.That(ex?.Message, Does.Contain(testType2.Name));
     }
 
     [Test]
@@ -448,6 +448,6 @@ internal class ExceptionTests
     {
         var testName = "Test";
         var ex = Assert.Throws<YAXPolymorphicException>(code: () => throw new YAXPolymorphicException(testName));
-        StringAssert.Contains(testName, ex?.Message);
+        Assert.That(ex?.Message, Does.Contain(testName));
     }
 }
