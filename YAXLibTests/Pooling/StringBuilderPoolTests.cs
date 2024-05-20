@@ -35,10 +35,11 @@ public class StringBuilderPoolTests
         sbp.DefaultStringBuilderCapacity = 1234;
 
         var sb = sbp.Get();
-        sb.Append("something");
 
         Assert.That(sbp.Pool.CountActive, Is.EqualTo(1));
         Assert.That(sb.Capacity, Is.EqualTo(sbp.DefaultStringBuilderCapacity));
+
+        sb.Append(new string('x', sbp.DefaultStringBuilderCapacity * 2)); // Exceed the default capacity
 
         // Returning an item should clear the StringBuilder
         Assert.That(() => sbp.Return(sb), Throws.Nothing);
