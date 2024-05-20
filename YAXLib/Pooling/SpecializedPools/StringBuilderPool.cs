@@ -21,8 +21,8 @@ internal sealed class StringBuilderPool : SpecializedPoolBase<StringBuilder>
         Policy.FunctionOnCreate = () => new StringBuilder(DefaultStringBuilderCapacity);
         Policy.ActionOnReturn = sb =>
         {
+            sb.Clear(); // Clear the StringBuilder before setting the new capacity
             sb.Capacity = DefaultStringBuilderCapacity;
-            sb.Clear();
         };
     }
 
