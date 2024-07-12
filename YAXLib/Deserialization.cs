@@ -853,20 +853,20 @@ internal class Deserialization
         }
 
         // Now dataItems list is filled and will be processed
-        
         if (TryDataItemListDirect(collType, dataItems, out var directList))
             return directList;
 
         if (TryGetCollectionAsArray(xElement, collType, collItemType, memberAlias, dataItems, out var array))
             return array;
 
-        if (TryGetCollectionAsDictionary(xElement, collType, collItemType, memberAlias, containerObj, dataItems,
-                out var dictionary)) return dictionary;
+        if (TryGetCollectionAsDictionary(xElement, collType, collItemType, memberAlias, containerObj, dataItems, out var dictionary))
+            return dictionary;
 
-        if (TryGetCollectionAsNonGenericDictionary(xElement, collType, memberAlias, containerObj, dataItems,
-                out var nonGenericDictionary)) return nonGenericDictionary;
+        if (TryGetCollectionAsNonGenericDictionary(xElement, collType, memberAlias, containerObj, dataItems, out var nonGenericDictionary))
+            return nonGenericDictionary;
 
-        if (TryGetCollectionAsBitArray(collType, dataItems, out var bitArray)) return bitArray;
+        if (TryGetCollectionAsBitArray(collType, dataItems, out var bitArray))
+            return bitArray;
 
         if (TryGetCollectionAsStack(xElement, collType, memberAlias, containerObj, dataItems, out var stack))
             return stack;
