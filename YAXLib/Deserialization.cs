@@ -808,6 +808,27 @@ internal class Deserialization
         if (realType != null) memberType = realType;
     }
 
+    private IList? TryGetCollectionItemList(Type collectionItemType)
+    {
+        if (collectionItemType == typeof(object))
+        {
+            return new List<object>();
+        }
+        else
+        {
+            try
+            {
+                var listType = typeof(List<>).MakeGenericType(collectionItemType);
+                var result = (IList) Activator.CreateInstance(listType)!;
+                return result;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+    }
+
     /// <summary>
     /// Retrieves the collection value.
     /// </summary>
@@ -826,25 +847,7 @@ internal class Deserialization
 
         var collItemType = ReflectionUtils.GetCollectionItemType(collType);
 
-        Type? dataItemsType = null;
-        IList dataItems; // this will hold the actual data items
-        if (collItemType == typeof(object))
-        {
-            dataItems = new List<object>();
-        }
-        else
-        {
-            try
-            {
-                dataItemsType = typeof(List<>).MakeGenericType(collItemType);
-                dataItems = (IList) Activator.CreateInstance(dataItemsType)!;
-            }
-            catch (Exception)
-            {
-                dataItems = new List<object>();
-            }
-        }
-
+        IList dataItems = TryGetCollectionItemList(collItemType) ?? new List<object>(); // this will hold the actual data items
         var isPrimitive = ReflectionUtils.IsBasicType(collItemType);
         if (isPrimitive && collAttrInstance is
                 { SerializationType: YAXCollectionSerializationTypes.Serially })
@@ -859,7 +862,7 @@ internal class Deserialization
         }
 
         // Now dataItems list is filled and will be processed
-        if (dataItemsType is { } && collType.IsAssignableFrom(dataItemsType))
+        if (collType.IsAssignableFrom(dataItems.GetType()))
         {
             //no copy / transformation needed - e.g. IEnumerable<ITem> - we can use the constructed data item list
             return dataItems;
