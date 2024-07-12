@@ -816,16 +816,9 @@ internal class Deserialization
         }
         else
         {
-            try
-            {
-                var listType = typeof(List<>).MakeGenericType(collectionItemType);
-                var result = (IList) Activator.CreateInstance(listType)!;
-                return result;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            var listType = typeof(List<>).MakeGenericType(collectionItemType);
+            var result = (IList) Activator.CreateInstance(listType)!;
+            return result;
         }
     }
 
@@ -863,7 +856,7 @@ internal class Deserialization
 
         // Now dataItems list is filled and will be processed
         
-        if (TryDataItemListDirect(collType, dataItems) is { } directList)
+        if (TryDataItemListDirect(collType, dataItems, out var directList))
             return directList;
 
         if (TryGetCollectionAsArray(xElement, collType, collItemType, memberAlias, dataItems, out var array))
@@ -886,14 +879,16 @@ internal class Deserialization
         return null;
     }
 
-    private object? TryDataItemListDirect(Type collType, IList dataItems)
+    private bool TryDataItemListDirect(Type collType, IList dataItems, out object? result)
     {
         if (collType.IsAssignableFrom(dataItems.GetType()))
         {
             //no copy / transformation needed - e.g. IEnumerable<ITem> - we can use the constructed data item list
-            return dataItems;
+            result = dataItems;
+            return true;
         }
-        return null;
+        result = null;
+        return false;
     }
 
     private bool TryGetCollectionAsEnumerable(XElement xElement, Type collType, XName memberAlias, object? containerObj,
