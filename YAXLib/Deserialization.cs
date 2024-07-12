@@ -814,12 +814,10 @@ internal class Deserialization
         {
             return new List<object>();
         }
-        else
-        {
-            var listType = typeof(List<>).MakeGenericType(collectionItemType);
-            var result = (IList) Activator.CreateInstance(listType)!;
-            return result;
-        }
+
+        var listType = typeof(List<>).MakeGenericType(collectionItemType);
+        var result = (IList) Activator.CreateInstance(listType)!;
+        return result;
     }
 
     /// <summary>
