@@ -862,11 +862,9 @@ internal class Deserialization
         }
 
         // Now dataItems list is filled and will be processed
-        if (collType.IsAssignableFrom(dataItems.GetType()))
-        {
-            //no copy / transformation needed - e.g. IEnumerable<ITem> - we can use the constructed data item list
-            return dataItems;
-        }
+        
+        if (TryDataItemListDirect(collType, dataItems) is { } directList)
+            return directList;
 
         if (TryGetCollectionAsArray(xElement, collType, collItemType, memberAlias, dataItems, out var array))
             return array;
@@ -885,6 +883,16 @@ internal class Deserialization
         if (TryGetCollectionAsEnumerable(xElement, collType, memberAlias, containerObj, dataItems, out var enumerable))
             return enumerable;
 
+        return null;
+    }
+
+    private object? TryDataItemListDirect(Type collType, IList dataItems)
+    {
+        if (collType.IsAssignableFrom(dataItems.GetType()))
+        {
+            //no copy / transformation needed - e.g. IEnumerable<ITem> - we can use the constructed data item list
+            return dataItems;
+        }
         return null;
     }
 
