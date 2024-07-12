@@ -2,6 +2,8 @@
 // Licensed under the MIT license.
 
 using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Xml;
@@ -25,35 +27,41 @@ public abstract class DeserializationTestBase
         CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
     }
 
-    private void PerformTest(object obj)
+    private void PerformTest(object obj, Type? objType = null)
     {
-        PerformTestAndReturn(obj);
+        var result = PerformTestAndReturn(obj, objType);
+        if (objType is { } && result is { })
+        {
+            var runtimeType = result.GetType();
+            var wantedType = objType;
+            Assert.That(objType.IsAssignableFrom(runtimeType), $"runtime type: {runtimeType} can not be assigned to {wantedType}");
+        }
     }
 
     /// <summary>
     /// Perform test by using .Equals. Equals should be well implemented for <paramref name="obj" />
     /// </summary>
     /// <param name="obj"></param>
-    private void PerformTestWithEquals(object obj)
+    private void PerformTestWithEquals(object obj, Type? objType = null)
     {
-        var serializer = SerializeDeserialize(obj, out var gottonObject);
+        var serializer = SerializeDeserialize(obj, out var gottonObject, objType);
         Assert.That(serializer.ParsingErrors.Count, Is.EqualTo(0));
         Assert.That(gottonObject, Is.EqualTo(obj));
     }
 
     private object? GetTheTwoStringsAndReturn(object obj, out string originalString, out string? gottonString,
-        out int errorCounts)
+        out int errorCounts, Type? objType = null)
     {
         originalString = GeneralToStringProvider.GeneralToString(obj);
-        var serializer = SerializeDeserialize(obj, out var gottonObject);
+        var serializer = SerializeDeserialize(obj, out var gottonObject, objType);
         errorCounts = serializer.ParsingErrors.Count;
         gottonString = GeneralToStringProvider.GeneralToString(gottonObject);
         return gottonObject;
     }
 
-    private YAXSerializer SerializeDeserialize(object obj, out object? gottonObject)
+    private YAXSerializer SerializeDeserialize(object obj, out object? gottonObject, Type? objType = null)
     {
-        var serializer = CreateSerializer(obj.GetType(),
+        var serializer = CreateSerializer(objType ?? obj.GetType(),
             new SerializerOptions {
                 SerializationOptions = YAXSerializationOptions.SerializeNullObjects,
                 ExceptionBehavior = YAXExceptionTypes.Warning,
@@ -64,10 +72,10 @@ public abstract class DeserializationTestBase
         return serializer;
     }
 
-    private object? PerformTestAndReturn(object obj)
+    private object? PerformTestAndReturn(object obj, Type? objType = null)
     {
         var result =
-            GetTheTwoStringsAndReturn(obj, out var originalString, out var gottonString, out var errorCounts);
+            GetTheTwoStringsAndReturn(obj, out var originalString, out var gottonString, out var errorCounts, objType);
         Assert.That(originalString, Is.Not.Null);
         Assert.That(gottonString, Is.Not.Null);
         Assert.That(gottonString, Is.EqualTo(originalString));
@@ -227,6 +235,26 @@ public abstract class DeserializationTestBase
     {
         object obj = ListHolderClass.GetSampleInstance();
         PerformTest(obj);
+    }
+
+    [Test]
+    public void DesIEnumerableHolderClassTest()
+    {
+        object obj = IEnumerableHolderClass.GetSampleInstance();
+        PerformTest(obj);
+    }
+
+
+    [Test]
+    public void DesIEnumerableListClassTest()
+    {
+        var list = new System.Collections.Generic.List<IEnumerableHolderClass.Item>();
+        list.Add("Hallo");
+        list.Add("Welt");
+        IEnumerable<IEnumerableHolderClass.Item> enumerable = list;
+
+        //do not use the runtime type!
+        PerformTest(enumerable, typeof(IEnumerable<IEnumerableHolderClass.Item>));
     }
 
     [Test]
