@@ -824,10 +824,28 @@ internal class Deserialization
         // Get the container object from the element (may be null)
         _ = TryGetContainerObject(xElement, collType, memberAlias, out var containerObj);
 
-        var dataItems = new List<object?>(); // this will hold the actual data items
         var collItemType = ReflectionUtils.GetCollectionItemType(collType);
-        var isPrimitive = ReflectionUtils.IsBasicType(collItemType);
 
+        Type? dataItemsType = null;
+        IList dataItems; // this will hold the actual data items
+        if (collItemType == typeof(object))
+        {
+            dataItems = new List<object>();
+        }
+        else
+        {
+            try
+            {
+                dataItemsType = typeof(List<>).MakeGenericType(collItemType);
+                dataItems = (IList) Activator.CreateInstance(dataItemsType)!;
+            }
+            catch (Exception)
+            {
+                dataItems = new List<object>();
+            }
+        }
+
+        var isPrimitive = ReflectionUtils.IsBasicType(collItemType);
         if (isPrimitive && collAttrInstance is
                 { SerializationType: YAXCollectionSerializationTypes.Serially })
         {
@@ -841,6 +859,11 @@ internal class Deserialization
         }
 
         // Now dataItems list is filled and will be processed
+        if (dataItemsType is { } && collType.IsAssignableFrom(dataItemsType))
+        {
+            //no copy / transformation needed - e.g. IEnumerable<ITem> - we can use the constructed data item list
+            return dataItems;
+        }
 
         if (TryGetCollectionAsArray(xElement, collType, collItemType, memberAlias, dataItems, out var array))
             return array;
@@ -863,7 +886,7 @@ internal class Deserialization
     }
 
     private bool TryGetCollectionAsEnumerable(XElement xElement, Type collType, XName memberAlias, object? containerObj,
-        List<object?> dataItems, out object? enumerable)
+        IList dataItems, out object? enumerable)
     {
         enumerable = null;
 
@@ -902,7 +925,7 @@ internal class Deserialization
     }
 
     private bool TryGetCollectionAsStack(XElement xElement, Type collType, XName memberAlias, object? containerObj,
-        List<object?> dataItems,
+        IList dataItems,
         out object? stack)
     {
         stack = null;
@@ -930,7 +953,7 @@ internal class Deserialization
         return true;
     }
 
-    private static bool TryGetCollectionAsBitArray(Type collType, List<object?> dataItems, out object? bitArray)
+    private static bool TryGetCollectionAsBitArray(Type collType, IList dataItems, out object? bitArray)
     {
         bitArray = null;
 
@@ -954,7 +977,7 @@ internal class Deserialization
 
     private bool TryGetCollectionAsNonGenericDictionary(XElement xElement, Type collType, XName memberAlias,
         object? containerObj,
-        List<object?> dataItems, out object? nonGenericDictionary)
+        IList dataItems, out object? nonGenericDictionary)
     {
         nonGenericDictionary = containerObj;
 
@@ -984,7 +1007,7 @@ internal class Deserialization
     }
 
     private bool TryGetCollectionAsDictionary(XElement xElement, Type collType, Type collItemType, XName memberAlias,
-        object? containerObj, List<object?> dataItems, out object? dictionary)
+        object? containerObj, IList dataItems, out object? dictionary)
     {
         dictionary = null;
 
@@ -1014,7 +1037,7 @@ internal class Deserialization
     }
 
     private bool TryGetCollectionAsArray(XElement xElement, Type collType, Type collItemType, XName memberAlias,
-        List<object?> dataItems, out object? array)
+        IList dataItems, out object? array)
     {
         array = null;
 
@@ -1084,7 +1107,7 @@ internal class Deserialization
     /// <param name="dataItems">The list that will be filled.</param>
     private void GetRecursiveCollectionItems(XElement xElement, XName memberAlias,
         YAXCollectionAttribute? collAttrInstance,
-        Type collItemType, bool isPrimitive, List<object?> dataItems)
+        Type collItemType, bool isPrimitive, IList dataItems)
     {
         XName? eachElemName = null;
         if (collAttrInstance is { EachElementName: not null })
@@ -1159,7 +1182,7 @@ internal class Deserialization
     private void GetSerialCollectionItems(XElement xElement, XName memberAlias,
         YAXCollectionAttribute collAttrInstance,
         Type collItemType,
-        List<object?> dataItems)
+        IList dataItems)
     {
         var separators = collAttrInstance.SeparateBy.ToCharArray();
 
