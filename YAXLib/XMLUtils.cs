@@ -428,7 +428,7 @@ internal static class XMLUtils
     /// <returns></returns>
     public static string DecodeXMLString(string str)
     {
-        if (str.IndexOf('&') >= 0)
+        if (str.Contains('&'))
             return str.Replace("&lt;", "<").Replace("&gt;", ">").Replace("&quot;", "\"").Replace("&apos;", "'")
                 .Replace("&amp;", "&");
         // Make sure that &amp; is the final replace so that sequences such as &amp;gt; do not get corrupted

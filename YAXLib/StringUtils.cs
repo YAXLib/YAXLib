@@ -16,6 +16,8 @@ namespace YAXLib;
 /// </summary>
 internal static class StringUtils
 {
+    private static readonly char[] SplitChars = [',', ' ', '\t'];
+
     /// <summary>
     /// Refines the location string. Trims it, and replaces invalid characters with underscore.
     /// </summary>
@@ -289,7 +291,7 @@ internal static class StringUtils
     /// <returns>the dimensions array corresponding to the given string</returns>
     public static int[] ParseArrayDimsString(string str)
     {
-        var strDims = str.Split(new[] { ',', ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+        var strDims = str.Split(SplitChars, StringSplitOptions.RemoveEmptyEntries);
         var lst = new List<int>();
         foreach (var strDim in strDims)
         {

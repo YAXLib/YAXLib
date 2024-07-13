@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using System;
+using System.Globalization;
 using System.Xml.Linq;
 using YAXLib.Customization;
 using YAXLib.Exceptions;
@@ -14,7 +15,7 @@ internal class TimeSpanKnownType : KnownTypeBase<TimeSpan>
     public override void Serialize(TimeSpan timeSpan, XElement elem, XNamespace overridingNamespace,
         ISerializationContext serializationContext)
     {
-        elem.Value = timeSpan.ToString();
+        elem.Value = timeSpan.ToString(string.Empty, CultureInfo.InvariantCulture);
     }
 
     /// <inheritdoc />
@@ -25,7 +26,7 @@ internal class TimeSpanKnownType : KnownTypeBase<TimeSpan>
         if (elemTicks == null)
         {
             var strTimeSpanString = elem.Value;
-            if (!TimeSpan.TryParse(strTimeSpanString, out var timeSpanResult))
+            if (!TimeSpan.TryParse(strTimeSpanString, CultureInfo.InvariantCulture, out var timeSpanResult))
                 throw new YAXBadlyFormedInput(elem.Name.ToString(), elem.Value, elem);
             return timeSpanResult;
         }

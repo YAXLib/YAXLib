@@ -56,7 +56,7 @@ public partial class FormMain : Form
     private void InitListOfClasses()
     {
         var autoLoadTypes = typeof(Book).Assembly.GetTypes()
-            .Where(t => t.GetCustomAttributes(typeof(ShowInDemoApplicationAttribute), false).Any())
+            .Where(t => t.GetCustomAttributes(typeof(ShowInDemoApplicationAttribute), false).Length == 0)
             .Select(t => new {
                 Type = t,
                 Attr = t.GetCustomAttributes(typeof(ShowInDemoApplicationAttribute), false)

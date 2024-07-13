@@ -14,6 +14,9 @@ namespace YAXLib;
 /// </summary>
 internal class EnumWrapper
 {
+    private static readonly char[] SplitChars = [','];
+    private static readonly char[] AliasNameSeparators = [',', ' ', '\t'];
+
     /// <summary>
     /// Maps real enum names to their corresponding user defined aliases
     /// </summary>
@@ -61,7 +64,7 @@ internal class EnumWrapper
     /// <returns>the enum member corresponding to the specified alias</returns>
     public object ParseAlias(string alias)
     {
-        var components = alias.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+        var components = alias.Split(SplitChars, StringSplitOptions.RemoveEmptyEntries);
 
         if (components.Length > 0)
         {
@@ -91,7 +94,7 @@ internal class EnumWrapper
     {
         var originalName = enumMember.ToString()!;
 
-        var components = originalName.Split(new[] { ',', ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+        var components = originalName.Split(AliasNameSeparators, StringSplitOptions.RemoveEmptyEntries);
 
         if (components.Length == 1)
         {
