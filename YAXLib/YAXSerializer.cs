@@ -10,6 +10,7 @@ using System.Xml.Linq;
 using YAXLib.Caching;
 using YAXLib.Enums;
 using YAXLib.Exceptions;
+using YAXLib.MarkObjWithId;
 using YAXLib.Options;
 using YAXLib.Pooling.ObjectPools;
 using YAXLib.Pooling.YAXLibPools;
@@ -39,6 +40,8 @@ public class YAXSerializer : IYAXSerializer<object>, IRecursionCounter
         DocumentDefaultNamespace = XNamespace.None;
         TypeNamespace = XNamespace.None;
         UdtWrapper = UdtWrapperCache.Instance.GetOrAddItem(Type, Options);
+
+        Session = new SerSession();
 
         Serialization = new Serialization(this);
         Deserialization = new Deserialization(this);
@@ -329,6 +332,7 @@ public class YAXSerializer : IYAXSerializer<object>, IRecursionCounter
 
         // Get a standard serializer from the pool
         var serializerPoolObject = SerializerPool.Instance.Get(out serializer);
+        serializer.Session = this.Session;
         serializer.Initialize(type, Options);
         // Make it a child serializer
         InitializeAsChildSerializer(serializer, namespaceToOverride, insertionLocation);
@@ -446,6 +450,7 @@ public class YAXSerializer : IYAXSerializer<object>, IRecursionCounter
     internal XmlNamespaceManager XmlNamespaceManager { get; private set; }
 
     internal XNamespace TypeNamespace { get; set; }
+    internal SerSession Session { get; set; }
 
     #endregion
 
