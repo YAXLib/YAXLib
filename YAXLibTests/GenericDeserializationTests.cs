@@ -57,7 +57,10 @@ public class GenericDeserializationTests : DeserializationTestBase
                 """;
         var serializer = new YAXSerializer<Book>();
         var got = serializer.Deserialize(xml);
-        Assert.That(got, Is.Not.Null);
-        Assert.That(Book.GetSampleInstance(), Is.EqualTo(got));
+        Assert.Multiple(() =>
+        {
+            Assert.That(got, Is.Not.Null);
+            Assert.That(Book.GetSampleInstance(), Is.EqualTo(got));
+        });
     }
 }

@@ -28,8 +28,11 @@ internal class ExceptionTests
             serializer.Serialize(ClassWithDuplicateYaxAttribute.GetSampleInstance());
         });
 
-        Assert.That(ex?.AttrName, Is.EqualTo("test"));
-        Assert.That(ex?.Message, Does.Contain("'test'"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(ex?.AttrName, Is.EqualTo("test"));
+            Assert.That(ex?.Message, Does.Contain("'test'"));
+        });
     }
 
     [Test]
@@ -53,11 +56,14 @@ internal class ExceptionTests
             serializer.Deserialize(badXml);
         });
 
-        // YAXBadlyFormedXML exception doesn't need YAXSerializationOptions.DisplayLineInfoInExceptions to get the line numbers
-        Assert.That(ex!.HasLineInfo, Is.True);
-        Assert.That(ex.LineNumber, Is.EqualTo(7));
-        Assert.That(ex.LinePosition, Is.EqualTo(3));
-        Assert.That(ex.Message, Does.Contain("not properly formatted"));
+        Assert.Multiple(() =>
+        {
+            // YAXBadlyFormedXML exception doesn't need YAXSerializationOptions.DisplayLineInfoInExceptions to get the line numbers
+            Assert.That(ex!.HasLineInfo, Is.True);
+            Assert.That(ex.LineNumber, Is.EqualTo(7));
+            Assert.That(ex.LinePosition, Is.EqualTo(3));
+            Assert.That(ex.Message, Does.Contain("not properly formatted"));
+        });
     }
 
     [Test]
@@ -73,8 +79,11 @@ internal class ExceptionTests
 
         object? result = "";
         Assert.That(code: () => { result = serializer.Deserialize(xml); }, Throws.Nothing);
-        Assert.That(result, Is.Null);
-        Assert.That(serializer.ParsingErrors.ToString(), Does.Contain("not properly formatted"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.Null);
+            Assert.That(serializer.ParsingErrors.ToString(), Does.Contain("not properly formatted"));
+        });
     }
 
     [Test]
@@ -119,8 +128,11 @@ internal class ExceptionTests
 
         object? result = "";
         Assert.That(code: () => { result = serializer.Deserialize(streamReader); }, Throws.Nothing);
-        Assert.That(result, Is.Null);
-        Assert.That(serializer.ParsingErrors.ToString(), Does.Contain("not properly formatted"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.Null);
+            Assert.That(serializer.ParsingErrors.ToString(), Does.Contain("not properly formatted"));
+        });
     }
 
     [Test]
@@ -167,8 +179,11 @@ internal class ExceptionTests
         using var xmlReader = XmlReader.Create(stream);
         object? result = "";
         Assert.That(code: () => { result = serializer.Deserialize(xmlReader); }, Throws.Nothing);
-        Assert.That(result, Is.Null);
-        Assert.That(serializer.ParsingErrors.ToString(), Does.Contain("not properly formatted"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.Null);
+            Assert.That(serializer.ParsingErrors.ToString(), Does.Contain("not properly formatted"));
+        });
     }
 
     [Test]
@@ -194,10 +209,13 @@ internal class ExceptionTests
             });
             serializer.Deserialize(bookXml);
         });
-        Assert.That(ex?.HasLineInfo, Is.True);
-        Assert.That(ex?.LineNumber, Is.EqualTo(6));
-        Assert.That(ex?.LinePosition, Is.EqualTo(4));
-        Assert.That(ex?.Message, Does.Contain("The format of the value specified for the property"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(ex?.HasLineInfo, Is.True);
+            Assert.That(ex?.LineNumber, Is.EqualTo(6));
+            Assert.That(ex?.LinePosition, Is.EqualTo(4));
+            Assert.That(ex?.Message, Does.Contain("The format of the value specified for the property"));
+        });
     }
 
     [Test]
@@ -222,10 +240,13 @@ internal class ExceptionTests
             });
             serializer.Deserialize(bookXml);
         });
-        Assert.That(ex?.HasLineInfo, Is.False);
-        Assert.That(ex?.LineNumber, Is.EqualTo(0));
-        Assert.That(ex?.LinePosition, Is.EqualTo(0));
-        Assert.That(ex?.Message, Does.Contain("The format of the value specified for the property"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(ex?.HasLineInfo, Is.False);
+            Assert.That(ex?.LineNumber, Is.EqualTo(0));
+            Assert.That(ex?.LinePosition, Is.EqualTo(0));
+            Assert.That(ex?.Message, Does.Contain("The format of the value specified for the property"));
+        });
     }
 
     [Test]
@@ -239,9 +260,12 @@ internal class ExceptionTests
             serializer.Serialize(new ClassWithDuplicateYaxAttribute());
         });
 
-        Assert.That(ex?.ExpectedType, Is.EqualTo(typeof(Book)));
-        Assert.That(ex?.ReceivedType, Is.EqualTo(typeof(ClassWithDuplicateYaxAttribute)));
-        Assert.That(ex?.Message, Does.Contain("'Book'"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(ex?.ExpectedType, Is.EqualTo(typeof(Book)));
+            Assert.That(ex?.ReceivedType, Is.EqualTo(typeof(ClassWithDuplicateYaxAttribute)));
+            Assert.That(ex?.Message, Does.Contain("'Book'"));
+        });
         Assert.That(ex?.Message, Does.Contain("'ClassWithDuplicateYaxAttribute'"));
     }
 
@@ -268,9 +292,12 @@ internal class ExceptionTests
             });
             serializer.Deserialize(bookXml);
         });
-        Assert.That(ex?.HasLineInfo, Is.True);
-        Assert.That(ex?.LineNumber, Is.EqualTo(2));
-        Assert.That(ex?.LinePosition, Is.EqualTo(2));
+        Assert.Multiple(() =>
+        {
+            Assert.That(ex?.HasLineInfo, Is.True);
+            Assert.That(ex?.LineNumber, Is.EqualTo(2));
+            Assert.That(ex?.LinePosition, Is.EqualTo(2));
+        });
     }
 
     [Test]
@@ -296,9 +323,12 @@ internal class ExceptionTests
             });
             serializer.Deserialize(collectionXml);
         });
-        Assert.That(ex?.HasLineInfo, Is.True);
-        Assert.That(ex?.LineNumber, Is.EqualTo(2));
-        Assert.That(ex?.LinePosition, Is.EqualTo(2));
+        Assert.Multiple(() =>
+        {
+            Assert.That(ex?.HasLineInfo, Is.True);
+            Assert.That(ex?.LineNumber, Is.EqualTo(2));
+            Assert.That(ex?.LinePosition, Is.EqualTo(2));
+        });
     }
 
     [Test]
@@ -322,9 +352,12 @@ internal class ExceptionTests
             });
             serializer.Deserialize(bookXml);
         });
-        Assert.That(ex?.HasLineInfo, Is.True);
-        Assert.That(ex?.LineNumber, Is.EqualTo(1));
-        Assert.That(ex?.LinePosition, Is.EqualTo(2));
+        Assert.Multiple(() =>
+        {
+            Assert.That(ex?.HasLineInfo, Is.True);
+            Assert.That(ex?.LineNumber, Is.EqualTo(1));
+            Assert.That(ex?.LinePosition, Is.EqualTo(2));
+        });
     }
 
     [Test]

@@ -103,8 +103,11 @@ public abstract class SerializationTestBase
                 Assert.That(book, Is.Not.Null);
             }), Throws.Nothing);
 
-        Assert.That(MemberWrapperCache.Instance.CacheDictionary, Contains.Key((typeof(Book), serializerOptions)));
-        Assert.That(UdtWrapperCache.Instance.CacheDictionary, Contains.Key((typeof(Book), serializerOptions)));
+        Assert.Multiple(() =>
+        {
+            Assert.That(MemberWrapperCache.Instance.CacheDictionary, Contains.Key((typeof(Book), serializerOptions)));
+            Assert.That(UdtWrapperCache.Instance.CacheDictionary, Contains.Key((typeof(Book), serializerOptions)));
+        });
     }
 
     [Test]
@@ -145,9 +148,11 @@ public abstract class SerializationTestBase
         var got = serializer.Serialize(book);
         var gotDes = (Book?) serializer.Deserialize(got);
 
-        Assert.That(book, Is.EqualTo(gotDes));
-        Assert.That(got, Is.EqualTo(
-            """
+        Assert.Multiple(() =>
+        {
+            Assert.That(book, Is.EqualTo(gotDes));
+            Assert.That(got, Is.EqualTo(
+                """
             <!-- This example demonstrates serializing a very simple class -->
             <Book>
               <Title>Inside C#</Title>
@@ -155,6 +160,7 @@ public abstract class SerializationTestBase
               <Price>30.5</Price>
             </Book>
             """));
+        });
     }
 
     [TestCase("fr-FR")]
@@ -201,9 +207,12 @@ public abstract class SerializationTestBase
             });
 
         var desResult = serializer.Deserialize(serResult) as CultureSample;
-        Assert.That(serResult, Is.EqualTo(expected), $"Comparing serialized '{cultName}' with expected.");
-        Assert.That(desResult!.Equals(CultureSample.GetSampleInstance()),
-            $"Comparing deserialized '{cultName}' with deserialized expected.");
+        Assert.Multiple(() =>
+        {
+            Assert.That(serResult, Is.EqualTo(expected), $"Comparing serialized '{cultName}' with expected.");
+            Assert.That(desResult!, Is.EqualTo(CultureSample.GetSampleInstance()),
+                $"Comparing deserialized '{cultName}' with deserialized expected.");
+        });
     }
 
     [Test]
@@ -282,8 +291,11 @@ public abstract class SerializationTestBase
         });
 
         var result = serializer.Serialize(BookStruct.GetSampleInstance());
-        Assert.That(result, Is.EqualTo(xml));
-        Assert.That(serializer.Deserialize(xml), Is.EqualTo(BookStruct.GetSampleInstance()));
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.EqualTo(xml));
+            Assert.That(serializer.Deserialize(xml), Is.EqualTo(BookStruct.GetSampleInstance()));
+        });
     }
 
     [Test]
@@ -1199,8 +1211,11 @@ public abstract class SerializationTestBase
         var deserialized1 = serializer.Deserialize(xml1);
         var deserialized2 = serializer.Deserialize(xml2);
 
-        Assert.That(deserialized1, Is.EqualTo(timeSpan));
-        Assert.That(deserialized2, Is.EqualTo(timeSpan));
+        Assert.Multiple(() =>
+        {
+            Assert.That(deserialized1, Is.EqualTo(timeSpan));
+            Assert.That(deserialized2, Is.EqualTo(timeSpan));
+        });
     }
 
     [Test]
@@ -2842,9 +2857,12 @@ public abstract class SerializationTestBase
                 </CalculatedPropertiesCanCauseInfiniteLoop>
                 """;
 
-        Assert.That(result, Is.EqualTo(expectedResult));
-        Assert.That(ser.Options.MaxRecursion, Is.EqualTo(10));
-        Assert.That(ser.GetRecursionCount(), Is.EqualTo(0));
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.EqualTo(expectedResult));
+            Assert.That(ser.Options.MaxRecursion, Is.EqualTo(10));
+            Assert.That(ser.GetRecursionCount(), Is.EqualTo(0));
+        });
     }
 
     [Test]
@@ -3086,13 +3104,16 @@ public abstract class SerializationTestBase
             sample.TextCDataEmbedding += "\u0003"; // 0x3 is illegal and should be stripped off
         var serialized = serializer.SerializeToXDocument(sample);
 
-        // Serialization
-        Assert.That(serialized.ToString(), Is.EqualTo(xml),
-            "TextNoEmbedding: Uses SerializeAsAttribute, contains encoded entities");
-        Assert.That(serialized.Root!.Element("TextIsNull")!.IsEmpty, Is.True,
-            $"null values are not handled by {nameof(YAXTextEmbeddingAttribute)}");
-        Assert.That(serialized.Root!.Element("TextBase64Embedding")!.Value.FromBase64(Encoding.UTF8),
-            Is.EqualTo(sample.TextBase64Embedding), "Properly and fully Base64-encoded");
+        Assert.Multiple(() =>
+        {
+            // Serialization
+            Assert.That(serialized.ToString(), Is.EqualTo(xml),
+                "TextNoEmbedding: Uses SerializeAsAttribute, contains encoded entities");
+            Assert.That(serialized.Root!.Element("TextIsNull")!.IsEmpty, Is.True,
+                $"null values are not handled by {nameof(YAXTextEmbeddingAttribute)}");
+            Assert.That(serialized.Root!.Element("TextBase64Embedding")!.Value.FromBase64(Encoding.UTF8),
+                Is.EqualTo(sample.TextBase64Embedding), "Properly and fully Base64-encoded");
+        });
     }
 
     [Test]

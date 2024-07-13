@@ -26,10 +26,13 @@ public class SerializationContextTests
         var memberWrapper = new MemberWrapper(memberInfo, serializer.Options);
         var sc = new SerializationContext(memberWrapper, udtWrapper, serializer);
 
-        Assert.That(sc.SerializerOptions, Is.EqualTo(serializer.Options));
-        Assert.That(sc.TypeContext.Type!.Name, Is.EqualTo(sampleType.Name));
-        Assert.That(sc.MemberContext!.TypeContext!.Type.Name, Is.EqualTo(nameof(String)));
-        Assert.That(sc.MemberContext!.MemberDescriptor!.Name, Is.EqualTo(memberName));
+        Assert.Multiple(() =>
+        {
+            Assert.That(sc.SerializerOptions, Is.EqualTo(serializer.Options));
+            Assert.That(sc.TypeContext.Type!.Name, Is.EqualTo(sampleType.Name));
+            Assert.That(sc.MemberContext!.TypeContext!.Type.Name, Is.EqualTo(nameof(String)));
+            Assert.That(sc.MemberContext!.MemberDescriptor!.Name, Is.EqualTo(memberName));
+        });
     }
 
     [Test]
@@ -40,8 +43,11 @@ public class SerializationContextTests
         var udtWrapper = serializer.UdtWrapper;
         var sc = new SerializationContext(null, udtWrapper, serializer);
 
-        Assert.That(sc.SerializerOptions, Is.EqualTo(serializer.Options));
-        Assert.That(sc.TypeContext.Type!.Name, Is.EqualTo(sampleType.Name));
+        Assert.Multiple(() =>
+        {
+            Assert.That(sc.SerializerOptions, Is.EqualTo(serializer.Options));
+            Assert.That(sc.TypeContext.Type!.Name, Is.EqualTo(sampleType.Name));
+        });
     }
 
     [Test]
@@ -62,9 +68,12 @@ public class SerializationContextTests
         var lengthCtx = titleCtx!.TypeContext.GetFieldsForSerialization()
             .FirstOrDefault(p => p.MemberDescriptor.Name == nameof(string.Length));
 
-        Assert.That(sc.TypeContext.GetFieldsForSerialization().Count(), Is.EqualTo(3));
-        Assert.That(sc.TypeContext.GetFieldsForDeserialization().Count(), Is.EqualTo(3));
-        Assert.That(lengthCtx!.TypeContext.Type == typeof(int));
+        Assert.Multiple(() =>
+        {
+            Assert.That(sc.TypeContext.GetFieldsForSerialization().Count(), Is.EqualTo(3));
+            Assert.That(sc.TypeContext.GetFieldsForDeserialization().Count(), Is.EqualTo(3));
+            Assert.That(lengthCtx!.TypeContext.Type, Is.EqualTo(typeof(int)));
+        });
     }
 
     [Test]
@@ -75,8 +84,11 @@ public class SerializationContextTests
         var udtWrapper = serializer.UdtWrapper;
         var sc = new SerializationContext(null, udtWrapper, serializer);
 
-        Assert.That(sc.TypeContext.GetFieldsForSerialization().Count(), Is.EqualTo(3));
-        Assert.That(sc.TypeContext.GetFieldsForDeserialization().Count(), Is.EqualTo(3));
+        Assert.Multiple(() =>
+        {
+            Assert.That(sc.TypeContext.GetFieldsForSerialization().Count(), Is.EqualTo(3));
+            Assert.That(sc.TypeContext.GetFieldsForDeserialization().Count(), Is.EqualTo(3));
+        });
     }
 
     [Test]

@@ -16,45 +16,52 @@ public class ReflectionUtilsTest
     [Test]
     public void IsArrayTest()
     {
-        Assert.That(ReflectionUtils.IsArray(typeof(int[])), Is.True);
-        Assert.That(ReflectionUtils.IsArray(typeof(int[,])), Is.True);
-        Assert.That(ReflectionUtils.IsArray(typeof(Array)), Is.True);
-        Assert.That(ReflectionUtils.IsArray(typeof(List<int>)), Is.False);
-        Assert.That(ReflectionUtils.IsArray(typeof(List<>)), Is.False);
-        Assert.That(ReflectionUtils.IsArray(typeof(Dictionary<,>)), Is.False);
-        Assert.That(ReflectionUtils.IsArray(typeof(Dictionary<int, string>)), Is.False);
-        Assert.That(ReflectionUtils.IsArray(typeof(string)), Is.False);
+        Assert.Multiple(() =>
+        {
+            Assert.That(ReflectionUtils.IsArray(typeof(int[])), Is.True);
+            Assert.That(ReflectionUtils.IsArray(typeof(int[,])), Is.True);
+            Assert.That(ReflectionUtils.IsArray(typeof(Array)), Is.True);
+            Assert.That(ReflectionUtils.IsArray(typeof(List<int>)), Is.False);
+            Assert.That(ReflectionUtils.IsArray(typeof(List<>)), Is.False);
+            Assert.That(ReflectionUtils.IsArray(typeof(Dictionary<,>)), Is.False);
+            Assert.That(ReflectionUtils.IsArray(typeof(Dictionary<int, string>)), Is.False);
+            Assert.That(ReflectionUtils.IsArray(typeof(string)), Is.False);
+        });
     }
 
     [Test]
     public void IsCollectionTypeTest()
     {
-        Assert.That(ReflectionUtils.IsCollectionType(typeof(int[])), Is.True);
-        Assert.That(ReflectionUtils.IsCollectionType(typeof(Array)), Is.True);
-        Assert.That(ReflectionUtils.IsCollectionType(typeof(List<int>)), Is.True);
-        Assert.That(ReflectionUtils.IsCollectionType(typeof(List<>)), Is.True);
-        Assert.That(ReflectionUtils.IsCollectionType(typeof(Dictionary<,>)), Is.True);
-        Assert.That(ReflectionUtils.IsCollectionType(typeof(Dictionary<int, string>)), Is.True);
-        Assert.That(ReflectionUtils.IsCollectionType(typeof(IEnumerable)), Is.True);
-        Assert.That(ReflectionUtils.IsCollectionType(typeof(IEnumerable<>)), Is.True);
-        Assert.That(ReflectionUtils.IsCollectionType(typeof(IEnumerable<int>)), Is.True);
-        Assert.That(ReflectionUtils.IsCollectionType(typeof(string)), Is.False);
+        Assert.Multiple(() =>
+        {
+            Assert.That(ReflectionUtils.IsCollectionType(typeof(int[])), Is.True);
+            Assert.That(ReflectionUtils.IsCollectionType(typeof(Array)), Is.True);
+            Assert.That(ReflectionUtils.IsCollectionType(typeof(List<int>)), Is.True);
+            Assert.That(ReflectionUtils.IsCollectionType(typeof(List<>)), Is.True);
+            Assert.That(ReflectionUtils.IsCollectionType(typeof(Dictionary<,>)), Is.True);
+            Assert.That(ReflectionUtils.IsCollectionType(typeof(Dictionary<int, string>)), Is.True);
+            Assert.That(ReflectionUtils.IsCollectionType(typeof(IEnumerable)), Is.True);
+            Assert.That(ReflectionUtils.IsCollectionType(typeof(IEnumerable<>)), Is.True);
+            Assert.That(ReflectionUtils.IsCollectionType(typeof(IEnumerable<int>)), Is.True);
+            Assert.That(ReflectionUtils.IsCollectionType(typeof(string)), Is.False);
+        });
     }
 
     [Test]
     public void GetCollectionItemTypeTest()
     {
-        Assert.That(ReflectionUtils.GetCollectionItemType(typeof(IEnumerable<int>)) == typeof(int), Is.True);
-        Assert.That(ReflectionUtils.GetCollectionItemType(typeof(double[])) == typeof(double), Is.True);
-        Assert.That(ReflectionUtils.GetCollectionItemType(typeof(float[][])) == typeof(float[]), Is.True);
-        Assert.That(ReflectionUtils.GetCollectionItemType(typeof(string[,])) == typeof(string), Is.True);
-        Assert.That(ReflectionUtils.GetCollectionItemType(typeof(List<char>)) == typeof(char), Is.True);
-        Assert.That(
-            ReflectionUtils.GetCollectionItemType(typeof(Dictionary<int, char>)) == typeof(KeyValuePair<int, char>),
-            Is.True);
-        Assert.That(
-            ReflectionUtils.GetCollectionItemType(typeof(Dictionary<Dictionary<int, double>, char>)) ==
-            typeof(KeyValuePair<Dictionary<int, double>, char>), Is.True);
+        Assert.Multiple(() =>
+        {
+            Assert.That(ReflectionUtils.GetCollectionItemType(typeof(IEnumerable<int>)), Is.EqualTo(typeof(int)));
+            Assert.That(ReflectionUtils.GetCollectionItemType(typeof(double[])), Is.EqualTo(typeof(double)));
+            Assert.That(ReflectionUtils.GetCollectionItemType(typeof(float[][])), Is.EqualTo(typeof(float[])));
+            Assert.That(ReflectionUtils.GetCollectionItemType(typeof(string[,])), Is.EqualTo(typeof(string)));
+            Assert.That(ReflectionUtils.GetCollectionItemType(typeof(List<char>)), Is.EqualTo(typeof(char)));
+            Assert.That(
+                ReflectionUtils.GetCollectionItemType(typeof(Dictionary<int, char>)), Is.EqualTo(typeof(KeyValuePair<int, char>)));
+            Assert.That(
+                ReflectionUtils.GetCollectionItemType(typeof(Dictionary<Dictionary<int, double>, char>)), Is.EqualTo(typeof(KeyValuePair<Dictionary<int, double>, char>)));
+        });
 
         //Assert.That(ReflectionUtils.GetCollectionItemType(typeof(IEnumerable<>)) == typeof(object), Is.True);
     }
@@ -62,46 +69,55 @@ public class ReflectionUtilsTest
     [Test]
     public void IsTypeEqualOrInheritedFromTypeTest()
     {
-        Assert.That(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(int), typeof(object)), Is.True);
-        Assert.That(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(string), typeof(object)), Is.True);
-        Assert.That(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(Array), typeof(IEnumerable)), Is.True);
-        Assert.That(
-            ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(Dictionary<string, int>), typeof(Dictionary<,>)),
-            Is.True);
-        Assert.That(
-            ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(Dictionary<string, int>), typeof(ICollection)),
-            Is.True);
-        Assert.That(
-            ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(Dictionary<string, int>), typeof(IDictionary)),
-            Is.True);
-        Assert.That(
-            ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(Dictionary<string, int>), typeof(IDictionary<,>)),
-            Is.True);
-        Assert.That(
-            ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(Dictionary<string, int>),
-                typeof(IDictionary<string, int>)), Is.True);
-        Assert.That(
-            ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(Dictionary<string, int>),
-                typeof(IDictionary<int, string>)), Is.False);
-        Assert.That(
-            ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(Dictionary<string, int[]>),
-                typeof(IDictionary<int, Array>)), Is.False);
-        Assert.That(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(ICollection), typeof(IEnumerable)),
-            Is.True);
+        Assert.Multiple(() =>
+        {
+            Assert.That(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(int), typeof(object)), Is.True);
+            Assert.That(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(string), typeof(object)), Is.True);
+            Assert.That(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(Array), typeof(IEnumerable)), Is.True);
+            Assert.That(
+                ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(Dictionary<string, int>), typeof(Dictionary<,>)),
+                Is.True);
+            Assert.That(
+                ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(Dictionary<string, int>), typeof(ICollection)),
+                Is.True);
+            Assert.That(
+                ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(Dictionary<string, int>), typeof(IDictionary)),
+                Is.True);
+            Assert.That(
+                ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(Dictionary<string, int>), typeof(IDictionary<,>)),
+                Is.True);
+            Assert.That(
+                ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(Dictionary<string, int>),
+                    typeof(IDictionary<string, int>)), Is.True);
+            Assert.That(
+                ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(Dictionary<string, int>),
+                    typeof(IDictionary<int, string>)), Is.False);
+            Assert.That(
+                ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(Dictionary<string, int[]>),
+                    typeof(IDictionary<int, Array>)), Is.False);
+            Assert.That(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(ICollection), typeof(IEnumerable)),
+                Is.True);
+        });
     }
 
     [Test]
     public void EqualsOrIsNullableOfTest()
     {
-        Assert.That(typeof(int).EqualsOrIsNullableOf(typeof(int)), Is.True);
-        Assert.That(typeof(int?).EqualsOrIsNullableOf(typeof(int)), Is.True);
-        Assert.That(typeof(int).EqualsOrIsNullableOf(typeof(int?)), Is.True);
-        Assert.That(typeof(double).EqualsOrIsNullableOf(typeof(double?)), Is.True);
-        Assert.That(typeof(double?).EqualsOrIsNullableOf(typeof(Nullable<>)), Is.False);
-        Assert.That(typeof(double?).EqualsOrIsNullableOf(typeof(double)), Is.True);
-        Assert.That(typeof(char?).EqualsOrIsNullableOf(typeof(char?)), Is.True);
-        Assert.That(typeof(char?).EqualsOrIsNullableOf(typeof(char?)), Is.True);
-        Assert.That(typeof(int[]).EqualsOrIsNullableOf(typeof(Array)), Is.False);
+        Assert.Multiple(() =>
+        {
+            Assert.That(typeof(int).EqualsOrIsNullableOf(typeof(int)), Is.True);
+            Assert.That(typeof(int?).EqualsOrIsNullableOf(typeof(int)), Is.True);
+            Assert.That(typeof(int).EqualsOrIsNullableOf(typeof(int?)), Is.True);
+            Assert.That(typeof(double).EqualsOrIsNullableOf(typeof(double?)), Is.True);
+            Assert.That(typeof(double?).EqualsOrIsNullableOf(typeof(Nullable<>)), Is.False);
+            Assert.That(typeof(double?).EqualsOrIsNullableOf(typeof(double)), Is.True);
+            Assert.That(typeof(char?).EqualsOrIsNullableOf(typeof(char?)), Is.True);
+        });
+        Assert.Multiple(() =>
+        {
+            Assert.That(typeof(char?).EqualsOrIsNullableOf(typeof(char?)), Is.True);
+            Assert.That(typeof(int[]).EqualsOrIsNullableOf(typeof(Array)), Is.False);
+        });
     }
 
 #if NETFRAMEWORK
@@ -119,8 +135,11 @@ public class ReflectionUtilsTest
             $"System.Collections.Generic.List`1[[System.Int32, {coreLibName}]]");
         var type2 = ReflectionUtils.GetTypeByName("System.Collections.Generic.List`1[[System.Int32]]");
 
-        Assert.That(type1, Is.Not.Null);
-        Assert.That(type2, Is.Not.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(type1, Is.Not.Null);
+            Assert.That(type2, Is.Not.Null);
+        });
         Assert.That(type2, Is.EqualTo(type1));
     }
 
@@ -146,19 +165,25 @@ public class ReflectionUtilsTest
         var baseClassField1AfterSet = ReflectionUtils.GetFieldValue(subClass, "_privateFieldFromBaseLevel1");
         var baseClassField2AfterSet = ReflectionUtils.GetFieldValue(subClass, "_privateFieldFromBaseLevel2");
 
-        // Initial values
-        Assert.That(subClassField, Is.EqualTo(2));
-        Assert.That(baseClassField1, Is.EqualTo(12));
-        Assert.That(baseClassField2, Is.EqualTo(22));
-        Assert.That(
-            // private base field not found
-            code: () => { ReflectionUtils.GetFieldValue(subClass, "_privateFieldFromBaseLevel1", false); },
-            Throws.Exception);
+        Assert.Multiple(() =>
+        {
+            // Initial values
+            Assert.That(subClassField, Is.EqualTo(2));
+            Assert.That(baseClassField1, Is.EqualTo(12));
+            Assert.That(baseClassField2, Is.EqualTo(22));
+            Assert.That(
+                // private base field not found
+                code: () => { ReflectionUtils.GetFieldValue(subClass, "_privateFieldFromBaseLevel1", false); },
+                Throws.Exception);
+        });
 
-        // Changed values
-        Assert.That(subClassFieldAfterSet, Is.EqualTo(3));
-        Assert.That(baseClassField1AfterSet, Is.EqualTo(13));
-        Assert.That(baseClassField2AfterSet, Is.EqualTo(23));
+        Assert.Multiple(() =>
+        {
+            // Changed values
+            Assert.That(subClassFieldAfterSet, Is.EqualTo(3));
+            Assert.That(baseClassField1AfterSet, Is.EqualTo(13));
+            Assert.That(baseClassField2AfterSet, Is.EqualTo(23));
+        });
     }
 
     [Test]
@@ -185,39 +210,48 @@ public class ReflectionUtilsTest
         var baseClassProperty2AfterSet =
             ReflectionUtils.GetPropertyValue(subClass, "PrivatePropertyFromBaseLevel2");
 
-        // Initial values
-        Assert.That(subClassProperty, Is.EqualTo(1));
-        Assert.That(baseClassProperty1, Is.EqualTo(13));
-        Assert.That(baseClassProperty2, Is.EqualTo(23));
-        Assert.That(
-            // private base property not found
-            code: () => { ReflectionUtils.GetPropertyValue(subClass, "PrivatePropertyFromBaseLevel1", false); },
-            Throws.Exception);
+        Assert.Multiple(() =>
+        {
+            // Initial values
+            Assert.That(subClassProperty, Is.EqualTo(1));
+            Assert.That(baseClassProperty1, Is.EqualTo(13));
+            Assert.That(baseClassProperty2, Is.EqualTo(23));
+            Assert.That(
+                // private base property not found
+                code: () => { ReflectionUtils.GetPropertyValue(subClass, "PrivatePropertyFromBaseLevel1", false); },
+                Throws.Exception);
+        });
 
-        // Changed values
-        Assert.That(subClassPropertyAfterSet, Is.EqualTo(111));
-        Assert.That(baseClassProperty1AfterSet, Is.EqualTo(113));
-        Assert.That(baseClassProperty2AfterSet, Is.EqualTo(123));
+        Assert.Multiple(() =>
+        {
+            // Changed values
+            Assert.That(subClassPropertyAfterSet, Is.EqualTo(111));
+            Assert.That(baseClassProperty1AfterSet, Is.EqualTo(113));
+            Assert.That(baseClassProperty2AfterSet, Is.EqualTo(123));
+        });
     }
 
     [Test]
     public void GetDefaultValueTest()
     {
-        Assert.That(Equals(ReflectionUtils.GetDefaultValue(typeof(string)), null));
-        Assert.That(Equals(ReflectionUtils.GetDefaultValue(typeof(bool)), default(bool)));
-        Assert.That(Equals(ReflectionUtils.GetDefaultValue(typeof(char)), default(char)));
-        Assert.That(Equals(ReflectionUtils.GetDefaultValue(typeof(sbyte)), default(sbyte)));
-        Assert.That(Equals(ReflectionUtils.GetDefaultValue(typeof(byte)), default(byte)));
-        Assert.That(Equals(ReflectionUtils.GetDefaultValue(typeof(short)), default(short)));
-        Assert.That(Equals(ReflectionUtils.GetDefaultValue(typeof(ushort)), default(ushort)));
-        Assert.That(Equals(ReflectionUtils.GetDefaultValue(typeof(int)), default(int)));
-        Assert.That(Equals(ReflectionUtils.GetDefaultValue(typeof(uint)), default(uint)));
-        Assert.That(Equals(ReflectionUtils.GetDefaultValue(typeof(long)), default(long)));
-        Assert.That(Equals(ReflectionUtils.GetDefaultValue(typeof(ulong)), default(ulong)));
-        Assert.That(Equals(ReflectionUtils.GetDefaultValue(typeof(float)), default(float)));
-        Assert.That(Equals(ReflectionUtils.GetDefaultValue(typeof(double)), default(double)));
-        Assert.That(Equals(ReflectionUtils.GetDefaultValue(typeof(decimal)), default(decimal)));
-        Assert.That(Equals(ReflectionUtils.GetDefaultValue(typeof(DateTime)), default(DateTime)));
-        Assert.That(Equals(ReflectionUtils.GetDefaultValue(typeof(DBNull)), DBNull.Value));
+        Assert.Multiple(() =>
+        {
+            Assert.That(ReflectionUtils.GetDefaultValue(typeof(string)), Is.EqualTo(null));
+            Assert.That(ReflectionUtils.GetDefaultValue(typeof(bool)), Is.EqualTo(default(bool)));
+            Assert.That(ReflectionUtils.GetDefaultValue(typeof(char)), Is.EqualTo(default(char)));
+            Assert.That(ReflectionUtils.GetDefaultValue(typeof(sbyte)), Is.EqualTo(default(sbyte)));
+            Assert.That(ReflectionUtils.GetDefaultValue(typeof(byte)), Is.EqualTo(default(byte)));
+            Assert.That(ReflectionUtils.GetDefaultValue(typeof(short)), Is.EqualTo(default(short)));
+            Assert.That(ReflectionUtils.GetDefaultValue(typeof(ushort)), Is.EqualTo(default(ushort)));
+            Assert.That(ReflectionUtils.GetDefaultValue(typeof(int)), Is.EqualTo(default(int)));
+            Assert.That(ReflectionUtils.GetDefaultValue(typeof(uint)), Is.EqualTo(default(uint)));
+            Assert.That(ReflectionUtils.GetDefaultValue(typeof(long)), Is.EqualTo(default(long)));
+            Assert.That(ReflectionUtils.GetDefaultValue(typeof(ulong)), Is.EqualTo(default(ulong)));
+            Assert.That(ReflectionUtils.GetDefaultValue(typeof(float)), Is.EqualTo(default(float)));
+            Assert.That(ReflectionUtils.GetDefaultValue(typeof(double)), Is.EqualTo(default(double)));
+            Assert.That(ReflectionUtils.GetDefaultValue(typeof(decimal)), Is.EqualTo(default(decimal)));
+            Assert.That(ReflectionUtils.GetDefaultValue(typeof(DateTime)), Is.EqualTo(default(DateTime)));
+            Assert.That(ReflectionUtils.GetDefaultValue(typeof(DBNull)), Is.EqualTo(DBNull.Value));
+        });
     }
 }

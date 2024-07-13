@@ -20,8 +20,11 @@ public class UdtWrapperCacheTests
         var s = new YAXSerializer<Book>();
         _ = s.Serialize(Book.GetSampleInstance());
 
-        Assert.That(countAfterClear, Is.EqualTo(0));
-        Assert.That(UdtWrapperCache.Instance.CacheDictionary, Contains.Key((typeof(Book), s.Options)));
+        Assert.Multiple(() =>
+        {
+            Assert.That(countAfterClear, Is.EqualTo(0));
+            Assert.That(UdtWrapperCache.Instance.CacheDictionary, Contains.Key((typeof(Book), s.Options)));
+        });
     }
 
     [Test]
@@ -36,8 +39,11 @@ public class UdtWrapperCacheTests
         s = new YAXSerializer<Book>();
         _ = s.Deserialize(xml);
 
-        Assert.That(countAfterClear, Is.EqualTo(0));
-        Assert.That(UdtWrapperCache.Instance.CacheDictionary, Contains.Key((typeof(Book), s.Options)));
+        Assert.Multiple(() =>
+        {
+            Assert.That(countAfterClear, Is.EqualTo(0));
+            Assert.That(UdtWrapperCache.Instance.CacheDictionary, Contains.Key((typeof(Book), s.Options)));
+        });
     }
 
     [Test]
@@ -64,7 +70,7 @@ public class UdtWrapperCacheTests
         UdtWrapperCache.Instance.GetOrAddItem(typeof(ulong), serializerOptions);
         UdtWrapperCache.Instance.GetOrAddItem(typeof(char), serializerOptions);
 
-        Assert.That(UdtWrapperCache.Instance.CacheDictionary.Count, Is.EqualTo(5));
+        Assert.That(UdtWrapperCache.Instance.CacheDictionary, Has.Count.EqualTo(5));
         Assert.That(UdtWrapperCache.Instance.CacheDictionary.ContainsKey((typeof(string), serializerOptions)), Is.False); // FIFO
 
         UdtWrapperCache.Instance.MaxCacheSize = UdtWrapperCache.DefaultCacheSize;
