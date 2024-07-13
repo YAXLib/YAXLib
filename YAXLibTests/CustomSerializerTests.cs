@@ -42,8 +42,10 @@ public class CustomSerializerTests
         var xml = s.Serialize(original);
         var deserialized = (ClassLevelSampleAsElement?) s.Deserialize(xml);
 
-        // " CUSTOM" is added by the ClassLevelSerializer
-        Assert.That(xml, Is.EqualTo("""
+        Assert.Multiple(() =>
+        {
+            // " CUSTOM" is added by the ClassLevelSerializer
+            Assert.That(xml, Is.EqualTo("""
             <ClassLevelSampleAsElement>
               <ClassLevelSample>
                 <Title>The Title CUSTOM</Title>
@@ -51,8 +53,9 @@ public class CustomSerializerTests
               </ClassLevelSample>
             </ClassLevelSampleAsElement>
             """));
-        // " CUSTOM" is removed by the ClassLevelSerializer
-        Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
+            // " CUSTOM" is removed by the ClassLevelSerializer
+            Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
+        });
     }
 
     [Test]
@@ -66,9 +69,12 @@ public class CustomSerializerTests
         var xml = s.Serialize(original);
         var deserialized = (ClassLevelSampleAsAttribute?) s.Deserialize(xml);
 
-        Assert.That(xml,
-            Is.EqualTo("<ClassLevelSampleAsAttribute ClassLevelSample=\"ATTR|The Title|The Message\" />"));
-        Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
+        Assert.Multiple(() =>
+        {
+            Assert.That(xml,
+                    Is.EqualTo("<ClassLevelSampleAsAttribute ClassLevelSample=\"ATTR|The Title|The Message\" />"));
+            Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
+        });
     }
 
     [Test]
@@ -82,9 +88,12 @@ public class CustomSerializerTests
         var xml = s.Serialize(original);
         var deserialized = (ClassLevelSampleAsValue?) s.Deserialize(xml);
 
-        Assert.That(xml,
-            Is.EqualTo("<ClassLevelSampleAsValue>VAL|The Title|The Message</ClassLevelSampleAsValue>"));
-        Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
+        Assert.Multiple(() =>
+        {
+            Assert.That(xml,
+                    Is.EqualTo("<ClassLevelSampleAsValue>VAL|The Title|The Message</ClassLevelSampleAsValue>"));
+            Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
+        });
     }
 
     [Test]
@@ -98,8 +107,10 @@ public class CustomSerializerTests
         var xml = s.Serialize(original);
         var deserialized = (ClassLevelCtxSampleAsElement?) s.Deserialize(xml);
 
-        // " CUSTOM" is added by the ClassLevelSerializer
-        Assert.That(xml, Is.EqualTo("""
+        Assert.Multiple(() =>
+        {
+            // " CUSTOM" is added by the ClassLevelSerializer
+            Assert.That(xml, Is.EqualTo("""
             <ClassLevelCtxSampleAsElement>
               <ClassLevelCtxSample>
                 <Title>The Title CUSTOM</Title>
@@ -107,8 +118,9 @@ public class CustomSerializerTests
               </ClassLevelCtxSample>
             </ClassLevelCtxSampleAsElement>
             """));
-        // " CUSTOM" is removed by the ClassLevelSerializer
-        Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
+            // " CUSTOM" is removed by the ClassLevelSerializer
+            Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
+        });
     }
 
     [Test]
@@ -120,9 +132,12 @@ public class CustomSerializerTests
         var xml = s.Serialize(original);
         var deserialized = (ClassLevelCtxSampleAsAttribute?) s.Deserialize(xml);
 
-        Assert.That(xml,
-            Is.EqualTo("<ClassLevelCtxSampleAsAttribute ClassLevelCtxSample=\"ATTR|The Title|The Message\" />"));
-        Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
+        Assert.Multiple(() =>
+        {
+            Assert.That(xml,
+                    Is.EqualTo("<ClassLevelCtxSampleAsAttribute ClassLevelCtxSample=\"ATTR|The Title|The Message\" />"));
+            Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
+        });
     }
 
     [Test]
@@ -134,9 +149,12 @@ public class CustomSerializerTests
         var xml = s.Serialize(original);
         var deserialized = (ClassLevelCtxSampleAsValue?) s.Deserialize(xml);
 
-        Assert.That(xml,
-            Is.EqualTo("<ClassLevelCtxSampleAsValue>VAL|The Title|The Message</ClassLevelCtxSampleAsValue>"));
-        Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
+        Assert.Multiple(() =>
+        {
+            Assert.That(xml,
+                    Is.EqualTo("<ClassLevelCtxSampleAsValue>VAL|The Title|The Message</ClassLevelCtxSampleAsValue>"));
+            Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
+        });
     }
 
     [Test]
@@ -161,8 +179,11 @@ public class CustomSerializerTests
                 </PropertyLevelSample>
                 """;
 
-        Assert.That(xml, Is.EqualTo(expectedXml));
-        Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
+        Assert.Multiple(() =>
+        {
+            Assert.That(xml, Is.EqualTo(expectedXml));
+            Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
+        });
     }
 
     [Test]
@@ -188,8 +209,11 @@ public class CustomSerializerTests
                 </FieldLevelSample>
                 """;
 
-        Assert.That(xml, Is.EqualTo(expectedXml));
-        Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
+        Assert.Multiple(() =>
+        {
+            Assert.That(xml, Is.EqualTo(expectedXml));
+            Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
+        });
     }
 
     [Test]
@@ -212,8 +236,11 @@ public class CustomSerializerTests
                   <Title>ELE__This is the title</Title>VAL__Just a short message body</FieldLevelCombinedSample>
                 """;
 
-        Assert.That(xml, Is.EqualTo(expectedXml));
-        Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
+        Assert.Multiple(() =>
+        {
+            Assert.That(xml, Is.EqualTo(expectedXml));
+            Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()));
+        });
     }
 
     [Test]
@@ -238,10 +265,13 @@ public class CustomSerializerTests
                 </ISampleInterface>
                 """;
 
-        // Note: Prefix "C_" is evidence for custom serializer was invoked
-        // during serialization and deserialization
-        Assert.That(xml, Does.Contain(expectedXmlPart), "Serialized XML");
-        Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()), "Deserialized Object");
+        Assert.Multiple(() =>
+        {
+            // Note: Prefix "C_" is evidence for custom serializer was invoked
+            // during serialization and deserialization
+            Assert.That(xml, Does.Contain(expectedXmlPart), "Serialized XML");
+            Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()), "Deserialized Object");
+        });
     }
 
     [Test]
@@ -272,9 +302,12 @@ public class CustomSerializerTests
                 </ISampleInterface>
                 """;
 
-        // Note: Prefix "C_" is evidence for custom serializer was invoked
-        // during serialization and deserialization
-        Assert.That(xml, Does.Contain(expectedXmlPart), "Serialized XML");
-        Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()), "Deserialized Object");
+        Assert.Multiple(() =>
+        {
+            // Note: Prefix "C_" is evidence for custom serializer was invoked
+            // during serialization and deserialization
+            Assert.That(xml, Does.Contain(expectedXmlPart), "Serialized XML");
+            Assert.That(deserialized?.ToString(), Is.EqualTo(original.ToString()), "Deserialized Object");
+        });
     }
 }

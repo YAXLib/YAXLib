@@ -42,8 +42,11 @@ public class OverridingYaxLibMetadataTests
 
         var desObj = (YaxLibMetadataOverridingWithNamespace?) ser.Deserialize(expected);
 
-        Assert.That(desObj?.Obj?.ToString(), Is.EqualTo(sampleInstance.Obj?.ToString()));
-        Assert.That(desObj?.IntArray?.Length, Is.EqualTo(sampleInstance.IntArray?.Length));
+        Assert.Multiple(() =>
+        {
+            Assert.That(desObj?.Obj?.ToString(), Is.EqualTo(sampleInstance.Obj?.ToString()));
+            Assert.That(desObj?.IntArray?.Length, Is.EqualTo(sampleInstance.IntArray?.Length));
+        });
     }
 
     [Test]
@@ -76,8 +79,11 @@ public class OverridingYaxLibMetadataTests
 
         var desObj = (YaxLibMetadataOverridingWithNamespace?) ser.Deserialize(expected);
 
-        Assert.That(desObj?.Obj?.ToString(), Is.EqualTo(sampleInstance.Obj?.ToString()));
-        Assert.That(desObj?.IntArray?.Length, Is.EqualTo(sampleInstance.IntArray?.Length));
+        Assert.Multiple(() =>
+        {
+            Assert.That(desObj?.Obj?.ToString(), Is.EqualTo(sampleInstance.Obj?.ToString()));
+            Assert.That(desObj?.IntArray?.Length, Is.EqualTo(sampleInstance.IntArray?.Length));
+        });
     }
 
     [Test]

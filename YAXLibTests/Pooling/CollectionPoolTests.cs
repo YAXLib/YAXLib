@@ -22,10 +22,13 @@ public class CollectionPoolTests
     {
         var cp = GetCollectionPool();
 
-        Assert.That(() => cp.Get(), Throws.Nothing);
-        Assert.That(cp.Pool.CountActive, Is.EqualTo(1));
-        Assert.That(cp.Pool.CountInactive, Is.EqualTo(0));
-        Assert.That(cp.Pool.CountAll, Is.EqualTo(1));
+        Assert.Multiple(() =>
+        {
+            Assert.That(() => cp.Get(), Throws.Nothing);
+            Assert.That(cp.Pool.CountActive, Is.EqualTo(1));
+            Assert.That(cp.Pool.CountInactive, Is.EqualTo(0));
+            Assert.That(cp.Pool.CountAll, Is.EqualTo(1));
+        });
     }
 
     [Test]
@@ -35,11 +38,14 @@ public class CollectionPoolTests
 
         var list = cp.Get();
 
-        Assert.That(cp.Pool.CountActive, Is.EqualTo(1));
-        Assert.That(() => cp.Return(list), Throws.Nothing);
-        Assert.That(cp.Pool.CountActive, Is.EqualTo(0));
-        Assert.That(cp.Pool.CountInactive, Is.EqualTo(1));
-        Assert.That(cp.Pool.CountAll, Is.EqualTo(1));
+        Assert.Multiple(() =>
+        {
+            Assert.That(cp.Pool.CountActive, Is.EqualTo(1));
+            Assert.That(() => cp.Return(list), Throws.Nothing);
+            Assert.That(cp.Pool.CountActive, Is.EqualTo(0));
+            Assert.That(cp.Pool.CountInactive, Is.EqualTo(1));
+            Assert.That(cp.Pool.CountAll, Is.EqualTo(1));
+        });
     }
 
     [Test]

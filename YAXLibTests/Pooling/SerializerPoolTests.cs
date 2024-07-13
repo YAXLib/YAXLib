@@ -22,10 +22,13 @@ public class SerializerPoolTests
     {
         var sbp = GetSerializerPool();
 
-        Assert.That(() => sbp.Get(), Throws.Nothing);
-        Assert.That(sbp.Pool.CountActive, Is.EqualTo(1));
-        Assert.That(sbp.Pool.CountInactive, Is.EqualTo(0));
-        Assert.That(sbp.Pool.CountAll, Is.EqualTo(1));
+        Assert.Multiple(() =>
+        {
+            Assert.That(() => sbp.Get(), Throws.Nothing);
+            Assert.That(sbp.Pool.CountActive, Is.EqualTo(1));
+            Assert.That(sbp.Pool.CountInactive, Is.EqualTo(0));
+            Assert.That(sbp.Pool.CountAll, Is.EqualTo(1));
+        });
     }
 
     [Test]
@@ -39,9 +42,12 @@ public class SerializerPoolTests
         // Returning an item should clear the StringBuilder
         Assert.That(() => sp.Return(serializer), Throws.Nothing);
 
-        Assert.That(sp.Pool.CountActive, Is.EqualTo(0));
-        Assert.That(sp.Pool.CountInactive, Is.EqualTo(1));
-        Assert.That(sp.Pool.CountAll, Is.EqualTo(1));
+        Assert.Multiple(() =>
+        {
+            Assert.That(sp.Pool.CountActive, Is.EqualTo(0));
+            Assert.That(sp.Pool.CountInactive, Is.EqualTo(1));
+            Assert.That(sp.Pool.CountAll, Is.EqualTo(1));
+        });
     }
 
     [Test]
@@ -65,9 +71,12 @@ public class SerializerPoolTests
         sp.Return(serializer);
         sp.Reset();
 
-        Assert.That(sp.Pool.CountActive, Is.EqualTo(0));
-        Assert.That(sp.Pool.CountInactive, Is.EqualTo(0));
-        Assert.That(sp.Pool.CountAll, Is.EqualTo(0));
+        Assert.Multiple(() =>
+        {
+            Assert.That(sp.Pool.CountActive, Is.EqualTo(0));
+            Assert.That(sp.Pool.CountInactive, Is.EqualTo(0));
+            Assert.That(sp.Pool.CountAll, Is.EqualTo(0));
+        });
     }
 
     [Test]
@@ -78,7 +87,10 @@ public class SerializerPoolTests
         var serializer = sp?.Get();
         sp?.Dispose();
 
-        Assert.That(serializer, Is.Not.Null, "Serializer instance");
-        Assert.That(sp?.Pool.CountAll ?? -1, Is.EqualTo(0), "CountAll");
+        Assert.Multiple(() =>
+        {
+            Assert.That(serializer, Is.Not.Null, "Serializer instance");
+            Assert.That(sp?.Pool.CountAll ?? -1, Is.EqualTo(0), "CountAll");
+        });
     }
 }

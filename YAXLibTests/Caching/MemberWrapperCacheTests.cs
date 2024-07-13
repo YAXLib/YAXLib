@@ -21,9 +21,12 @@ public class MemberWrapperCacheTests
         var s = new YAXSerializer<Book>();
         _ = s.Serialize(Book.GetSampleInstance());
 
-        Assert.That(countAfterClear, Is.EqualTo(0));
-        Assert.That(MemberWrapperCache.Instance.CacheDictionary.Count, Is.GreaterThan(0));
-        Assert.That(MemberWrapperCache.Instance.CacheDictionary[(typeof(Book), s.Options)].Count, Is.GreaterThan(0));
+        Assert.Multiple(() =>
+        {
+            Assert.That(countAfterClear, Is.EqualTo(0));
+            Assert.That(MemberWrapperCache.Instance.CacheDictionary, Is.Not.Empty);
+            Assert.That(MemberWrapperCache.Instance.CacheDictionary[(typeof(Book), s.Options)], Is.Not.Empty);
+        });
     }
 
     [Test]
@@ -38,9 +41,12 @@ public class MemberWrapperCacheTests
         s = new YAXSerializer<Book>();
         _ = s.Deserialize(xml);
 
-        Assert.That(countAfterClear, Is.EqualTo(0));
-        Assert.That(MemberWrapperCache.Instance.CacheDictionary.Count, Is.GreaterThan(0));
-        Assert.That(MemberWrapperCache.Instance.CacheDictionary[(typeof(Book), s.Options)].Count, Is.GreaterThan(0));
+        Assert.Multiple(() =>
+        {
+            Assert.That(countAfterClear, Is.EqualTo(0));
+            Assert.That(MemberWrapperCache.Instance.CacheDictionary, Is.Not.Empty);
+            Assert.That(MemberWrapperCache.Instance.CacheDictionary[(typeof(Book), s.Options)], Is.Not.Empty);
+        });
     }
 
     [Test]
@@ -66,10 +72,13 @@ public class MemberWrapperCacheTests
         MemberWrapperCache.Instance.Add((typeof(ulong), so), new List<MemberWrapper>());
         MemberWrapperCache.Instance.Add((typeof(char), so), new List<MemberWrapper>());
 
-        Assert.That(dupeAdded, Is.False);
-        Assert.That(MemberWrapperCache.Instance.CacheDictionary.Count, Is.EqualTo(5));
-        Assert.That(MemberWrapperCache.Instance.CacheDictionary.ContainsKey((typeof(string), so)), Is.False); // FIFO
-
+        Assert.Multiple(() =>
+        {
+            Assert.That(dupeAdded, Is.False);
+            Assert.That(MemberWrapperCache.Instance.CacheDictionary, Has.Count.EqualTo(5));
+            Assert.That(MemberWrapperCache.Instance.CacheDictionary.ContainsKey((typeof(string), so)), Is.False); // FIFO
+        });
+        
         MemberWrapperCache.Instance.MaxCacheSize = MemberWrapperCache.DefaultCacheSize;
     }
 }

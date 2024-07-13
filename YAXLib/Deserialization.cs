@@ -750,7 +750,7 @@ internal class Deserialization
             // There's nothing to do for 'TextEmbedding.CData', it's deserialized transparently
             if (member.TextEmbedding == TextEmbedding.Base64 && !string.IsNullOrEmpty(elemValue))
             {
-                member.SetValue(obj, elemValue?.Trim().FromBase64(Encoding.UTF8));
+                member.SetValue(obj, elemValue!.Trim().FromBase64(Encoding.UTF8));
                 return true;
             }
 
@@ -808,7 +808,7 @@ internal class Deserialization
         if (realType != null) memberType = realType;
     }
 
-    private IList GetCollectionItemList(Type collectionItemType)
+    private static IList GetCollectionItemList(Type collectionItemType)
     {
         if (collectionItemType == typeof(object))
         {
@@ -838,7 +838,7 @@ internal class Deserialization
 
         var collItemType = ReflectionUtils.GetCollectionItemType(collType);
 
-        IList dataItems = GetCollectionItemList(collItemType); // this will hold the actual data items
+        var dataItems = GetCollectionItemList(collItemType); // this will hold the actual data items
         var isPrimitive = ReflectionUtils.IsBasicType(collItemType);
         if (isPrimitive && collAttrInstance is
                 { SerializationType: YAXCollectionSerializationTypes.Serially })
@@ -877,7 +877,7 @@ internal class Deserialization
         return null;
     }
 
-    private bool TryDataItemListDirect(Type collType, IList dataItems, out object? result)
+    private static bool TryDataItemListDirect(Type collType, IList dataItems, out object? result)
     {
         if (collType.IsAssignableFrom(dataItems.GetType()))
         {
