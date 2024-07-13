@@ -21,8 +21,12 @@ internal class Deserialization
 {
     private readonly YAXSerializer _serializer;
 
+    private const string KeyPropName = "Key";
+    private const string ValuePropName = "Value";
+    private static readonly char[] WhiteSpaceChars = [' ', '\t', '\r', '\n'];
+
     /// <summary>
-    /// Reference to a pre assigned deserialization base object
+    /// Reference to a preassigned deserialization base object
     /// Will always be set by the serializer using <see cref="SetDeserializationBaseObject(object?)" /> when deserialization
     /// starts.
     /// </summary>
@@ -569,9 +573,11 @@ internal class Deserialization
     /// <returns><see langword="true" />, if at least one member of the specified element exists in the type.</returns>
     private bool AtLeastOneOfMembersExists(XElement elem, Type type)
     {
-        if (elem == null)
-            throw new ArgumentNullException(nameof(elem));
-
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(elem);
+#else
+        if (elem == null) throw new ArgumentNullException(nameof(elem));
+#endif
         var udtWrapper = UdtWrapperCache.Instance.GetOrAddItem(type, _serializer.Options);
 
         foreach (var member in udtWrapper.GetFieldsForDeserialization(false))
@@ -879,9 +885,9 @@ internal class Deserialization
 
     private static bool TryDataItemListDirect(Type collType, IList dataItems, out object? result)
     {
-        if (collType.IsAssignableFrom(dataItems.GetType()))
+        if (collType.IsInstanceOfType(dataItems))
         {
-            //no copy / transformation needed - e.g. IEnumerable<ITem> - we can use the constructed data item list
+            // no copy or transformation needed - e.g. IEnumerable<Item> - we can use the constructed data item list
             result = dataItems;
             return true;
         }
@@ -983,18 +989,15 @@ internal class Deserialization
         object? containerObj,
         IList dataItems, out object? nonGenericDictionary)
     {
-        const string keyPropName = "Key";
-        const string valuePropName = "Value";
-
         nonGenericDictionary = containerObj;
 
         if (!ReflectionUtils.IsNonGenericIDictionary(collType)) return false;
 
         foreach (var lstItem in dataItems)
         {
-            var key = lstItem?.GetType().GetProperty(keyPropName, BindingFlags.Instance | BindingFlags.Public)
+            var key = lstItem?.GetType().GetProperty(KeyPropName, BindingFlags.Instance | BindingFlags.Public)
                 ?.GetValue(lstItem, null);
-            var value = lstItem?.GetType().GetProperty(valuePropName, BindingFlags.Instance | BindingFlags.Public)
+            var value = lstItem?.GetType().GetProperty(ValuePropName, BindingFlags.Instance | BindingFlags.Public)
                 ?.GetValue(lstItem, null);
 
             try
@@ -1016,9 +1019,6 @@ internal class Deserialization
     private bool TryGetCollectionAsDictionary(XElement xElement, Type collType, Type collItemType, XName memberAlias,
         object? containerObj, IList dataItems, out object? dictionary)
     {
-        const string keyPropName = "Key";
-        const string valuePropName = "Value";
-
         dictionary = null;
 
         if (!ReflectionUtils.IsIDictionary(collType, out _, out _)) return false;
@@ -1028,8 +1028,8 @@ internal class Deserialization
 
         foreach (var dataItem in dataItems)
         {
-            var key = collItemType.GetProperty(keyPropName)?.GetValue(dataItem, null);
-            var value = collItemType.GetProperty(valuePropName)?.GetValue(dataItem, null);
+            var key = collItemType.GetProperty(KeyPropName)?.GetValue(dataItem, null);
+            var value = collItemType.GetProperty(ValuePropName)?.GetValue(dataItem, null);
             try
             {
                 collType.InvokeMember("Add", BindingFlags.InvokeMethod, null, dict, new[] { key, value });
@@ -1198,7 +1198,7 @@ internal class Deserialization
 
         // Should we add white space characters to the separators?
         if (collAttrInstance.IsWhiteSpaceSeparator)
-            separators = separators.Union(new[] { ' ', '\t', '\r', '\n' }).ToArray();
+            separators = separators.Union(WhiteSpaceChars).ToArray();
 
         var elemValue = xElement.Value;
         var items = elemValue.Split(separators, StringSplitOptions.RemoveEmptyEntries);
@@ -1316,8 +1316,8 @@ internal class Deserialization
         // deserialize collection fields
         ReflectionUtils.IsIEnumerable(type, out var pairType);
         XName? eachElementName = StringUtils.RefineSingleElement(ReflectionUtils.GetTypeFriendlyName(pairType));
-        var keyAlias = alias.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThenNone() + "Key";
-        var valueAlias = alias.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThenNone() + "Value";
+        var keyAlias = alias.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThenNone() + KeyPropName;
+        var valueAlias = alias.Namespace.IfEmptyThen(_serializer.TypeNamespace).IfEmptyThenNone() + ValuePropName;
 
         if (collAttributeInstance is { EachElementName: { } })
         {
@@ -1599,8 +1599,8 @@ internal class Deserialization
         var keyType = genArgs[0];
         var valueType = genArgs[1];
 
-        var xNameKey = _serializer.TypeNamespace.IfEmptyThenNone() + "Key";
-        var xNameValue = _serializer.TypeNamespace.IfEmptyThenNone() + "Value";
+        var xNameKey = _serializer.TypeNamespace.IfEmptyThenNone() + KeyPropName;
+        var xNameValue = _serializer.TypeNamespace.IfEmptyThenNone() + ValuePropName;
 
         object? keyValue, valueValue;
         if (ReflectionUtils.IsBasicType(keyType))

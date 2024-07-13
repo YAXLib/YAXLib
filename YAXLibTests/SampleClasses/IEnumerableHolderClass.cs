@@ -35,9 +35,9 @@ public class IEnumerableHolderClass
 
     public class Item
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
-        public static implicit operator Item(string name) { return new Item() { Name = name }; }
+        public static implicit operator Item(string name) { return new Item { Name = name }; }
 
         public static implicit operator string(Item item) { return item.Name; }
     }

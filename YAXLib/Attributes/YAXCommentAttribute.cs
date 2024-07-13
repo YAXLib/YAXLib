@@ -13,11 +13,13 @@ namespace YAXLib.Attributes;
                 AttributeTargets.Property)]
 public class YAXCommentAttribute : YAXBaseAttribute, IYaxMemberLevelAttribute, IYaxTypeLevelAttribute
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="YAXCommentAttribute" /> class.
-    /// </summary>
-    /// <param name="comment">The comment.</param>
-    public YAXCommentAttribute(string comment)
+    private static readonly char[] CrLfChars = ['\r', '\n'];
+
+/// <summary>
+/// Initializes a new instance of the <see cref="YAXCommentAttribute" /> class.
+/// </summary>
+/// <param name="comment">The comment.</param>
+public YAXCommentAttribute(string comment)
     {
         Comment = comment;
     }
@@ -46,7 +48,7 @@ public class YAXCommentAttribute : YAXBaseAttribute, IYaxMemberLevelAttribute, I
     {
         if (string.IsNullOrEmpty(Comment)) return Array.Empty<string>();
 
-        var comments = Comment!.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+        var comments = Comment!.Split(CrLfChars, StringSplitOptions.RemoveEmptyEntries);
         for (var i = 0; i < comments.Length; i++) comments[i] = $" {comments[i].Trim()} ";
 
         return comments;
