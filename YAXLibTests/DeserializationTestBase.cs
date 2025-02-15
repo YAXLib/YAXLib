@@ -388,6 +388,20 @@ public abstract class DeserializationTestBase
     }
 
     [Test]
+    public void DesCollectionWithNoContainingElementTest()
+    {
+        object obj = CollectionWithNoContainingElement.GetSampleInstance();
+        PerformTest(obj);
+    }
+
+    [Test]
+    public void DesCollectionWithNoContainingElementWithExtraPropertiesTest()
+    {
+        object obj = CollectionWithNoContainingElementWithExtraProperties.GetSampleInstance();
+        PerformTest(obj);
+    }
+
+    [Test]
     public void MoreComplexBookTwoResumedDeserializationTest()
     {
         var result =
