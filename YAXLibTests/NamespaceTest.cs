@@ -1,6 +1,7 @@
 ﻿// Copyright (C) Sina Iravanian, Julian Verdurmen, axuno gGmbH and other contributors.
 // Licensed under the MIT license.
 
+using System.Xml.Linq;
 using NUnit.Framework;
 using YAXLib;
 using YAXLib.Enums;
@@ -498,6 +499,31 @@ public class NamespaceTest
         {
             Assert.That(deserialized, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
+        });
+    }
+
+    [Test]
+    public void DictionaryWithImplicitNamespaceDeserializationTest()
+    {
+        var serializer = new YAXSerializer<CellPhoneDictionary>(new SerializerOptions {
+            ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
+            ExceptionBehavior = YAXExceptionTypes.Warning,
+            SerializationOptions = YAXSerializationOptions.SerializeNullObjects
+        });
+        var gotInstance = CellPhoneDictionary.GetSampleInstance();
+        var gotDocument = serializer.SerializeToXDocument(gotInstance);
+        // Add a namespace.
+        foreach (var element in gotDocument.Descendants())
+        {
+            element.Name = ((XNamespace)"https://github.com/YAXLib") + element.Name.LocalName;
+        }
+        var got = gotDocument.ToString();
+        var deserialized = serializer.Deserialize(got);
+        Assert.Multiple(() =>
+        {
+            Assert.That(deserialized, Is.Not.Null);
+            Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
+            Assert.That(deserialized?.ToString(), Is.EqualTo(gotInstance.ToString()));
         });
     }
 
