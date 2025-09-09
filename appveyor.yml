@@ -3,7 +3,9 @@ skip_commits:
   files:
     - '**/*.md'
 environment:
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true 
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  # Disable MSBuild terminal logger globally (prevents ESC[2F, ESC[1F, et al)
+  MSBUILDTERMINALLOGGER: false
   matrix:
   - job_name: windows
     appveyor_build_worker_image: Visual Studio 2022
@@ -47,11 +49,13 @@ for:
     matrix:
       only:
         - job_name: linux
+    # Run CI tests for YAXLib netstandard2.0, netstandard2.1 target frameworks
+    # See further entries and comments in YAXLibTests.csproj
     build_script:
       - dotnet --version
-      - dotnet restore YAXLib --verbosity quiet
-      - dotnet build YAXLib -f netstandard2.0 
     test_script:
-      - dotnet restore YAXLibTests --verbosity quiet
-      - dotnet build YAXLibTests -f net6.0
-      - dotnet test YAXLibTests -f net6.0
+      - echo "Testing YAXLibTests against netstandard2.0"
+      - dotnet test YAXLibTests -f net8.0 -p:ForceYAXLibTFM=netstandard2.0 -p:CopyLocalLockFileAssemblies=true -v:minimal
+      - dotnet clean YAXLibTests -f net8.0
+      - echo "Testing YAXLibTests against netstandard2.1"
+      - dotnet test YAXLibTests -f net8.0 -p:ForceYAXLibTFM=netstandard2.1 -p:CopyLocalLockFileAssemblies=true -v:minimal
