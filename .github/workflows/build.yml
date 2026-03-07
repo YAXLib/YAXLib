@@ -20,6 +20,9 @@ jobs:
   windows:
     name: Windows Build, Test, Pack and Publish
     runs-on: windows-2022
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
       - name: Checkout
