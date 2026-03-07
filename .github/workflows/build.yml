@@ -45,13 +45,14 @@ jobs:
         shell: pwsh
         run: |
           $version = "4.3.0"
+          echo "PACKAGE_VERSION=$version" >> $env:GITHUB_ENV
           $versionFile = "$version.${{ github.run_number }}"
           $prNumber = "${{ github.event.pull_request.number }}"
-          
+
           if ($prNumber) {
               $version = "$version-PR$prNumber"
           }
-          
+
           dotnet pack YAXLib --verbosity minimal --configuration release `
             /p:IncludeSymbols=true `
             /p:SymbolPackageFormat=snupkg `
@@ -74,9 +75,8 @@ jobs:
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: |
-          Get-ChildItem -Path "artifacts/*.nupkg", "artifacts/*.snupkg" | ForEach-Object {
-              dotnet nuget push $_.FullName --api-key "$env:NUGET_API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate
-          }
+          $packagePath = "artifacts/YAXLib.$env:PACKAGE_VERSION.nupkg"
+          dotnet nuget push $packagePath --api-key $env:NUGET_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
 
   linux:
     name: Linux Test .NET Standard Assets
