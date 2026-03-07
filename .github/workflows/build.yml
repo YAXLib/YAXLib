@@ -69,7 +69,7 @@ jobs:
             artifacts/*.snupkg
 
       - name: Publish to NuGet
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master' && github.repository_owner == 'YAXLib'
         shell: pwsh
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
