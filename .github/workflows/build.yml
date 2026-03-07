@@ -71,12 +71,9 @@ jobs:
 
       - name: Publish to NuGet
         if: github.event_name == 'push' && github.ref == 'refs/heads/master' && github.repository_owner == 'YAXLib'
-        shell: pwsh
-        env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-        run: |
-          $packagePath = "artifacts/YAXLib.$env:PACKAGE_VERSION.nupkg"
-          dotnet nuget push $packagePath --api-key $env:NUGET_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
+        uses: NuGet/publish-action@v0.3.0
+        with:
+          package-path: artifacts/YAXLib.${{ env.PACKAGE_VERSION }}.nupkg
 
   linux:
     name: Linux Test .NET Standard Assets
