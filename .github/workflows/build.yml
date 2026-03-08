@@ -20,7 +20,9 @@ jobs:
   windows:
     name: Windows Build, Test, Pack and Publish
     runs-on: windows-2022
-
+    permissions:
+      id-token: write  # enable GitHub OIDC token issuance for this job
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -69,14 +71,20 @@ jobs:
             artifacts/*.nupkg
             artifacts/*.snupkg
 
+      # Get a short-lived NuGet API key (OIDC -> temp API key)
+      - name: NuGet login 
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master' && github.repository_owner == 'YAXLib'
+        uses: NuGet/login@v1
+        id: login
+        with:
+           user: ${{ secrets.NUGET_USER }}
+
       - name: Publish to NuGet
         if: github.event_name == 'push' && github.ref == 'refs/heads/master' && github.repository_owner == 'YAXLib'
         shell: pwsh
-        env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: |
           $packagePath = "artifacts/YAXLib.$env:PACKAGE_VERSION.nupkg"
-          dotnet nuget push $packagePath --api-key $env:NUGET_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
+          dotnet nuget push $packagePath --api-key ${{steps.login.outputs.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json --skip-duplicate
 
   linux:
     name: Linux Test .NET Standard Assets
