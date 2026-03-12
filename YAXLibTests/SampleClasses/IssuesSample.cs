@@ -144,3 +144,40 @@ public class DictionaryWithoutExplicitNamespace
         };
     }
 }
+
+/// <summary>
+/// Sample class for GitHub issue #257 (key and value as XML attributes):
+/// Verifies that the namespace fallback fix for element names does NOT apply
+/// to key/value aliases when they are serialized as XML attributes, since
+/// attributes do not inherit the default namespace.
+/// </summary>
+public class DictionaryWithKeyValueAsAttributes
+{
+    [YAXDictionary(SerializeKeyAs = YAXNodeTypes.Attribute, SerializeValueAs = YAXNodeTypes.Attribute)]
+    public Dictionary<string, string> Dict { get; set; } = new();
+
+    public static DictionaryWithKeyValueAsAttributes GetSampleInstance()
+    {
+        return new DictionaryWithKeyValueAsAttributes {
+            Dict = new Dictionary<string, string> { { "A", "Value 0" }, { "B", "Value 1" } }
+        };
+    }
+}
+
+/// <summary>
+/// Sample class for GitHub issue #257 (key as XML attribute, value as XML content):
+/// Verifies that the namespace fallback fix for element names does NOT apply
+/// to key/value aliases when they are serialized as attribute or content.
+/// </summary>
+public class DictionaryWithKeyAsAttributeValueAsContent
+{
+    [YAXDictionary(SerializeKeyAs = YAXNodeTypes.Attribute, SerializeValueAs = YAXNodeTypes.Content)]
+    public Dictionary<string, string> Dict { get; set; } = new();
+
+    public static DictionaryWithKeyAsAttributeValueAsContent GetSampleInstance()
+    {
+        return new DictionaryWithKeyAsAttributeValueAsContent {
+            Dict = new Dictionary<string, string> { { "A", "Value 0" }, { "B", "Value 1" } }
+        };
+    }
+}

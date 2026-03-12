@@ -719,9 +719,65 @@ public class NamespaceTest
 
         var deserialized = serializer.Deserialize(xdoc.Root!);
 
+        Assert.That(deserialized, Is.Not.Null);
         Assert.Multiple(() =>
         {
-            Assert.That(deserialized, Is.Not.Null);
+            Assert.That(deserialized!.Dict, Is.Not.Null);
+            Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
+            Assert.That(deserialized.Dict, Has.Count.EqualTo(2));
+            Assert.That(deserialized.Dict["A"], Is.EqualTo("Value 0"));
+            Assert.That(deserialized.Dict["B"], Is.EqualTo("Value 1"));
+        });
+    }
+
+    [Test]
+    public void Issue257_YAXDictionaryKeyValueAsAttributesWithAppliedNamespaceTest()
+    {
+        // GitHub Issue #257: namespace fallback must NOT apply to key/value aliases
+        // when they are serialized as XML attributes, because XML attributes do not
+        // inherit the default namespace. Only the pair element name gets the namespace.
+        var serializer = new YAXSerializer<DictionaryWithKeyValueAsAttributes>();
+        var instance = DictionaryWithKeyValueAsAttributes.GetSampleInstance();
+
+        var xdoc = serializer.SerializeToXDocument(instance);
+        foreach (var element in xdoc.Descendants())
+            element.Name = ((XNamespace)"http://github.com/") + element.Name.LocalName;
+
+        var deserialized = serializer.Deserialize(xdoc.Root!);
+
+        Assert.That(deserialized, Is.Not.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(deserialized!.Dict, Is.Not.Null);
+            Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
+            Assert.That(deserialized.Dict, Has.Count.EqualTo(2));
+            Assert.That(deserialized.Dict["A"], Is.EqualTo("Value 0"));
+            Assert.That(deserialized.Dict["B"], Is.EqualTo("Value 1"));
+        });
+    }
+
+    [Test]
+    public void Issue257_YAXDictionaryKeyAsAttributeValueAsContentWithAppliedNamespaceTest()
+    {
+        // GitHub Issue #257: namespace fallback must NOT apply to the key alias when
+        // it is serialized as an XML attribute, nor to the value alias when serialized
+        // as XML content — only the pair element name needs the namespace.
+        var serializer = new YAXSerializer<DictionaryWithKeyAsAttributeValueAsContent>();
+        var instance = DictionaryWithKeyAsAttributeValueAsContent.GetSampleInstance();
+            
+        var xdoc = serializer.SerializeToXDocument(instance);
+        foreach (var element in xdoc.Descendants())
+            element.Name = ((XNamespace)"http://github.com/") + element.Name.LocalName;
+
+        var deserialized = serializer.Deserialize(xdoc.Root!);
+
+        Assert.That(deserialized, Is.Not.Null);
+        // Guard: produces a clean "Expected: not null, But was: null" NUnit message if Deserialize returns null
+        Assert.That(deserialized, Is.Not.Null);
+
+        // Only reached when deserialized is confirmed non-null; all failures reported together
+        Assert.Multiple(() =>
+        {
             Assert.That(deserialized!.Dict, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
             Assert.That(deserialized.Dict, Has.Count.EqualTo(2));
