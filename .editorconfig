@@ -14,6 +14,7 @@ tab_width = 4
 
 trim_trailing_whitespace = true
 insert_final_newline = true
+end_of_line = lf
 #require members of anonymous types to be on separate lines
 csharp_new_line_before_members_in_anonymous_types = true
 

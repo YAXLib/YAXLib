@@ -24,11 +24,9 @@ jobs:
       id-token: write  # enable GitHub OIDC token issuance for this job
     
     steps:
+      # Line endings are defined in .gitattributes
       - name: Checkout
         uses: actions/checkout@v6
-
-      - name: Setup Git CRLF
-        run: git config --global core.autocrlf true
 
       - name: Setup .NET SDKs
         uses: actions/setup-dotnet@v5
