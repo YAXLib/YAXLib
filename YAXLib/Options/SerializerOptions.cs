@@ -74,6 +74,13 @@ public class SerializerOptions
     public CultureInfo Culture { get; set; }
 
     /// <summary>
+    /// Gets or sets the new line character(s) written during XML serialization.
+    /// Defaults to <c>"\n"</c> (LF) for deterministic, cross-platform output.
+    /// Set to <see cref="Environment.NewLine" /> to restore OS-native behavior.
+    /// </summary>
+    public string NewLineChars { get; set; } = "\n";
+
+    /// <summary>
     /// Gets or sets the <see cref="ITypeInspector"/>. Is set to <see cref="DefaultTypeInspector"/> by default.
     /// <para/>
     /// With a custom <see cref="ITypeInspector"/> it is possible to control

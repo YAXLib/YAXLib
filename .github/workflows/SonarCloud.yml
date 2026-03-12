@@ -12,7 +12,7 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: windows-latest
+    runs-on: windows-2022
     # SonarCloud do not support analysis of forked PRs, even when those PRs come from members of the organization
     # (PRs from forks can't access secrets other than secrets.GITHUB_TOKEN for security reasons)
     if: ${{ !github.event.pull_request.head.repo.fork }}
@@ -20,9 +20,9 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: 'microsoft'
+          distribution: 'zulu'
           java-version: '17'
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0   # Shallow clones should be disabled for a better relevancy of analysis
       - name: Cache SonarCloud packages
@@ -54,9 +54,9 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"${{ env.repository_owner_lc }}_YAXLib" /o:"${{ env.repository_owner_lc }}" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="**/coverage*.xml"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"${{ env.repository_owner_lc }}_YAXLib" /o:"${{ env.repository_owner_lc }}" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="**/coverage*.xml"
           dotnet add ./YAXLibTests/YAXLibTests.csproj package AltCover
           dotnet restore YAXLib.sln --verbosity quiet
           dotnet build YAXLib.sln --verbosity minimal --configuration release --no-restore /p:IncludeSymbols=true
           dotnet test YAXLib.sln --no-build --verbosity normal /p:configuration=release /p:AltCover=true /p:AltCoverXmlReport="coverage.xml" /p:AltCoverStrongNameKey="../Key/YAXLib.Key.snk" /p:AltCoverAssemblyExcludeFilter="YAXLibTests|NUnit3.TestAdapter"
-          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"

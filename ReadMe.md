@@ -1,8 +1,7 @@
 ![YAXLib Logo](Logo/YAXLib_64x64.png)
 # YAXLib: Yet Another XML Serialization Library
 
-[![AppVeyor build status windows](https://img.shields.io/appveyor/job/build/yaxlib/yaxlib/windows/master?label=windows%20build)](https://ci.appveyor.com/project/yaxlib/yaxlib/branch/master)
-[![AppVeyor build status linux](https://img.shields.io/appveyor/job/build/yaxlib/yaxlib/linux/master?label=linux%20build)](https://ci.appveyor.com/project/yaxlib/yaxlib/branch/master)
+[![Build + Test](https://github.com/yaxlib/yaxlib/actions/workflows/build.yml/badge.svg)](https://github.com/yaxlib/yaxlib/actions)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=yaxlib_YAXLib&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=yaxlib_YAXLib)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=yaxlib_YAXLib&metric=coverage)](https://sonarcloud.io/summary/new_code?id=yaxlib_YAXLib)
 [![NuGet](https://img.shields.io/nuget/v/YAXLib.svg)](https://www.nuget.org/packages/YAXLib/)

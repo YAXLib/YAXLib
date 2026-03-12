@@ -1,4 +1,4 @@
-* text=auto
+* text=auto eol=lf
 
 *.config text
 *.cs text diff=csharp
