@@ -1,27 +1,40 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>../Key/YAXLib.Key.snk</AssemblyOriginatorKeyFile>
-    <DelaySign>false</DelaySign>
-    <TargetFrameworks>net461;netcoreapp3.1;net6.0</TargetFrameworks>
-    <IsPackable>false</IsPackable>
-    <nullable>enable</nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>../Key/YAXLib.Key.snk</AssemblyOriginatorKeyFile>
+        <DelaySign>false</DelaySign>
+        <TargetFrameworks>net48;net8.0</TargetFrameworks>
+        <IsPackable>false</IsPackable>
+        <nullable>enable</nullable>
+        <!-- Ensure all transitive package assets from referenced projects are copied for netstandard2.x -->
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="6.12.0" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="NUnit" Version="3.14.0" />
-    <PackageReference Include="NUnit.Analyzers" Version="4.1.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="FluentAssertions" Version="8.8.0" />
+        <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+        <PackageReference Include="NUnit" Version="4.5.1" />
+        <PackageReference Include="NUnit.Analyzers" Version="4.11.2">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="NUnit3TestAdapter" Version="5.2.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\YAXLib\YAXLib.csproj" />
-  </ItemGroup>
+    <!-- Run test on YAXLib netstandard2.x assemblies: -->
+    <!-- dotnet test YAXLibTests -f net8.0 -p:ForceYAXLibTFM=netstandard2.0 -p:CopyLocalLockFileAssemblies=true -v:diag -->
+
+    <!-- Force YAXLib to a specific TFM via -p:ForceYAXLibTFM=... -->
+    <ItemGroup>
+        <ProjectReference Include="..\YAXLib\YAXLib.csproj">
+            <AdditionalProperties Condition="'$(ForceYAXLibTFM)' != ''">TargetFramework=$(ForceYAXLibTFM)</AdditionalProperties>
+        </ProjectReference>
+    </ItemGroup>
+
+    <!-- When testing the netstandard2.0 asset under net6/net8, ensure its polyfill is present -->
+    <ItemGroup Condition="('$(ForceYAXLibTFM)' == 'netstandard2.0' or '$(ForceYAXLibTFM)' == 'netstandard2.1') and ('$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net8.0')">
+        <PackageReference Include="Portable.System.DateTimeOnly" Version="9.0.0" />
+    </ItemGroup>
 </Project>

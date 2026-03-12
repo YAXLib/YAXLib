@@ -3065,6 +3065,7 @@ public abstract class SerializationTestBase
             Indent = true,
             IndentChars = ("  "),
             OmitXmlDeclaration = true,
+            NewLineChars = "\n"
         };
         var sb = new StringBuilder(500);
         var xmlWriter = XmlWriter.Create(sb, settings);
@@ -3107,7 +3108,7 @@ public abstract class SerializationTestBase
         Assert.Multiple(() =>
         {
             // Serialization
-            Assert.That(serialized.ToString(), Is.EqualTo(xml),
+            Assert.That(serialized.ToString().NormalizeLineEndings(), Is.EqualTo(xml),
                 "TextNoEmbedding: Uses SerializeAsAttribute, contains encoded entities");
             Assert.That(serialized.Root!.Element("TextIsNull")!.IsEmpty, Is.True,
                 $"null values are not handled by {nameof(YAXTextEmbeddingAttribute)}");
