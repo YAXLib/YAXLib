@@ -122,7 +122,18 @@ public class YAXSerializer : IYAXSerializer<object>, IRecursionCounter
     /// <returns>A <code>System.String</code> containing the XML</returns>
     public string Serialize(object? obj)
     {
-        return Serialization.SerializeXDocument(obj).ToString();
+        var xdoc = Serialization.SerializeXDocument(obj);
+        var sw = new StringWriter();
+        var settings = new XmlWriterSettings {
+            OmitXmlDeclaration = true,
+            Indent = true,
+            NewLineChars = Options.NewLineChars
+        };
+        using (var writer = XmlWriter.Create(sw, settings))
+        {
+            xdoc.Save(writer);
+        }
+        return sw.ToString();
     }
 
     /// <summary>
@@ -166,7 +177,7 @@ public class YAXSerializer : IYAXSerializer<object>, IRecursionCounter
             Options.Culture,
             "{0}{1}{2}",
             "<?xml version=\"1.0\" encoding=\"utf-8\"?>",
-            Environment.NewLine,
+            Options.NewLineChars,
             Serialize(obj));
         File.WriteAllText(fileName, ser, Encoding.UTF8);
     }

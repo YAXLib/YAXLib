@@ -22,9 +22,7 @@ public class PoolingException : InvalidOperationException
     }
 
     /// <inheritdoc />
-    protected PoolingException(
-        System.Runtime.Serialization.SerializationInfo info,
-        System.Runtime.Serialization.StreamingContext context) : base(info, context)
+    protected PoolingException()
     {
         PoolType = typeof(object);
     }

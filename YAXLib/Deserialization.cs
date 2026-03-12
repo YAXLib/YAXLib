@@ -1350,8 +1350,24 @@ internal class Deserialization
         }
 
         GetDictionaryAttributeDetails(dictAttrInstance, alias, ref eachElementName, ref keyAlias, ref valueAlias);
+
         GetDictionaryAttributeFlags(dictAttrInstance, keyType, valueType, out var isKeyAttribute, out var isKeyContent,
             out var isValueAttribute, out var isValueContent);
+        // Fall back to the containing element's namespace when no namespace was explicitly configured.
+        // This allows deserialization of XML where a namespace was applied to elements externally (e.g. inherited
+        // default namespace), without requiring a YAXNamespace attribute on the class or member (GitHub issue #257).
+        // For dictionary keys/values, only apply this fallback when they are serialized as elements, not when they
+        // are serialized as attributes or content (attributes typically remain in no-namespace).
+        var parentNamespace = xElementValue.Name.Namespace.IfEmptyThenNone();
+        eachElementName = eachElementName!.OverrideNsIfEmpty(parentNamespace);
+        if (!isKeyAttribute && !isKeyContent)
+        {
+            keyAlias = keyAlias.OverrideNsIfEmpty(parentNamespace);
+        }
+        if (!isValueAttribute && !isValueContent)
+        {
+            valueAlias = valueAlias.OverrideNsIfEmpty(parentNamespace);
+        }
 
         foreach (var childElem in xElementValue.Elements(eachElementName))
         {
