@@ -503,31 +503,6 @@ public class NamespaceTest
     }
 
     [Test]
-    public void DictionaryWithImplicitNamespaceDeserializationTest()
-    {
-        var serializer = new YAXSerializer<CellPhoneDictionary>(new SerializerOptions {
-            ExceptionHandlingPolicies = YAXExceptionHandlingPolicies.DoNotThrow,
-            ExceptionBehavior = YAXExceptionTypes.Warning,
-            SerializationOptions = YAXSerializationOptions.SerializeNullObjects
-        });
-        var gotInstance = CellPhoneDictionary.GetSampleInstance();
-        var gotDocument = serializer.SerializeToXDocument(gotInstance);
-        // Add a namespace.
-        foreach (var element in gotDocument.Descendants())
-        {
-            element.Name = ((XNamespace)"https://github.com/YAXLib") + element.Name.LocalName;
-        }
-        var got = gotDocument.ToString();
-        var deserialized = serializer.Deserialize(got);
-        Assert.Multiple(() =>
-        {
-            Assert.That(deserialized, Is.Not.Null);
-            Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
-            Assert.That(deserialized?.ToString(), Is.EqualTo(gotInstance.ToString()));
-        });
-    }
-
-    [Test]
     public void CollectionNamespaceGoesThruRecursiveNoContainingElementDeserializationTest()
     {
         var serializer = new YAXSerializer<CellPhoneCollectionNamespaceGoesThruRecursiveNoContainingElement>(
@@ -727,5 +702,31 @@ public class NamespaceTest
         var project = CsprojParser.Parse(csprojContent);
         var xml2 = CsprojParser.ParseAndRegenerateXml(csprojContent);
         Assert.That(xml2, Is.EqualTo(csprojContent));
+    }
+
+    [Test]
+    public void Issue257_YAXDictionaryDeserializationWithAppliedNamespaceTest()
+    {
+        // GitHub Issue #257: YAXDictionary broken for elements using a namespace.
+        // Serialize, then apply a namespace to all elements to simulate namespace inheritance,
+        // and verify that the dictionary is fully populated after deserialization.
+        var serializer = new YAXSerializer<DictionaryWithoutExplicitNamespace>();
+        var instance = DictionaryWithoutExplicitNamespace.GetSampleInstance();
+
+        var xdoc = serializer.SerializeToXDocument(instance);
+        foreach (var element in xdoc.Descendants())
+            element.Name = ((XNamespace)"http://github.com/") + element.Name.LocalName;
+
+        var deserialized = serializer.Deserialize(xdoc.Root!);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(deserialized, Is.Not.Null);
+            Assert.That(deserialized!.Dict, Is.Not.Null);
+            Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
+            Assert.That(deserialized.Dict, Has.Count.EqualTo(2));
+            Assert.That(deserialized.Dict["A"], Is.EqualTo("Value 0"));
+            Assert.That(deserialized.Dict["B"], Is.EqualTo("Value 1"));
+        });
     }
 }

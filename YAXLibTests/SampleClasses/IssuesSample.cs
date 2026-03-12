@@ -127,3 +127,20 @@ public class CustomField
     [YAXAttributeForClass]
     public string Value { get; set; }
 }
+
+/// <summary>
+/// Sample class for GitHub issue #257:
+/// YAXDictionary broken for elements using a namespace.
+/// </summary>
+public class DictionaryWithoutExplicitNamespace
+{
+    [YAXDictionary]
+    public Dictionary<string, string> Dict { get; set; } = new();
+
+    public static DictionaryWithoutExplicitNamespace GetSampleInstance()
+    {
+        return new DictionaryWithoutExplicitNamespace {
+            Dict = new Dictionary<string, string> { { "A", "Value 0" }, { "B", "Value 1" } }
+        };
+    }
+}
