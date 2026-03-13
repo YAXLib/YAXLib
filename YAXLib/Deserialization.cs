@@ -1155,6 +1155,14 @@ internal class Deserialization
                                              collItemType)))
                 continue;
 
+            // When no explicit element name is set and no realtype attribute is present,
+            // skip elements whose name doesn't match the collection item type's expected name.
+            // This prevents sibling elements from being mistakenly included when the collection
+            // uses RecursiveWithNoContainingElement and the parent also has other members (GitHub issue #256).
+            if (eachElemName == null && !isPrimitive && realTypeAttribute == null &&
+                childElem.Name.LocalName != ReflectionUtils.GetTypeFriendlyName(collItemType))
+                continue;
+
             if (curElementIsPrimitive)
             {
                 try
