@@ -7,15 +7,15 @@ using YAXLib.Enums;
 
 namespace YAXLibTests.SampleClasses;
 
-public class CollectionWithNoContainingElementWithExtraProperties {
+public class CollectionWithNoContainingElementWithExtraProperties
+{
     public string? Id { get; set; }
     [YAXCollection(YAXCollectionSerializationTypes.RecursiveWithNoContainingElement)]
     public List<CollectionWithNoContainingElementWithExtraPropertiesItem>? Items { get; set; }
 
-    public static CollectionWithNoContainingElementWithExtraProperties GetSampleInstance() {
+    public static CollectionWithNoContainingElementWithExtraProperties GetSampleInstance()
+    {
         return new CollectionWithNoContainingElementWithExtraProperties {
-            Id = "id-0",
-            Items = new() {
                 new() {
                     PropertyA = "0",
                     PropertyB = "1",
@@ -29,7 +29,8 @@ public class CollectionWithNoContainingElementWithExtraProperties {
     }
 }
 
-public class CollectionWithNoContainingElementWithExtraPropertiesItem {
+public class CollectionWithNoContainingElementWithExtraPropertiesItem
+{
     public string? PropertyA { get; set; }
     public string? PropertyB { get; set; }
 }

@@ -1159,9 +1159,14 @@ internal class Deserialization
             // skip elements whose name doesn't match the collection item type's expected name.
             // This prevents sibling elements from being mistakenly included when the collection
             // uses RecursiveWithNoContainingElement and the parent also has other members (GitHub issue #256).
-            if (eachElemName == null && !isPrimitive && realTypeAttribute == null &&
-                childElem.Name.LocalName != ReflectionUtils.GetTypeFriendlyName(collItemType))
-                continue;
+            if (eachElemName == null && !isPrimitive && realTypeAttribute == null)
+            {
+                var itemWrapper = UdtWrapperCache.Instance.GetOrAddItem(collItemType, _serializer.Options);
+                var expectedItemElementName = itemWrapper.Alias;
+
+                if (!string.Equals(childElem.Name.LocalName, expectedItemElementName, StringComparison.Ordinal))
+                    continue;
+            }
 
             if (curElementIsPrimitive)
             {
