@@ -15,16 +15,22 @@ public class CollectionWithNoContainingElementWithExtraProperties
 
     public static CollectionWithNoContainingElementWithExtraProperties GetSampleInstance()
     {
-        return new CollectionWithNoContainingElementWithExtraProperties {
-                new() {
+        return new CollectionWithNoContainingElementWithExtraProperties
+        {
+            Id = "SampleId",
+            Items = new List<CollectionWithNoContainingElementWithExtraPropertiesItem>
+            {
+                new()
+                {
                     PropertyA = "0",
                     PropertyB = "1",
                 },
-                new() {
+                new()
+                {
                     PropertyA = "2",
                     PropertyB = "3",
                 },
-            },
+            }
         };
     }
 }

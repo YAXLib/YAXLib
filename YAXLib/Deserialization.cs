@@ -1162,7 +1162,7 @@ internal class Deserialization
             if (eachElemName == null && !isPrimitive && realTypeAttribute == null)
             {
                 var itemWrapper = UdtWrapperCache.Instance.GetOrAddItem(collItemType, _serializer.Options);
-                var expectedItemElementName = itemWrapper.Alias;
+                var expectedItemElementName = itemWrapper.Alias.LocalName;
 
                 if (!string.Equals(childElem.Name.LocalName, expectedItemElementName, StringComparison.Ordinal))
                     continue;
