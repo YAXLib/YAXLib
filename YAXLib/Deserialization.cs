@@ -1148,6 +1148,9 @@ internal class Deserialization
                 }
             }
 
+            UdtWrapper? itemWrapper = null;
+            string? expectedItemElementName = null;
+
             // Check if curElementType is derived or is the same is itemType.
             // For speed concerns we perform this check only when eachElemName is null
             if (eachElemName == null && (curElementType == typeof(object) ||
