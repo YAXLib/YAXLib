@@ -28,11 +28,11 @@ internal class ExceptionTests
             serializer.Serialize(ClassWithDuplicateYaxAttribute.GetSampleInstance());
         });
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(ex?.AttrName, Is.EqualTo("test"));
             Assert.That(ex?.Message, Does.Contain("'test'"));
-        });
+        }
     }
 
     [Test]
@@ -56,14 +56,14 @@ internal class ExceptionTests
             serializer.Deserialize(badXml);
         });
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             // YAXBadlyFormedXML exception doesn't need YAXSerializationOptions.DisplayLineInfoInExceptions to get the line numbers
             Assert.That(ex!.HasLineInfo, Is.True);
             Assert.That(ex.LineNumber, Is.EqualTo(7));
             Assert.That(ex.LinePosition, Is.EqualTo(3));
             Assert.That(ex.Message, Does.Contain("not properly formatted"));
-        });
+        }
     }
 
     [Test]
@@ -79,11 +79,11 @@ internal class ExceptionTests
 
         object? result = "";
         Assert.That(code: () => { result = serializer.Deserialize(xml); }, Throws.Nothing);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result, Is.Null);
             Assert.That(serializer.ParsingErrors.ToString(), Does.Contain("not properly formatted"));
-        });
+        }
     }
 
     [Test]
@@ -128,11 +128,11 @@ internal class ExceptionTests
 
         object? result = "";
         Assert.That(code: () => { result = serializer.Deserialize(streamReader); }, Throws.Nothing);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result, Is.Null);
             Assert.That(serializer.ParsingErrors.ToString(), Does.Contain("not properly formatted"));
-        });
+        }
     }
 
     [Test]
@@ -179,11 +179,11 @@ internal class ExceptionTests
         using var xmlReader = XmlReader.Create(stream);
         object? result = "";
         Assert.That(code: () => { result = serializer.Deserialize(xmlReader); }, Throws.Nothing);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result, Is.Null);
             Assert.That(serializer.ParsingErrors.ToString(), Does.Contain("not properly formatted"));
-        });
+        }
     }
 
     [Test]
@@ -209,13 +209,13 @@ internal class ExceptionTests
             });
             serializer.Deserialize(bookXml);
         });
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(ex?.HasLineInfo, Is.True);
             Assert.That(ex?.LineNumber, Is.EqualTo(6));
             Assert.That(ex?.LinePosition, Is.EqualTo(4));
             Assert.That(ex?.Message, Does.Contain("The format of the value specified for the property"));
-        });
+        }
     }
 
     [Test]
@@ -240,13 +240,13 @@ internal class ExceptionTests
             });
             serializer.Deserialize(bookXml);
         });
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(ex?.HasLineInfo, Is.False);
             Assert.That(ex?.LineNumber, Is.EqualTo(0));
             Assert.That(ex?.LinePosition, Is.EqualTo(0));
             Assert.That(ex?.Message, Does.Contain("The format of the value specified for the property"));
-        });
+        }
     }
 
     [Test]
@@ -260,12 +260,12 @@ internal class ExceptionTests
             serializer.Serialize(new ClassWithDuplicateYaxAttribute());
         });
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(ex?.ExpectedType, Is.EqualTo(typeof(Book)));
             Assert.That(ex?.ReceivedType, Is.EqualTo(typeof(ClassWithDuplicateYaxAttribute)));
             Assert.That(ex?.Message, Does.Contain("'Book'"));
-        });
+        }
         Assert.That(ex?.Message, Does.Contain("'ClassWithDuplicateYaxAttribute'"));
     }
 
@@ -292,12 +292,12 @@ internal class ExceptionTests
             });
             serializer.Deserialize(bookXml);
         });
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(ex?.HasLineInfo, Is.True);
             Assert.That(ex?.LineNumber, Is.EqualTo(2));
             Assert.That(ex?.LinePosition, Is.EqualTo(2));
-        });
+        }
     }
 
     [Test]
@@ -323,12 +323,12 @@ internal class ExceptionTests
             });
             serializer.Deserialize(collectionXml);
         });
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(ex?.HasLineInfo, Is.True);
             Assert.That(ex?.LineNumber, Is.EqualTo(2));
             Assert.That(ex?.LinePosition, Is.EqualTo(2));
-        });
+        }
     }
 
     [Test]
@@ -352,12 +352,12 @@ internal class ExceptionTests
             });
             serializer.Deserialize(bookXml);
         });
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(ex?.HasLineInfo, Is.True);
             Assert.That(ex?.LineNumber, Is.EqualTo(1));
             Assert.That(ex?.LinePosition, Is.EqualTo(2));
-        });
+        }
     }
 
     [Test]

@@ -22,13 +22,13 @@ public class StringBuilderPoolTests
     {
         var sbp = GetStringBuilderPool();
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(() => sbp.Get(), Throws.Nothing);
             Assert.That(sbp.Pool.CountActive, Is.EqualTo(1));
             Assert.That(sbp.Pool.CountInactive, Is.EqualTo(0));
             Assert.That(sbp.Pool.CountAll, Is.EqualTo(1));
-        });
+        }
     }
 
     [Test]
@@ -39,33 +39,33 @@ public class StringBuilderPoolTests
 
         var sb = sbp.Get();
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(sbp.Pool.CountActive, Is.EqualTo(1));
             Assert.That(sb.Capacity, Is.EqualTo(sbp.DefaultStringBuilderCapacity));
-        });
+        }
 
         sb.Append(new string('x', sbp.DefaultStringBuilderCapacity * 2)); // Exceed the default capacity
 
         // Returning an item should clear the StringBuilder
         Assert.That(() => sbp.Return(sb), Throws.Nothing);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(sb.Length, Is.EqualTo(0));
 
             Assert.That(sbp.Pool.CountActive, Is.EqualTo(0));
             Assert.That(sbp.Pool.CountInactive, Is.EqualTo(1));
             Assert.That(sbp.Pool.CountAll, Is.EqualTo(1));
-        });
+        }
 
         sbp.Reset();
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(sbp.Pool.CountActive, Is.EqualTo(0));
             Assert.That(sbp.Pool.CountInactive, Is.EqualTo(0));
             Assert.That(sbp.Pool.CountAll, Is.EqualTo(0));
-        });
+        }
     }
 
     [Test]
@@ -86,10 +86,10 @@ public class StringBuilderPoolTests
         var stringBuilder = sbp?.Get();
         sbp?.Dispose();
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(stringBuilder, Is.Not.Null, "StringBuilder instance");
             Assert.That(sbp?.Pool.CountAll ?? -1, Is.EqualTo(0), "CountAll");
-        });
+        }
     }
 }

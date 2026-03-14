@@ -375,11 +375,11 @@ public class NamespaceTest
         });
         var serialized = serializer.Serialize(SingleNamespaceSample.GetInstance());
         var deserialized = serializer.Deserialize(serialized);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(deserialized, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
-        });
+        }
     }
 
     [Test]
@@ -392,11 +392,11 @@ public class NamespaceTest
         });
         var serialized = serializer.Serialize(MultipleNamespaceSample.GetSampleInstance());
         var deserialized = serializer.Deserialize(serialized);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(deserialized, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
-        });
+        }
     }
 
     [Test]
@@ -409,11 +409,11 @@ public class NamespaceTest
         });
         var got = serializer.Serialize(AttributeNamespaceSample.GetSampleInstance());
         var deserialized = serializer.Deserialize(got);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(deserialized, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
-        });
+        }
     }
 
     [Test]
@@ -426,11 +426,11 @@ public class NamespaceTest
         });
         var got = serializer.Serialize(CellPhoneMemberAndClassDifferentNamespaces.GetSampleInstance());
         var deserialized = serializer.Deserialize(got);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(deserialized, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
-        });
+        }
     }
 
     [Test]
@@ -443,11 +443,11 @@ public class NamespaceTest
         });
         var got = serializer.Serialize(CellPhoneMemberAndClassDifferentNamespacePrefixes.GetSampleInstance());
         var deserialized = serializer.Deserialize(got);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(deserialized, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
-        });
+        }
     }
 
     [Test]
@@ -461,11 +461,11 @@ public class NamespaceTest
             });
         var got = serializer.Serialize(CellPhoneMultiLevelMemberAndClassDifferentNamespaces.GetSampleInstance());
         var deserialized = serializer.Deserialize(got);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(deserialized, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
-        });
+        }
     }
 
     [Test]
@@ -478,11 +478,11 @@ public class NamespaceTest
         });
         var got = serializer.Serialize(CellPhoneDictionaryNamespaceForAllItems.GetSampleInstance());
         var deserialized = serializer.Deserialize(got);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(deserialized, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
-        });
+        }
     }
 
     [Test]
@@ -495,11 +495,11 @@ public class NamespaceTest
         });
         var got = serializer.Serialize(CellPhoneDictionaryNamespace.GetSampleInstance());
         var deserialized = serializer.Deserialize(got);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(deserialized, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
-        });
+        }
     }
 
     [Test]
@@ -515,11 +515,11 @@ public class NamespaceTest
             .GetSampleInstance());
         var deserialized =
             serializer.Deserialize(got);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(deserialized, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
-        });
+        }
     }
 
     [Test]
@@ -532,11 +532,11 @@ public class NamespaceTest
         });
         var got = serializer.Serialize(CellPhoneCollectionNamespaceForAllItems.GetSampleInstance());
         var deserialized = serializer.Deserialize(got);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(deserialized, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
-        });
+        }
     }
 
     [Test]
@@ -549,11 +549,11 @@ public class NamespaceTest
         });
         var got = serializer.Serialize(CellPhoneYaxNamespaceOverridesImplicitNamespace.GetSampleInstance());
         var deserialized = serializer.Deserialize(got);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(deserialized, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
-        });
+        }
     }
 
     [Test]
@@ -566,11 +566,11 @@ public class NamespaceTest
         });
         var got = serializer.Serialize(MultilevelObjectsWithNamespaces.GetSampleInstance());
         var deserialized = serializer.Deserialize(got);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(deserialized, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
-        });
+        }
     }
 
     [Test]
@@ -583,11 +583,11 @@ public class NamespaceTest
         });
         var got = serializer.Serialize(WarehouseDictionary.GetSampleInstance());
         var deserialized = serializer.Deserialize(got);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(deserialized, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
-        });
+        }
     }
 
     [Test]
@@ -600,11 +600,11 @@ public class NamespaceTest
         });
         var got = serializer.Serialize(AttributeWithNamespace.GetSampleInstance());
         var deserialized = serializer.Deserialize(got);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(deserialized, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
-        });
+        }
     }
 
     [Test]
@@ -617,11 +617,11 @@ public class NamespaceTest
         });
         var got = serializer.Serialize(AttributeWithNamespaceAsMember.GetSampleInstance());
         var deserialized = serializer.Deserialize(got);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(deserialized, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
-        });
+        }
     }
 
     [Test]
@@ -720,14 +720,14 @@ public class NamespaceTest
         var deserialized = serializer.Deserialize(xdoc.Root!);
 
         Assert.That(deserialized, Is.Not.Null);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(deserialized!.Dict, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
             Assert.That(deserialized.Dict, Has.Count.EqualTo(2));
             Assert.That(deserialized.Dict["A"], Is.EqualTo("Value 0"));
             Assert.That(deserialized.Dict["B"], Is.EqualTo("Value 1"));
-        });
+        }
     }
 
     [Test]
@@ -746,14 +746,14 @@ public class NamespaceTest
         var deserialized = serializer.Deserialize(xdoc.Root!);
 
         Assert.That(deserialized, Is.Not.Null);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(deserialized!.Dict, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
             Assert.That(deserialized.Dict, Has.Count.EqualTo(2));
             Assert.That(deserialized.Dict["A"], Is.EqualTo("Value 0"));
             Assert.That(deserialized.Dict["B"], Is.EqualTo("Value 1"));
-        });
+        }
     }
 
     [Test]
@@ -776,13 +776,13 @@ public class NamespaceTest
         Assert.That(deserialized, Is.Not.Null);
 
         // Only reached when deserialized is confirmed non-null; all failures reported together
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(deserialized!.Dict, Is.Not.Null);
             Assert.That(serializer.ParsingErrors, Has.Count.EqualTo(0));
             Assert.That(deserialized.Dict, Has.Count.EqualTo(2));
             Assert.That(deserialized.Dict["A"], Is.EqualTo("Value 0"));
             Assert.That(deserialized.Dict["B"], Is.EqualTo("Value 1"));
-        });
+        }
     }
 }

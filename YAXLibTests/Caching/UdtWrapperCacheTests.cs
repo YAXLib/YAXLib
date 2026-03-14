@@ -20,11 +20,11 @@ public class UdtWrapperCacheTests
         var s = new YAXSerializer<Book>();
         _ = s.Serialize(Book.GetSampleInstance());
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(countAfterClear, Is.EqualTo(0));
             Assert.That(UdtWrapperCache.Instance.CacheDictionary, Contains.Key((typeof(Book), s.Options)));
-        });
+        }
     }
 
     [Test]
@@ -39,11 +39,11 @@ public class UdtWrapperCacheTests
         s = new YAXSerializer<Book>();
         _ = s.Deserialize(xml);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(countAfterClear, Is.EqualTo(0));
             Assert.That(UdtWrapperCache.Instance.CacheDictionary, Contains.Key((typeof(Book), s.Options)));
-        });
+        }
     }
 
     [Test]

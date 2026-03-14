@@ -38,11 +38,11 @@ public class ConcurrentPoolingTests
                 pool.Return(someObject);
             }), Throws.Nothing);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(pool.CountActive, Is.EqualTo(0));
             Assert.That(pool.CountInactive, Is.GreaterThan(0));
-        });
+        }
     }
 
     [Test]
@@ -71,11 +71,11 @@ public class ConcurrentPoolingTests
         var result = list.OrderBy(e => e.ToString());
         long compareCounter = 1;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(list, Has.Count.EqualTo(maxLoops - 1));
             Assert.That(result.All(r => r == $"<String>{compareCounter++:0000}</String>"));
-        });
+        }
 
         foreach (var p in PoolingHelpers.GetAllPoolCounters())
         {
@@ -86,13 +86,13 @@ public class ConcurrentPoolingTests
             Console.WriteLine("""{0}: {1}""", nameof(IPoolCounters.CountInactive), p.Counters?.CountInactive);
 
             Console.WriteLine();
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 Assert.That(p.Counters!.CountActive, Is.EqualTo(0),
                             string.Join(" ", nameof(IPoolCounters.CountActive), p.Type?.ToString()));
                 Assert.That(p.Counters.CountInactive, Is.GreaterThan(0),
                     string.Join(" ", nameof(IPoolCounters.CountInactive), p.Type?.ToString()));
-            });
+            }
         }
     }
 }

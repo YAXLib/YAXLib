@@ -21,12 +21,12 @@ public class ListPoolTests
     {
         var lp = GetListPool();
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(() => lp.Get(), Throws.Nothing);
             Assert.That(lp.Pool.CountActive, Is.EqualTo(1));
             Assert.That(lp.Pool.CountInactive, Is.EqualTo(0));
             Assert.That(lp.Pool.CountAll, Is.EqualTo(1));
-        });
+        }
     }
 }

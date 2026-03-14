@@ -23,23 +23,23 @@ public class XmlUtilsTest
 
         Assert.That(XMLUtils.CanCreateLocation(elem, "level1/level2"), Is.True);
         var created = XMLUtils.CreateLocation(elem, "level1/level2");
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(created.Name.ToString(), Is.EqualTo("level2"));
             Assert.That(XMLUtils.LocationExists(elem, "level1/level2"), Is.True);
-        });
+        }
         created = XMLUtils.CreateLocation(elem, "level1/level3");
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(created.Name.ToString(), Is.EqualTo("level3"));
             Assert.That(XMLUtils.LocationExists(elem, "level1/level3"), Is.True);
-        });
+        }
     }
 
     [Test]
     public void ConvertObjectToXmlValue()
     {
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(default(object).ToXmlValue(CultureInfo.InvariantCulture), Is.EqualTo(string.Empty));
             Assert.That(true.ToXmlValue(CultureInfo.InvariantCulture), Is.EqualTo("true"));
@@ -47,6 +47,6 @@ public class XmlUtilsTest
             Assert.That(1.123f.ToXmlValue(CultureInfo.InvariantCulture), Is.EqualTo("1.123"));
             Assert.That(new BigInteger(1234567890).ToXmlValue(CultureInfo.InvariantCulture), Is.EqualTo("1234567890"));
             Assert.That(new StringBuilder("123.456").ToXmlValue(CultureInfo.InvariantCulture), Is.EqualTo("123.456"));
-        });
+        }
     }
 }

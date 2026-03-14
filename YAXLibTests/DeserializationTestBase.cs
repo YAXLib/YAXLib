@@ -44,11 +44,11 @@ public abstract class DeserializationTestBase
     private void PerformTestWithEquals(object obj, Type? objType = null)
     {
         var serializer = SerializeDeserialize(obj, out var gottonObject, objType);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(serializer.ParsingErrors.Count, Is.EqualTo(0));
             Assert.That(gottonObject, Is.EqualTo(obj));
-        });
+        }
     }
 
     private object? GetTheTwoStringsAndReturn(object obj, out string originalString, out string? gottonString,
@@ -78,16 +78,16 @@ public abstract class DeserializationTestBase
     {
         var result =
             GetTheTwoStringsAndReturn(obj, out var originalString, out var gottonString, out var errorCounts, objType);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(originalString, Is.Not.Null);
             Assert.That(gottonString, Is.Not.Null);
-        });
-        Assert.Multiple(() =>
+        }
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(gottonString, Is.EqualTo(originalString));
             Assert.That(errorCounts, Is.EqualTo(0));
-        });
+        }
         return result;
     }
 
@@ -216,7 +216,7 @@ public abstract class DeserializationTestBase
             });
         var got = (NullableSample2?) serializer.Deserialize(xml);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(got, Is.Not.Null);
             Assert.That(got?.Boolean, Is.Null);
@@ -224,7 +224,7 @@ public abstract class DeserializationTestBase
             Assert.That(got?.Decimal, Is.Null);
             Assert.That(got?.Enum, Is.Null);
             Assert.That(got?.Number, Is.Null);
-        });
+        }
     }
 
     [Test]
@@ -465,13 +465,13 @@ public abstract class DeserializationTestBase
         });
         var gottonObject = (SerializationOptionsSample?) serializer.Deserialize(input1);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(gottonObject?.ObjectWithOptionsSet.SomeValueType, Is.EqualTo(123),
                     "Missing element: DefaultValue from attribute should be used");
             Assert.That(gottonObject?.ObjectWithOptionsSet.StrNull, Is.Null, "Empty element: Deserializes as null");
             Assert.That(serializer.ParsingErrors.Count, Is.EqualTo(1));
-        });
+        }
     }
 
     [Test]
@@ -730,16 +730,16 @@ public abstract class DeserializationTestBase
         var ser = CreateSerializer<CalculatedPropertiesCanCauseInfiniteLoop>(options);
         var result = ser.Serialize(CalculatedPropertiesCanCauseInfiniteLoop.GetSampleInstance());
         var deserializedInstance = ser.Deserialize(result) as CalculatedPropertiesCanCauseInfiniteLoop;
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(deserializedInstance, Is.Not.Null);
             Assert.That(ser.Options.MaxRecursion, Is.EqualTo(10));
-        });
-        Assert.Multiple(() =>
+        }
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(deserializedInstance?.Data, Is.EqualTo(2.0M));
             Assert.That(ser.GetRecursionCount(), Is.EqualTo(0));
-        });
+        }
     }
 
     [Test]
@@ -755,7 +755,7 @@ public abstract class DeserializationTestBase
         obj.DecentralizationOrder.TryGetValue(4, out var fifth);
         obj.DecentralizationOrder.TryGetValue(5, out var sixth);
         obj.DecentralizationOrder.TryGetValue(6, out var seventh);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(first, Is.EqualTo("Author"));
             Assert.That(second, Is.EqualTo("Title"));
@@ -764,7 +764,7 @@ public abstract class DeserializationTestBase
             Assert.That(fifth, Is.EqualTo("Review"));
             Assert.That(sixth, Is.EqualTo("Publisher"));
             Assert.That(seventh, Is.EqualTo("Editor"));
-        });
+        }
     }
 
     [Test]
@@ -779,11 +779,11 @@ public abstract class DeserializationTestBase
         var result = ser.Serialize(container);
         var deserializedInstance = (BaseContainer?) ser.Deserialize(result);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(deserializedInstance?.Items?[0].Data, Is.EqualTo("Some Data"));
             Assert.That(deserializedInstance?.Items?.Length, Is.EqualTo(1));
-        });
+        }
     }
 
     [Test]
@@ -799,11 +799,11 @@ public abstract class DeserializationTestBase
         var deserializedInstance = (BaseContainer?) ser.Deserialize(result);
 
         Assert.That(deserializedInstance?.Items?[0], Is.InstanceOf<DerivedItem>());
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(deserializedInstance?.Items?[0].Data, Is.EqualTo("Some Data"));
             Assert.That(deserializedInstance?.Items?.Length, Is.EqualTo(1));
-        });
+        }
     }
 
     [Test]

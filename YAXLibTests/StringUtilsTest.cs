@@ -15,7 +15,7 @@ public class StringUtilsTest
     [Test]
     public void RefineElementNameTest()
     {
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(StringUtils.RefineLocationString(".."), Is.EqualTo(".."));
             Assert.That(StringUtils.RefineLocationString("."), Is.EqualTo("."));
@@ -45,7 +45,7 @@ public class StringUtilsTest
             Assert.That(StringUtils.RefineLocationString("-one"), Is.EqualTo("_one"));
             Assert.That(StringUtils.RefineLocationString("one."), Is.EqualTo("one."));
             Assert.That(StringUtils.RefineLocationString("one-"), Is.EqualTo("one-"));
-        });
+        }
     }
 
     [Test]
@@ -66,17 +66,17 @@ public class StringUtilsTest
     {
         string path, alias;
         StringUtils.ExtractPathAndAliasFromLocationString(locationString, out path, out alias);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(path, Is.EqualTo(expectedPath));
             Assert.That(alias, Is.EqualTo(expectedAlias));
-        });
+        }
     }
 
     [Test]
     public void IsLocationAllGenericTest()
     {
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(StringUtils.IsLocationAllGeneric(".."), Is.True);
             Assert.That(StringUtils.IsLocationAllGeneric("."), Is.True);
@@ -91,7 +91,7 @@ public class StringUtilsTest
             Assert.That(StringUtils.IsLocationAllGeneric("../one/../two"), Is.False);
             Assert.That(StringUtils.IsLocationAllGeneric("../one/../two/.."), Is.False);
             Assert.That(StringUtils.IsLocationAllGeneric("one/../two/.."), Is.False);
-        });
+        }
     }
 
     [Test]
@@ -102,66 +102,66 @@ public class StringUtilsTest
 
         var location = "..";
         var returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(newLocation, Is.EqualTo(".."));
             Assert.That(newElement, Is.Empty);
             Assert.That(returnValue, Is.False);
-        });
+        }
 
         location = ".";
         returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(newLocation, Is.EqualTo("."));
             Assert.That(newElement, Is.Empty);
             Assert.That(returnValue, Is.False);
-        });
+        }
 
         location = "../..";
         returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(newLocation, Is.EqualTo("../.."));
             Assert.That(newElement, Is.Empty);
             Assert.That(returnValue, Is.False);
-        });
+        }
 
         location = "../../folder";
         returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(newLocation, Is.EqualTo("../.."));
             Assert.That(newElement, Is.EqualTo("folder"));
             Assert.That(returnValue, Is.True);
-        });
+        }
 
         location = "../../folder/..";
         returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(newLocation, Is.EqualTo("../../folder/.."));
             Assert.That(newElement, Is.Empty);
             Assert.That(returnValue, Is.False);
-        });
+        }
 
         location = "one/two/three/four";
         returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(newLocation, Is.EqualTo("one/two/three"));
             Assert.That(newElement, Is.EqualTo("four"));
             Assert.That(returnValue, Is.True);
-        });
+        }
 
         location = "one";
         returnValue = StringUtils.DivideLocationOneStep(location, out newLocation, out newElement);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(newLocation, Is.EqualTo("."));
             Assert.That(newElement, Is.EqualTo("one"));
             Assert.That(returnValue, Is.True);
-        });
+        }
     }
 
     [Test]
