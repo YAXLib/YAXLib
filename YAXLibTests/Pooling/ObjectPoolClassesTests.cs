@@ -67,13 +67,13 @@ public class ObjectPoolClassesTests
         pool.Clear(); // 'Clear' calls ActionOnDestroy
         var destroyed = obj.Value.ToLower();
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(created, Is.EqualTo(nameof(created)), poolAsObj.GetType().Name);
             Assert.That(returned, Is.EqualTo(nameof(returned)), poolAsObj.GetType().Name);
             Assert.That(get, Is.EqualTo(nameof(get)), poolAsObj.GetType().Name);
             Assert.That(destroyed, Is.EqualTo(nameof(destroyed)), poolAsObj.GetType().Name);
-        });
+        }
     }
 
     [TestCaseSource(nameof(GetObjectPoolBasedPools), new object?[] { true })]
@@ -99,13 +99,13 @@ public class ObjectPoolClassesTests
         pool.Clear(); // 'Clear' calls ActionOnDestroy
         var destroyed = itemInPool.Value;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(created, Is.EqualTo(nameof(created)), poolAsObj.GetType().Name);
             Assert.That(returned, Is.EqualTo(nameof(returned)), poolAsObj.GetType().Name);
             Assert.That(get, Is.EqualTo(nameof(get)), poolAsObj.GetType().Name);
             Assert.That(destroyed, Is.EqualTo(nameof(destroyed)), poolAsObj.GetType().Name);
-        });
+        }
     }
 
     [TestCaseSource(nameof(GetObjectPoolBasedPools), new object?[] { true })]
@@ -159,7 +159,7 @@ public class ObjectPoolClassesTests
 
         pool.Clear();
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             // Got 3 elements from the pool
             Assert.That(activeCount1, Is.EqualTo(3), poolAsObj.GetType().Name);
@@ -175,7 +175,7 @@ public class ObjectPoolClassesTests
             Assert.That(pool.CountAll, Is.EqualTo(0), poolAsObj.GetType().Name);
             Assert.That(pool.CountActive, Is.EqualTo(0), poolAsObj.GetType().Name);
             Assert.That(pool.CountInactive, Is.EqualTo(0), poolAsObj.GetType().Name);
-        });
+        }
     }
 
     [TestCaseSource(nameof(GetObjectPoolBasedPools), new object?[] { true })]
@@ -206,7 +206,7 @@ public class ObjectPoolClassesTests
 
         pool.Clear();
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             // Got 'numOfCreated' elements from the pool
             Assert.That(activeCount1, Is.EqualTo(numOfCreated), poolAsObj.GetType().Name);
@@ -222,7 +222,7 @@ public class ObjectPoolClassesTests
             Assert.That(pool.CountAll, Is.EqualTo(0), poolAsObj.GetType().Name);
             Assert.That(pool.CountActive, Is.EqualTo(0), poolAsObj.GetType().Name);
             Assert.That(pool.CountInactive, Is.EqualTo(0), poolAsObj.GetType().Name);
-        });
+        }
     }
 
     [TestCaseSource(nameof(GetObjectPoolBasedPools), new object?[] { true })]
@@ -241,13 +241,13 @@ public class ObjectPoolClassesTests
 
         pool.Dispose();
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(actualCreated, Is.EqualTo(shouldBeCreated), poolAsObj.GetType().Name);
             Assert.That(pool.CountAll, Is.EqualTo(0), poolAsObj.GetType().Name);
             Assert.That(pool.CountActive, Is.EqualTo(0), poolAsObj.GetType().Name);
             Assert.That(pool.CountInactive, Is.EqualTo(0), poolAsObj.GetType().Name);
             Assert.That(pool.PoolItems.Any(), Is.EqualTo(false), poolAsObj.GetType().Name);
-        });
+        }
     }
 }
