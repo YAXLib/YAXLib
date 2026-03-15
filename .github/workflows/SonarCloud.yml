@@ -12,51 +12,62 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: windows-2022
+    runs-on: ubuntu-24.04
     # SonarCloud do not support analysis of forked PRs, even when those PRs come from members of the organization
     # (PRs from forks can't access secrets other than secrets.GITHUB_TOKEN for security reasons)
     if: ${{ !github.event.pull_request.head.repo.fork }}
     steps:
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
         with:
-          distribution: 'zulu'
-          java-version: '17'
+          distribution: 'temurin'
+          java-version: '21'
       - uses: actions/checkout@v6
         with:
-          fetch-depth: 0   # Shallow clones should be disabled for a better relevancy of analysis
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v4
+          fetch-depth: 0
+      - name: Setup .NET 8 SDK
+        uses: actions/setup-dotnet@v5
         with:
-          path: ~\sonar\cache
+          dotnet-version: '8.0.x'
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v5
+        with:
+          path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
       - name: Cache SonarCloud scanner
         id: cache-sonar-scanner
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
-          path: .\.sonar\scanner
+          path: ./.sonar/scanner
           key: ${{ runner.os }}-sonar-scanner
           restore-keys: ${{ runner.os }}-sonar-scanner
       - name: Install SonarCloud scanner
         if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
-        shell: powershell
+        shell: pwsh
         run: |
-          New-Item -Path .\.sonar\scanner -ItemType Directory
-          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+          New-Item -Path ./.sonar/scanner -ItemType Directory
+          dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
       - name: Set YAXLib environment
-        shell: powershell
+        shell: pwsh
         run: |
          echo "repository_owner_lc=$Env:GITHUB_REPOSITORY_OWNER".ToLower() | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        shell: powershell
+        shell: pwsh
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"${{ env.repository_owner_lc }}_YAXLib" /o:"${{ env.repository_owner_lc }}" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="**/coverage*.xml"
+          dotnet sln YAXLib.sln remove DemoApplication/DemoApplication.csproj
+          ./.sonar/scanner/dotnet-sonarscanner begin /k:"${{ env.repository_owner_lc }}_YAXLib" /o:"${{ env.repository_owner_lc }}" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="**/coverage*.xml"
           dotnet add ./YAXLibTests/YAXLibTests.csproj package AltCover
           dotnet restore YAXLib.sln --verbosity quiet
-          dotnet build YAXLib.sln --verbosity minimal --configuration release --no-restore /p:IncludeSymbols=true
-          dotnet test YAXLib.sln --no-build --verbosity normal /p:configuration=release /p:AltCover=true /p:AltCoverXmlReport="coverage.xml" /p:AltCoverStrongNameKey="../Key/YAXLib.Key.snk" /p:AltCoverAssemblyExcludeFilter="YAXLibTests|NUnit3.TestAdapter"
-          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"
+          dotnet build YAXLib.sln --verbosity minimal --configuration release --no-restore --framework net8.0 /p:IncludeSymbols=true
+          dotnet test YAXLib.sln --no-build --verbosity normal --framework net8.0 /p:configuration=release /p:AltCover=true /p:AltCoverXmlReport="coverage.xml" /p:AltCoverStrongNameKey="../Key/YAXLib.Key.snk" /p:AltCoverAssemblyExcludeFilter="YAXLibTests|NUnit3.TestAdapter"
+          ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: '**/coverage*.xml'
+          fail_ci_if_error: false
