@@ -16,7 +16,7 @@ public class ReflectionUtilsTest
     [Test]
     public void IsArrayTest()
     {
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(ReflectionUtils.IsArray(typeof(int[])), Is.True);
             Assert.That(ReflectionUtils.IsArray(typeof(int[,])), Is.True);
@@ -26,13 +26,13 @@ public class ReflectionUtilsTest
             Assert.That(ReflectionUtils.IsArray(typeof(Dictionary<,>)), Is.False);
             Assert.That(ReflectionUtils.IsArray(typeof(Dictionary<int, string>)), Is.False);
             Assert.That(ReflectionUtils.IsArray(typeof(string)), Is.False);
-        });
+        }
     }
 
     [Test]
     public void IsCollectionTypeTest()
     {
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(ReflectionUtils.IsCollectionType(typeof(int[])), Is.True);
             Assert.That(ReflectionUtils.IsCollectionType(typeof(Array)), Is.True);
@@ -44,13 +44,13 @@ public class ReflectionUtilsTest
             Assert.That(ReflectionUtils.IsCollectionType(typeof(IEnumerable<>)), Is.True);
             Assert.That(ReflectionUtils.IsCollectionType(typeof(IEnumerable<int>)), Is.True);
             Assert.That(ReflectionUtils.IsCollectionType(typeof(string)), Is.False);
-        });
+        }
     }
 
     [Test]
     public void GetCollectionItemTypeTest()
     {
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(ReflectionUtils.GetCollectionItemType(typeof(IEnumerable<int>)), Is.EqualTo(typeof(int)));
             Assert.That(ReflectionUtils.GetCollectionItemType(typeof(double[])), Is.EqualTo(typeof(double)));
@@ -61,7 +61,7 @@ public class ReflectionUtilsTest
                 ReflectionUtils.GetCollectionItemType(typeof(Dictionary<int, char>)), Is.EqualTo(typeof(KeyValuePair<int, char>)));
             Assert.That(
                 ReflectionUtils.GetCollectionItemType(typeof(Dictionary<Dictionary<int, double>, char>)), Is.EqualTo(typeof(KeyValuePair<Dictionary<int, double>, char>)));
-        });
+        }
 
         //Assert.That(ReflectionUtils.GetCollectionItemType(typeof(IEnumerable<>)) == typeof(object), Is.True);
     }
@@ -69,7 +69,7 @@ public class ReflectionUtilsTest
     [Test]
     public void IsTypeEqualOrInheritedFromTypeTest()
     {
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(int), typeof(object)), Is.True);
             Assert.That(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(string), typeof(object)), Is.True);
@@ -97,13 +97,13 @@ public class ReflectionUtilsTest
                     typeof(IDictionary<int, Array>)), Is.False);
             Assert.That(ReflectionUtils.IsTypeEqualOrInheritedFromType(typeof(ICollection), typeof(IEnumerable)),
                 Is.True);
-        });
+        }
     }
 
     [Test]
     public void EqualsOrIsNullableOfTest()
     {
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(typeof(int).EqualsOrIsNullableOf(typeof(int)), Is.True);
             Assert.That(typeof(int?).EqualsOrIsNullableOf(typeof(int)), Is.True);
@@ -112,12 +112,12 @@ public class ReflectionUtilsTest
             Assert.That(typeof(double?).EqualsOrIsNullableOf(typeof(Nullable<>)), Is.False);
             Assert.That(typeof(double?).EqualsOrIsNullableOf(typeof(double)), Is.True);
             Assert.That(typeof(char?).EqualsOrIsNullableOf(typeof(char?)), Is.True);
-        });
-        Assert.Multiple(() =>
+        }
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(typeof(char?).EqualsOrIsNullableOf(typeof(char?)), Is.True);
             Assert.That(typeof(int[]).EqualsOrIsNullableOf(typeof(Array)), Is.False);
-        });
+        }
     }
 
 #if NETFRAMEWORK
@@ -135,11 +135,11 @@ public class ReflectionUtilsTest
             $"System.Collections.Generic.List`1[[System.Int32, {coreLibName}]]");
         var type2 = ReflectionUtils.GetTypeByName("System.Collections.Generic.List`1[[System.Int32]]");
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(type1, Is.Not.Null);
             Assert.That(type2, Is.Not.Null);
-        });
+        }
         Assert.That(type2, Is.EqualTo(type1));
     }
 
@@ -165,7 +165,7 @@ public class ReflectionUtilsTest
         var baseClassField1AfterSet = ReflectionUtils.GetFieldValue(subClass, "_privateFieldFromBaseLevel1");
         var baseClassField2AfterSet = ReflectionUtils.GetFieldValue(subClass, "_privateFieldFromBaseLevel2");
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             // Initial values
             Assert.That(subClassField, Is.EqualTo(2));
@@ -175,15 +175,15 @@ public class ReflectionUtilsTest
                 // private base field not found
                 code: () => { ReflectionUtils.GetFieldValue(subClass, "_privateFieldFromBaseLevel1", false); },
                 Throws.Exception);
-        });
+        }
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             // Changed values
             Assert.That(subClassFieldAfterSet, Is.EqualTo(3));
             Assert.That(baseClassField1AfterSet, Is.EqualTo(13));
             Assert.That(baseClassField2AfterSet, Is.EqualTo(23));
-        });
+        }
     }
 
     [Test]
@@ -210,7 +210,7 @@ public class ReflectionUtilsTest
         var baseClassProperty2AfterSet =
             ReflectionUtils.GetPropertyValue(subClass, "PrivatePropertyFromBaseLevel2");
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             // Initial values
             Assert.That(subClassProperty, Is.EqualTo(1));
@@ -220,21 +220,21 @@ public class ReflectionUtilsTest
                 // private base property not found
                 code: () => { ReflectionUtils.GetPropertyValue(subClass, "PrivatePropertyFromBaseLevel1", false); },
                 Throws.Exception);
-        });
+        }
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             // Changed values
             Assert.That(subClassPropertyAfterSet, Is.EqualTo(111));
             Assert.That(baseClassProperty1AfterSet, Is.EqualTo(113));
             Assert.That(baseClassProperty2AfterSet, Is.EqualTo(123));
-        });
+        }
     }
 
     [Test]
     public void GetDefaultValueTest()
     {
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(ReflectionUtils.GetDefaultValue(typeof(string)), Is.EqualTo(null));
             Assert.That(ReflectionUtils.GetDefaultValue(typeof(bool)), Is.EqualTo(default(bool)));
@@ -252,6 +252,6 @@ public class ReflectionUtilsTest
             Assert.That(ReflectionUtils.GetDefaultValue(typeof(decimal)), Is.EqualTo(default(decimal)));
             Assert.That(ReflectionUtils.GetDefaultValue(typeof(DateTime)), Is.EqualTo(default(DateTime)));
             Assert.That(ReflectionUtils.GetDefaultValue(typeof(DBNull)), Is.EqualTo(DBNull.Value));
-        });
+        }
     }
 }

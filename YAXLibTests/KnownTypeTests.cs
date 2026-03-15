@@ -29,12 +29,12 @@ public class KnownTypeTests
         var removeSuccess = WellKnownTypes.Remove(typeof(TimeSpan));
         var existsAfter = WellKnownTypes.TryGetKnownType(typeof(TimeSpan), out _);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(existsBefore, Is.True);
             Assert.That(removeSuccess, Is.True);
             Assert.That(existsAfter, Is.False);
-        });
+        }
     }
 
     [Test]
@@ -87,11 +87,11 @@ public class KnownTypeTests
         s.Serialize(typeExample.TheType, serialized, XNamespace.None, discardCtx);
         var deserialized = s.Deserialize(serialized, XNamespace.None, discardCtx);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(serialized.ToString(), Is.EqualTo(expectedXml));
             Assert.That(deserialized!.ToString(), Is.EqualTo("YAXLibTests.KnownTypeTests"));
-        });
+        }
     }
 
     [Test]
@@ -108,11 +108,11 @@ public class KnownTypeTests
         var serialized = serializer.Serialize(typeExample);
         var deserialized = (TypeKnownTypeSample?) serializer.Deserialize(serialized);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(serialized, Is.EqualTo(expectedXml));
             Assert.That(deserialized?.TheType?.UnderlyingSystemType, Is.EqualTo(typeExample.TheType?.UnderlyingSystemType));
-        });
+        }
     }
 
     [Test]
@@ -153,11 +153,11 @@ public class KnownTypeTests
         s.Serialize(typeExample.TheType, serialized, XNamespace.None, discardCtx);
         var deserialized = (Type?) s.Deserialize(serialized, XNamespace.None, discardCtx);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(serialized.ToString(), Is.EqualTo(expectedXml));
             Assert.That(deserialized?.ToString(), Is.EqualTo("YAXLibTests.KnownTypeTests"));
-        });
+        }
     }
 
     [Test]
@@ -171,11 +171,11 @@ public class KnownTypeTests
         var serialized = serializer.Serialize(t);
         var deserialized = serializer.Deserialize(serialized);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(serialized, Is.EqualTo(expectedXml));
             Assert.That(deserialized?.ToString(), Is.EqualTo("YAXLibTests.KnownTypeTests"));
-        });
+        }
     }
 
     [Test]
@@ -311,12 +311,12 @@ public class KnownTypeTests
         var deserializedAsNull =
             s.Deserialize(new XElement(XName.Get(nameof(dbNullExample))), XNamespace.None, discardCtx);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(serialized.ToString(), Is.EqualTo(expectedXml));
             Assert.That(deserialized, Is.TypeOf<DBNull>());
             Assert.That(deserializedAsNull, Is.Null);
-        });
+        }
     }
 
     [Test]
@@ -503,7 +503,7 @@ public class KnownTypeTests
             var exceptionSerialized = ser.SerializeToXDocument(ex);
             var outerElement = exceptionSerialized.Root;
 
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 Assert.That(outerElement?.Name.LocalName, Is.EqualTo("Exception"), "Element name should be 'Exception'");
                 Assert.That(outerElement?.Attribute("{http://www.sinairv.com/yaxlib/}realtype")?.Value,
@@ -511,17 +511,17 @@ public class KnownTypeTests
                     "Exception 'realtype' attribute should exist");
                 Assert.That(outerElement?.Element("Message")?.Value, Does.Contain(ex.Message),
                     "Exception message should exist");
-            });
+            }
 
             var innerElement = exceptionSerialized.Root?.Element("InnerException");
 
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 Assert.That(innerElement?.Attribute("{http://www.sinairv.com/yaxlib/}realtype")?.Value,
                             Is.EqualTo("System.DivideByZeroException"), "'InnerException 'realtype' attribute should exist");
                 Assert.That(innerElement?.Element("Message")?.Value, Does.Contain(ex.InnerException!.Message),
                     "InnerException message should exist");
-            });
+            }
         }
     }
 
@@ -545,25 +545,25 @@ public class KnownTypeTests
 
             var outerElement = exceptionSerialized.Root;
 
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 Assert.That(outerElement?.Name.LocalName, Is.EqualTo("Exception"), "Element name should be 'Exception'");
                 Assert.That(outerElement?.Attribute("{http://www.sinairv.com/yaxlib/}realtype")?.Value,
                     Is.EqualTo("System.InvalidOperationException"), "Exception 'realtype' attribute should exist");
                 Assert.That(outerElement?.Element("Message")?.Value, Does.Contain(ex.Message),
                     "Exception message should exist");
-            });
+            }
 
             if (maxRecursion > 3)
             {
                 var innerElement = exceptionSerialized.Root?.Element(XName.Get("InnerException"));
-                Assert.Multiple(() =>
+                using (Assert.EnterMultipleScope())
                 {
                     Assert.That(innerElement?.Attribute("{http://www.sinairv.com/yaxlib/}realtype")?.Value,
                                     Is.EqualTo("System.ArgumentException"), "'InnerException 'realtype' attribute should exist");
                     Assert.That(innerElement?.Element("Message")?.Value, Does.Contain(ex.InnerException!.Message),
                         "InnerException message should exist");
-                });
+                }
             }
         }
     }
@@ -626,11 +626,11 @@ public class KnownTypeTests
         if (maxRecursion > 1)
         {
             Assert.That(deserialized?.InnerException, Is.TypeOf<DivideByZeroException>());
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 Assert.That(deserialized?.InnerException?.Message, Is.EqualTo("InnerException of CustomException"));
                 Assert.That(deserialized?.InnerException?.InnerException, Is.TypeOf<AbandonedMutexException>());
-            });
+            }
         }
     }
 
@@ -666,11 +666,11 @@ public class KnownTypeTests
             { SerializationOptions = YAXSerializationOptions.SerializeNullObjects });
         var deserialized = ser.Deserialize(toDeserialize);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(deserialized?.Message, Is.EqualTo("System exception unit test"));
             Assert.That(deserialized?.InnerException, Is.TypeOf<ArgumentException>());
-        });
+        }
         Assert.That(deserialized?.InnerException?.Message, Is.EqualTo("Inner exception unit test (Parameter 'arg')"));
     }
 
@@ -688,11 +688,11 @@ public class KnownTypeTests
         var deserialized = ser.Deserialize(toDeserialize);
 
         Assert.That(deserialized, Is.InstanceOf<InvalidOperationException>());
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(deserialized?.Message, Is.Empty);
             Assert.That(deserialized?.InnerException, Is.Null);
-        });
+        }
     }
 
     [Test]

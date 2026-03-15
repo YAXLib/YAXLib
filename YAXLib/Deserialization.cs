@@ -1170,12 +1170,28 @@ internal class Deserialization
                 }
             }
 
+            UdtWrapper? itemWrapper = null;
+            string? expectedItemElementName = null;
+
             // Check if curElementType is derived or is the same is itemType.
             // For speed concerns we perform this check only when eachElemName is null
             if (eachElemName == null && (curElementType == typeof(object) ||
                                          !ReflectionUtils.IsTypeEqualOrInheritedFromType(curElementType,
                                              collItemType)))
                 continue;
+
+            // When no explicit element name is set and no realtype attribute is present,
+            // skip elements whose name doesn't match the collection item type's expected name.
+            // This prevents sibling elements from being mistakenly included when the collection
+            // uses RecursiveWithNoContainingElement and the parent also has other members (GitHub issue #256).
+            if (eachElemName == null && realTypeAttribute == null)
+            {
+                itemWrapper ??= UdtWrapperCache.Instance.GetOrAddItem(collItemType, _serializer.Options);
+                expectedItemElementName ??= itemWrapper.Alias.LocalName;
+
+                if (!string.Equals(childElem.Name.LocalName, expectedItemElementName, StringComparison.Ordinal))
+                    continue;
+            }
 
             if (curElementIsPrimitive)
             {
