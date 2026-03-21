@@ -44,7 +44,7 @@ jobs:
       - name: Pack YAXLib
         shell: pwsh
         run: |
-          $version = "4.3.0"
+          $version = "4.4.0"
           echo "PACKAGE_VERSION=$version" >> $env:GITHUB_ENV
           $versionFile = "$version.${{ github.run_number }}"
           $prNumber = "${{ github.event.pull_request.number }}"
