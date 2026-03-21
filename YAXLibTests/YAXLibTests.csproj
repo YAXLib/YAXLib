@@ -12,13 +12,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentAssertions" Version="8.8.0" />
+        <PackageReference Include="FluentAssertions" Version="8.9.0" />
         <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
         <PackageReference Include="NUnit" Version="4.5.1" />
-        <PackageReference Include="NUnit.Analyzers" Version="4.11.2">
+        <PackageReference Include="NUnit.Analyzers" Version="4.12.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <!-- Keep v5.2.0, see https://github.com/YAXLib/YAXLib/issues/270 -->
         <PackageReference Include="NUnit3TestAdapter" Version="5.2.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
     </ItemGroup>
