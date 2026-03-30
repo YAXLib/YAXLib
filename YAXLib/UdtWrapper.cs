@@ -215,6 +215,12 @@ internal class UdtWrapper
         YAXSerializationOptions.ThrowUponSerializingCyclingReferences;
 
     /// <summary>
+    /// Determines whether  Each object is marked number to Prevents that cycle references from child to parent objects cause an infinite loop.
+    /// </summary>
+    public bool IsMarkObjId2AvertSefRef => (SerializationOptions & YAXSerializationOptions.MarkObjId2AvertSefRef) ==
+        YAXSerializationOptions.MarkObjId2AvertSefRef;
+
+    /// <summary>
     /// Determines whether properties with no setters should be serialized
     /// </summary>
     public bool DoNotSerializePropertiesWithNoSetter =>
