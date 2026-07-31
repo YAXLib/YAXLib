@@ -295,6 +295,117 @@ public class KnownTypeTests
     }
 
     [Test]
+    public void DateTimeOffsetKnownTypeSerialization()
+    {
+        var dateTimeOffset = new DateTimeOffset(2023, 12, 31, 23, 59, 58, 123, TimeSpan.FromHours(-5));
+        var expectedXml = $"<DateTimeOffset>{dateTimeOffset.ToString("O", System.Globalization.CultureInfo.InvariantCulture)}</DateTimeOffset>";
+
+        var serializer = new YAXSerializer(typeof(DateTimeOffset));
+        var serialized = serializer.Serialize(dateTimeOffset);
+
+        Assert.That(serialized, Is.EqualTo(expectedXml));
+    }
+
+    [Test]
+    public void DateTimeOffsetKnownTypeDeserialization()
+    {
+        var dateTimeOffset = new DateTimeOffset(2023, 12, 31, 23, 59, 58, 123, TimeSpan.FromHours(-5));
+        var xml = $"<DateTimeOffset>{dateTimeOffset.ToString("O", System.Globalization.CultureInfo.InvariantCulture)}</DateTimeOffset>";
+
+        var serializer = new YAXSerializer(typeof(DateTimeOffset));
+        var deserialized = serializer.Deserialize(xml);
+
+        Assert.That(deserialized, Is.EqualTo(dateTimeOffset));
+    }
+
+    [Test]
+    public void DateTimeOffsetKnownTypeDeserializationFallback()
+    {
+        var dateTimeOffset = new DateTimeOffset(2023, 12, 31, 23, 59, 58, 123, TimeSpan.FromHours(-5));
+        var xml = $"""
+            <DateTimeOffset>
+            {dateTimeOffset.ToString("O", System.Globalization.CultureInfo.InvariantCulture)}
+            </DateTimeOffset>
+            """;
+
+        var serializer = new YAXSerializer(typeof(DateTimeOffset));
+        var deserialized = serializer.Deserialize(xml);
+
+        Assert.That(deserialized, Is.EqualTo(dateTimeOffset));
+    }
+
+    [Test]
+    public void DateTimeOffsetKnownTypeDeserialization_StructuredFormat()
+    {
+        var dateTimeOffset = new DateTimeOffset(2023, 12, 31, 23, 59, 58, 123, TimeSpan.FromHours(-5));
+        var xml = $"""
+            <DateTimeOffset>
+              <Ticks>{dateTimeOffset.Ticks}</Ticks>
+              <Offset>{dateTimeOffset.Offset.ToString(string.Empty, System.Globalization.CultureInfo.InvariantCulture)}</Offset>
+            </DateTimeOffset>
+            """;
+
+        var serializer = new YAXSerializer(typeof(DateTimeOffset));
+        var deserialized = serializer.Deserialize(xml);
+
+        Assert.That(deserialized, Is.EqualTo(dateTimeOffset));
+    }
+
+    [Test]
+    public void DateTimeOffsetKnownType_UtcOffset()
+    {
+        var dateTimeOffset = new DateTimeOffset(2023, 12, 31, 23, 59, 58, 123, TimeSpan.Zero);
+        var expectedXml = $"<DateTimeOffset>{dateTimeOffset.ToString("O", System.Globalization.CultureInfo.InvariantCulture)}</DateTimeOffset>";
+
+        var serializer = new YAXSerializer(typeof(DateTimeOffset));
+        var serialized = serializer.Serialize(dateTimeOffset);
+        var deserialized = serializer.Deserialize(serialized);
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(serialized, Is.EqualTo(expectedXml));
+            Assert.That(deserialized, Is.EqualTo(dateTimeOffset));
+        }
+    }
+
+    [Test]
+    public void DateTimeOffsetKnownType_PositiveOffset()
+    {
+        var dateTimeOffset = new DateTimeOffset(2023, 6, 15, 14, 30, 45, TimeSpan.FromHours(8.5));
+
+        var serializer = new YAXSerializer(typeof(DateTimeOffset));
+        var serialized = serializer.Serialize(dateTimeOffset);
+        var deserialized = serializer.Deserialize(serialized);
+
+        Assert.That(deserialized, Is.EqualTo(dateTimeOffset));
+    }
+
+    [Test]
+    public void DateTimeOffset_Bad_Format_Should_Throw()
+    {
+        var xml1 = "<DateTimeOffset>not-a-datetime</DateTimeOffset>";
+        var xml2 = "<DateTimeOffset><Ticks>not-a-long</Ticks><Offset>-05:00:00</Offset></DateTimeOffset>";
+        var xml3 = "<DateTimeOffset><Ticks>638395679981230000</Ticks><Offset>not-a-timespan</Offset></DateTimeOffset>";
+        var serializer = new YAXSerializer<DateTimeOffset>();
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(code: () => serializer.Deserialize(xml1), Throws.TypeOf<YAXBadlyFormedInput>());
+            Assert.That(code: () => serializer.Deserialize(xml2), Throws.TypeOf<YAXBadlyFormedInput>());
+            Assert.That(code: () => serializer.Deserialize(xml3), Throws.TypeOf<YAXBadlyFormedInput>());
+        }
+    }
+
+    [Test]
+    public void DateTimeOffsetKnownType_MissingOffset_Should_Throw()
+    {
+        var xml = "<DateTimeOffset><Ticks>638395679981230000</Ticks></DateTimeOffset>";
+        var serializer = new YAXSerializer<DateTimeOffset>();
+
+        Assert.That(code: () => serializer.Deserialize(xml), Throws.TypeOf<YAXElementMissingException>());
+    }
+
+    [Test]
     public void DbNullKnownTypeSerialization()
     {
         const string expectedXml = "<dbNullExample>DBNull</dbNullExample>";

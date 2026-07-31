@@ -510,6 +510,12 @@ internal static class ReflectionUtils
         {
             convertedObj = StringUtils.ParseDateTimeTimeZoneSafe(valueAsString, culture);
         }
+        else if (dstType == typeof(DateTimeOffset))
+        {
+            if (!DateTimeOffset.TryParse(valueAsString, culture, DateTimeStyles.None, out var result))
+                throw new ArgumentException($"The specified value {valueAsString} is not recognized as DateTimeOffset", nameof(value));
+            convertedObj = result;
+        }
         else if (dstType == typeof(decimal))
         {
             // to fix the asymmetry of used locales for this type between serialization and deserialization

@@ -61,6 +61,7 @@ public static class WellKnownTypes
         Add(new TimeSpanKnownType());
         Add(new DateOnlyKnownType());
         Add(new TimeOnlyKnownType());
+        Add(new DateTimeOffsetKnownType());
         Add(new XElementKnownType());
         Add(new XAttributeKnownType());
         Add(new DbNullKnownType());
