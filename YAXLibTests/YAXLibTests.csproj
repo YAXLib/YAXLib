@@ -4,7 +4,7 @@
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>../Key/YAXLib.Key.snk</AssemblyOriginatorKeyFile>
         <DelaySign>false</DelaySign>
-        <TargetFrameworks>net48;net8.0</TargetFrameworks>
+        <TargetFrameworks>net48;net8.0;net10.0</TargetFrameworks>
         <IsPackable>false</IsPackable>
         <nullable>enable</nullable>
         <!-- Ensure all transitive package assets from referenced projects are copied for netstandard2.x -->
@@ -12,16 +12,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentAssertions" Version="8.9.0" />
+        <PackageReference Include="FluentAssertions" Version="8.10.0" />
         <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-        <PackageReference Include="NUnit" Version="4.5.1" />
-        <PackageReference Include="NUnit.Analyzers" Version="4.12.0">
+        <PackageReference Include="NUnit" Version="4.6.1" />
+        <PackageReference Include="NUnit.Analyzers" Version="4.14.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <!-- Keep v5.2.0, see https://github.com/YAXLib/YAXLib/issues/270 -->
-        <PackageReference Include="NUnit3TestAdapter" Version="5.2.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
+        <PackageReference Include="NUnit3TestAdapter" Version="6.2.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.8.1" />
     </ItemGroup>
 
     <!-- Run test on YAXLib netstandard2.x assemblies: -->
@@ -35,7 +35,7 @@
     </ItemGroup>
 
     <!-- When testing the netstandard2.0 asset under net6/net8, ensure its polyfill is present -->
-    <ItemGroup Condition="('$(ForceYAXLibTFM)' == 'netstandard2.0' or '$(ForceYAXLibTFM)' == 'netstandard2.1') and ('$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net8.0')">
+    <ItemGroup Condition="('$(ForceYAXLibTFM)' == 'netstandard2.0' or '$(ForceYAXLibTFM)' == 'netstandard2.1') and ('$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'net10.0')">
         <PackageReference Include="Portable.System.DateTimeOnly" Version="9.0.0" />
     </ItemGroup>
 </Project>

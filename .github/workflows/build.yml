@@ -32,8 +32,8 @@ jobs:
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: |
+            10.0.x
             8.0.x
-            6.0.x
 
       - name: Restore packages
         run: dotnet restore --verbosity quiet
@@ -44,7 +44,7 @@ jobs:
       - name: Pack YAXLib
         shell: pwsh
         run: |
-          $version = "4.4.0"
+          $version = "4.5.0"
           echo "PACKAGE_VERSION=$version" >> $env:GITHUB_ENV
           $versionFile = "$version.${{ github.run_number }}"
           $prNumber = "${{ github.event.pull_request.number }}"
@@ -96,8 +96,8 @@ jobs:
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: |
+            10.0.x
             8.0.x
-            6.0.x
 
       - name: Display .NET version
         run: dotnet --version
@@ -105,12 +105,12 @@ jobs:
       - name: Test against netstandard2.0
         run: |
           echo "Testing YAXLibTests against netstandard2.0"
-          dotnet test YAXLibTests -f net8.0 -p:ForceYAXLibTFM=netstandard2.0 -p:CopyLocalLockFileAssemblies=true -v:minimal
+          dotnet test YAXLibTests -f net10.0 -p:ForceYAXLibTFM=netstandard2.0 -p:CopyLocalLockFileAssemblies=true -v:minimal
 
       - name: Clean before next test
-        run: dotnet clean YAXLibTests -f net8.0
+        run: dotnet clean YAXLibTests -f net10.0
 
       - name: Test against netstandard2.1
         run: |
           echo "Testing YAXLibTests against netstandard2.1"
-          dotnet test YAXLibTests -f net8.0 -p:ForceYAXLibTFM=netstandard2.1 -p:CopyLocalLockFileAssemblies=true -v:minimal
+          dotnet test YAXLibTests -f net10.0 -p:ForceYAXLibTFM=netstandard2.1 -p:CopyLocalLockFileAssemblies=true -v:minimal

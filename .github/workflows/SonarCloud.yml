@@ -30,7 +30,7 @@ jobs:
       - name: Setup .NET 8 SDK
         uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '10.0.x'
       - name: Cache SonarCloud packages
         uses: actions/cache@v5
         with:
@@ -64,8 +64,8 @@ jobs:
           ./.sonar/scanner/dotnet-sonarscanner begin /k:"${{ env.repository_owner_lc }}_YAXLib" /o:"${{ env.repository_owner_lc }}" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="**/coverage*.xml"
           dotnet add ./YAXLibTests/YAXLibTests.csproj package AltCover
           dotnet restore YAXLib.sln --verbosity quiet
-          dotnet build YAXLib.sln --verbosity minimal --configuration release --no-restore --framework net8.0 /p:IncludeSymbols=true
-          dotnet test YAXLib.sln --no-build --verbosity normal --framework net8.0 /p:configuration=release /p:AltCover=true /p:AltCoverXmlReport="coverage.xml" /p:AltCoverStrongNameKey="../Key/YAXLib.Key.snk" /p:AltCoverAssemblyExcludeFilter="YAXLibTests|NUnit3.TestAdapter"
+          dotnet build YAXLib.sln --verbosity minimal --configuration release --no-restore --framework net10.0 /p:IncludeSymbols=true
+          dotnet test YAXLib.sln --no-build --verbosity normal --framework net10.0 /p:configuration=release /p:AltCover=true /p:AltCoverXmlReport="coverage.xml" /p:AltCoverStrongNameKey="../Key/YAXLib.Key.snk" /p:AltCoverAssemblyExcludeFilter="YAXLibTests|NUnit3.TestAdapter"
           ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
