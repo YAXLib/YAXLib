@@ -12,6 +12,7 @@ using YAXLib.Caching;
 using YAXLib.Customization;
 using YAXLib.Enums;
 using YAXLib.Exceptions;
+using YAXLib.MarkObjWithId;
 using YAXLib.Pooling.SpecializedPools;
 
 namespace YAXLib;
@@ -62,6 +63,14 @@ internal class Serialization
         _serializer.IsSerializing = true;
         _mainDocument = new XDocument();
         _mainDocument.Add(SerializeBase(obj));
+
+        if (_serializer.UdtWrapper.IsMarkObjId2AvertSefRef)
+        {
+            _mainDocument = _mainDocument.ClearUnNecessaryObjId();
+            _mainDocument = _mainDocument.FixObjIdToRef();
+            _serializer.Session.Reset();
+        }
+
         return _mainDocument;
     }
 
@@ -283,7 +292,7 @@ internal class Serialization
             var hasCustomSerializer =
                 member.HasCustomSerializer || member.UdtWrapper.HasCustomSerializer;
             var isCollectionSerially = member.CollectionAttributeInstance is
-                { SerializationType: YAXCollectionSerializationTypes.Serially };
+            { SerializationType: YAXCollectionSerializationTypes.Serially };
             var isKnownType = member.IsKnownType;
 
             var serializationLocation = member.SerializationLocation;
@@ -372,7 +381,7 @@ internal class Serialization
 
         if (elementValue == null || ValueEquals(elementValue, ReflectionUtils.GetDefaultValue(member.MemberType)))
         {
-           return true;
+            return true;
         }
 
         return false;
@@ -757,13 +766,16 @@ internal class Serialization
         if (member.PreservesWhitespace)
             XMLUtils.AddPreserveSpaceAttribute(elemToAdd, _serializer.Options.Culture);
 
+ 
+
         return elemToAdd;
     }
 
     private static (bool alreadyAdded, bool moveDescOnly) HandleRecursiveCollection(XElement insertionLocation,
         MemberWrapper member, XElement elemToAdd)
     {
-        var moveDescOnly = member.CollectionAttributeInstance is {
+        var moveDescOnly = member.CollectionAttributeInstance is
+        {
             SerializationType: YAXCollectionSerializationTypes.RecursiveWithNoContainingElement
         } && !elemToAdd.HasAttributes;
 
@@ -1028,35 +1040,44 @@ internal class Serialization
         switch (udt)
         {
             case { IsTreatedAsDictionary: true }:
-            {
-                elemToAdd = MakeDictionaryElement(elem, alias, obj, null, null,
-                    udt.IsNotAllowedNullObjectSerialization);
-                if (elemToAdd.Parent != elem)
-                    elem.Add(elemToAdd);
-                break;
-            }
+                {
+                    elemToAdd = MakeDictionaryElement(elem, alias, obj, null, null,
+                        udt.IsNotAllowedNullObjectSerialization);
+                    if (elemToAdd.Parent != elem)
+                        elem.Add(elemToAdd);
+                    break;
+                }
             case { IsTreatedAsCollection: true }:
-            {
-                elemToAdd = MakeCollectionElement(elem, alias, obj, null, null);
-                if (elemToAdd.Parent != elem)
-                    elem.Add(elemToAdd);
-                break;
-            }
+                {
+                    elemToAdd = MakeCollectionElement(elem, alias, obj, null, null);
+                    if (elemToAdd.Parent != elem)
+                        elem.Add(elemToAdd);
+                    break;
+                }
             case { IsEnum: true }:
-            {
-                elemToAdd = MakeBaseElement(elem, alias, udt.EnumWrapper!.GetAlias(obj!), out var alreadyAdded);
-                if (!alreadyAdded)
-                    elem.Add(elemToAdd);
-                break;
-            }
+                {
+                    elemToAdd = MakeBaseElement(elem, alias, udt.EnumWrapper!.GetAlias(obj!), out var alreadyAdded);
+                    if (!alreadyAdded)
+                        elem.Add(elemToAdd);
+                    break;
+                }
             default: // udt is null or none of the cases
-            {
-                elemToAdd = MakeBaseElement(elem, alias, obj, out var alreadyAdded);
-                if (!alreadyAdded)
-                    elem.Add(elemToAdd);
-                break;
-            }
+                {
+                    elemToAdd = MakeBaseElement(elem, alias, obj, out var alreadyAdded);
+                    if (!alreadyAdded)
+                        elem.Add(elemToAdd);
+                    break;
+                }
         }
+
+        //if (_serializer.UdtWrapper.IsMarkObjId2AvertSefRef)
+        //{
+        //    if (elemToAdd != null)
+        //    {
+        //        var id = _serializer.Session.ObjDict.GetOrNewIdx(obj);
+        //        elemToAdd.Add(new XAttribute(DictObjWithId.ATTR_FLAG_OBJID, id));
+        //    }
+        //}
 
         return elemToAdd;
     }
@@ -1220,6 +1241,19 @@ internal class Serialization
     private XElement MakeBaseElement(XElement? insertionLocation, XName name, object? value, out bool alreadyAdded)
     {
         alreadyAdded = false;
+
+        if (_serializer.UdtWrapper.IsMarkObjId2AvertSefRef)
+        {
+            var id = _serializer.Session.ObjDict.GetObjIdx(value);
+            if (id != null && value != null)
+            {
+                XElement nullElem = new XElement(name);
+          //      nullElem.Add(new XAttribute(Xmlhelper.ATTR_FLAG_REF_OBJID, id));
+                nullElem.AddAttribute_MarkObjId(id.Value, _serializer);
+                return nullElem;
+            }
+        }
+
         if (value == null || ReflectionUtils.IsBasicType(value.GetType()))
         {
             value = value?.ToXmlValue(_serializer.Options.Culture).StripInvalidXmlChars(_stripInvalidXmlChars);
@@ -1235,7 +1269,19 @@ internal class Serialization
         }
 
         var elem = SerializeUsingInternalSerializer(insertionLocation, name, value);
+
+        if (_serializer.UdtWrapper.IsMarkObjId2AvertSefRef)
+        {
+            if (value != null && value.GetType().ShouldMarkObjId())
+            {
+                
+                var id = _serializer.Session.ObjDict.GetOrNewIdx(value);
+                elem.AddAttribute_MarkObjId(id, _serializer );
+            }
+        }
+
         alreadyAdded = true;
+
         return elem;
     }
 
@@ -1260,10 +1306,10 @@ internal class Serialization
             case TextEmbedding.Base64:
                 elem.Add(new XText(value.ToBase64(System.Text.Encoding.UTF8)!));
                 break;
-            /*
-                TextEmbedding.None and null values uses standard element serialization,
-                which is not handled in this method.
-            */
+                /*
+                    TextEmbedding.None and null values uses standard element serialization,
+                    which is not handled in this method.
+                */
         }
 
         return elem;
